@@ -1,2 +1,2 @@
-Music learning tools
-====================
+ExploreJS
+=========
