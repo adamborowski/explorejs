@@ -1,0 +1,44 @@
+player {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 111111;
+  color: #dddddd;
+  padding: 18px;
+  header {
+    display: inline-block;
+    font-size: 16pt;
+    line-height: 1em;
+    vertical-align: middle;
+    margin-right: 40px;
+  }
+  .fullscreen {
+    position: fixed;
+    background: #000;
+    top: 70px;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    h1 {
+      position: absolute;
+      top: 50%;
+      text-align: center;
+      width: 100%;
+      font-size: 100px;
+    }
+    .i-know-it-fullscreen {
+      position: absolute;
+      right: 50px;
+      top: 50px;
+      .i-know-it-icon {
+        color: #00cc66;
+        font-size: 45px;
+        margin-right: 20px;
+      }
+    }
+  }
+}
+
+body > header > nav {
+  margin: 0 !important;
+}

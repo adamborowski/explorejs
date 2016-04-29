@@ -1,0 +1,13 @@
+<form class="form-inline" ng-init="showIgnoredEntries=false"
+      style="color:white; position:absolute; top:25px; right:40px;">
+    <div class="checkbox" style="margin-right:12px">
+        <label>
+            <input type="checkbox" ng-model="showIgnoredEntries"> Show ignored clusters
+        </label>
+    </div>
+</form>
+<div ng-repeat="logs in logController.logTypes" style="display: inline-block;margin:3px 7px;"><span><strong>{{logs[0].Type}}</strong>: {{logs.Count}}</span>
+</div>
+<div ng-repeat="logs in logController.logTypes">
+    <log-item log="log" ng-repeat="log in logs" show-ignored="showIgnoredEntries"></log-item>
+</div>

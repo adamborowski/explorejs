@@ -1,0 +1,51 @@
+<div>
+    <form class="form-inline">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="autoplay"> Auto play
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="randomStart"> Random start
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="loopList"> Loop list
+            </label>
+        </div>
+        <button type="button" class="btn btn-default" bs-dropdown=" availableFilters"
+                aria-haspopup="true" aria-expanded="false">
+            {{currentFilter.text}}
+        </button>
+
+
+        <div class="form-group">
+            <div class="input-group">
+                <input type="number" ng-model="controller.Duration" class="form-control" id="exampleInputAmount"
+                       placeholder="Duration">
+                <div class="input-group-addon"> s</div>
+            </div>
+        </div>
+        <button ng-click="playbackService.playPrevDefault()" class="btn btn-primary">&laquo;</button>
+        <button ng-click="playbackService.playNextDefault()" class="btn btn-primary">&raquo;</button>
+        <button ng-show="playbackService.isPlaying" ng-click="playbackService.stop()"
+                class="btn btn-primary">&blacksquare;</button>
+        <button ng-click="controller.fullscreen()" class="btn btn-primary">Fullscreen</button>
+    </form>
+    <div class="fullscreen" ng-if="fullscreen">
+        <div ng-show="playbackService.isPlaying">
+        <h1 ng-bind-html="playbackService.musicFile.fileName"></h1>
+            <div class="i-know-it-fullscreen">
+                <button type="button" class="i-know-it btn btn-lg btn-success pull-right"
+                        ng-click="controller.onKnowItClick($event)"
+                        ng-class="{'btn-danger': playbackService.musicFile.known}"
+                >{{!playbackService.musicFile.known?"I know it":"I must learn"}}
+                </button>
+            <span title="I already know this track" class="i-know-it-icon glyphicon glyphicon-ok-circle pull-right"
+                  ng-if="playbackService.musicFile.known"></span>
+            </div>
+        </div>
+    </div>
+</div>

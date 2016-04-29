@@ -1,0 +1,19 @@
+<span class="label label-default a-unique-badge">{{entry.NumTotalEntries}}</span></span>
+<div class="a-unique-messages-item a-{{entry.Type}}" ng-click="controller.toggle()">
+    <code>{{entry.Message}}</code>
+</div>
+<div ng-show="controller.opened">
+    <h6>Tokens</h6>
+    <code class="a-token">{{entry.Tokens.join(' ')}}</code>
+    <h6>Occurences <span class="badge">{{entry.Entries.length}}</span></h6>
+    <div class="a-entries" ng-class="{'a-many':entry.Entries.length>1}">
+        <div ng-click="controller.navigate(rawEntry)" class="a-entry a-{{type}}"
+             ng-repeat="rawEntry in entry.Entries track by $index">
+            <code>{{rawEntry.Timestamp}}</code>
+        </div>
+    </div>
+    <history entry="controller.selectedItem" opened="modalOpened">
+
+    </history>
+    <hr/>
+</div>

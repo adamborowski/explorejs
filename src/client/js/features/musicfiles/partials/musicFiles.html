@@ -1,0 +1,6 @@
+<player></player>
+<div>
+    <music-file file="musicFile" current="playbackService.musicFile==musicFile"
+                ng-repeat="musicFile in listController.files" ng-show="currentFilter.filter(musicFile)">
+    </music-file>
+</div>

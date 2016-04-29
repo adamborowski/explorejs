@@ -1,0 +1,25 @@
+{
+  "name": "explorejs",
+  "version": "1.0.2",
+  "description": "Data Source for exploration in visual analysis",
+  "main": "main.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "optimist": "^0.6.1",
+    "proxy-middleware": "^0.15.0",
+    "request": "^2.69.0",
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/aborowski/explorejs.git"
+  },
+  "keywords": [
+  ],
+  "author": "Adam Borowski",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/aborowski/explorejs#readme"
+}

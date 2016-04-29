@@ -1,0 +1,2 @@
+#!/usr/bin/env node --harmony --max-old-space-size=200000
+require("./server/main");

@@ -1,0 +1,1 @@
+web: node --harmony --max-old-space-size=200000 src/explorejs

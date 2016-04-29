@@ -1,0 +1,57 @@
+<!--action menu-->
+<div ng-show="showIgnored||!controller.ignored">
+    <div ng-click="controller.toggle()" class="a-header" style="position: relative;">
+        <button class="a-log-type-button btn btn-default btn-xs btn-{{controller.LabelType}}"
+                ng-class="{active: controller.opened}"
+
+                type="button">{{controller.Type}} <span class="caret"></span>
+        </button>
+        <strong class="a-num-total-entries" title="Number of total entries">{{controller.NumTotalEntries}}</strong>
+        <code class="a-message">{{controller.LastMessage}}</code>
+        <button type="button" class="btn btn-xs btn-default" ng-class="{active:controller.ignored}" style="position:absolute; right:4px; top:10px"
+                ng-click="controller.toggleIgnored()">
+            <span class="glyphicon glyphicon glyphicon-remove" title="ignore" aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="a-collapse" ng-show="controller.opened">
+        <div class="btn-group btn-group-sm a-action-buttons" role="group" aria-label="...">
+
+            <div ng-if="controller.issueCreated!=null" style="display: inline-block; float: left;margin:7px;">
+                Issue: <a target="_blank" href="{{controller.issueCreated.link}}">{{controller.issueCreated.key}}</a>
+            </div>
+            <button type="button" class="btn btn-default" ng-click="controller.jira()">
+                <span class="glyphicon glyphicon-jira" title="raise issue" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-default" ng-class="{active:controller.ignored}"
+                    ng-click="controller.toggleIgnored()">
+                <span class="glyphicon glyphicon glyphicon-remove" title="ignore" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-adjust" title="divide cluster by 2" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div class="a-dates pull-right">
+            <div class="label label-danger" title="first log occurence date">{{log.FirstDate}}</div>
+            <div class="label label-success" title="last log occurence date">{{log.LastDate}}</div>
+        </div>
+
+        <div ng-show="controller.NumCauses>0">
+            <div class="a-section a-causes-header">Last stack trace</div>
+            <div class="a-causes">
+                <div ng-repeat="cause in log.LastCauses track by $index" class="a-causes-item"><code>{{cause}}</code>
+                </div>
+            </div>
+        </div>
+        <div ng-show="controller.UniqueLogEntries.length>0">
+            <div class="a-section a-unique-messages-header">Unique messages <span class="badge">{{controller.UniqueLogEntries.length}}</span>
+            </div>
+            <div class="a-unique-messages">
+                <unique-log-entry entry="uniqueLogEntry" open-on-start="controller.UniqueLogEntries.length==1"
+                                  type="log.Type"
+                                  class="a-unique-log-entry"
+                                  ng-repeat="uniqueLogEntry in controller.UniqueLogEntries"/>
+            </div>
+        </div>
+    </div>
+</div>
