@@ -17,7 +17,7 @@ import Splash from 'splash-screen';
 class App {
 
     constructor() {
-        this.appName = 'Music Learning Tools';
+        this.appName = 'ExploreJS demo';
         this.features = [];
         Features.forEach(function(Feature) {
             this.features.push(new Feature());
