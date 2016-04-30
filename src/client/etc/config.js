@@ -9,7 +9,7 @@
 'use strict';
 
 export default {
-    'appname': 'Log Analysis Tool',
+    'appname': 'ExploreJS',
     'base': '',
     'version': '1.0.0',
     'icp': 'ICP here',

@@ -26,7 +26,8 @@ module.exports = class Api extends AbstractApi {
         for (var serie of req.body.series) {
             serie.data = this.dataService.getSerieService(serie.id).getRange(serie.level, DateUtil.fromStringMillis(serie.from), DateUtil.fromStringMillis(serie.to));
         }
-        res.send(req.body.series);
+        res.send({series: req.body.series, errors: []});
+        // todo implement error messages
     }
 
     testQuery(req) {

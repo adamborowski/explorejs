@@ -6,14 +6,14 @@
  *  @date    Jan 20, 2016
  *
  */
-import tpl from './partials/musicFiles.html';
+import tpl from './partials/cacheDemo.html';
 
 export default [
     {
         id: 'logs',
-        isDefault: false,
-        when: '/music-files',
-        controller: 'ListController as listController',
+        isDefault: true,
+        when: '/cache-demo',
+        controller: 'CacheDemoController as cacheDemoController',
         template: tpl
     }
 ];

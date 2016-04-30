@@ -11,5 +11,6 @@ import common from './common/main';
 import home from './home/main';
 import logs from './logs/main';
 import musicfiles from './musicfiles/main'
+import cacheDemo from './cache/main'
 
-export default [about, ...common, home, logs, musicfiles];
+export default [about, ...common, home, logs, musicfiles, cacheDemo];
