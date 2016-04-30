@@ -4,8 +4,9 @@ module.exports = class Api {
         this.app = app;
     }
 
-    putResource(name, callback) {
-        this.app.get('/api/' + name, (req, res)=> {
+    putResource(name, callback, method) {
+        method = method || 'get';
+        this.app[method]('/api/' + name, (req, res)=> {
             res.set('Content-Type', 'application/json');
             res.send(callback.call(this, req));
         });

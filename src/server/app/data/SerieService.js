@@ -1,19 +1,15 @@
 var bs = require('binarysearch');
-
+var IndexedList = require('../utils/IndexedList');
 module.exports = class SerieService {
     constructor(serieId, data, aggregators) {
         this.serieId = serieId;
-        this.aggregators = {
-            raw: data
-        };
-        for (var aggregator of aggregators) {
-            this.aggregators[aggregator.levelId] = aggregator.aggregatedData;
-        }
+        this.rawData = data;
+        this.aggregators = IndexedList.fromArray(aggregators, 'levelId');
     }
 
     getRange(levelId, openTime, closeTime) {
-        var aggregator = this.aggregators[levelId];
-        if (aggregator == null) {
+        var data = levelId == 'raw' ? this.rawData : this.aggregators.get(levelId).aggregatedData;
+        if (data == null) {
             throw new Error(`Cannot find aggregation for level ${levelId}.`);
         }
         var openTimeGreaterThanCmp, closeTimeGreaterThanCmp;
@@ -25,32 +21,38 @@ module.exports = class SerieService {
             openTimeGreaterThanCmp = (v, find)=>v.$e - find;
             closeTimeGreaterThanCmp = (v, find)=>v.$s - find;
         }
-        var firstIndex = bs.closest(aggregator, openTime, openTimeGreaterThanCmp);
-        var lastIndex = bs.closest(aggregator, closeTime, closeTimeGreaterThanCmp);
+        var firstIndex = bs.closest(data, openTime, openTimeGreaterThanCmp);
+        var lastIndex = bs.closest(data, closeTime, closeTimeGreaterThanCmp);
 
 
         if (isRaw) {
             // edge case 1: first point.$t < openTime
-            if (aggregator[firstIndex].$t < openTime) {
+            if (data[firstIndex].$t < openTime) {
                 firstIndex++;
             }
             // edge case 2: last point.open >=  closeTime
-            if (aggregator[lastIndex].$t >= closeTime) {
+            if (data[lastIndex].$t >= closeTime) {
                 lastIndex--;
             }
         }
         else {
             // edge case 1: first point.closeTime <= openTime
-            if (aggregator[firstIndex].$e <= openTime) {
+            if (data[firstIndex].$e <= openTime) {
                 firstIndex++;
             }
             // edge case 2: last point.openTime >= closeTime
-            if (aggregator[lastIndex].$s >= closeTime) {
+            if (data[lastIndex].$s >= closeTime) {
                 lastIndex--;
             }
         }
+        return data.slice(firstIndex, lastIndex + 1);
+    }
 
-        //todo edge cases check
-        return aggregator.slice(firstIndex, lastIndex + 1);
+    getStartTime() {
+        return this.rawData[0].$t;
+    }
+
+    getEndTime() {
+        return this.rawData[this.rawData.length - 1].$t;
     }
 };

@@ -4,6 +4,7 @@
   "description": "Data Source for exploration in visual analysis",
   "main": "main.js",
   "dependencies": {
+    "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "optimist": "^0.6.1",
     "proxy-middleware": "^0.15.0",

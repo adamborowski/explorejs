@@ -40,6 +40,15 @@ describe("Serie Service", ()=> {
             var range = service.getRange('raw', 100, 200);
             expect(range).to.be.empty;
         });
+
+        it('should return empty set if out of range', ()=> {
+            var range = service.getRange('raw', 100000, 200000);
+            expect(range).to.be.empty;
+        });
+        it('should return empty set if out of range', ()=> {
+            var range = service.getRange('raw', -200, -100);
+            expect(range).to.be.empty;
+        });
     });
 
     describe("Range extraction from level 30s", ()=> {
@@ -67,7 +76,21 @@ describe("Serie Service", ()=> {
             var aggregatedData = service.aggregators['30s'];
             expect(range).to.be.deep.equal([aggregatedData[0], aggregatedData[1]]);
         });
+        it('should return empty set if out of range', ()=> {
+            var range = service.getRange('30s', 100000, 200000);
+            expect(range).to.be.empty;
+        });
+        it('should return empty set if out of range', ()=> {
+            var range = service.getRange('30s', -200, 0);
+            expect(range).to.be.empty;
+        });
     });
 
+    describe('start and end times', ()=> {
+        it('should return proper startTime', ()=> {
+            expect(service.getStartTime()).to.be.equal(0);
+            expect(service.getEndTime()).to.be.equal(90000);
+        });
+    })
 
 });

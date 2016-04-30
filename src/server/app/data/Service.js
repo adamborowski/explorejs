@@ -1,5 +1,6 @@
 var Aggregator = require('./Aggregator');
 var SerieService = require('./SerieService');
+var IndexedList = require('../utils/IndexedList');
 module.exports = class Service {
     constructor(series) {
         this.series = series;
@@ -21,7 +22,7 @@ module.exports = class Service {
             {id: '120d', 'step': 10370000000}
         ];
 
-        this.serieServices = {};
+        this.serieServices = new IndexedList();
 
         for (var serie of this.series) {
             var aggregators = this.levels.filter((a)=>a.id != 'raw').map((level)=> new Aggregator(level.id, level.step));
@@ -30,7 +31,11 @@ module.exports = class Service {
                     aggregator.Consume(point.$t, point.v);
                 }
             }
-            this.serieServices[serie.serieId] = new SerieService(serie.serieId, serie.serieData, aggregators);
+            this.serieServices.add(serie.serieId, new SerieService(serie.serieId, serie.serieData, aggregators));
         }
+    }
+
+    getSerieService(serieId) {
+        return this.serieServices.get(serieId);
     }
 };
