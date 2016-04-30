@@ -16,17 +16,41 @@ module.exports = class SerieService {
         if (aggregator == null) {
             throw new Error(`Cannot find aggregation for level ${levelId}.`);
         }
-        var openTimeCmp, closeTimeCmp;
-        if (levelId == 'raw') {
-            openTimeCmp = closeTimeCmp = (v, find)=>v.$t - find;
+        var openTimeGreaterThanCmp, closeTimeGreaterThanCmp;
+        var isRaw = levelId == 'raw';
+        if (isRaw) {
+            openTimeGreaterThanCmp = closeTimeGreaterThanCmp = (v, find)=>v.$t - find;
         }
         else {
-            openTimeCmp = (v, find)=>v.$e - find;
-            closeTimeCmp = (v, find)=>v.$s - find;
+            openTimeGreaterThanCmp = (v, find)=>v.$e - find;
+            closeTimeGreaterThanCmp = (v, find)=>v.$s - find;
         }
-        var firstIncludedCloseIndex = bs.closest(aggregator, openTime, openTimeCmp);
-        var lastIncludedOpenIndex = bs.closest(aggregator, closeTime, closeTimeCmp);
+        var firstIndex = bs.closest(aggregator, openTime, openTimeGreaterThanCmp);
+        var lastIndex = bs.closest(aggregator, closeTime, closeTimeGreaterThanCmp);
+
+
+        if (isRaw) {
+            // edge case 1: first point.$t < openTime
+            if (aggregator[firstIndex].$t < openTime) {
+                firstIndex++;
+            }
+            // edge case 2: last point.open >=  closeTime
+            if (aggregator[lastIndex].$t >= closeTime) {
+                lastIndex--;
+            }
+        }
+        else {
+            // edge case 1: first point.closeTime <= openTime
+            if (aggregator[firstIndex].$e <= openTime) {
+                firstIndex++;
+            }
+            // edge case 2: last point.openTime >= closeTime
+            if (aggregator[lastIndex].$s >= closeTime) {
+                lastIndex--;
+            }
+        }
+
         //todo edge cases check
-        return aggregator.slice(firstIncludedCloseIndex, lastIncludedOpenIndex + 1);
+        return aggregator.slice(firstIndex, lastIndex + 1);
     }
 };

@@ -7,18 +7,20 @@
     "express": "^4.13.4",
     "optimist": "^0.6.1",
     "proxy-middleware": "^0.15.0",
-    "request": "^2.69.0",
+    "request": "^2.69.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec --harmony"
   },
   "repository": {
     "type": "git",
     "url": "git+https://bitbucket.org/aborowski/explorejs.git"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "Adam Borowski",
   "license": "MIT",
   "homepage": "https://bitbucket.org/aborowski/explorejs#readme"

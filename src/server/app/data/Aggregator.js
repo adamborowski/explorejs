@@ -1,3 +1,4 @@
+var DateUtil = require('../utils/DateUtil');
 module.exports = class Aggregator {
     constructor(levelId, interval) {
         this.levelId = levelId;
@@ -53,10 +54,11 @@ module.exports = class Aggregator {
             a: this.step.sum / this.step.count,
             t: this.step.max,
             b: this.step.min,
+            c: this.step.count,
             $s: this.step.openTime,
             $e: closeTime,
-            $ss: new Date(this.step.openTime).toISOString('YYYY-mm-dd'),
-            $ee: new Date(closeTime).toISOString()
+            $ss: DateUtil.format(this.step.openTime),
+            $ee: DateUtil.format(closeTime)
         };
         this.aggregatedData.push(aggregatedPoint);
         this.resetStep(closeTime);

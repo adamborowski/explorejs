@@ -1,3 +1,4 @@
+var DateUtil = require('../utils/DateUtil')
 module.exports = class Generator {
 
     fun(x) {
@@ -10,7 +11,7 @@ module.exports = class Generator {
         to = to.getTime();
         var data = [];
         for (var i = from; i < to; i += interval) {
-            data.push({$t: i, $tt: new Date(i).toISOString(), v: this.fun(i)});
+            data.push({$t: i, $tt: DateUtil.format(i), v: this.fun(i)});
         }
         return data;
     }
