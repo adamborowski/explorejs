@@ -31,6 +31,10 @@ module.exports = class Service {
                     aggregator.Consume(point.$t, point.v);
                 }
             }
+            for (var aggregator of aggregators) {
+                aggregator.Finish();
+            }
+
             this.serieServices.add(serie.serieId, new SerieService(serie.serieId, serie.serieData, aggregators));
         }
     }

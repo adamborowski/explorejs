@@ -8,9 +8,16 @@ module.exports = class SerieService {
     }
 
     getRange(levelId, openTime, closeTime) {
-        var data = levelId == 'raw' ? this.rawData : this.aggregators.get(levelId).aggregatedData;
-        if (data == null) {
-            throw new Error(`Cannot find aggregation for level ${levelId}.`);
+        var data;
+        if (levelId == 'raw') {
+            data = this.rawData;
+        } else {
+            if (this.aggregators.contains(levelId)) {
+                data = this.aggregators.get(levelId).aggregatedData;
+            }
+            else {
+                throw new Error(`Cannot find aggregation for level ${levelId}.`);
+            }
         }
         var openTimeGreaterThanCmp, closeTimeGreaterThanCmp;
         var isRaw = levelId == 'raw';

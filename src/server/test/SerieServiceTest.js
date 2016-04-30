@@ -69,11 +69,11 @@ describe("Serie Service", ()=> {
         });
         it('range <100,200) should result in $s:0 ... $e: 30000', ()=> {
             var range = service.getRange('30s', 100, 200);
-            expect(range).to.be.deep.equal([service.aggregators['30s'][0]]);
+            expect(range).to.be.deep.equal([service.aggregators.get('30s').aggregatedData[0]]);
         });
         it('range <29000,30100) should result in $s:0 ... $e: 60000', ()=> {
             var range = service.getRange('30s', 29000, 30100);
-            var aggregatedData = service.aggregators['30s'];
+            var aggregatedData = service.aggregators.get('30s').aggregatedData;
             expect(range).to.be.deep.equal([aggregatedData[0], aggregatedData[1]]);
         });
         it('should return empty set if out of range', ()=> {
