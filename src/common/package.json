@@ -1,0 +1,21 @@
+{
+  "name": "explorejs-common",
+  "version": "1.0.0",
+  "description": "Common classes used in both server and client side",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec --harmony --compilers js:babel-register"
+  },
+  "author": "Adam Borowski",
+  "license": "MIT",
+  "dependencies": {
+    "binary-search-tree": "^0.2.6",
+    "binarysearch": "^1.0.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel-register": "^6.7.2",
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}

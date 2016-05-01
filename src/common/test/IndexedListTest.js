@@ -1,5 +1,5 @@
 var expect = require("chai").expect;
-var IndexedList = require("../app/utils/IndexedList");
+var IndexedList = require("../src/IndexedList");
 
 describe("Serie Service", ()=> {
     var list;
