@@ -82,16 +82,27 @@ class OrderedSegmentArray {
      * @param rangeRightBound right bound to find last segment
      * @returns {Array}
      */
-    getRange(rangeLeftBound, rangeRightBound) {
+    getRange(rangeLeftBound, rangeRightBound, options) {
         if (arguments.length == 0) {
             return this._data;
         }
-        var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound);
+        var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound, options);
         return this._data.slice(indexes.left, indexes.right + 1);
 
     }
 
-    findRangeIndexes(rangeLeftBound, rangeRightBound) {
+    /**
+     *
+     * @param rangeLeftBound
+     * @param rangeRightBound
+     * @param [options]
+     * @returns {{left: *, right: *}}
+     */
+    findRangeIndexes(rangeLeftBound, rangeRightBound, options) {
+        options = _.defaults(options || {}, {
+            leftBoundClosed: this.options.leftBoundClosed,
+            rightBoundClosed: this.options.rightBoundClosed
+        });
         var firstSegmentIndex = this._findBoundNotBefore(rangeLeftBound, this._rightBoundComparator);
         var lastSegmentIndex = this._findBoundNotAfter(rangeRightBound, this._leftBoundComparator);
         var data = this._data;
@@ -101,10 +112,10 @@ class OrderedSegmentArray {
 
         // exclude touching segments for open bounds
 
-        if (firstSegmentRight_vs_rangeLeft == 0 && this.options.leftBoundClosed == false) {
+        if (firstSegmentRight_vs_rangeLeft == 0 && options.leftBoundClosed == false) {
             firstSegmentIndex++;
         }
-        if (lastSegmentLeft_vs_rangeRight == 0 && this.options.rightBoundClosed == false) {
+        if (lastSegmentLeft_vs_rangeRight == 0 && options.rightBoundClosed == false) {
             lastSegmentIndex--;
         }
 
