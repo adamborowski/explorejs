@@ -1,6 +1,7 @@
 var Aggregator = require('./Aggregator');
 var SerieService = require('./SerieService');
-var IndexedList = require('../utils/IndexedList');
+var IndexedList = require('explorejs-common/src/IndexedList');
+var StatusError = require('../utils/StatusError');
 module.exports = class Service {
     constructor(series) {
         this.series = series;
@@ -40,6 +41,9 @@ module.exports = class Service {
     }
 
     getSerieService(serieId) {
-        return this.serieServices.get(serieId);
+        if (this.serieServices.contains(serieId)) {
+            return this.serieServices.get(serieId);
+        }
+        throw new StatusError(404, `No service for serie: ${serieId}`);
     }
 };

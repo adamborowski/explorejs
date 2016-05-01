@@ -8,7 +8,8 @@
     "express": "^4.13.4",
     "optimist": "^0.6.1",
     "proxy-middleware": "^0.15.0",
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "explorejs-common": "file:///Users/aborowski/src/explorejs/src/common",
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -1,5 +1,5 @@
 var bs = require('binarysearch');
-var IndexedList = require('../utils/IndexedList');
+var IndexedList = require('explorejs-common/src/IndexedList');
 module.exports = class SerieService {
     constructor(serieId, data, aggregators) {
         this.serieId = serieId;

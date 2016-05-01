@@ -5,6 +5,7 @@ var Generator = require('./data/Generator');
 var Service = require('./data/Service');
 var Serie = require('./data/Serie');
 var DateUtil = require('./utils/DateUtil');
+var StatusError = require('./utils/StatusError');
 module.exports = class Api extends AbstractApi {
     constructor(app, config) {
         super(app);
@@ -23,11 +24,21 @@ module.exports = class Api extends AbstractApi {
     }
 
     getBatch(req, res) {
+        var globalErrors = [];
         for (var serie of req.body.series) {
-            serie.data = this.dataService.getSerieService(serie.id).getRange(serie.level, DateUtil.fromStringMillis(serie.from), DateUtil.fromStringMillis(serie.to));
+            try {
+                serie.data = this.dataService.getSerieService(serie.id).getRange(serie.level, DateUtil.fromStringMillis(serie.from), DateUtil.fromStringMillis(serie.to));
+            }
+            catch (e) {
+                if (e instanceof StatusError) {
+                    serie.error = {status: e.status, message: e.message};
+                }
+                else {
+                    throw e;
+                }
+            }
         }
-        res.send({series: req.body.series, errors: []});
-        // todo implement error messages
+        res.send({series: req.body.series, errors: globalErrors});
     }
 
     testQuery(req) {

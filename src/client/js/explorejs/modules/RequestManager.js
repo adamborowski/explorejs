@@ -1,16 +1,21 @@
 import DataRequest from '../data/DataRequest';
+import DeferredAction from "../utils/DeferredAction";
+import IndexedList from 'explorejs-common/src/IndexedList';
+/**
+ * @property {CacheManager} CacheManager
+ */
 export default class RequestManager {
 
-    registerSerieCache(SerieCache){
-        // todo
+    constructor() {
+        this._deferredAjaxCall = new DeferredAction(this._performBatchRequest.bind(this), 0);
     }
+
     /**
      *
      * @param request {DataRequest}
      */
     addRequest(request) {
-        // TODO implement batching. At the moment we don't fire every ajax call per request
-        this._processBatchRequest(request);
+        this._deferredAjaxCall.invoke(request);
     }
 
     increasePriority(request) {
@@ -19,14 +24,31 @@ export default class RequestManager {
     }
 
     /**
+     * calls server for manifest
+     */
+    init(callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/api/manifest", true);
+        xhr.onload = ()=> {
+            if (xhr.status === 200) {
+                var manifest = JSON.parse(xhr.responseText);
+                this._serverManifest = IndexedList.fromArray(manifest.series, 'serieId');
+                callback();
+            }
+            else {
+                console.error(`RequestManager error during getting manifest`);
+            }
+        };
+        xhr.send();
+    }
+
+    /**
      *
-     * @param request{DataRequest}
+     * @param requests{DataRequest[]}
      * @private
      */
-    _processBatchRequest(request) {
-        // TODO implement deferred request batching, at the moment just call ajax
-        // TODO remove parameter as it will pick request from queue for batching
-        var data = {series: [request.toServerFormat()]};
+    _performBatchRequest(requests) {
+        var data = {series: requests.map((request)=>request.toServerFormat())};
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/api/batch", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -43,10 +65,34 @@ export default class RequestManager {
     }
 
     _processBatchResponse(response) {
-        for (var serieResponse of response.series) {
-            var serieData = DataRequest.fromServerFormat(serieResponse);
-            console.log(`got data for ${serieData.serieId} level = ${serieData.level} <${serieData.openTime};${serieData.closeTime}: ${serieResponse.data.length})`)
-            // todo add propagation to serieCache
+
+        for (var error of response.errors) {
+            console.error(`RequestManager error #${error.code} "${error.message}"`);
         }
+
+        var data = response.series
+            .filter((serie)=> {
+                if (serie.error) {
+                    console.error(`RequestManager error for serie ${serie.id} ${serie.error.status}: ${serie.error.message}`);
+                }
+                return serie.error == null;
+            })
+            .map((serie)=> {
+                var serieConfig = DataRequest.fromServerFormat(serie);
+                serieConfig.data = serie.data;
+                return serieConfig;
+            });
+
+        this.CacheManager.putData(data);
+    }
+
+    getManifestForSerie(serieId) {
+        if (this._serverManifest == null) {
+            throw new Error(`RequestManager error: server manifest not initialized`);
+        }
+        if (this._serverManifest.contains(serieId)) {
+            return this._serverManifest.get(serieId);
+        }
+        throw new Error(`RequestManager error: manifest doesn't contain serie ${serieId}`);
     }
 }
