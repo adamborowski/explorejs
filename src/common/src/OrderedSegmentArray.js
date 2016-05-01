@@ -7,7 +7,8 @@ var options = {
     rightBoundClosed: false
 };
 /**
- * Provides effective sorted array manipulation.
+ * Implementation of segment array where each segment doesn't overlap each other.
+ * All segments all disjoint or touch others
  */
 class OrderedSegmentArray {
 
@@ -33,7 +34,26 @@ class OrderedSegmentArray {
      * @param range must be ordered and not overlap with existing segment
      */
     insertRange(range) {
+        var data = this._data;
+        var leftBoundKey = this.options.leftBoundKey;
+        var rightBoundKey = this.options.rightBoundKey;
+        var rangeLeft = range[0][leftBoundKey];
+        var rangeRight = range[range.length - 1][rightBoundKey];
+        var leftNeighborIndex = this._findNotGreaterBoundIndex(rangeLeft, this._rightBoundComparator);
+        var rightNeighborIndex = this._findNotLowerBoundIndex(rangeRight, this._leftBoundComparator);
+        var leftNeighbor = data[leftNeighborIndex];
+        var rightNeighbor = data[rightNeighborIndex];
 
+
+        var insertionIndex;
+        if (rightNeighborIndex - leftNeighborIndex == 1) {
+            //segments are not touching
+            insertionIndex = leftNeighborIndex + 1;
+        } else {
+            throw new Error("You can insert only into a gap. There are items in your range, so you should use mergeRange method");
+        }
+
+        this._data.splice(insertionIndex, 0, ...range);
     }
 
     /**
@@ -71,7 +91,12 @@ class OrderedSegmentArray {
         if (arguments.length == 0) {
             return this._data;
         }
+        var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound);
+        return this._data.slice(indexes.left, indexes.right + 1);
 
+    }
+
+    findRangeIndexes(rangeLeftBound, rangeRightBound) {
         var firstSegmentIndex = this._findRightBoundIndex(rangeLeftBound);
         var lastSegmentIndex = this._findLeftBoundIndex(rangeRightBound);
         var data = this._data;
@@ -97,7 +122,25 @@ class OrderedSegmentArray {
         }
 
 
-        return data.slice(firstSegmentIndex, lastSegmentIndex + 1);
+        return {left: firstSegmentIndex, right: lastSegmentIndex};
+    }
+
+    _findNotGreaterBoundIndex(boundValue, boundComparator) {
+        var index = bs.closest(this._data, boundValue, boundComparator)
+        if (boundComparator(this._data[index], boundValue) > 0) {
+            // found bound is greater
+            return index - 1;
+        }
+        return index;
+    }
+
+    _findNotLowerBoundIndex(boundValue, boundComparator) {
+        var index = bs.closest(this._data, boundValue, boundComparator)
+        if (boundComparator(this._data[index], boundValue) < 0) {
+            // found bound is greater
+            return index + 1;
+        }
+        return index;
     }
 
     _findLeftBoundIndex(boundValue) {

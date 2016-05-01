@@ -1,6 +1,12 @@
 var expect = require('chai').expect;
 var OrderedSegmentArray = require("../src/OrderedSegmentArray");
-
+/**
+ * @param leftBoundKey
+ * @param rightBoundKey
+ * @param leftBoundClosed
+ * @param rightBoundClosed
+ * @returns {OrderedSegmentArray}
+ */
 function getArray(leftBoundKey, rightBoundKey, leftBoundClosed, rightBoundClosed) {
     return new OrderedSegmentArray({leftBoundKey, rightBoundKey, leftBoundClosed, rightBoundClosed})
 }
@@ -260,5 +266,101 @@ describe("OrderedRangeArray test", () => {
             init(false);
             expectBounds(10.5, 12.5).to.be(10, 13);
         });
+    });
+
+    describe('insert range into a gap', ()=> {
+        it('insert into gap not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [2, 4], [100, 104], [104, 110]];
+            list.insertRange([[50, 51], [52, 55], [55, 58], [60, 61]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1], [2, 4],
+                [50, 51], [52, 55], [55, 58], [60, 61],
+                [100, 104], [104, 110]
+            ]);
+        });
+        it('insert into gap touching both sides', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [2, 4], [100, 104], [104, 110]];
+            list.insertRange([[4, 100]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1], [2, 4],
+                [4, 100],
+                [100, 104], [104, 110]
+            ]);
+        });
+        it('insert into gap touching left side', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [2, 4], [100, 104], [104, 110]];
+            list.insertRange([[4, 51], [52, 55], [55, 58], [60, 61]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1], [2, 4],
+                [4, 51], [52, 55], [55, 58], [60, 61],
+                [100, 104], [104, 110]
+            ]);
+        });
+        it('insert into gap touching right side', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [2, 4], [100, 104], [104, 110]];
+            list.insertRange([[50, 51], [52, 55], [55, 58], [60, 100]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1], [2, 4],
+                [50, 51], [52, 55], [55, 58], [60, 100],
+                [100, 104], [104, 110]
+            ]);
+        });
+        it('insert a point into gap touching both sides', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[100, 104], [104, 110]];
+            list.insertRange([[104, 104]]);
+            expect(list._data).to.be.deep.equal([
+                [100, 104],
+                [104, 104],
+                [104, 110]
+            ]);
+        });
+        it('insert at the beginnig, not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[100, 104], [104, 110]];
+            list.insertRange([[1, 2]]);
+            expect(list._data).to.be.deep.equal([
+                [1, 2],
+                [100, 104], [104, 110]
+            ]);
+        });
+        it('insert at the beginnig, touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[100, 104], [104, 110]];
+            list.insertRange([[1, 100]]);
+            expect(list._data).to.be.deep.equal([
+                [1, 100],
+                [100, 104], [104, 110]
+            ]);
+        });
+        it('insert at the end, not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[100, 104], [104, 110]];
+            list.insertRange([[200, 300]]);
+            expect(list._data).to.be.deep.equal([
+                [100, 104], [104, 110],
+                [200, 300]
+            ]);
+        });
+        it('insert at the end, touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[100, 104], [104, 110]];
+            list.insertRange([[110, 300]]);
+            expect(list._data).to.be.deep.equal([
+                [100, 104], [104, 110],
+                [110, 300]
+            ]);
+        });
+
+        it('insert between segments', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [2, 4], [100, 104], [104, 110]];
+            expect(()=>list.insertRange([[1.5, 1.6], [50, 60]])).to.throw(/You can insert/);
+        });
+
     });
 });
