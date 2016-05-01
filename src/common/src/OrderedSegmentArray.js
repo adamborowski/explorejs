@@ -92,20 +92,12 @@ class OrderedSegmentArray {
     }
 
     findRangeIndexes(rangeLeftBound, rangeRightBound) {
-        var firstSegmentIndex = this._findRightBoundIndex(rangeLeftBound);
-        var lastSegmentIndex = this._findLeftBoundIndex(rangeRightBound);
+        var firstSegmentIndex = this._findNotLowerBoundIndex(rangeLeftBound, this._rightBoundComparator);
+        var lastSegmentIndex = this._findNotGreaterBoundIndex(rangeRightBound, this._leftBoundComparator);
         var data = this._data;
 
-        // exclude possibly disjunctive outer segments
-
         var firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(data[firstSegmentIndex], rangeLeftBound);
-        if (firstSegmentRight_vs_rangeLeft < 0) {
-            firstSegmentIndex++;
-        }
         var lastSegmentLeft_vs_rangeRight = this._leftBoundComparator(data[lastSegmentIndex], rangeRightBound);
-        if (lastSegmentLeft_vs_rangeRight > 0) {
-            lastSegmentIndex--;
-        }
 
         // exclude touching segments for open bounds
 
@@ -115,7 +107,6 @@ class OrderedSegmentArray {
         if (lastSegmentLeft_vs_rangeRight == 0 && this.options.rightBoundClosed == false) {
             lastSegmentIndex--;
         }
-
 
         return {left: firstSegmentIndex, right: lastSegmentIndex};
     }
