@@ -34,26 +34,21 @@ class OrderedSegmentArray {
      * @param range must be ordered and not overlap with existing segment
      */
     insertRange(range) {
-        var data = this._data;
         var leftBoundKey = this.options.leftBoundKey;
         var rightBoundKey = this.options.rightBoundKey;
         var rangeLeft = range[0][leftBoundKey];
         var rangeRight = range[range.length - 1][rightBoundKey];
         var leftNeighborIndex = this._findNotGreaterBoundIndex(rangeLeft, this._rightBoundComparator);
         var rightNeighborIndex = this._findNotLowerBoundIndex(rangeRight, this._leftBoundComparator);
-        var leftNeighbor = data[leftNeighborIndex];
-        var rightNeighbor = data[rightNeighborIndex];
 
-
-        var insertionIndex;
         if (rightNeighborIndex - leftNeighborIndex == 1) {
             //segments are not touching
-            insertionIndex = leftNeighborIndex + 1;
+            this._data.splice(leftNeighborIndex + 1, 0, ...range);
         } else {
             throw new Error("You can insert only into a gap. There are items in your range, so you should use mergeRange method");
         }
 
-        this._data.splice(insertionIndex, 0, ...range);
+
     }
 
     /**
