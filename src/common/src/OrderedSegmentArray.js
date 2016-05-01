@@ -38,8 +38,8 @@ class OrderedSegmentArray {
         var rightBoundKey = this.options.rightBoundKey;
         var rangeLeft = range[0][leftBoundKey];
         var rangeRight = range[range.length - 1][rightBoundKey];
-        var leftNeighborIndex = this._findNotGreaterBoundIndex(rangeLeft, this._rightBoundComparator);
-        var rightNeighborIndex = this._findNotLowerBoundIndex(rangeRight, this._leftBoundComparator);
+        var leftNeighborIndex = this._findBoundNotAfter(rangeLeft, this._rightBoundComparator);
+        var rightNeighborIndex = this._findBoundNotBefore(rangeRight, this._leftBoundComparator);
 
         if (rightNeighborIndex - leftNeighborIndex == 1) {
             //segments are not touching
@@ -56,7 +56,7 @@ class OrderedSegmentArray {
      * @param range array of segments, can overlap existing segments
      */
     mergeRange(range) {
-
+        // TODO: perform the array merge of range and overlapped segments
     }
 
     /**
@@ -92,8 +92,8 @@ class OrderedSegmentArray {
     }
 
     findRangeIndexes(rangeLeftBound, rangeRightBound) {
-        var firstSegmentIndex = this._findNotLowerBoundIndex(rangeLeftBound, this._rightBoundComparator);
-        var lastSegmentIndex = this._findNotGreaterBoundIndex(rangeRightBound, this._leftBoundComparator);
+        var firstSegmentIndex = this._findBoundNotBefore(rangeLeftBound, this._rightBoundComparator);
+        var lastSegmentIndex = this._findBoundNotAfter(rangeRightBound, this._leftBoundComparator);
         var data = this._data;
 
         var firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(data[firstSegmentIndex], rangeLeftBound);
@@ -111,8 +111,8 @@ class OrderedSegmentArray {
         return {left: firstSegmentIndex, right: lastSegmentIndex};
     }
 
-    _findNotGreaterBoundIndex(boundValue, boundComparator) {
-        var index = bs.closest(this._data, boundValue, boundComparator)
+    _findBoundNotAfter(boundValue, boundComparator) {
+        var index = bs.closest(this._data, boundValue, boundComparator);
         if (boundComparator(this._data[index], boundValue) > 0) {
             // found bound is greater
             return index - 1;
@@ -120,21 +120,14 @@ class OrderedSegmentArray {
         return index;
     }
 
-    _findNotLowerBoundIndex(boundValue, boundComparator) {
-        var index = bs.closest(this._data, boundValue, boundComparator)
+    _findBoundNotBefore(boundValue, boundComparator) {
+        var index = bs.closest(this._data, boundValue, boundComparator);
         if (boundComparator(this._data[index], boundValue) < 0) {
-            // found bound is greater
+            // found bound is lower
             return index + 1;
         }
         return index;
     }
 
-    _findLeftBoundIndex(boundValue) {
-        return bs.closest(this._data, boundValue, this._leftBoundComparator)
-    }
-
-    _findRightBoundIndex(boundValue) {
-        return bs.closest(this._data, boundValue, this._rightBoundComparator)
-    }
 }
 module.exports = OrderedSegmentArray;

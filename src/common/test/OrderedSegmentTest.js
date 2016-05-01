@@ -64,49 +64,6 @@ describe("OrderedRangeArray test", () => {
             expect(list._leftBoundComparator(segment, 4)).to.be.equal(-1);
             expect(list._rightBoundComparator(segment, 4)).to.be.equal(0);
         });
-
-        it('find at bounds, bounds closed', ()=> {
-            var list = getArray('0', '1', true, true);
-            list._data = data;
-            expect(data[list._findLeftBoundIndex(200)]).to.be.deep.equal([200, 210]);
-            expect(data[list._findRightBoundIndex(210)]).to.be.deep.equal([200, 210]);
-        });
-
-        it('find at bounds, bounds opened', ()=> {
-            var list = getArray('0', '1', false, false);
-            list._data = data;
-            expect(data[list._findLeftBoundIndex(200)]).to.be.deep.equal([200, 210]);
-            expect(data[list._findRightBoundIndex(210)]).to.be.deep.equal([200, 210]);
-        });
-
-        it('find inside segment, bounds closed', ()=> {
-            var list = getArray('0', '1', true, true);
-            list._data = data;
-            expect(data[list._findLeftBoundIndex(201)]).to.be.deep.equal([200, 210]);
-            expect(data[list._findRightBoundIndex(209)]).to.be.deep.equal([100, 110]);
-        });
-
-        it('find inside segment, bounds opened', ()=> {
-            var list = getArray('0', '1', false, false);
-            list._data = data;
-            expect(data[list._findLeftBoundIndex(201)]).to.be.deep.equal([200, 210]);
-            expect(data[list._findRightBoundIndex(209)]).to.be.deep.equal([100, 110]);
-        });
-
-        it('find outside segment, bounds closed', ()=> {
-            var list = getArray('0', '1', true, true);
-            list._data = data;
-            expect(data[list._findLeftBoundIndex(199)]).to.be.deep.equal([100, 110]);
-            expect(data[list._findRightBoundIndex(211)]).to.be.deep.equal([200, 210]);
-        });
-
-        it('find outside segment, bounds opened', ()=> {
-            var list = getArray('0', '1', false, false);
-            list._data = data;
-            expect(data[list._findLeftBoundIndex(199)]).to.be.deep.equal([100, 110]);
-            expect(data[list._findRightBoundIndex(211)]).to.be.deep.equal([200, 210]);
-        });
-
     });
 
     describe('get range of segments', ()=> {
