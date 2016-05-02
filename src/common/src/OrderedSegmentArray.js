@@ -40,9 +40,10 @@ class OrderedSegmentArray {
         var rangeRight = range[range.length - 1][rightBoundKey];
         var leftNeighborIndex = this._findBoundNotAfter(rangeLeft, this._rightBoundComparator);
         var rightNeighborIndex = this._findBoundNotBefore(rangeRight, this._leftBoundComparator);
+        var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
 
-        if (rightNeighborIndex - leftNeighborIndex == 1) {
-            //segments are not touching
+        if (numberSegmentsInside == 0) {
+            //segments are not overlapping
             this._data.splice(leftNeighborIndex + 1, 0, ...range);
         } else {
             throw new Error("You can insert only into a gap. There are items in your range, so you should use mergeRange method");
@@ -56,8 +57,57 @@ class OrderedSegmentArray {
      * @param range array of segments, can overlap existing segments
      */
     mergeRange(range) {
-        // TODO: perform the array merge of range and overlapped segments
+        var leftBoundKey = this.options.leftBoundKey;
+        var rightBoundKey = this.options.rightBoundKey;
+        var rangeLeft = range[0][leftBoundKey];
+        var rangeRight = range[range.length - 1][rightBoundKey];
+        var leftNeighborIndex = this._findBoundNotAfter(rangeLeft, this._rightBoundComparator);
+        var rightNeighborIndex = this._findBoundNotBefore(rangeRight, this._leftBoundComparator);
+
+        var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
+        console.log('merging inside', numberSegmentsInside, this._data.slice(leftNeighborIndex + 1, rightNeighborIndex - 1));
+
+        if (numberSegmentsInside == 0) {
+            //segments are not overlapping
+            this._data.splice(leftNeighborIndex + 1, 0, ...range);
+        }
+        else if (numberSegmentsInside < 0) {
+            throw new Error('This should not happened');
+        }
+        else {
+            // we have to merge
+            // todo prevent unnecessary slice range1
+            var merged = this._mergeRanges(this._data.slice(leftNeighborIndex + 1, rightNeighborIndex - 1), range);
+            debugger
+            this._data.splice(leftNeighborIndex + 1, numberSegmentsInside, ...merged);
+        }
+
+
+    };
+
+    _mergeRanges(range1, range2) {
+        console.log('merge raw', range1, range2);
+        var leftBoundKey = this.options.leftBoundKey;
+        var result = [];
+        var i1 = 0, i2 = 0;
+        while (i1 < range1.length || i2 < range2.length) {
+            if (i1 == range1.length) {
+                result.push(range2[i2++]);
+            }
+            else if (i2 == range2.length) {
+                result.push(range1[i1++]);
+            }
+            else if (range1[i1][leftBoundKey] < range2[i2][leftBoundKey]) {
+                result.push(range1[i1++]);
+            }
+            else {
+                result.push(range2[i2++]);
+            }
+        }
+        console.log('merge result', result)
+        return result;
     }
+
 
     /**
      * @param openKey first segment open key
@@ -88,7 +138,6 @@ class OrderedSegmentArray {
         }
         var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound, options);
         return this._data.slice(indexes.left, indexes.right + 1);
-
     }
 
     /**
@@ -105,13 +154,11 @@ class OrderedSegmentArray {
         });
         var firstSegmentIndex = this._findBoundNotBefore(rangeLeftBound, this._rightBoundComparator);
         var lastSegmentIndex = this._findBoundNotAfter(rangeRightBound, this._leftBoundComparator);
-        var data = this._data;
-
-        var firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(data[firstSegmentIndex], rangeLeftBound);
-        var lastSegmentLeft_vs_rangeRight = this._leftBoundComparator(data[lastSegmentIndex], rangeRightBound);
 
         // exclude touching segments for open bounds
 
+        var firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(this._data[firstSegmentIndex], rangeLeftBound);
+        var lastSegmentLeft_vs_rangeRight = this._leftBoundComparator(this._data[lastSegmentIndex], rangeRightBound);
         if (firstSegmentRight_vs_rangeLeft == 0 && options.leftBoundClosed == false) {
             firstSegmentIndex++;
         }

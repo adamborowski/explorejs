@@ -320,4 +320,53 @@ describe("OrderedRangeArray test", () => {
         });
 
     });
+    describe('merge range into a gap', ()=> {
+        it('_mergeRanges test', ()=> {
+            var list = getArray('0', '1', true, true);
+            expect(list._mergeRanges([[2, 3], [6, 7]], [[4, 5]])).to.be.deep.equal([
+                [2, 3],
+                [4, 5],
+                [6, 7]
+            ]);
+        });
+        it('_mergeRanges test 2', ()=> {
+            var list = getArray('0', '1', true, true);
+            expect(list._mergeRanges([[2, 3], [6, 7], [10, 11]], [[4, 5], [8, 9]])).to.be.deep.equal([
+                [2, 3],
+                [4, 5],
+                [6, 7],
+                [8, 9],
+                [10, 11]
+            ]);
+        });
+        it('merge one segment into gap not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [4, 5], [8, 9]];
+            list.mergeRange([[2, 3]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1],
+                [2, 3],
+                [4, 5], [8, 9]
+            ]);
+        });
+        it('merge one segment into gap touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [4, 5], [8, 9]];
+            list.mergeRange([[1, 4]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1],
+                [1, 4],
+                [4, 5], [8, 9]
+            ]);
+        });
+
+        it('merge more segments overlapping, not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [4, 5], [8, 9], [12, 13]];
+            list.mergeRange([[2, 3], [6, 7], [10, 11]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1], [2, 3], [4, 5], [6, 7], [8, 9], [10, 11], [12, 13]
+            ]);
+        });
+    });
 });
