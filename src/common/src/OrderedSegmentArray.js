@@ -27,6 +27,7 @@ class OrderedSegmentArray {
             `return e['${this.options.rightBoundKey}'] - find;`
         );
         this._data = [];
+        this._log = _.noop;
     }
 
     /**
@@ -57,6 +58,13 @@ class OrderedSegmentArray {
      * @param range array of segments, can overlap existing segments
      */
     mergeRange(range) {
+        if (range.length == 0) {
+            return;
+        }
+        if (this._data.length == 0) {
+            this._data = range;
+            return;
+        }
         var leftBoundKey = this.options.leftBoundKey;
         var rightBoundKey = this.options.rightBoundKey;
         var rangeLeft = range[0][leftBoundKey];
@@ -65,7 +73,11 @@ class OrderedSegmentArray {
         var rightNeighborIndex = this._findBoundNotBefore(rangeRight, this._leftBoundComparator);
 
         var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
-        console.log('merging inside', numberSegmentsInside, this._data.slice(leftNeighborIndex + 1, rightNeighborIndex - 1));
+        var overlappedSegments = this._data.slice(leftNeighborIndex + 1, rightNeighborIndex);
+        this._log('data', this._data)
+        this._log('range', range)
+        this._log('overlapping segments', overlappedSegments);
+        this._log('merging inside', numberSegmentsInside, overlappedSegments);
 
         if (numberSegmentsInside == 0) {
             //segments are not overlapping
@@ -77,16 +89,24 @@ class OrderedSegmentArray {
         else {
             // we have to merge
             // todo prevent unnecessary slice range1
-            var merged = this._mergeRanges(this._data.slice(leftNeighborIndex + 1, rightNeighborIndex - 1), range);
-            debugger
+            var merged = this._mergeRanges(overlappedSegments, range);
             this._data.splice(leftNeighborIndex + 1, numberSegmentsInside, ...merged);
         }
 
 
     };
 
+    /**
+     * Performs merging two sorted array of segments
+     * Note that mergin concerns only left bounds, assuming all segments are not overlapping
+     * If second range has segment overwriting any segment in first range,
+     * segment from first range will be excluded.
+     * @param range1 first range
+     * @param range2 seconds range
+     * @returns {Array}
+     * @private
+     */
     _mergeRanges(range1, range2) {
-        console.log('merge raw', range1, range2);
         var leftBoundKey = this.options.leftBoundKey;
         var result = [];
         var i1 = 0, i2 = 0;
@@ -97,6 +117,10 @@ class OrderedSegmentArray {
             else if (i2 == range2.length) {
                 result.push(range1[i1++]);
             }
+            else if (range1[i1][leftBoundKey] == range2[i2][leftBoundKey]) {
+                result.push(range2[i2++]);
+                i1++;
+            }
             else if (range1[i1][leftBoundKey] < range2[i2][leftBoundKey]) {
                 result.push(range1[i1++]);
             }
@@ -104,7 +128,6 @@ class OrderedSegmentArray {
                 result.push(range2[i2++]);
             }
         }
-        console.log('merge result', result)
         return result;
     }
 
@@ -170,6 +193,9 @@ class OrderedSegmentArray {
     }
 
     _findBoundNotAfter(boundValue, boundComparator) {
+        if (this._data.length == 0) {
+            return 0;
+        }
         var index = bs.closest(this._data, boundValue, boundComparator);
         if (boundComparator(this._data[index], boundValue) > 0) {
             // found bound is greater
@@ -179,6 +205,9 @@ class OrderedSegmentArray {
     }
 
     _findBoundNotBefore(boundValue, boundComparator) {
+        if (this._data.length == 0) {
+            return 0;
+        }
         var index = bs.closest(this._data, boundValue, boundComparator);
         if (boundComparator(this._data[index], boundValue) < 0) {
             // found bound is lower

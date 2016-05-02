@@ -1,5 +1,7 @@
 var expect = require('chai').expect;
 var OrderedSegmentArray = require("../src/OrderedSegmentArray");
+var _ = require('underscore');
+var gen = require('random-seed');
 /**
  * @param leftBoundKey
  * @param rightBoundKey
@@ -339,6 +341,15 @@ describe("OrderedRangeArray test", () => {
                 [10, 11]
             ]);
         });
+
+        it('_mergeRanges test override', ()=> {
+            var list = getArray('0', '1', true, true);
+            expect(list._mergeRanges([[1, 2], [3, 4], [5, 6]], [[3, 4, 'new']])).to.be.deep.equal([
+                [1, 2],
+                [3, 4, 'new'],
+                [5, 6]
+            ]);
+        });
         it('merge one segment into gap not touching', ()=> {
             var list = getArray('0', '1', true, true);
             list._data = [[0, 1], [4, 5], [8, 9]];
@@ -359,14 +370,167 @@ describe("OrderedRangeArray test", () => {
                 [4, 5], [8, 9]
             ]);
         });
+        it('merge more segments into gap, not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [4, 5], [8, 9]];
+            list.mergeRange([[2, 2.1], [2.2, 2.3], [2.3, 2.4], [2.5, 2.6]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1],
+                [2, 2.1], [2.2, 2.3], [2.3, 2.4], [2.5, 2.6],
+                [4, 5], [8, 9]
+            ]);
+        });
+        it('merge more segments into gap, touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 1], [4, 5], [8, 9]];
+            list.mergeRange([[1, 2.1], [2.2, 2.3], [2.3, 2.4], [2.4, 4]]);
+            expect(list._data).to.be.deep.equal([
+                [0, 1],
+                [1, 2.1], [2.2, 2.3], [2.3, 2.4], [2.4, 4],
+                [4, 5], [8, 9]
+            ]);
+        });
 
         it('merge more segments overlapping, not touching', ()=> {
             var list = getArray('0', '1', true, true);
-            list._data = [[0, 1], [4, 5], [8, 9], [12, 13]];
-            list.mergeRange([[2, 3], [6, 7], [10, 11]]);
+            list._data = [[0, 1], [4, 5], [8, 9]];
+            list.mergeRange([[2, 3], [6, 7]]);
             expect(list._data).to.be.deep.equal([
-                [0, 1], [2, 3], [4, 5], [6, 7], [8, 9], [10, 11], [12, 13]
+                [0, 1], [2, 3], [4, 5], [6, 7], [8, 9]
             ]);
         });
+        it('merge one segment at the beginning, not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[4, 5], [8, 9]];
+            list.mergeRange([[2, 3]]);
+            expect(list._data).to.be.deep.equal([
+                [2, 3], [4, 5], [8, 9]
+            ]);
+        });
+        it('merge one segment at the beginning, touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[4, 5], [8, 9]];
+            list.mergeRange([[2, 4]]);
+            expect(list._data).to.be.deep.equal([
+                [2, 4], [4, 5], [8, 9]
+            ]);
+        });
+        it('merge one segment at the end, not touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[4, 5], [8, 9]];
+            list.mergeRange([[10, 11]]);
+            expect(list._data).to.be.deep.equal([
+                [4, 5], [8, 9], [10, 11]
+            ]);
+        });
+        it('merge one segment at the end, touching', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[4, 5], [8, 9]];
+            list.mergeRange([[9, 10]]);
+            expect(list._data).to.be.deep.equal([
+                [4, 5], [8, 9], [9, 10]
+            ]);
+        });
+
+
+        it('merge one segment into empty array', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [];
+            list.mergeRange([[2, 3]]);
+            expect(list._data).to.be.deep.equal([
+                [2, 3]
+            ]);
+        });
+        it('merge more segments into empty array', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [];
+            list.mergeRange([[2, 3], [3, 4], [4, 5]]);
+            expect(list._data).to.be.deep.equal([
+                [2, 3], [3, 4], [4, 5]
+            ]);
+        });
+        it('merge empty range into empty array', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [];
+            list.mergeRange([]);
+            expect(list._data).to.be.deep.equal([]);
+        });
+        it('merge empty range into non-empty array', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[1, 2], [2, 4]];
+            list.mergeRange([]);
+            expect(list._data).to.be.deep.equal([
+                [1, 2], [2, 4]
+            ]);
+        });
+
+
+        var random = gen.create("orderedSegmentTests");
+
+        for (var i of [1, 2, 3, 4, 6, 10, 50, 100, 1000]) {
+            ((numSegments)=> {
+                it(`randomized test for ${numSegments} segments`, ()=> {
+                    var data = [];
+                    var bound = 0;
+                    var rnd = ()=>random.intBetween(0, 3);
+                    for (var i = 0; i < numSegments; i++) {
+                        var leftBound = bound + rnd();
+                        var rightBound = leftBound + 1 + rnd();
+                        bound = rightBound;
+                        data.push([leftBound, rightBound]);
+                    }
+
+
+                    var parts = _.partition(data, (a)=>random.random() > 0.5);
+                    console.log('\n\nexisting segments: ', parts[0].join('|'));
+                    console.log('     new segments: ', parts[1].join('|'));
+                    var list = getArray('0', '1', true, true);
+                    list._data = parts[0];
+                    list.mergeRange(parts[1]);
+
+                    expect(list._data).to.be.deep.equal(data);
+
+
+                })
+            })(i);
+        }
+
+        it('merge one owerwriting segment', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[1, 2], [3, 4]];
+            list.mergeRange([[3, 4, 'new']]);
+            expect(list._data).to.be.deep.equal([
+                [1, 2], [3, 4, 'new']
+            ]);
+        });
+        it('merge two segments, one owerwriting', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[1, 2], [3, 4], [4, 5]];
+            list.mergeRange([[3, 4, 'new'], [4, 5, 'new']]);
+            expect(list._data).to.be.deep.equal([
+                [1, 2], [3, 4, 'new'], [4, 5, 'new']
+            ]);
+        });
+        it('merge segments, overwriting all', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[1, 2], [3, 4], [4, 5]];
+            list.mergeRange([[1, 2, 'new'], [3, 4, 'new'], [4, 5, 'new']]);
+            expect(list._data).to.be.deep.equal([[1, 2, 'new'], [3, 4, 'new'], [4, 5, 'new']]);
+        });
+
+        it('merge one segment, overwriting all', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[1, 2]];
+            list.mergeRange([[1, 2, 'new']]);
+            expect(list._data).to.be.deep.equal([[1, 2, 'new']]);
+        });
+        it('merge one segment, overwriting at the beginning', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[1, 2], [3, 4]];
+            list.mergeRange([[1, 2, 'new']]);
+            expect(list._data).to.be.deep.equal([[1, 2, 'new'], [3, 4]]);
+        });
+
+
     });
 });
