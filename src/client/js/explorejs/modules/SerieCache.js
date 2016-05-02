@@ -16,12 +16,13 @@ export default class SerieCache {
         var manifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
         var levels = manifest.levels;
         this._levelCacheSet = new IndexedList();
-        for (var level of levels) {
+        for (var level of [{id: 'raw'}].concat(levels)) {
             var levelCache = new LevelCache(level);
             levelCache.SerieCache = this;
             this._levelCacheSet.add(level.id, levelCache);
             levelCache.setup();
         }
+
     }
 
     /**

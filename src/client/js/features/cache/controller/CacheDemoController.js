@@ -22,6 +22,10 @@ export default class CacheDemoController {
             rm.addRequest(new DataRequest('s001', '1d', '2015-11-12', '2016-12-12', 0));
         });
 
+        window.addRequest = function (serie, level, from, to) {
+            rm.addRequest(new DataRequest(serie, level, from, to));
+        }
+        window.rm=rm;
 
 
 
