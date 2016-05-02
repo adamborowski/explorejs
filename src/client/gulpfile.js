@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var webpack = require('webpack');
 var del = require('del');
+const mocha = require('gulp-mocha');
 
 gulp.task('clean', function() {
     return del(['./build/**/*']);;
@@ -71,5 +72,24 @@ gulp.task('test', function(callback) {
             process.exit(exitCode);
         });
     });
+
+});
+
+
+gulp.task('unit', () => {
+    var config = require('./webpack.config.test.unit');
+
+    var compiler = webpack(config);
+    compiler.run(function (err, stats) {
+        if (err) {
+            gutil.log('webpack', err);
+            return;
+        }
+
+        return gulp.src('unit-tests/test.bundle.js', {read: false})
+            // gulp-mocha needs filepaths so you can't have any plugins before it
+            .pipe(mocha({reporter: 'nyan'}));
+    });
+
 
 });

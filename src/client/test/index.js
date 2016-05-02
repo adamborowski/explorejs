@@ -11,5 +11,4 @@ import 'angular';
 import 'angular-mocks';
 
 //unit-test cases
-import './features/home/controller/HomeControllerTest';
-import './features/home/service/HomeServiceTest';
+import 'explorejs/IntegrationTest.js';

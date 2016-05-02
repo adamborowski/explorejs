@@ -24,7 +24,7 @@ export default class CacheDemoController {
 
         window.addRequest = function (serie, level, from, to) {
             rm.addRequest(new DataRequest(serie, level, from, to));
-        }
+        };
         window.rm=rm;
 
 
