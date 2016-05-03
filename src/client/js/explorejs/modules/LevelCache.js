@@ -1,12 +1,12 @@
 import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
-import {RangeScopedEvent} from 'explorejs-common/src/RangeScopedEvent';
+// import {RangeScopedEvent} from 'explorejs-common/src/RangeScopedEvent';
 /**
  * @property {SerieCache} SerieCache
  */
 export default class LevelCache {
     constructor(level) {
         this.level = level;
-        this.events = new RangeScopedEvent();
+        // this.events = new RangeScopedEvent();
     }
 
     setup() {
@@ -20,7 +20,7 @@ export default class LevelCache {
 
     putData(data) {
         this._segmentArray.mergeRange(data);
-        this.events.fireEvent('data', this._segmentArray._)
+        // this.events.fireEvent('data', this._segmentArray._)
         // todo fire range-scoped events
         console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} = ${data.length}`);
     }

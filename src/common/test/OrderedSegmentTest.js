@@ -482,8 +482,8 @@ describe("OrderedRangeArray test", () => {
 
 
                     var parts = _.partition(data, (a)=>random.random() > 0.5);
-                    console.log('\n\nexisting segments: ', parts[0].join('|'));
-                    console.log('     new segments: ', parts[1].join('|'));
+                    // console.log('\n\nexisting segments: ', parts[0].join('|'));
+                    // console.log('     new segments: ', parts[1].join('|'));
                     var list = getArray('0', '1', true, true);
                     list._data = parts[0];
                     list.mergeRange(parts[1]);

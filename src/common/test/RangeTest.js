@@ -1,7 +1,5 @@
 var expect = require("chai").expect;
-var rangeScoped = require("../src/RangeScopedEvent");
-var RangeScopedEvent = rangeScoped.RangeScopedEvent;
-var Range = rangeScoped.Range;
+var Range = require('../src/Range');
 
 describe("RangeScopedEventTest", ()=> {
     describe("Range hasCommon test", ()=> {
@@ -65,7 +63,7 @@ describe("RangeScopedEventTest", ()=> {
                 expect(Range.closed(1, 2).hasCommon(Range.opened(2, 3))).to.be.not.ok;
                 expect(Range.opened(1, 2).hasCommon(Range.opened(2, 3))).to.be.not.ok;
                 expect(Range.closed(1, 2).hasCommon(Range.closed(2, 3))).to.be.ok;
-                
+
                 expect(Range.opened(1, 2).hasCommon(Range.closed(3, 4))).to.be.not.ok;
                 expect(Range.closed(1, 2).hasCommon(Range.opened(3, 4))).to.be.not.ok;
                 expect(Range.opened(1, 2).hasCommon(Range.opened(3, 4))).to.be.not.ok;

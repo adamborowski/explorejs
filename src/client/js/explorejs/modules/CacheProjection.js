@@ -22,20 +22,5 @@ export default class CacheProjection {
         }
     }
 
-    /**
-     * bind range events to levels based on scale-to-discreete fit.
-     * tasks:
-     * 1. remove all items being out of projection
-     * 2. create all items for new projection
-     * 3. rebind events to new levels and new ranges
-     * @param scale
-     * @param from
-     * @param to
-     */
-
-    changeProjection(scale, from, to) {
-
-    }
-
 
 }
