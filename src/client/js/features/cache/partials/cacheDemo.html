@@ -1,5 +1,4 @@
 <div class="cache-content">
-    <h1>SerieCache & LevelCache & CacheProjection demo</h1>
     <div class="floating-panel">
         <form class="form-inline"
               ng-submit="controller.loadRange(selectedSerie.name, rangeFrom, rangeTo , selectedAggregation.name)">
@@ -44,6 +43,12 @@
         </form>
     </div>
 
+    <ul class="floating-bottom">
+        <li ng-repeat="argum in controller.rm._deferredAjaxCall._arguments">
+            {{argum}}
+        </li>
+    </ul>
+    <h1>SerieCache & LevelCache & CacheProjection demo</h1>
     <div class="serie-display" ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
         <h3>{{serie.options.serieId}}</h3>
         <table class="table aggregation-display">
@@ -83,9 +88,5 @@
         </table>
     </div>
 
-    <ul class="floating-bottom">
-        <li ng-repeat="argum in controller.rm._deferredAjaxCall._arguments">
-            {{argum}}
-        </li>
-    </ul>
+
 </div>
