@@ -95,4 +95,11 @@ export default class RequestManager {
         }
         throw new Error(`RequestManager error: manifest doesn't contain serie ${serieId}`);
     }
+
+    getServerManifest() {
+        if (this._serverManifest == null) {
+            throw new Error(`RequestManager error: server manifest not initialized`);
+        }
+        return this._serverManifest;
+    }
 }

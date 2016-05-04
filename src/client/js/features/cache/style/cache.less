@@ -1,0 +1,85 @@
+.cache-content {
+  margin: 200px auto 20px auto;
+  width: 1000px;
+  .form-row {
+    margin: 20px 0;
+  }
+}
+
+@colors: #199856, #CCFF33, #FFCC33, #F53D00,
+#b81e6e, #1e2660, #3af5ff;
+.make-color-classes(@i: length(@colors)) when (@i > 0) {
+  .make-color-classes(@i - 1);
+  @color: extract(@colors, @i);
+  tr:nth-of-type(@{i}) {
+    svg rect {
+      fill: @color;
+    }
+    svg {
+      background: hsl(hue(@color), 50%, 90%);
+    }
+  }
+}
+
+.make-color-classes2(@i: length(@colors)) when (@i > 0) {
+  .make-color-classes2(@i - 1);
+  @color: extract(@colors, @i);
+  svg:nth-of-type(@{i}) {
+    rect {
+      fill: @color;
+    }
+    z-index: 20 - @i;
+  }
+}
+
+svg.level-svg {
+  background: #efefef;
+
+  // mixin to iterate over colors and create CSS class for each one
+
+}
+
+table.aggregation-display tbody {
+  .make-color-classes();
+}
+
+table.aggregation-display thead {
+  td.compile-view {
+    div {
+      position: relative;
+      svg {
+        &:last-of-type {
+          background: #efefef;
+        }
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    }
+  }
+  .make-color-classes2();
+}
+
+.floating-panel {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  padding-top: 80px;
+  padding-left: 30px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #dddddd;
+  background: white;
+  z-index: 100;
+}
+
+.floating-bottom {
+  //position: fixed;
+  //bottom: 0;
+  //left: 0;
+  //right: 0;
+  padding: 6px;
+  font-family: Menlo;
+  font-size: 8pt;
+  z-index: 2000;
+}

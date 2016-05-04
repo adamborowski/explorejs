@@ -22,6 +22,12 @@ export default class LevelCache {
         this._segmentArray.mergeRange(data);
         // this.events.fireEvent('data', this._segmentArray._)
         // todo fire range-scoped events
-        console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} = ${data.length}`);
+        if(data.length==0){
+            console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
+        }
+        else{
+
+        console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
+        }
     }
 }

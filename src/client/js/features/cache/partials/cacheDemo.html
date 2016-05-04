@@ -1,1 +1,91 @@
-<h1>Cache Demo!!</h1>
+<div class="cache-content">
+    <h1>SerieCache & LevelCache & CacheProjection demo</h1>
+    <div class="floating-panel">
+        <form class="form-inline"
+              ng-submit="controller.loadRange(selectedSerie.name, rangeFrom, rangeTo , selectedAggregation.name)">
+            <div class="form-group">
+                <label>serie</label>
+                <button type="button" class="btn btn-default" bs-dropdown="availableSeries"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{selectedSerie.text}}
+                </button>
+            </div>
+            <div class="form-group">
+                <label>From</label>
+                <input type="text" class="form-control" ng-model="rangeFrom"
+                       placeholder="2015-12-01">
+            </div>
+            <div class="form-group">
+                <label>To</label>
+                <input type="text" class="form-control" ng-model="rangeTo"
+                       placeholder="2016-01-02">
+            </div>
+            <div class="form-group">
+                <label>level</label>
+                <button type="button" class="btn btn-default" bs-dropdown="availableAggregations"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{selectedAggregation.text}}
+                </button>
+            </div>
+
+
+            <button type="submit"
+                    class="btn btn-primary">Add request
+            </button>
+            <button type="button"
+                    class="btn btn-default" ng-click="controller.flush()">Submit batch
+            </button>
+            <button type="button"
+                    class="btn btn-default" ng-click="controller.dump()">dump structure
+            </button>
+            <span class="form-control-static">
+                        {{mouse|date:"yyyy-MM-dd HH:mm:ss"}}
+            </span>
+        </form>
+    </div>
+
+    <div class="serie-display" ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
+        <h3>{{serie.options.serieId}}</h3>
+        <table class="table aggregation-display">
+            <thead>
+            <td>compile</td>
+            <td class="compile-view">
+                <div>
+                    <svg ng-click="controller.applyMouse($event)" ng-mousemove="controller.mouse($event)" width="960"
+                         height="20" class="compiled-svg"
+                         ng-repeat="aggregation in serie._levelCacheSet.values">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
+                              ng-attr-x="{{controller.getX(range)}}"
+                              ng-repeat="range in aggregation._segmentArray._data"
+                              data-start="{{range.$s}}"
+                        ></rect>
+                    </svg>
+                </div>
+            </td>
+            </thead>
+            <tbody>
+            <tr ng-repeat="aggregation in serie._levelCacheSet.values">
+                <td class="aggregation-display">{{aggregation.level.id}}</td>
+                <td class="aggregation-data-display">
+                    <svg
+                            ng-click="controller.applyMouse($event); controller.selectAggAndSerie(aggregation, serie)"
+                            ng-mousemove="controller.mouse($event)"
+                            width="960" height="20" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
+                              ng-attr-x="{{controller.getX(range)}}"
+                              ng-repeat="range in aggregation._segmentArray._data"
+                              data-start="{{range.$s}}"
+                        ></rect>
+                    </svg>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <ul class="floating-bottom">
+        <li ng-repeat="argum in controller.rm._deferredAjaxCall._arguments">
+            {{argum}}
+        </li>
+    </ul>
+</div>

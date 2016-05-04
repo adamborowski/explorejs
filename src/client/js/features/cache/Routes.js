@@ -13,7 +13,7 @@ export default [
         id: 'logs',
         isDefault: true,
         when: '/cache-demo',
-        controller: 'CacheDemoController as cacheDemoController',
+        controller: 'CacheDemoController as controller',
         template: tpl
     }
 ];
