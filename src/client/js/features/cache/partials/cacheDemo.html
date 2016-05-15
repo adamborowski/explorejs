@@ -48,12 +48,14 @@
             {{argum}}
         </li>
     </ul>
-    <h1>SerieCache & LevelCache & CacheProjection demo</h1>
+    <h1>ExploreJS Cache Visual Debugger</h1>
     <div class="serie-display" ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
         <h3>{{serie.options.serieId}}</h3>
         <table class="table aggregation-display">
             <thead>
-            <td>compile</td>
+            <td style="padding-left:0; padding-right:2px">
+                <small>projection</small>
+            </td>
             <td class="compile-view">
                 <div>
                     <svg ng-click="controller.applyMouse($event)" ng-mousemove="controller.mouse($event)" width="960"
