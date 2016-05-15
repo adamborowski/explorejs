@@ -18,7 +18,7 @@ function rng(...items) {
 describe("DiffRangeSet", ()=> {
     before(()=> {
     });
-    describe('_computeNextStep test', ()=> {
+    describe('_computeNextStep and _getOverlapInfo test', ()=> {
         var leftSet = [];
         var rightSet = [];
         var A, B, C, D, E, F, G, K, L, M, N, O, P;
@@ -84,7 +84,7 @@ describe("DiffRangeSet", ()=> {
             O = addRight(31, 31);
             P = addRight(33, 34);
         });
-        it('should move to the right element which is closer', ()=> {
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, -1)).to.have.property('kind', 'right');
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, K)).to.have.property('kind', 'left');
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, A, K)).to.have.property('kind', 'right');
@@ -101,6 +101,29 @@ describe("DiffRangeSet", ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, P)).to.be.null;
 
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, K)).to.have.property('kind', 'right');
+        });
+    });
+    describe("_getUnionRelation test", ()=> {
+        it('basic test', ()=> {
+            expect(DiffRangeSet._computeUnionRelation({start: 0, end: 3}, {start: 2, end: 4}))
+                .to.be.deep.equal({isResizing: true, start: 0, end: 4, isEndChanged: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 0, end: 3}, {start: 4, end: 5}))
+                .to.be.deep.equal({isAfter: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 3, end: 4}, {start: 0, end: 2}))
+                .to.be.deep.equal({isBefore: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 0, end: 4}, {start: 4, end: 5}))
+                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 0, end: 4}, {start: 0, end: 5}))
+                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 4, end: 5}, {start: 0, end: 5}))
+                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 2, end: 5}, {start: 3, end: 4}))
+                .to.be.deep.equal({isIncluded: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 2, end: 5}, {start: 0, end: 4}))
+                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 2, end: 3}, {start: 0, end: 5}))
+                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true, isEndChanged: true});
+
         });
     });
     describe("Add test", ()=> {

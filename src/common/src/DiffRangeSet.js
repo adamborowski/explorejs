@@ -60,6 +60,27 @@ module.exports = class DiffRangeSet {
         }
     }
 
+    static _computeUnionRelation(cmp, subject) {
+        if (subject.start > cmp.end) {
+            return {isAfter: true};
+        }
+        if (subject.end < cmp.start) {
+            return {isBefore: true};
+        }
+        // left and right overlap
+        if (subject.start >= cmp.start && subject.end <= cmp.end) {
+            return {isIncluded: true}; // or are equal
+        }
+        var ret = {isResizing: true, start: Math.min(subject.start, cmp.start), end: Math.max(subject.end, cmp.end)};
+        if (subject.start < cmp.start) {
+            ret.isStartChanged = true;
+        }
+        if (subject.end > cmp.end) {
+            ret.isEndChanged = true;
+        }
+        return ret;
+    }
+
     /**
      * @method
      * @param rangeSet {data}
