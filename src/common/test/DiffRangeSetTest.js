@@ -1,6 +1,6 @@
 var expect = require("chai").expect;
 var DiffRangeSet = require("../src/DiffRangeSet");
-
+var gen = require('random-seed');
 function rng(...items) {
     if (items.length == 1 && typeof items[0] == 'string') {
         items = items[0].split(/\s+/).map(Number);
@@ -202,8 +202,6 @@ describe("DiffRangeSet", ()=> {
         it('new ranges have quals to the existing ones', ()=> {
             expect(DiffRangeSet.add(rng('0 1 4 5'), rng('0 1 2 3 4 5'))).to.have.property('added').that.deep.equals(rng('2 3'))
         });
-        it("should return info about resized and removed ranges", ()=> {
-        });
         it("should return info about resized ranges", ()=> {
             expect(DiffRangeSet.add(rng('0 1 4 5'), rng('1 2 3 7'))).to.have.property('resized').that.is.deep.equal([
                 {range: {start: 0, end: 1}, start: 0, end: 2, isEndChanged: true},
@@ -228,33 +226,97 @@ describe("DiffRangeSet", ()=> {
                 {start: 4, end: 8}
             ]);
         });
-
-        describe('random tests', ()=> {
-            it('#1', ()=> {
+        it('adding into empty set', ()=> {
+            var ret = DiffRangeSet.add([], rng('0 1'));
+            expect(ret).to.have.property('added').that.deep.equals([
+                {start: 0, end: 1}
+            ]);
+            expect(ret).to.have.property('resized').that.is.empty;
+            expect(ret).to.have.property('removed').that.is.empty;
+        });
+        it('adding into empty set with touch-join', ()=> {
+            var ret = DiffRangeSet.add([], rng('0 1 1 2'));
+            expect(ret).to.have.property('added').that.deep.equals([
+                {start: 0, end: 2}
+            ]);
+            expect(ret).to.have.property('resized').that.is.empty;
+            expect(ret).to.have.property('removed').that.is.empty;
+        });
+        it('adding nothing', ()=> {
+            var ret = DiffRangeSet.add(rng('0 1 2 3'), []);
+            expect(ret).to.have.property('added').that.is.empty;
+            expect(ret).to.have.property('resized').that.is.empty;
+            expect(ret).to.have.property('removed').that.is.empty;
+        });
+        it('adding nothing to nothing', ()=> {
+            expect(DiffRangeSet.add([], [])).to.deep.equal({added: [], resized: [], removed: [], result: []});
+        });
+        it('adding nothing to touching ragnes', ()=> {
+            var ret = DiffRangeSet.add(rng('0 1 1 2'), []);
+            expect(ret).to.have.property('added').that.is.empty;
+            expect(ret).to.have.property('resized').that.deep.equals([
+                {range: {start: 0, end: 1}, start: 0, end: 2, isEndChanged: true}
+            ]);
+            expect(ret).to.have.property('removed').that.deep.equals([
+                {start: 1, end: 2}
+            ]);
+        });
+        describe('custom tests', ()=> {
+            it('custom 1', ()=> {
                 var left = rng('2 4   5 6   7 8   9 10   11 13   14 19   20 21');
                 var right = rng('1 3   4 12   15 16   17 18   22 23   23 24');
                 var ret = DiffRangeSet.add(left, right);
-                // expect(ret).to.have.property('added').that.deep.equals([
-                //     {start: 22, end: 24}
-                // ]);
+                expect(ret).to.have.property('added').that.deep.equals([
+                    {start: 22, end: 24}
+                ]);
                 expect(ret).to.have.property('resized').that.deep.equals([
                     {range: {start: 2, end: 4}, start: 1, end: 13, isStartChanged: true, isEndChanged: true}
                 ]);
-                // expect(ret).to.have.property('removed').that.deep.equals([
-                //     {start: 5, end: 6},
-                //     {start: 7, end: 8},
-                //     {start: 9, end: 10},
-                //     {start: 11, end: 13}
-                // ]);
+                expect(ret).to.have.property('removed').that.deep.equals([
+                    {start: 5, end: 6},
+                    {start: 7, end: 8},
+                    {start: 9, end: 10},
+                    {start: 11, end: 13}
+                ]);
             });
-            it('#2', ()=> {
-                var left = rng('14 19');
-                var right = rng('15 16');
-                var ret = DiffRangeSet.add(left, right);
-                // expect(ret).to.have.property('added').that.is.empty;
+
+            it('custom 2', ()=> {
+                var ret = DiffRangeSet.add(rng('14 19'), rng('15 16 17 18'));
+                expect(ret).to.have.property('added').that.is.empty;
                 expect(ret).to.have.property('resized').that.is.empty;
-                // expect(ret).to.have.property('removed').that.is.empty;
+                expect(ret).to.have.property('removed').that.is.empty;
             });
+        });
+
+        describe('random tests', ()=> {
+
+            function randomRangeSet(size) {
+                var cnt = 0;
+                var output = [];
+                for (var i = 0; i < size; i++) {
+                    var randomSpace = rand.intBetween(0, 3);
+                    var randomSize = rand.intBetween(1, 10);
+                    output.push({left: cnt + randomSpace, right: cnt + randomSpace + randomSize});
+                    cnt += randomSpace + randomSize;
+                }
+                return output;
+            }
+
+            var rand = gen.create("DiffRangeSetTest");
+            for (var i = 0; i < 1; i++) {
+                it('#' + i, ()=> {
+                    var numLeft = rand.intBetween(0, 10);
+                    var numRight = rand.intBetween(0, 10);
+                    var left = randomRangeSet(numLeft);
+                    var right = randomRangeSet(numRight);
+                    console.log(left);
+                    console.log(right);
+                    var ret = DiffRangeSet.add(left, right);
+                });
+            }
+
+
+
         });
 
     });

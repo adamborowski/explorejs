@@ -52,6 +52,7 @@ module.exports = class DiffRangeSet {
             if (currentGroup == null) {
                 // this is only for first group
                 currentGroup = this._createGroup(newItem, newIsLeft);
+                result.push(currentGroup);
             }
             relation = this._computeUnionRelation(currentGroup, newItem);
             // console.log(`========
@@ -90,12 +91,16 @@ module.exports = class DiffRangeSet {
                 // first, delete current group
                 this._closeGroup(currentGroup, added, resized);
                 currentGroup = this._createGroup(newItem, newIsLeft);
+                result.push(currentGroup);
             }
 
         }
 
         // after all iterations, we have still one group open
-        this._closeGroup(currentGroup, added, resized);
+        if (currentGroup) {
+            // there is no group if we add empty set to empty set
+            this._closeGroup(currentGroup, added, resized);
+        }
 
         return this._result(result, added, removed, resized);
     }
@@ -130,7 +135,19 @@ module.exports = class DiffRangeSet {
         var nextRight = rightSet[iRight + 1];
 
         if (iLeft == -1 && iRight == -1) {
-            var kind = nextLeft.start <= nextRight.start ? 'left' : 'right';
+            var kind;
+            if (nextLeft == null && nextRight == null) {
+                return null;
+            }
+            if (nextLeft == null) {
+                kind = 'right';
+            }
+            else if (nextRight == null) {
+                kind = 'left';
+            }
+            else {
+                kind = nextLeft.start <= nextRight.start ? 'left' : 'right';
+            }
             if (kind == 'left') {
                 return {left: nextLeft, right: null, iLeft: 0, iRight: -1, kind};
             }
