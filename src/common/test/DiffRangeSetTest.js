@@ -18,7 +18,7 @@ function rng(...items) {
 describe("DiffRangeSet", ()=> {
     before(()=> {
     });
-    describe('_computeNextStep and _getOverlapInfo test', ()=> {
+    describe('_computeNextStep test', ()=> {
         var leftSet = [];
         var rightSet = [];
         var A, B, C, D, E, F, G, K, L, M, N, O, P;
@@ -85,22 +85,65 @@ describe("DiffRangeSet", ()=> {
             P = addRight(33, 34);
         });
         it('_computeNextStep should move to closer element', ()=> {
-            expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, -1)).to.have.property('kind', 'right');
+            expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, -1)).to.have.property('kind', 'initial');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, K)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, A, K)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, A, L)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, B, L)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, C, L)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, D, L)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, E, L)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, L)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, M)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, N)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, N)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, O)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, P)).to.be.null;
-
+        });
+        it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, K)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element when next are equal', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('6 7 10 11'), rng('8 9 10 11'), 0, 0)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should move to closer element when next are equal', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('8 9 10 11'), rng('6 7 10 11'), 0, 0)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should move to closer element when next and prev are equal', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('8 9 10 11'), rng('8 9 10 11'), 0, 0)).to.have.property('kind', 'left');
+        });
+        it('_computeNextStep should return null for empty sets', ()=> {
+            expect(DiffRangeSet._computeNextStep([], [], 0, 0)).to.be.null;
+        });
+        it('_computeNextStep should return null for empty left set', ()=> {
+            expect(DiffRangeSet._computeNextStep([], rng('0 1 2 3'), 0, 0)).to.have.property('kind', 'right');
+            expect(DiffRangeSet._computeNextStep([], rng('0 1 2 3'), 0, 1)).to.be.null;
         });
     });
     describe("_getUnionRelation test", ()=> {
@@ -123,13 +166,32 @@ describe("DiffRangeSet", ()=> {
                 .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
             expect(DiffRangeSet._computeUnionRelation({start: 2, end: 3}, {start: 0, end: 5}))
                 .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true, isEndChanged: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 10, end: 11}, {start: 10, end: 11}))
+                .to.be.deep.equal({isEqual: true});
 
         });
     });
     describe("Add test", ()=> {
-        it("should return info about added ranges", ()=> {
-            var test = DiffRangeSet.add(rng('0 2'), rng('3 5'))
-            expect(test.added).to.be.deep.equal(rng('3 5'));
+        it("simple two non-overlapping ranges", ()=> {
+            expect(DiffRangeSet.add(rng('0 2'), rng('3 5'))).to.have.property('added').that.deep.equals(rng('3 5'));
+        });
+        it('new ranges "inside" old, non-overlapping', ()=> {
+            expect(DiffRangeSet.add(rng('0 1 4 5 8 9'), rng('2 3 6 7'))).to.have.property('added').that.deep.equals(rng('2 3 6 7'));
+        });
+        it('new ranges include earlier and latter, non-overlapping', ()=> {
+            expect(DiffRangeSet.add(rng('2 3 6 7 10 11'), rng('0 1 4 5 8 9 12 13'))).to.have.property('added').that.deep.equals(rng('0 1 4 5 8 9 12 13'));
+        });
+        it('new ranges are included in existing ranges, touching', ()=> {
+            expect(DiffRangeSet.add(rng('2 10'), rng('2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10'))).to.have.property('added').that.is.empty;
+        });
+        it('new ranges include earlier and latter, some are included in existing ranges', ()=> {
+            expect(DiffRangeSet.add(rng('2 3 6 7 10 11'), rng('0 1 4 5 6.4 6.5 8 9 10 11 12 13'))).to.have.property('added').that.deep.equals(rng('0 1 4 5 8 9 12 13'));
+        });
+        it('new ranges are quals to the existing ones', ()=> {
+            expect(DiffRangeSet.add(rng('0 1 2 3 4 5'), rng('0 1 2 3 4 5'))).to.have.property('added').that.is.empty;
+        });
+        it('new ranges have quals to the existing ones', ()=> {
+            expect(DiffRangeSet.add(rng('0 1 4 5'), rng('0 1 2 3 4 5'))).to.have.property('added').that.deep.equals(rng('2 3'))
         });
         it("should return info about removed ranges", ()=> {
 
