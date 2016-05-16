@@ -1,6 +1,7 @@
 var expect = require("chai").expect;
 var DiffRangeSet = require("../src/DiffRangeSet");
 var gen = require('random-seed');
+var qintervals = require('qintervals');
 function rng(...items) {
     if (items.length == 1 && typeof items[0] == 'string') {
         items = items[0].split(/\s+/).map(Number);
@@ -84,49 +85,49 @@ describe("DiffRangeSet", ()=> {
             O = addRight(31, 31);
             P = addRight(33, 34);
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element -1 -1', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, -1)).to.have.property('kind', 'right');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element -1 K', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, K)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element A K', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, A, K)).to.have.property('kind', 'right');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element A L', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, A, L)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element B L', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, B, L)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element C L', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, C, L)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element D L', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, D, L)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element E L', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, E, L)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element F L', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, L)).to.have.property('kind', 'right');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element F M', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, M)).to.have.property('kind', 'right');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element F N', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, N)).to.have.property('kind', 'left');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element G N', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, N)).to.have.property('kind', 'right');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element G O', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, O)).to.have.property('kind', 'right');
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element G P', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, G, P)).to.be.null;
         });
-        it('_computeNextStep should move to closer element', ()=> {
+        it('_computeNextStep should move to closer element F K', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, F, K)).to.have.property('kind', 'right');
         });
         it('_computeNextStep should move to closer element when next are equal', ()=> {
@@ -145,9 +146,15 @@ describe("DiffRangeSet", ()=> {
             expect(DiffRangeSet._computeNextStep([], rng('0 1 2 3'), 0, 0)).to.have.property('kind', 'right');
             expect(DiffRangeSet._computeNextStep([], rng('0 1 2 3'), 0, 1)).to.be.null;
         });
-        it('_computeNextStep should return good firection at start', ()=> {
+        it('_computeNextStep should return good direction at start', ()=> {
             expect(DiffRangeSet._computeNextStep(rng('0 1'), rng('2 3'), -1, -1)).to.have.property('kind', 'left');
             expect(DiffRangeSet._computeNextStep(rng('2 3'), rng('0 1'), -1, -1)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should return good direction at 0 -1', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('0 2   3 6'), rng('3 11'), 0, -1)).to.have.property('kind', 'right');
+        });
+        it('_computeNextStep should return good direction at -1 0', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('3 11'), rng('0 2   3 6'), -1, 0)).to.have.property('kind', 'left');
         });
     });
     describe("_getUnionRelation test", ()=> {
@@ -296,22 +303,28 @@ describe("DiffRangeSet", ()=> {
                 for (var i = 0; i < size; i++) {
                     var randomSpace = rand.intBetween(0, 3);
                     var randomSize = rand.intBetween(1, 10);
-                    output.push({left: cnt + randomSpace, right: cnt + randomSpace + randomSize});
+                    output.push({start: cnt + randomSpace, end: cnt + randomSpace + randomSize});
                     cnt += randomSpace + randomSize;
                 }
                 return output;
             }
 
             var rand = gen.create("DiffRangeSetTest");
-            for (var i = 0; i < 1; i++) {
+            for (var i = 0; i < 100; i++) {
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 10);
                     var numRight = rand.intBetween(0, 10);
                     var left = randomRangeSet(numLeft);
                     var right = randomRangeSet(numRight);
-                    console.log(left);
-                    console.log(right);
+                    console.log(left, right);
                     var ret = DiffRangeSet.add(left, right);
+                    var cmp = qintervals.union(left, right).toObjects();
+                    var result = ret.result.map((a)=> {
+                        return {from: a.start, to: a.end}
+                    });
+                    expect(cmp).to.deep.equal(result);
+
+
                 });
             }
 

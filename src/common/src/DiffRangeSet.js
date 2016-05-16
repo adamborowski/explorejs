@@ -134,52 +134,36 @@ module.exports = class DiffRangeSet {
         var nextLeft = leftSet[iLeft + 1];
         var nextRight = rightSet[iRight + 1];
 
-        if (iLeft == -1 && iRight == -1) {
-            var kind;
-            if (nextLeft == null && nextRight == null) {
-                return null;
-            }
-            if (nextLeft == null) {
-                kind = 'right';
-            }
-            else if (nextRight == null) {
-                kind = 'left';
+        var leftPoint = Infinity, rightPoint = Infinity;
+
+        if (nextLeft) {
+            leftPoint = nextLeft.start;
+        }
+        if (nextRight) {
+            rightPoint = nextRight.start;
+        }
+        if (nextLeft && nextRight && leftPoint == rightPoint) {
+            if (left) {
+                leftPoint = left.end;
             }
             else {
-                kind = nextLeft.start <= nextRight.start ? 'left' : 'right';
+                leftPoint = -Infinity;
             }
-            if (kind == 'left') {
-                return {left: nextLeft, right: null, iLeft: 0, iRight: -1, kind};
+            if (right) {
+                rightPoint = right.end;
             }
-            return {left: null, right: nextRight, iLeft: -1, iRight: 0, kind};
+            else {
+                rightPoint = -Infinity;
+            }
         }
 
-
-        if (nextLeft == null && nextRight == null) {
-            // no next elements, finish
+        if (!isFinite(rightPoint) && !isFinite(leftPoint)) {
             return null;
         }
-        if (nextRight == null) {
-            // we can move only to left element
+
+        if (leftPoint <= rightPoint) {
             return {left: nextLeft, right, iLeft: iLeft + 1, iRight, kind: 'left'};
-        }
-        if (nextLeft == null) {
-            // we can move only to right element
-            return {left, right: nextRight, iLeft, iRight: iRight + 1, kind: 'right'};
-        }
-        if (nextLeft.start == nextRight.start) {
-            if (left.end <= right.end) {
-                return {left: nextLeft, right, iLeft: iLeft + 1, iRight, kind: 'left'};
-            } else {
-                return {left, right: nextRight, iLeft, iRight: iRight + 1, kind: 'right'};
-            }
-        }
-        if (nextLeft.start < nextRight.start) {
-            // move to left element which is closer
-            return {left: nextLeft, right, iLeft: iLeft + 1, iRight, kind: 'left'};
-        }
-        else {
-            // move to right element which is closer
+        } else {
             return {left, right: nextRight, iLeft, iRight: iRight + 1, kind: 'right'};
         }
     }
