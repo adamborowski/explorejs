@@ -55,12 +55,12 @@ module.exports = class DiffRangeSet {
                 result.push(currentGroup);
             }
             relation = this._computeUnionRelation(currentGroup, newItem);
-            // console.log(`========
-            //     left: ${this.pretty(step.left)}
-            //    right: ${this.pretty(step.right)}
-            // movement: ${step.kind}
-            //    group: ${this.pretty(currentGroup)}
-            // relation: ${this.pretty(relation)}`);
+            console.log(`========
+                left: ${this.pretty(step.left)}
+               right: ${this.pretty(step.right)}
+            movement: ${step.kind}
+               group: ${this.pretty(currentGroup)}
+            relation: ${this.pretty(relation)}`);
 
             if (relation.isIncluded || relation.isResizing) {
                 if (newIsLeft) {
@@ -143,17 +143,19 @@ module.exports = class DiffRangeSet {
             rightPoint = nextRight.start;
         }
         if (nextLeft && nextRight && leftPoint == rightPoint) {
-            if (left) {
-                leftPoint = left.end;
-            }
-            else {
-                leftPoint = -Infinity;
-            }
-            if (right) {
-                rightPoint = right.end;
-            }
-            else {
-                rightPoint = -Infinity;
+            if (left || right) {
+                if (left) {
+                    leftPoint = left.end;
+                }
+                else {
+                    leftPoint = -Infinity;
+                }
+                if (right) {
+                    rightPoint = right.end;
+                }
+                else {
+                    rightPoint = -Infinity;
+                }
             }
         }
 

@@ -156,6 +156,9 @@ describe("DiffRangeSet", ()=> {
         it('_computeNextStep should return good direction at -1 0', ()=> {
             expect(DiffRangeSet._computeNextStep(rng('3 11'), rng('0 2   3 6'), -1, 0)).to.have.property('kind', 'left');
         });
+        it('_computeNextStep should return good direction at -1 -1', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('0 1 3 13'), rng('0 4   6 9'), -1, -1)).to.have.property('kind', 'left');
+        });
     });
     describe("_getUnionRelation test", ()=> {
         it('basic test', ()=> {
@@ -310,19 +313,44 @@ describe("DiffRangeSet", ()=> {
             }
 
             var rand = gen.create("DiffRangeSetTest");
-            for (var i = 0; i < 100; i++) {
+
+            function find(range, array) {
+                return array.find((a)=>a.start == range.start && a.end == range.end)
+            }
+            for (var i = 0; i < 1000; i++) {
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 10);
                     var numRight = rand.intBetween(0, 10);
                     var left = randomRangeSet(numLeft);
                     var right = randomRangeSet(numRight);
-                    console.log(left, right);
                     var ret = DiffRangeSet.add(left, right);
                     var cmp = qintervals.union(left, right).toObjects();
                     var result = ret.result.map((a)=> {
                         return {from: a.start, to: a.end}
                     });
                     expect(cmp).to.deep.equal(result);
+
+                    // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as qintervals
+
+                    var restore = left.filter((a)=>find(a, ret.removed) == null);
+                    for (var o of ret.resized) {
+                        var itemInLeft = find(o.range, left);
+                        if (o.isStartChanged) {
+                            itemInLeft.start = o.start;
+                        }
+                        if (o.isEndChanged) {
+                            itemInLeft.end = o.end;
+                        }
+                    }
+
+                    for (var o of ret.added) {
+                        restore.push(o);
+                    }
+                    restore.sort((a, b)=>a.start - b.start);
+
+                    expect(cmp.map((a)=> {
+                        return {start: a.from, end: a.to}
+                    })).to.deep.equal(restore);
 
 
                 });
