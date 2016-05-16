@@ -54,7 +54,7 @@ module.exports = class DiffRangeSet {
                 currentGroup = this._createGroup(newItem, newIsLeft);
             }
             relation = this._computeUnionRelation(currentGroup, newItem);
-            //         console.log(`========
+            // console.log(`========
             //     left: ${this.pretty(step.left)}
             //    right: ${this.pretty(step.right)}
             // movement: ${step.kind}
@@ -106,10 +106,11 @@ module.exports = class DiffRangeSet {
             var addedItem = {start: currentGroup.start, end: currentGroup.end};
             added.push(addedItem);
         }
-        else {
+        else if (currentGroup.isStartChanged || currentGroup.isEndChanged) {
             // there is a existing group which can be resized
             resized.push(currentGroup);
         }
+        // else: group with range but without start or end changed, this is single existing range, do nothing
     }
 
     /**

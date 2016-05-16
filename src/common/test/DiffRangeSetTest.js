@@ -3,7 +3,7 @@ var DiffRangeSet = require("../src/DiffRangeSet");
 
 function rng(...items) {
     if (items.length == 1 && typeof items[0] == 'string') {
-        items = items[0].split(' ').map(Number);
+        items = items[0].split(/\s+/).map(Number);
     }
     var r = [];
     if (items.length % 2 == 1) {
@@ -220,8 +220,41 @@ describe("DiffRangeSet", ()=> {
             ]);
         });
         it("one item resized, one removed due to union", ()=> {
-            var test1 = DiffRangeSet.add(rng('0 3'), rng('2 5'))
+            var ret = DiffRangeSet.add(rng('0 3 4 8'), rng('2 5'));
+            expect(ret.resized).to.be.deep.equal([
+                {range: {start: 0, end: 3}, start: 0, end: 8, isEndChanged: true}
+            ]);
+            expect(ret.removed).to.be.deep.equal([
+                {start: 4, end: 8}
+            ]);
+        });
 
+        describe('random tests', ()=> {
+            it('#1', ()=> {
+                var left = rng('2 4   5 6   7 8   9 10   11 13   14 19   20 21');
+                var right = rng('1 3   4 12   15 16   17 18   22 23   23 24');
+                var ret = DiffRangeSet.add(left, right);
+                // expect(ret).to.have.property('added').that.deep.equals([
+                //     {start: 22, end: 24}
+                // ]);
+                expect(ret).to.have.property('resized').that.deep.equals([
+                    {range: {start: 2, end: 4}, start: 1, end: 13, isStartChanged: true, isEndChanged: true}
+                ]);
+                // expect(ret).to.have.property('removed').that.deep.equals([
+                //     {start: 5, end: 6},
+                //     {start: 7, end: 8},
+                //     {start: 9, end: 10},
+                //     {start: 11, end: 13}
+                // ]);
+            });
+            it('#2', ()=> {
+                var left = rng('14 19');
+                var right = rng('15 16');
+                var ret = DiffRangeSet.add(left, right);
+                // expect(ret).to.have.property('added').that.is.empty;
+                expect(ret).to.have.property('resized').that.is.empty;
+                // expect(ret).to.have.property('removed').that.is.empty;
+            });
         });
 
     });
