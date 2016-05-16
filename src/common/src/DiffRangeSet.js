@@ -1,6 +1,35 @@
 var qintervals = require('qintervals');
 module.exports = class DiffRangeSet {
 
+    static pretty(obj) {
+        var fields = [];
+        for (var i in obj) {
+            var val = obj[i];
+            if (typeof val == 'boolean') {
+                fields.push(i ? i : '! ' + i);
+            }
+            else if (typeof val == 'object') {
+                fields.push(`${i} = ${this.pretty(val)}`)
+            }
+            else {
+                fields.push(`${i} = ${val}`)
+            }
+        }
+        return `{ ${fields.join(', ')} }`;
+
+    }
+
+    static _createGroup(range, fromLeft) {
+        var group = {start: range.start, end: range.end};
+        if (fromLeft) {
+            group.range = range;
+        }
+        else {
+            group.isStartChanged = true;
+            group.isEndChanged = true;
+        }
+        return group;
+    }
     /**
      * @method merge two sets by first trying to resize existing ranges and then append remeaining ranges
      * @param leftSet {{start:number, end:number}[]}
@@ -11,43 +40,76 @@ module.exports = class DiffRangeSet {
         iLeft = iLeft || -1;
         iRight = iRight || -1;
 
-        var left, right;
-        var nextStep;
-        var resizedItem = null, relation = {isAfter: true}, previousRelation;
-        while ((nextStep = this._computeNextStep(leftSet, rightSet, iLeft, iRight)) != null) {
-            left = nextStep.left;
-            right = nextStep.right;
-            iLeft = nextStep.iLeft;
-            iRight = nextStep.iRight;
-            previousRelation = relation;
-            relation = this._computeUnionRelation(resizedItem || left, right);
-            console.log(left, right, resizedItem, relation);
-            if (relation.isIncluded) {
-                // do nothing, no effect
+        var step;
+        var newIsRight, newIsLeft;
+        var currentGroup = null, relation = {isAfter: true}, newItem;
+        while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight)) != null) {
+            newIsRight = step.kind == 'right';
+            newIsLeft = !newIsRight;
+            iLeft = step.iLeft;
+            iRight = step.iRight;
+            newItem = newIsRight ? step.right : step.left;
+            if (currentGroup == null) {
+                // this is only for first group
+                currentGroup = this._createGroup(newItem, newIsLeft);
             }
-            else if (relation.isBefore && previousRelation.isAfter) {
-                // right was not included in the previous union and is not to be included into upcoming union
-                added.push(right);
-            }
-            else if (relation.isResizing) {
-                if (resizedItem == null) {
-                    resizedItem = {range: left, start: left.start, end: left.end};
-                    resized.push(left);
+            relation = this._computeUnionRelation(currentGroup, newItem);
+            //         console.log(`========
+            //     left: ${this.pretty(step.left)}
+            //    right: ${this.pretty(step.right)}
+            // movement: ${step.kind}
+            //    group: ${this.pretty(currentGroup)}
+            // relation: ${this.pretty(relation)}`);
+
+            if (relation.isIncluded || relation.isResizing) {
+                if (newIsLeft) {
+                    // existing item
+                    if (currentGroup.range == null) {
+                        currentGroup.range = newItem;
+                    }
+                    else {
+                        removed.push(newItem);
+                    }
                 }
-                Object.assign(resizedItem, relation);
+                else {
+                    // do nothing, no effect
+                }
             }
-        }
-        if (relation.isAfter) {
-            // if the end, last element if was after, should be included also (there is no overlapping element in leftSet)
-            added.push(right);
+            if (relation.isResizing) {
+                // new item will alter current group
+                if (relation.isStartChanged) {
+                    currentGroup.isStartChanged = true;
+                    currentGroup.start = relation.start;
+                }
+                if (relation.isEndChanged) {
+                    currentGroup.isEndChanged = true;
+                    currentGroup.end = relation.end;
+                }
+            }
+            else if (relation.isAfter) {
+                // first, delete current group
+                this._closeGroup(currentGroup, added, resized);
+                currentGroup = this._createGroup(newItem, newIsLeft);
+            }
+
         }
 
-        /*
-         * rozpatruj każdą parę z A i B i próbuj poprowadzić strzałki
-         */
-
+        // after all iterations, we have still one group open
+        this._closeGroup(currentGroup, added, resized);
 
         return this._result(result, added, removed, resized);
+    }
+
+    static _closeGroup(currentGroup, added, resized) {
+        if (currentGroup.range == null) {
+            // there were no existing ranges to resize
+            var addedItem = {start: currentGroup.start, end: currentGroup.end};
+            added.push(addedItem);
+        }
+        else {
+            // there is a existing group which can be resized
+            resized.push(currentGroup);
+        }
     }
 
     /**
@@ -67,8 +129,13 @@ module.exports = class DiffRangeSet {
         var nextRight = rightSet[iRight + 1];
 
         if (iLeft == -1 && iRight == -1) {
-            return {left: nextLeft, right: nextRight, iLeft: 0, iRight: 0, kind: 'initial'};
+            var kind = nextLeft.start <= nextRight.start ? 'left' : 'right';
+            if (kind == 'left') {
+                return {left: nextLeft, right: null, iLeft: 0, iRight: -1, kind};
+            }
+            return {left: null, right: nextRight, iLeft: -1, iRight: 0, kind};
         }
+
 
         if (nextLeft == null && nextRight == null) {
             // no next elements, finish

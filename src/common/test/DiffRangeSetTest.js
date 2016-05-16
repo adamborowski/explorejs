@@ -85,7 +85,7 @@ describe("DiffRangeSet", ()=> {
             P = addRight(33, 34);
         });
         it('_computeNextStep should move to closer element', ()=> {
-            expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, -1)).to.have.property('kind', 'initial');
+            expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, -1)).to.have.property('kind', 'right');
         });
         it('_computeNextStep should move to closer element', ()=> {
             expect(DiffRangeSet._computeNextStep(leftSet, rightSet, -1, K)).to.have.property('kind', 'left');
@@ -145,6 +145,10 @@ describe("DiffRangeSet", ()=> {
             expect(DiffRangeSet._computeNextStep([], rng('0 1 2 3'), 0, 0)).to.have.property('kind', 'right');
             expect(DiffRangeSet._computeNextStep([], rng('0 1 2 3'), 0, 1)).to.be.null;
         });
+        it('_computeNextStep should return good firection at start', ()=> {
+            expect(DiffRangeSet._computeNextStep(rng('0 1'), rng('2 3'), -1, -1)).to.have.property('kind', 'left');
+            expect(DiffRangeSet._computeNextStep(rng('2 3'), rng('0 1'), -1, -1)).to.have.property('kind', 'right');
+        });
     });
     describe("_getUnionRelation test", ()=> {
         it('basic test', ()=> {
@@ -154,6 +158,8 @@ describe("DiffRangeSet", ()=> {
                 .to.be.deep.equal({isAfter: true});
             expect(DiffRangeSet._computeUnionRelation({start: 3, end: 4}, {start: 0, end: 2}))
                 .to.be.deep.equal({isBefore: true});
+            expect(DiffRangeSet._computeUnionRelation({start: 4, end: 5}, {start: 3, end: 7}))
+                .to.be.deep.equal({start: 3, end: 7, isStartChanged: true, isEndChanged: true, isResizing: true});
             expect(DiffRangeSet._computeUnionRelation({start: 0, end: 4}, {start: 4, end: 5}))
                 .to.be.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
             expect(DiffRangeSet._computeUnionRelation({start: 0, end: 4}, {start: 0, end: 5}))
@@ -176,6 +182,9 @@ describe("DiffRangeSet", ()=> {
             expect(DiffRangeSet.add(rng('0 2'), rng('3 5'))).to.have.property('added').that.deep.equals(rng('3 5'));
         });
         it('new ranges "inside" old, non-overlapping', ()=> {
+            expect(DiffRangeSet.add(rng('0 1 4 5'), rng('2 3'))).to.have.property('added').that.deep.equals(rng('2 3'));
+        });
+        it('new ranges "inside" old, non-overlapping v2', ()=> {
             expect(DiffRangeSet.add(rng('0 1 4 5 8 9'), rng('2 3 6 7'))).to.have.property('added').that.deep.equals(rng('2 3 6 7'));
         });
         it('new ranges include earlier and latter, non-overlapping', ()=> {
@@ -193,11 +202,22 @@ describe("DiffRangeSet", ()=> {
         it('new ranges have quals to the existing ones', ()=> {
             expect(DiffRangeSet.add(rng('0 1 4 5'), rng('0 1 2 3 4 5'))).to.have.property('added').that.deep.equals(rng('2 3'))
         });
-        it("should return info about removed ranges", ()=> {
-
+        it("should return info about resized and removed ranges", ()=> {
         });
         it("should return info about resized ranges", ()=> {
-
+            expect(DiffRangeSet.add(rng('0 1 4 5'), rng('1 2 3 7'))).to.have.property('resized').that.is.deep.equal([
+                {range: {start: 0, end: 1}, start: 0, end: 2, isEndChanged: true},
+                {range: {start: 4, end: 5}, start: 3, end: 7, isStartChanged: true, isEndChanged: true}
+            ]);
+        });
+        it('should merge two ranges', ()=> {
+            var ret = DiffRangeSet.add(rng('1 2 4 5'), rng('0 3 3 6'));
+            expect(ret.resized).to.be.deep.equal([
+                {range: {start: 1, end: 2}, start: 0, end: 6, isStartChanged: true, isEndChanged: true}
+            ]);
+            expect(ret.removed).to.be.deep.equal([
+                {start: 4, end: 5}
+            ]);
         });
         it("one item resized, one removed due to union", ()=> {
             var test1 = DiffRangeSet.add(rng('0 3'), rng('2 5'))
