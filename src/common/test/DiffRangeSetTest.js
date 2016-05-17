@@ -4,7 +4,46 @@ var gen = require('random-seed');
 var qintervals = require('qintervals');
 function rng(...items) {
     if (items.length == 1 && typeof items[0] == 'string') {
-        items = items[0].split(/\s+/).map(Number);
+        items = items[0].match(/\[.*?]|(?:\d+\.?\d*\s+\d+\.?\d*)/g);
+        return items.map((str)=> {
+            var obj = {};
+            if (str.startsWith('[')) {
+                obj.existing = {};
+                var tokens = str.substring(1, str.length - 1).split(/\b/);
+                var leftTokens, rightTokens;
+                if (tokens[1] == '->') {
+                    leftTokens = tokens.slice(0, 3);
+                    rightTokens = tokens.slice(4);
+                }
+                else {
+                    leftTokens = tokens.slice(0, 1);
+                    rightTokens = tokens.slice(2);
+                }
+                obj.existing.start = Number(leftTokens[0]);
+                obj.existing.end = Number(rightTokens[0]);
+
+                if (leftTokens.length == 1) {
+                    obj.start = Number(leftTokens[0]);
+                }
+                else {
+                    obj.start = Number(leftTokens[2]);
+                }
+                if (rightTokens.length == 1) {
+                    obj.end = Number(rightTokens[0]);
+                }
+                else {
+                    obj.end = Number(rightTokens[2]);
+                }
+                return obj;
+            }
+            else {
+                var tokens = str.split(/\s+/g);
+                return {
+                    start: Number(tokens[0]),
+                    end: Number(tokens[1])
+                }
+            }
+        });
     }
     var r = [];
     if (items.length % 2 == 1) {
@@ -163,154 +202,187 @@ describe("DiffRangeSet", ()=> {
     describe("_getOverlapRelation test", ()=> {
         it('basic test', ()=> {
             expect(DiffRangeSet._computeOverlapRelation({start: 0, end: 3}, {start: 2, end: 4}))
-                .to.be.deep.equal({isResizing: true, start: 0, end: 4, isEndChanged: true});
+                .to.deep.equal({isResizing: true, start: 0, end: 4, isEndChanged: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 0, end: 3}, {start: 4, end: 5}))
-                .to.be.deep.equal({isAfter: true});
+                .to.deep.equal({isAfter: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 3, end: 4}, {start: 0, end: 2}))
-                .to.be.deep.equal({isBefore: true});
+                .to.deep.equal({isBefore: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 4, end: 5}, {start: 3, end: 7}))
-                .to.be.deep.equal({start: 3, end: 7, isStartChanged: true, isEndChanged: true, isResizing: true});
+                .to.deep.equal({start: 3, end: 7, isStartChanged: true, isEndChanged: true, isResizing: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 0, end: 4}, {start: 4, end: 5}))
-                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
+                .to.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 0, end: 4}, {start: 0, end: 5}))
-                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
+                .to.deep.equal({isResizing: true, start: 0, end: 5, isEndChanged: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 4, end: 5}, {start: 0, end: 5}))
-                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
+                .to.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 2, end: 5}, {start: 3, end: 4}))
-                .to.be.deep.equal({isIncluded: true});
+                .to.deep.equal({isIncluded: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 2, end: 5}, {start: 0, end: 4}))
-                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
+                .to.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 2, end: 3}, {start: 0, end: 5}))
-                .to.be.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true, isEndChanged: true});
+                .to.deep.equal({isResizing: true, start: 0, end: 5, isStartChanged: true, isEndChanged: true});
             expect(DiffRangeSet._computeOverlapRelation({start: 10, end: 11}, {start: 10, end: 11}))
-                .to.be.deep.equal({isEqual: true});
+                .to.deep.equal({isEqual: true});
 
         });
     });
     describe("Add test", ()=> {
-        it("simple two non-overlapping ranges", ()=> {
-            expect(DiffRangeSet.add(rng('0 2'), rng('3 5'))).to.have.property('added').that.deep.equals(rng('3 5'));
-        });
-        it('new ranges "inside" old, non-overlapping', ()=> {
-            expect(DiffRangeSet.add(rng('0 1 4 5'), rng('2 3'))).to.have.property('added').that.deep.equals(rng('2 3'));
-        });
-        it('new ranges "inside" old, non-overlapping v2', ()=> {
-            expect(DiffRangeSet.add(rng('0 1 4 5 8 9'), rng('2 3 6 7'))).to.have.property('added').that.deep.equals(rng('2 3 6 7'));
-        });
-        it('new ranges include earlier and latter, non-overlapping', ()=> {
-            expect(DiffRangeSet.add(rng('2 3 6 7 10 11'), rng('0 1 4 5 8 9 12 13'))).to.have.property('added').that.deep.equals(rng('0 1 4 5 8 9 12 13'));
-        });
-        it('new ranges are included in existing ranges, touching', ()=> {
-            expect(DiffRangeSet.add(rng('2 10'), rng('2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10'))).to.have.property('added').that.is.empty;
-        });
-        it('new ranges include earlier and latter, some are included in existing ranges', ()=> {
-            expect(DiffRangeSet.add(rng('2 3 6 7 10 11'), rng('0 1 4 5 6.4 6.5 8 9 10 11 12 13'))).to.have.property('added').that.deep.equals(rng('0 1 4 5 8 9 12 13'));
-        });
-        it('new ranges are quals to the existing ones', ()=> {
-            expect(DiffRangeSet.add(rng('0 1 2 3 4 5'), rng('0 1 2 3 4 5'))).to.have.property('added').that.is.empty;
-        });
-        it('new ranges have quals to the existing ones', ()=> {
-            expect(DiffRangeSet.add(rng('0 1 4 5'), rng('0 1 2 3 4 5'))).to.have.property('added').that.deep.equals(rng('2 3'))
-        });
-        it("should return info about resized ranges", ()=> {
-            expect(DiffRangeSet.add(rng('0 1 4 5'), rng('1 2 3 7'))).to.have.property('resized').that.is.deep.equal([
-                {range: {start: 0, end: 1}, start: 0, end: 2, isEndChanged: true},
-                {range: {start: 4, end: 5}, start: 3, end: 7, isStartChanged: true, isEndChanged: true}
-            ]);
-        });
-        it('should merge two ranges', ()=> {
-            var ret = DiffRangeSet.add(rng('1 2 4 5'), rng('0 3 3 6'));
-            expect(ret.resized).to.be.deep.equal([
-                {range: {start: 1, end: 2}, start: 0, end: 6, isStartChanged: true, isEndChanged: true}
-            ]);
-            expect(ret.removed).to.be.deep.equal([
-                {start: 4, end: 5}
-            ]);
-        });
-        it("one item resized, one removed due to union", ()=> {
-            var ret = DiffRangeSet.add(rng('0 3 4 8'), rng('2 5'));
-            expect(ret.resized).to.be.deep.equal([
-                {range: {start: 0, end: 3}, start: 0, end: 8, isEndChanged: true}
-            ]);
-            expect(ret.removed).to.be.deep.equal([
-                {start: 4, end: 8}
-            ]);
-        });
-        it('add one that equals existing', ()=> {
-            var left = [{start: 1, end: 2},
-                {start: 3, end: 4}];
-            var right = [
-                {start: 3, end: 4}];
-
-            var ret = DiffRangeSet.add(left, right);
-            // expect(ret).to.have.property('added').that.is.empty;
-            // expect(ret).to.have.property('resized').that.is.empty;
-            expect(ret).to.have.property('removed').that.is.empty;
-        });
-        it('adding into empty set', ()=> {
-            var ret = DiffRangeSet.add([], rng('0 1'));
-            expect(ret).to.have.property('added').that.deep.equals([
-                {start: 0, end: 1}
-            ]);
-            expect(ret).to.have.property('resized').that.is.empty;
-            expect(ret).to.have.property('removed').that.is.empty;
-        });
-        it('adding into empty set with touch-join', ()=> {
-            var ret = DiffRangeSet.add([], rng('0 1 1 2'));
-            expect(ret).to.have.property('added').that.deep.equals([
-                {start: 0, end: 2}
-            ]);
-            expect(ret).to.have.property('resized').that.is.empty;
-            expect(ret).to.have.property('removed').that.is.empty;
-        });
-        it('adding nothing', ()=> {
-            var ret = DiffRangeSet.add(rng('0 1 2 3'), []);
-            expect(ret).to.have.property('added').that.is.empty;
-            expect(ret).to.have.property('resized').that.is.empty;
-            expect(ret).to.have.property('removed').that.is.empty;
-        });
-        it('adding nothing to nothing', ()=> {
-            expect(DiffRangeSet.add([], [])).to.deep.equal({added: [], resized: [], removed: [], result: []});
-        });
-        it('adding nothing to touching ragnes', ()=> {
-            var ret = DiffRangeSet.add(rng('0 1 1 2'), []);
-            expect(ret).to.have.property('added').that.is.empty;
-            expect(ret).to.have.property('resized').that.deep.equals([
-                {range: {start: 0, end: 1}, start: 0, end: 2, isEndChanged: true}
-            ]);
-            expect(ret).to.have.property('removed').that.deep.equals([
-                {start: 1, end: 2}
-            ]);
+        describe('basic cases', ()=> {
+            it("simple two non-overlapping ranges", ()=> {
+                expect(DiffRangeSet.add(rng('0 2'), rng('3 5'))).to.deep.equal({
+                    added: rng('3 5'),
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 2] 3 5')
+                });
+            });
+            it('new ranges "inside" old, non-overlapping', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 4 5'), rng('2 3'))).to.deep.equal({
+                    added: rng('2 3'),
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 1] 2 3 [4 5]')
+                });
+            });
+            it('new ranges "inside" old, non-overlapping v2', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 4 5 8 9'), rng('2 3 6 7'))).to.deep.equal({
+                    added: rng('2 3 6 7'),
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 1] 2 3 [4 5] 6 7 [8 9]')
+                });
+            });
+            it('new ranges include earlier and latter, non-overlapping', ()=> {
+                expect(DiffRangeSet.add(rng('2 3 6 7 10 11'), rng('0 1 4 5 8 9 12 13'))).to.deep.equal({
+                    added: rng('0 1 4 5 8 9 12 13'),
+                    removed: [],
+                    resized: [],
+                    result: rng('0 1 [2 3] 4 5 [6 7] 8 9 [10 11] 12 13')
+                });
+            });
+            it('new ranges are included in existing ranges, touching', ()=> {
+                expect(DiffRangeSet.add(rng('2 10'), rng('2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[2 10]')
+                });
+            });
+            it('new ranges include earlier and latter, some are included in existing ranges', ()=> {
+                expect(DiffRangeSet.add(rng('2 3 6 7 10 11'), rng('0 1 4 5 6.4 6.5 8 9 10 11 12 13'))).to.deep.equal({
+                    added: rng('0 1 4 5 8 9 12 13'),
+                    removed: [],
+                    resized: [],
+                    result: rng('0 1 [2 3] 4 5 [6 7] 8 9 [10 11] 12 13')
+                });
+            });
+            it('new ranges are quals to the existing ones', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 2 3 4 5'), rng('0 1 2 3 4 5'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 1] [2 3] [4 5]')
+                });
+            });
+            it('new ranges have quals to the existing ones', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 4 5'), rng('0 1 2 3 4 5'))).to.deep.equal({
+                    added: rng('2 3'),
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 1] 2 3 [4 5]')
+                });
+            });
+            it("should return info about resized ranges", ()=> {
+                expect(DiffRangeSet.add(rng('0 1 4 5'), rng('1 2 3 7'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: rng('[0 1->2] [4->3 5->7]'),
+                    result: rng('[0 1->2] [4->3 5->7]')
+                });
+            });
+            it('should merge two ranges', ()=> {
+                expect(DiffRangeSet.add(rng('1 2 4 5'), rng('0 3 3 6'))).to.deep.equal({
+                    added: [],
+                    removed: rng('4 5'),
+                    resized: rng('[1->0 2->6]'),
+                    result: rng('[1->0 2->6]')
+                });
+            });
+            it("one item resized, one removed due to union", ()=> {
+                expect(DiffRangeSet.add(rng('0 3 4 8'), rng('2 5'))).to.deep.equal({
+                    added: [],
+                    removed: rng('4 8'),
+                    resized: rng('[0 3->8]'),
+                    result: rng('[0 3->8]')
+                });
+            });
+            it('add one that equals existing', ()=> {
+                expect(DiffRangeSet.add(rng('1 2 3 4'), rng('3 4'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[1 2] [3 4]')
+                });
+            });
+            it('adding into empty set', ()=> {
+                expect(DiffRangeSet.add([], rng('0 1'))).to.deep.equal({
+                    added: rng('0 1'),
+                    removed: [],
+                    resized: [],
+                    result: rng('0 1')
+                });
+            });
+            it('adding into empty set with touch-join', ()=> {
+                expect(DiffRangeSet.add([], rng('0 1 1 2'))).to.deep.equal({
+                    added: rng('0 2'),
+                    removed: [],
+                    resized: [],
+                    result: rng('0 2')
+                });
+            });
+            it('adding nothing', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 2 3'), [])).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 1] [2 3]')
+                });
+            });
+            it('adding nothing to nothing', ()=> {
+                expect(DiffRangeSet.add([], [])).to.deep.equal({added: [], resized: [], removed: [], result: []});
+            });
+            it('adding nothing to touching ragnes', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 1 2'), [])).to.deep.equal({
+                    added: [],
+                    removed: rng('1 2'),
+                    resized: rng('[0 1->2]'),
+                    result: rng('[0 1->2]')
+                });
+            });
         });
         describe('custom tests', ()=> {
             it('custom 1', ()=> {
-                var left = rng('2 4   5 6   7 8   9 10   11 13   14 19   20 21');
-                var right = rng('1 3   4 12   15 16   17 18   22 23   23 24');
-                var ret = DiffRangeSet.add(left, right);
-                expect(ret).to.have.property('added').that.deep.equals([
-                    {start: 22, end: 24}
-                ]);
-                expect(ret).to.have.property('resized').that.deep.equals([
-                    {range: {start: 2, end: 4}, start: 1, end: 13, isStartChanged: true, isEndChanged: true}
-                ]);
-                expect(ret).to.have.property('removed').that.deep.equals([
-                    {start: 5, end: 6},
-                    {start: 7, end: 8},
-                    {start: 9, end: 10},
-                    {start: 11, end: 13}
-                ]);
+                expect(DiffRangeSet.add(rng('2 4 5 6 7 8 9 10 11 13 14 19 20 21'), rng('1 3 4 12 15 16 17 18 22 23 23 24'))).to.deep.equal({
+                    added: rng('22 24'),
+                    removed: rng('5 6 7 8 9 10 11 13'),
+                    resized: rng('[2->1 4->13>]'),
+                    result: rng('[2->1 4->13] [14 19] [20 21] 22 24')
+                });
             });
 
             it('custom 2', ()=> {
-                var ret = DiffRangeSet.add(rng('14 19'), rng('15 16 17 18'));
-                expect(ret).to.have.property('added').that.is.empty;
-                expect(ret).to.have.property('resized').that.is.empty;
-                expect(ret).to.have.property('removed').that.is.empty;
+                expect(DiffRangeSet.add(rng('14 19'), rng('15 16 17 18'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[14 19]')
+                });
             });
         });
 
         describe('add starting from higher position', ()=> {
-            
+            it('should start merge from 4 and 0', ()=> {
+            });
         });
 
         describe('random tests', ()=> {
@@ -338,8 +410,6 @@ describe("DiffRangeSet", ()=> {
                     var numRight = rand.intBetween(0, 10);
                     var left = randomRangeSet(numLeft);
                     var right = randomRangeSet(numRight);
-                    console.log('left', left);
-                    console.log('right', right);
                     var ret = DiffRangeSet.add(left, right);
                     var cmp = qintervals.union(left, right).toObjects();
                     var result = ret.result.map((a)=> {
@@ -351,13 +421,9 @@ describe("DiffRangeSet", ()=> {
 
                     var restore = left.filter((a)=>find(a, ret.removed) == null);
                     for (var o of ret.resized) {
-                        var itemInLeft = find(o.range, left);
-                        if (o.isStartChanged) {
-                            itemInLeft.start = o.start;
-                        }
-                        if (o.isEndChanged) {
-                            itemInLeft.end = o.end;
-                        }
+                        var itemInLeft = find(o.existing, left);
+                        itemInLeft.start = o.start;
+                        itemInLeft.end = o.end;
                     }
 
                     for (var o of ret.added) {

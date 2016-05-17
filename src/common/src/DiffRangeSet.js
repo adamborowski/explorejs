@@ -18,14 +18,10 @@ module.exports = class DiffRangeSet {
 
     }
 
-    static _createGroup(range, fromLeft) {
+    static _createGroup(range, fromExistingRange) {
         var group = {start: range.start, end: range.end};
-        if (fromLeft) {
-            group.range = range;
-        }
-        else {
-            group.isStartChanged = true;
-            group.isEndChanged = true;
+        if (fromExistingRange) {
+            group.existing = range;
         }
         return group;
     }
@@ -64,11 +60,11 @@ module.exports = class DiffRangeSet {
             if (relation.isIncluded || relation.isResizing || relation.isEqual) {
                 if (newIsLeft) {
                     // existing item
-                    if (currentGroup.range == null) {
+                    if (currentGroup.existing == null) {
                         // we have a group containing only items from right set, now we join left item and assign ownership range
-                        currentGroup.range = newItem;
+                        currentGroup.existing = newItem;
                     }
-                    else if (currentGroup.range != newItem) {
+                    else if (currentGroup.existing != newItem) {
                         // we have group with ownership and new left item belongs to the group so it is no longer needed
                         removed.push(newItem);
                     }
@@ -80,11 +76,9 @@ module.exports = class DiffRangeSet {
             if (relation.isResizing) {
                 // new item will alter current group
                 if (relation.isStartChanged) {
-                    currentGroup.isStartChanged = true;
                     currentGroup.start = relation.start;
                 }
                 if (relation.isEndChanged) {
-                    currentGroup.isEndChanged = true;
                     currentGroup.end = relation.end;
                 }
             }
@@ -107,16 +101,23 @@ module.exports = class DiffRangeSet {
     }
 
     static _closeGroup(currentGroup, added, resized) {
-        if (currentGroup.range == null) {
+        if (currentGroup.existing == null) {
             // there were no existing ranges to resize
             var addedItem = {start: currentGroup.start, end: currentGroup.end};
             added.push(addedItem);
         }
-        else if (currentGroup.isStartChanged || currentGroup.isEndChanged) {
+        else if (this._isGroupChanged(currentGroup)) {
             // there is a existing group which can be resized
             resized.push(currentGroup);
         }
         // else: group with range but without start or end changed, this is single existing range, do nothing
+    }
+
+    static _isGroupChanged(group) {
+        if (group.existing == null) {
+            return false;
+        }
+        return group.start != group.existing.start || group.end != group.existing.end;
     }
 
     /**
