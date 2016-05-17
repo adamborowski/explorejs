@@ -9,15 +9,15 @@ function rng(...items) {
             var obj = {};
             if (str.startsWith('[')) {
                 obj.existing = {};
-                var tokens = str.substring(1, str.length - 1).split(/\b/);
+                var tokens = str.substring(1, str.length - 1).match(/\d+\.?\d*|\->/g);
                 var leftTokens, rightTokens;
                 if (tokens[1] == '->') {
                     leftTokens = tokens.slice(0, 3);
-                    rightTokens = tokens.slice(4);
+                    rightTokens = tokens.slice(3);
                 }
                 else {
                     leftTokens = tokens.slice(0, 1);
-                    rightTokens = tokens.slice(2);
+                    rightTokens = tokens.slice(1);
                 }
                 obj.existing.start = Number(leftTokens[0]);
                 obj.existing.end = Number(rightTokens[0]);
@@ -380,8 +380,14 @@ describe("DiffRangeSet", ()=> {
             });
         });
 
-        describe('add starting from higher position', ()=> {
+        describe('iLeft and iRight specified - starting from middle of sets', ()=> {
             it('should start merge from 4 and 0', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 2 3 3 5 6 7 8 9 10 11'), rng('7.5 10'), 4, 0)).to.deep.equal({
+                    added: [],
+                    removed: rng('10 11'),
+                    resized: rng('[8->7.5 9->11]'),
+                    result: rng('[8->7.5 9->11]')
+                });
             });
         });
 
