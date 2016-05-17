@@ -389,6 +389,38 @@ describe("DiffRangeSet", ()=> {
                     result: rng('[8->7.5 9->11]')
                 });
             });
+            it('should merge only left[4...] and right[0...]', ()=> {
+                expect(DiffRangeSet.add(rng('0 1 2 3 3 5 6 7 8 9 10 11'), rng('7.5 10'), 4, 0)).to.deep.equal({
+                    added: [],
+                    removed: rng('10 11'),
+                    resized: rng('[8->7.5 9->11]'),
+                    result: rng('[8->7.5 9->11]')
+                });
+            });
+            it('should merge only left[1..3] and right[2..3] - not touching', ()=> {
+                expect(DiffRangeSet.add(rng('0 3 4 5 7 10 11 13 14 15 18 19 20 21'), rng('0 1 2 3 6 8 9 11 16 17 21 22'), 1, 2, 3, 3)).to.deep.equal({
+                    added: [],
+                    removed: rng('11 13'),
+                    resized: rng('[7->6 10->13]'),
+                    result: rng('[4 5] [7->6 10->13]')
+                });
+            });
+            it('should merge only left[1..3] and right[2..3] - touching', ()=> {
+                expect(DiffRangeSet.add(rng('0 3 4 5 7 10 11 13 14 15 18 19 20 21'), rng('0 1 2 4 6 8 9 11 16 17 21 22'), 1, 2, 3, 3)).to.deep.equal({
+                    added: [],
+                    removed: rng('11 13'),
+                    resized: rng('[7->6 10->13]'),
+                    result: rng('[4 5] [7->6 10->13]')
+                });
+            });
+            it('should merge only left[1..3] and right[2..3] - overlapping', ()=> {
+                expect(DiffRangeSet.add(rng('0 3 4 5 7 10 11 13 14 15 18 19 20 21'), rng('0 1 2 6 6 8 9 11 16 17 21 22'), 1, 2, 3, 3)).to.deep.equal({
+                    added: [],
+                    removed: rng('11 13'),
+                    resized: rng('[7->6 10->13]'),
+                    result: rng('[4 5] [7->6 10->13]')
+                });
+            });
         });
 
         describe('random tests', ()=> {

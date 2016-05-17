@@ -25,20 +25,25 @@ module.exports = class DiffRangeSet {
         }
         return group;
     }
+
     /**
      * @method merge two sets by first trying to resize existing ranges and then append remeaining ranges
      * @param leftSet {{start:number, end:number}[]}
      * @param rightSet {{start:number, end:number}[]}
+     * @param {Number} [iLeft]
+     * @param {Number} [iRight]
+     * @param {Number} [maxILeft]
+     * @param {Number} [maxIRight]
      */
-    static add(leftSet, rightSet, iLeft, iRight) {
+    static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
         var result = [], added = [], removed = [], resized = [];
-        iLeft = iLeft - 1 || -1;
-        iRight = iRight - 1 || -1;
+        iLeft = iLeft == null ? -1 : iLeft - 1;
+        iRight = iRight == null ? -1 : iRight - 1;
 
         var step;
         var newIsRight, newIsLeft;
         var currentGroup = null, relation = {isAfter: true}, newItem;
-        while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight)) != null) {
+        while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight)) != null) {
             newIsRight = step.kind == 'right';
             newIsLeft = !newIsRight;
             iLeft = step.iLeft;
@@ -50,12 +55,12 @@ module.exports = class DiffRangeSet {
                 result.push(currentGroup);
             }
             relation = this._computeOverlapRelation(currentGroup, newItem);
-            // console.log(`========
-            //     left: ${this.pretty(step.left)}
-            //    right: ${this.pretty(step.right)}
-            // movement: ${step.kind}
-            //    group: ${this.pretty(currentGroup)}
-            // relation: ${this.pretty(relation)}`);
+            console.log(`========
+                left: ${this.pretty(step.left)}
+               right: ${this.pretty(step.right)}
+            movement: ${step.kind}
+               group: ${this.pretty(currentGroup)}
+            relation: ${this.pretty(relation)}`);
 
             if (relation.isIncluded || relation.isResizing || relation.isEqual) {
                 if (newIsLeft) {
@@ -130,7 +135,7 @@ module.exports = class DiffRangeSet {
      * @returns {*}
      * @private
      */
-    static _computeNextStep(leftSet, rightSet, iLeft, iRight) {
+    static _computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
         var left = leftSet[iLeft];
         var right = rightSet[iRight];
         var nextLeft = leftSet[iLeft + 1];
@@ -166,8 +171,14 @@ module.exports = class DiffRangeSet {
         }
 
         if (leftPoint <= rightPoint) {
+            if (maxILeft === iLeft) {
+                return null;
+            }
             return {left: nextLeft, right, iLeft: iLeft + 1, iRight, kind: 'left'};
         } else {
+            if (maxIRight === iRight) {
+                return null;
+            }
             return {left, right: nextRight, iLeft, iRight: iRight + 1, kind: 'right'};
         }
     }
