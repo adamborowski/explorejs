@@ -1,3 +1,4 @@
+var CutOperation = require('./CutOperation');
 module.exports = class DiffRangeSet {
 
     static pretty(obj) {
@@ -42,7 +43,7 @@ module.exports = class DiffRangeSet {
 
         var step;
         var newIsRight, newIsLeft;
-        var currentGroup = null, relation = {isAfter: true}, newItem;
+        var currentGroup = null, relation, newItem;
         while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight)) != null) {
             newIsRight = step.kind == 'right';
             newIsLeft = !newIsRight;
@@ -215,9 +216,86 @@ module.exports = class DiffRangeSet {
 
     /**
      * @method
-     * @param rangeSet {data}
+     * @param leftSet
+     * @param rightSet
+     * @param [iLeft]
+     * @param [iRight]
+     * @param [maxILeft]
+     * @param [maxIRight]
      */
-    static subtract(rangeSet) {
+    static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
+        var result = [], added = [], removed = [], resized = [];
+        iLeft = iLeft == null ? -1 : iLeft - 1;
+        iRight = iRight == null ? 0 : iRight; // we always start from existing cutter
+
+        var step;
+        var newIsRight, newIsLeft;
+        var leftSubject = null, relation, newItem;
+        while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight)) != null) {
+            newIsRight = step.kind == 'right';
+            newIsLeft = !newIsRight;
+            iLeft = step.iLeft;
+            iRight = step.iRight;
+            newItem = newIsRight ? step.right : step.left;
+            console.log(iLeft, iRight);
+            if (leftSubject == null) {
+                // this is only for first group
+                leftSubject = this._createGroup(step.left, true/* indicate that this group is existing one */);
+            }
+            relation = CutOperation.getCutInfo(leftSubject, step.right);
+            console.log(`========
+                left: ${this.pretty(step.left)}
+               right: ${this.pretty(step.right)}
+            movement: ${step.kind}
+               group: ${this.pretty(leftSubject)}
+            relation: ${relation}`);
+            if (relation == null) {
+                // we should close previous group
+                this._closeGroup(leftSubject, added, resized);
+                result.push(leftSubject);
+                leftSubject = null;
+            }
+            else if (relation == "remove") {
+                // right will completely remove current subject
+                if (leftSubject.existing) {
+                    removed.push(leftSubject.existing);
+                    leftSubject = null;
+                }
+                else {
+                    // ignore - this groups was created temporarily as a consequence of earlier iteration
+                }
+            }
+            else if (relation == 'middle') {
+                // right will split subject into two subjects
+                var newSubject = this._createGroup({
+                    start: step.right.end,
+                    end: leftSubject.end
+                }, false/* indicate that this group is new one */)
+                leftSubject.end = step.right.start;
+                resized.push(leftSubject);
+                result.push(leftSubject);
+                leftSubject = newSubject;
+            }
+            else if (relation == 'top') {
+                leftSubject.start = step.right.end;
+                resized.push(leftSubject);
+                result.push(leftSubject);
+            }
+            else if (relation == 'bottom') {
+                leftSet.end = step.right.start;
+                resized.push(leftSubject);
+                result.push(leftSubject);
+            }
+        }
+
+        // after all iterations, we have still one group open
+        if (leftSubject) {
+            // there is no group if we add empty set to empty set
+            this._closeGroup(leftSubject, added, resized);
+            result.push(leftSubject);
+        }
+
+        return this._result(result, added, removed, resized);
     }
 
     static _result(result, added, removed, resized) {
@@ -228,5 +306,6 @@ module.exports = class DiffRangeSet {
             resized: resized
         }
     }
+
 
 };

@@ -482,4 +482,48 @@ describe("DiffRangeSet", ()=> {
         });
 
     });
+    describe("Subtract test", ()=> {
+        describe('basic cases', ()=> {
+            it("simple two non-overlapping ranges", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 2'), rng('3 5'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 2]')
+                });
+            });
+            it("simple two non-overlapping ranges", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 2 5 6'), rng('2 5'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 2] [5 6]')
+                });
+            });
+            it("split middle", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 6 10 16'), rng('2 3 12 13'))).to.deep.equal({
+                    added: rng('3 6 13 16'),
+                    removed: [],
+                    resized: rng('[0 6->2] [10 16->12]'),
+                    result: rng('[0 6->2] 3 6 [10 16->12] 13 16')
+                });
+            });
+            it("remove many ranges covered by one range", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 1 2 3 4 5 6 7 8 9'), rng('1 7'))).to.deep.equal({
+                    added: [],
+                    removed: rng('2 3 4 5 6 7'),
+                    resized: [],
+                    result: rng('[0 1] [8 9]')
+                });
+            });
+            it("remove many ranges covered by one range", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 1 2 3 4 5 6 7 8 9'), rng('1 7 8 9'))).to.deep.equal({
+                    added: [],
+                    removed: rng('2 3 4 5 6 7 8 9'),
+                    resized: [],
+                    result: rng('[0 1]')
+                });
+            });
+        });
+    });
 });
