@@ -36,8 +36,8 @@ module.exports = class DiffRangeSet {
      */
     static add(leftSet, rightSet, iLeft, iRight) {
         var result = [], added = [], removed = [], resized = [];
-        iLeft = iLeft || -1;
-        iRight = iRight || -1;
+        iLeft = iLeft - 1 || -1;
+        iRight = iRight - 1 || -1;
 
         var step;
         var newIsRight, newIsLeft;
@@ -53,7 +53,7 @@ module.exports = class DiffRangeSet {
                 currentGroup = this._createGroup(newItem, newIsLeft);
                 result.push(currentGroup);
             }
-            relation = this._computeUnionRelation(currentGroup, newItem);
+            relation = this._computeOverlapRelation(currentGroup, newItem);
             // console.log(`========
             //     left: ${this.pretty(step.left)}
             //    right: ${this.pretty(step.right)}
@@ -171,7 +171,7 @@ module.exports = class DiffRangeSet {
         }
     }
 
-    static _computeUnionRelation(cmp, subject) {
+    static _computeOverlapRelation(cmp, subject) {
         if (subject == null) {
             return {};
         }
