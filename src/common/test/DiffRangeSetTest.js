@@ -236,6 +236,17 @@ describe("DiffRangeSet", ()=> {
                 {start: 4, end: 8}
             ]);
         });
+        it('add one that equals existing', ()=> {
+            var left = [{start: 1, end: 2},
+                {start: 3, end: 4}];
+            var right = [
+                {start: 3, end: 4}];
+
+            var ret = DiffRangeSet.add(left, right);
+            // expect(ret).to.have.property('added').that.is.empty;
+            // expect(ret).to.have.property('resized').that.is.empty;
+            expect(ret).to.have.property('removed').that.is.empty;
+        });
         it('adding into empty set', ()=> {
             var ret = DiffRangeSet.add([], rng('0 1'));
             expect(ret).to.have.property('added').that.deep.equals([
@@ -317,12 +328,14 @@ describe("DiffRangeSet", ()=> {
             function find(range, array) {
                 return array.find((a)=>a.start == range.start && a.end == range.end)
             }
-            for (var i = 0; i < 1000; i++) {
+            for (var i = 0; i < 100; i++) {
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 10);
                     var numRight = rand.intBetween(0, 10);
                     var left = randomRangeSet(numLeft);
                     var right = randomRangeSet(numRight);
+                    console.log('left', left);
+                    console.log('right', right);
                     var ret = DiffRangeSet.add(left, right);
                     var cmp = qintervals.union(left, right).toObjects();
                     var result = ret.result.map((a)=> {
