@@ -1,4 +1,3 @@
-var qintervals = require('qintervals');
 module.exports = class DiffRangeSet {
 
     static pretty(obj) {
@@ -207,7 +206,6 @@ module.exports = class DiffRangeSet {
      * @param rangeSet {data}
      */
     static subtract(rangeSet) {
-        var result = qintervals.subtract(a, b);
     }
 
     static _result(result, added, removed, resized) {
