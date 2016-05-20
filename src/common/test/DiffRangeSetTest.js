@@ -4,7 +4,7 @@ var rng = TestUtil.rng;
 var DiffRangeSet = require("../src/DiffRangeSet");
 var gen = require('random-seed');
 var qintervals = require('qintervals');
-describe("DiffRangeSet", ()=> {
+    describe("DiffRangeSet", ()=> {
     before(()=> {
     });
     describe('_computeNextStep test', ()=> {

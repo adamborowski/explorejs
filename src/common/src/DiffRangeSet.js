@@ -1,4 +1,5 @@
 var CutOperation = require('./CutOperation');
+var ParallelRangeSetIterator = require('./ParallelRangeSetIterator');
 module.exports = class DiffRangeSet {
 
     static pretty(obj) {
@@ -38,40 +39,37 @@ module.exports = class DiffRangeSet {
      */
     static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
         var result = [], added = [], removed = [], resized = [];
-        iLeft = iLeft == null ? -1 : iLeft - 1;
-        iRight = iRight == null ? -1 : iRight - 1;
 
-        var step;
-        var newIsRight, newIsLeft;
-        var currentGroup = null, relation, newItem;
-        while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight)) != null) {
-            newIsRight = step.kind == 'right';
-            newIsLeft = !newIsRight;
-            iLeft = step.iLeft;
-            iRight = step.iRight;
-            newItem = newIsRight ? step.right : step.left;
+        var currentGroup = null, relation;
+        var iterator = new ParallelRangeSetIterator(leftSet, rightSet, {
+            startLeft: iLeft,
+            startRight: iRight,
+            endLeft: maxILeft,
+            endRight: maxIRight
+        });
+        while (iterator.next()) {
             if (currentGroup == null) {
                 // this is only for first group
-                currentGroup = this._createGroup(newItem, newIsLeft);
+                currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved);
             }
-            relation = this._computeOverlapRelation(currentGroup, newItem);
+            relation = this._computeOverlapRelation(currentGroup, iterator.Current);
             console.log(`========
-                left: ${this.pretty(step.left)}
-               right: ${this.pretty(step.right)}
-            movement: ${step.kind}
+                left: ${this.pretty(iterator.left)}
+               right: ${this.pretty(iterator.right)}
+            movement: ${iterator.LeftMoved ? 'left' : 'right'}
                group: ${this.pretty(currentGroup)}
             relation: ${this.pretty(relation)}`);
 
             if (relation.isIncluded || relation.isResizing || relation.isEqual) {
-                if (newIsLeft) {
+                if (iterator.LeftMoved) {
                     // existing item
                     if (currentGroup.existing == null) {
                         // we have a group containing only items from right set, now we join left item and assign ownership range
-                        currentGroup.existing = newItem;
+                        currentGroup.existing = iterator.Current;
                     }
-                    else if (currentGroup.existing != newItem) {
+                    else if (currentGroup.existing != iterator.Current) {
                         // we have group with ownership and new left item belongs to the group so it is no longer needed
-                        removed.push(newItem);
+                        removed.push(iterator.Current);
                     }
                 }
                 else {
@@ -90,7 +88,7 @@ module.exports = class DiffRangeSet {
             else if (relation.isAfter) {
                 // first, delete current group
                 this._finishGroup(currentGroup, added, resized, result);
-                currentGroup = this._createGroup(newItem, newIsLeft);
+                currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved);
             }
 
         }
