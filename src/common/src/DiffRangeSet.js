@@ -53,7 +53,6 @@ module.exports = class DiffRangeSet {
             if (currentGroup == null) {
                 // this is only for first group
                 currentGroup = this._createGroup(newItem, newIsLeft);
-                result.push(currentGroup);
             }
             relation = this._computeOverlapRelation(currentGroup, newItem);
             console.log(`========
@@ -90,9 +89,8 @@ module.exports = class DiffRangeSet {
             }
             else if (relation.isAfter) {
                 // first, delete current group
-                this._closeGroup(currentGroup, added, resized);
+                this._finishGroup(currentGroup, added, resized, result);
                 currentGroup = this._createGroup(newItem, newIsLeft);
-                result.push(currentGroup);
             }
 
         }
@@ -100,21 +98,25 @@ module.exports = class DiffRangeSet {
         // after all iterations, we have still one group open
         if (currentGroup) {
             // there is no group if we add empty set to empty set
-            this._closeGroup(currentGroup, added, resized);
+            this._finishGroup(currentGroup, added, resized, result);
         }
 
         return this._result(result, added, removed, resized);
     }
 
-    static _closeGroup(currentGroup, added, resized) {
+    static _finishGroup(currentGroup, added, resized, result) {
         if (currentGroup.existing == null) {
             // there were no existing ranges to resize
             var addedItem = {start: currentGroup.start, end: currentGroup.end};
             added.push(addedItem);
+
         }
         else if (this._isGroupChanged(currentGroup)) {
             // there is a existing group which can be resized
             resized.push(currentGroup);
+        }
+        if (result != null) {
+            result.push(currentGroup);
         }
         // else: group with range but without start or end changed, this is single existing range, do nothing
     }
@@ -237,7 +239,6 @@ module.exports = class DiffRangeSet {
             iLeft = step.iLeft;
             iRight = step.iRight;
             newItem = newIsRight ? step.right : step.left;
-            console.log(iLeft, iRight);
             if (leftSubject == null) {
                 // this is only for first group
                 leftSubject = this._createGroup(step.left, true/* indicate that this group is existing one */);
@@ -247,52 +248,51 @@ module.exports = class DiffRangeSet {
                 left: ${this.pretty(step.left)}
                right: ${this.pretty(step.right)}
             movement: ${step.kind}
-               group: ${this.pretty(leftSubject)}
+         leftSubject: ${this.pretty(leftSubject)}
             relation: ${relation}`);
-            if (relation == null) {
+            if (relation == 'below') {
                 // we should close previous group
-                this._closeGroup(leftSubject, added, resized);
-                result.push(leftSubject);
+                this._finishGroup(leftSubject, added, resized, result);
                 leftSubject = null;
             }
             else if (relation == "remove") {
                 // right will completely remove current subject
                 if (leftSubject.existing) {
                     removed.push(leftSubject.existing);
-                    leftSubject = null;
                 }
                 else {
                     // ignore - this groups was created temporarily as a consequence of earlier iteration
                 }
+                leftSubject = null;
             }
-            else if (relation == 'middle') {
+            else if (relation == 'middle') {// todo tam gdzie powstają nowe zbiory - trzeba dodać iteracje, bo
                 // right will split subject into two subjects
                 var newSubject = this._createGroup({
                     start: step.right.end,
                     end: leftSubject.end
-                }, false/* indicate that this group is new one */)
+                }, false/* indicate that this group is new one */);
                 leftSubject.end = step.right.start;
-                resized.push(leftSubject);
-                result.push(leftSubject);
+                this._finishGroup(leftSubject, added, resized, result);
                 leftSubject = newSubject;
+                leftSet.splice(iLeft, 0, newSubject);
+                console.dir(leftSet);
+                maxILeft++; // we increase left set during
+                iRight++; // we know that right is no more needed - it is in the middle
             }
             else if (relation == 'top') {
                 leftSubject.start = step.right.end;
-                resized.push(leftSubject);
-                result.push(leftSubject);
             }
             else if (relation == 'bottom') {
-                leftSet.end = step.right.start;
-                resized.push(leftSubject);
-                result.push(leftSubject);
+                leftSubject.end = step.right.start;
+                this._finishGroup(leftSubject, added, resized, result);
+                leftSubject = null;
             }
         }
 
         // after all iterations, we have still one group open
         if (leftSubject) {
             // there is no group if we add empty set to empty set
-            this._closeGroup(leftSubject, added, resized);
-            result.push(leftSubject);
+            this._finishGroup(leftSubject, added, resized, result);
         }
 
         return this._result(result, added, removed, resized);

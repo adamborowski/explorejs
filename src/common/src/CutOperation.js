@@ -2,8 +2,11 @@ module.exports = class CutOperation {
     static getCutInfo(subject, cutter) {
         var start = this._getPointInfo(subject, cutter.start);
         var end = this._getPointInfo(subject, cutter.end);
-        if (end == 'above' || end == 'start' || start == 'end' || start == 'below') {
-            return null;
+        if (end == 'above' || end == 'start') {
+            return 'above';
+        }
+        if (start == 'end' || start == 'below') {
+            return 'below';
         }
         // we know that cutter intersects the subject somehow
         if ((start == 'start' || start == 'above') && (end == 'end' || end == 'below')) {

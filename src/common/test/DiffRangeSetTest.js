@@ -1,60 +1,9 @@
 var expect = require("chai").expect;
+var TestUtil = require("./TestUtil");
+var rng = TestUtil.rng;
 var DiffRangeSet = require("../src/DiffRangeSet");
 var gen = require('random-seed');
 var qintervals = require('qintervals');
-function rng(...items) {
-    if (items.length == 1 && typeof items[0] == 'string') {
-        items = items[0].match(/\[.*?]|(?:\d+\.?\d*\s+\d+\.?\d*)/g);
-        return items.map((str)=> {
-            var obj = {};
-            if (str.startsWith('[')) {
-                obj.existing = {};
-                var tokens = str.substring(1, str.length - 1).match(/\d+\.?\d*|\->/g);
-                var leftTokens, rightTokens;
-                if (tokens[1] == '->') {
-                    leftTokens = tokens.slice(0, 3);
-                    rightTokens = tokens.slice(3);
-                }
-                else {
-                    leftTokens = tokens.slice(0, 1);
-                    rightTokens = tokens.slice(1);
-                }
-                obj.existing.start = Number(leftTokens[0]);
-                obj.existing.end = Number(rightTokens[0]);
-
-                if (leftTokens.length == 1) {
-                    obj.start = Number(leftTokens[0]);
-                }
-                else {
-                    obj.start = Number(leftTokens[2]);
-                }
-                if (rightTokens.length == 1) {
-                    obj.end = Number(rightTokens[0]);
-                }
-                else {
-                    obj.end = Number(rightTokens[2]);
-                }
-                return obj;
-            }
-            else {
-                var tokens = str.split(/\s+/g);
-                return {
-                    start: Number(tokens[0]),
-                    end: Number(tokens[1])
-                }
-            }
-        });
-    }
-    var r = [];
-    if (items.length % 2 == 1) {
-        throw new Error('Odd number of numbers, cannot create ranges');
-    }
-    for (var i = 0; i < items.length; i += 2) {
-        r.push({start: items[i], end: items[i + 1]});
-    }
-    return r;
-}
-
 describe("DiffRangeSet", ()=> {
     before(()=> {
     });
@@ -492,7 +441,7 @@ describe("DiffRangeSet", ()=> {
                     result: rng('[0 2]')
                 });
             });
-            it("simple two non-overlapping ranges", ()=> {
+            it("simple two non-overlapping ranges 2", ()=> {
                 expect(DiffRangeSet.subtract(rng('0 2 5 6'), rng('2 5'))).to.deep.equal({
                     added: [],
                     removed: [],
@@ -501,11 +450,43 @@ describe("DiffRangeSet", ()=> {
                 });
             });
             it("split middle", ()=> {
-                expect(DiffRangeSet.subtract(rng('0 6 10 16'), rng('2 3 12 13'))).to.deep.equal({
-                    added: rng('3 6 13 16'),
+                expect(DiffRangeSet.subtract(rng('0 3 4 7'), rng('1 2 5 7'))).to.deep.equal({
+                    added: rng('2 3'),
                     removed: [],
-                    resized: rng('[0 6->2] [10 16->12]'),
-                    result: rng('[0 6->2] 3 6 [10 16->12] 13 16')
+                    resized: rng('[0 3->1] [4 7->5]'),
+                    result: rng('[0 3->1] 2 3 [4 7->5]')
+                });
+            });
+            it("split one range by many ranges", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 7 9 11'), rng('1 2 3 4 5 6 10 11'))).to.deep.equal({
+                    added: rng('2 3 4 5 6 7'),
+                    removed: [],
+                    resized: rng('[0 7->1] [9 11->10]'),
+                    result: rng('[0 7->1] 2 3 4 5 6 7 [9 11->10]')
+                });
+            });
+            it("split one range by many ranges v2", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 7 9 11'), rng('1 2 10 11'))).to.deep.equal({
+                    added: rng('2 7'),
+                    removed: [],
+                    resized: rng('[0 7->1] [9 11->10]'),
+                    result: rng('[0 7->1] 2 7 [9 11->10]')
+                });
+            });
+            it("split one range by many ranges v3", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 2 3 5'), rng('1 2 3 4'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: rng('[0 2->1] [3->4 5]'),
+                    result: rng('[0 2->1] [3->4 5]')
+                });
+            });
+            it("resize two range by one range", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 2 3 5'), rng('1 4'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: rng('[0 2->1] [3->4 5]'),
+                    result: rng('[0 2->1] [3->4 5]')
                 });
             });
             it("remove many ranges covered by one range", ()=> {
@@ -516,14 +497,93 @@ describe("DiffRangeSet", ()=> {
                     result: rng('[0 1] [8 9]')
                 });
             });
-            it("remove many ranges covered by one range", ()=> {
-                expect(DiffRangeSet.subtract(rng('0 1 2 3 4 5 6 7 8 9'), rng('1 7 8 9'))).to.deep.equal({
+            it("remove all ranges covered by one range", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 1 2 3 4 5 6 7 8 9'), rng('1 10'))).to.deep.equal({
                     added: [],
                     removed: rng('2 3 4 5 6 7 8 9'),
                     resized: [],
                     result: rng('[0 1]')
                 });
             });
+            it("remove all touching ranges", ()=> {
+                expect(DiffRangeSet.subtract(rng('1 2 2 10'), rng('1 8 9 19 21 26'))).to.deep.equal({
+                    added: [],
+                    removed: rng('1 2'),
+                    resized: rng('[2->8 10->9]'),
+                    result: rng('[2->8 10->9]')
+                });
+            });
+            it("remove range equal to last cutter", ()=> {
+                expect(DiffRangeSet.subtract(rng('1 2'), rng('0 1 1 2'))).to.deep.equal({
+                    added: [],
+                    removed: rng('1 2'),
+                    resized: [],
+                    result: []
+                });
+            });
+        });
+        describe('random tests', ()=> {
+
+            function randomRangeSet(size) {
+                var cnt = 0;
+                var output = [];
+                for (var i = 0; i < size; i++) {
+                    var randomSpace = rand.intBetween(0, 3);
+                    var randomSize = rand.intBetween(1, 10);
+                    output.push({start: cnt + randomSpace, end: cnt + randomSpace + randomSize});
+                    cnt += randomSpace + randomSize;
+                }
+                return output;
+            }
+
+            var rand = gen.create("DiffRangeSetTest subtract");
+
+            function find(range, array) {
+                return array.find((a)=>a.start == range.start && a.end == range.end)
+            }
+
+            for (var i = 0; i < 100; i++) {
+                it('#' + i, ()=> {
+                    var numLeft = rand.intBetween(0, 3);
+                    var numRight = rand.intBetween(0, 3);
+                    var left = randomRangeSet(numLeft);
+                    var right = randomRangeSet(numRight);
+
+                    console.log(left);
+                    console.log(right);
+
+                    var ret = DiffRangeSet.subtract(left, right);
+                    var cmp = qintervals.subtract(left, right).toObjects();
+                    console.log('ret', ret);
+                    console.log('cmp, ', cmp);
+                    var result = ret.result.map((a)=> {
+                        return {from: a.start, to: a.end}
+                    });
+                    expect(cmp).to.deep.equal(result);
+
+                    // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as qintervals
+
+                    var restore = left.filter((a)=>find(a, ret.removed) == null);
+                    for (var o of ret.resized) {
+                        var itemInLeft = find(o.existing, left);
+                        itemInLeft.start = o.start;
+                        itemInLeft.end = o.end;
+                    }
+
+                    for (var o of ret.added) {
+                        restore.push(o);
+                    }
+                    restore.sort((a, b)=>a.start - b.start);
+
+                    expect(restore).to.deep.equal(cmp.map((a)=> {
+                        return {start: a.from, end: a.to}
+                    }));
+
+
+                });
+            }
+
+
         });
     });
 });
