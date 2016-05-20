@@ -109,6 +109,10 @@ class ParallelRangeSetIterator {
         return this._leftMoved ? this._left : this._right;
     }
 
+    get LeftIsFromBuffer() {
+        return this._leftIsFromBuffer;
+    }
+
     /**
      * @private
      */
@@ -132,10 +136,12 @@ class ParallelRangeSetIterator {
     _moveLeft() {
         if (this._leftBuffer.length) {
             this._left = this._leftBuffer.shift();
+            this._leftIsFromBuffer = true;
         }
         else {
             this._iLeft++;
             this._left = this._leftSet[this._iLeft];
+            this._leftIsFromBuffer = false;
         }
         this._leftMoved = true;
     }

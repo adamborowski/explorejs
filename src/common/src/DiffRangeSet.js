@@ -126,63 +126,6 @@ module.exports = class DiffRangeSet {
         return group.start != group.existing.start || group.end != group.existing.end;
     }
 
-    /**
-     * returns new pair to compare in comparable range set.
-     * Pairs are created subsequently by order of presence in each set
-     * @param leftSet
-     * @param rightSet
-     * @param iLeft
-     * @param iRight
-     * @returns {*}
-     * @private
-     */
-    static _computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
-        var left = leftSet[iLeft];
-        var right = rightSet[iRight];
-        var nextLeft = leftSet[iLeft + 1];
-        var nextRight = rightSet[iRight + 1];
-
-        var leftPoint = Infinity, rightPoint = Infinity;
-
-        if (nextLeft) {
-            leftPoint = nextLeft.start;
-        }
-        if (nextRight) {
-            rightPoint = nextRight.start;
-        }
-        if (nextLeft && nextRight && leftPoint == rightPoint) {
-            if (left || right) {
-                if (left) {
-                    leftPoint = left.end;
-                }
-                else {
-                    leftPoint = -Infinity;
-                }
-                if (right) {
-                    rightPoint = right.end;
-                }
-                else {
-                    rightPoint = -Infinity;
-                }
-            }
-        }
-
-        if (!isFinite(rightPoint) && !isFinite(leftPoint)) {
-            return null;
-        }
-
-        if (leftPoint <= rightPoint) {
-            if (maxILeft === iLeft) {
-                return null;
-            }
-            return {left: nextLeft, right, iLeft: iLeft + 1, iRight, kind: 'left'};
-        } else {
-            if (maxIRight === iRight) {
-                return null;
-            }
-            return {left, right: nextRight, iLeft, iRight: iRight + 1, kind: 'right'};
-        }
-    }
 
     static _computeOverlapRelation(cmp, subject) {
         if (subject == null) {
@@ -225,27 +168,22 @@ module.exports = class DiffRangeSet {
      */
     static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
         var result = [], added = [], removed = [], resized = [];
-        iLeft = iLeft == null ? -1 : iLeft - 1;
-        iRight = iRight == null ? 0 : iRight; // we always start from existing cutter
 
-        var step;
-        var newIsRight, newIsLeft;
-        var leftSubject = null, relation, newItem;
-        while ((step = this._computeNextStep(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight)) != null) {
-            newIsRight = step.kind == 'right';
-            newIsLeft = !newIsRight;
-            iLeft = step.iLeft;
-            iRight = step.iRight;
-            newItem = newIsRight ? step.right : step.left;
-            if (leftSubject == null) {
-                // this is only for first group
-                leftSubject = this._createGroup(step.left, true/* indicate that this group is existing one */);
-            }
-            relation = CutOperation.getCutInfo(leftSubject, step.right);
+        var leftSubject = null, relation;
+        var iteration = new ParallelRangeSetIterator(leftSet, rightSet, {
+            startLeft: iLeft,
+            startRight: iRight,
+            endLeft: maxILeft,
+            endRight: maxIRight
+        });
+        iteration.next(); // we omit the first pair (null, X) or (X, null)
+        while (iteration.next()) {
+            leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */);
+            relation = CutOperation.getCutInfo(leftSubject, iteration.Right);
             console.log(`========
-                left: ${this.pretty(step.left)}
-               right: ${this.pretty(step.right)}
-            movement: ${step.kind}
+                left: ${this.pretty(iteration.Left)}
+               right: ${this.pretty(iteration.Right)}
+            movement: ${iteration.LeftMoved ? 'left' : 'right'}
          leftSubject: ${this.pretty(leftSubject)}
             relation: ${relation}`);
             if (relation == 'below') {
@@ -265,23 +203,22 @@ module.exports = class DiffRangeSet {
             }
             else if (relation == 'middle') {// todo tam gdzie powstają nowe zbiory - trzeba dodać iteracje, bo
                 // right will split subject into two subjects
-                var newSubject = this._createGroup({
-                    start: step.right.end,
-                    end: leftSubject.end
-                }, false/* indicate that this group is new one */);
-                leftSubject.end = step.right.start;
+                var newStart = iteration.Right.end;
+                var newEnd = leftSubject.end;
+                leftSubject.end = iteration.Right.start;
                 this._finishGroup(leftSubject, added, resized, result);
-                leftSubject = newSubject;
-                leftSet.splice(iLeft, 0, newSubject);
-                console.dir(leftSet);
-                maxILeft++; // we increase left set during
-                iRight++; // we know that right is no more needed - it is in the middle
+                iteration.insertAsNextLeft({
+                    start: newStart,
+                    end: newEnd
+                });
+                leftSubject = null;
+
             }
             else if (relation == 'top') {
-                leftSubject.start = step.right.end;
+                leftSubject.start = iteration.Right.end;
             }
             else if (relation == 'bottom') {
-                leftSubject.end = step.right.start;
+                leftSubject.end = iteration.Right.start;
                 this._finishGroup(leftSubject, added, resized, result);
                 leftSubject = null;
             }
