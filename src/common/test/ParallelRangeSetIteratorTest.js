@@ -107,6 +107,152 @@ describe('ParallelRangeSetIterator', ()=> {
                 [G, P, 'right']
             ]);
         });
+        it('constrained iteration without adding elements', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(2, 5);
+            B = addLeft(8, 9);
+            C = addLeft(11, 12);
+            D = addLeft(14, 15);
+            E = addLeft(17, 18);
+            F = addLeft(20, 24);
+            G = addLeft(26, 28);
+            K = addRight(1, 3);
+            L = addRight(5, 17);
+            M = addRight(21, 22);
+            N = addRight(23, 24);
+            O = addRight(31, 31);
+            P = addRight(33, 34);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet, {
+                startLeft: 2,
+                startRight: 1,
+                endLeft: 5,
+                endRight: 2
+            });
+            while (iterator.next()) {
+                addStep(iterator);
+            }
+            expect(steps).to.deep.equal([
+                [B, L, 'right'],
+                [C, L, 'left'],
+                [D, L, 'left'],
+                [E, L, 'left'],
+                [F, L, 'left'],
+                [F, M, 'right']
+            ]);
+        });
+        it('constrained iteration with adding elements', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(2, 5);
+            B = addLeft(8, 9);
+            C = addLeft(11, 12);
+            D = addLeft(14, 15);
+            E = addLeft(17, 18);
+            F = addLeft(20, 24);
+            G = addLeft(26, 28);
+            K = addRight(1, 3);
+            L = addRight(5, 17);
+            M = addRight(21, 22);
+            N = addRight(23, 24);
+            O = addRight(31, 31);
+            P = addRight(33, 34);
+            var X = {start: 14.5, end: 14.6};
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet, {
+                startLeft: 2,
+                startRight: 1,
+                endLeft: 5,
+                endRight: 3
+            });
+            while (iterator.next()) {
+                addStep(iterator);
+                if (iterator.Current == D) {
+                    iterator.insertAsNextLeft(X);
+                }
+            }
+            expect(steps).to.deep.equal([
+                [B, L, 'right'],
+                [C, L, 'left'],
+                [D, L, 'left'],
+                [X, L, 'left'],
+                [E, L, 'left'],
+                [F, L, 'left'],
+                [F, M, 'right'],
+                [F, N, 'right']
+            ]);
+        });
         it('simple iteration with adding elements', ()=> {
             /*
              *  1    / K
