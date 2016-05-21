@@ -362,6 +362,14 @@ var qintervals = require('qintervals');
                     result: rng('[0 1] [8 9]')
                 });
             });
+            it("remove many ranges covered by one range", ()=> {
+                expect(DiffRangeSet.subtract(rng('2 3 5 6 8 11'), rng('2 11 14 19 21 30'))).to.deep.equal({
+                    added: [],
+                    removed: rng('2 3 5 6 8 11'),
+                    resized: [],
+                    result: []
+                });
+            });
             it("remove all ranges covered by one range", ()=> {
                 expect(DiffRangeSet.subtract(rng('0 1 2 3 4 5 6 7 8 9'), rng('1 10'))).to.deep.equal({
                     added: [],
@@ -442,10 +450,16 @@ var qintervals = require('qintervals');
                     result: rng('[0 1] [1 10->2] 6 9')
                 });
             });
+            it("first removed by equal, second stays, last splitted", ()=> {
+                expect(DiffRangeSet.subtract(rng('1 2 3 4 5 6 7 8'), rng('0 0.5 100 101'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[1 2] [3 4] [5 6] [7 8]')
+                });
+            });
         });
         describe('random tests', ()=> {
-
-
 
             var rand = gen.create("DiffRangeSetTest subtract");
 
@@ -453,24 +467,24 @@ var qintervals = require('qintervals');
                 return array.find((a)=>a.start == range.start && a.end == range.end)
             }
 
+            var cnt = -1;
+
             for (var i = 0; i < 1000; i++) {
                 it('#' + i, ()=> {
+                    cnt++;
                     var numLeft = rand.intBetween(0, 3);
                     var numRight = rand.intBetween(0, 3);
                     var left = TestUtil.randomRangeSet(numLeft, rand);
                     var right = TestUtil.randomRangeSet(numRight, rand);
 
-                    console.log(left);
-                    console.log(right);
-
                     var ret = DiffRangeSet.subtract(left, right);
-                    var cmp = qintervals.subtract(left, right).toObjects();
+                    var cmp = qintervals.subtract(left, right).subtract(right).toObjects();//dobule subract due to https://github.com/exjs/qintervals/issues/1
                     var result = qintervals.union(ret.result.map((a)=> {
                         return {from: a.start, to: a.end}
                     })).toObjects();
-                    console.log('ret', ret);
-                    console.log('cmp, ', cmp);
-                    console.log('result, ', result);
+                    // console.log('ret', ret);
+                    // console.log('cmp, ', cmp);
+                    // console.log('result, ', result);
 
                     expect(result).to.deep.equal(cmp);
 
@@ -489,7 +503,7 @@ var qintervals = require('qintervals');
                     restore.sort((a, b)=>a.start - b.start);
 
                     restore = qintervals.union(restore).toObjects();
-                    console.log('restore', restore);
+                    // console.log('restore', restore);
 
                     expect(restore).to.deep.equal(cmp);
 

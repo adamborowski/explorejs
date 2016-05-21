@@ -53,12 +53,12 @@ module.exports = class DiffRangeSet {
                 currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved);
             }
             relation = this._computeOverlapRelation(currentGroup, iterator.Current);
-            console.log(`========
-                left: ${this.pretty(iterator.left)}
-               right: ${this.pretty(iterator.right)}
-            movement: ${iterator.LeftMoved ? 'left' : 'right'}
-               group: ${this.pretty(currentGroup)}
-            relation: ${this.pretty(relation)}`);
+            // console.log(`========
+            //     left: ${this.pretty(iterator.left)}
+            //    right: ${this.pretty(iterator.right)}
+            // movement: ${iterator.LeftMoved ? 'left' : 'right'}
+            //    group: ${this.pretty(currentGroup)}
+            // relation: ${this.pretty(relation)}`);
 
             if (relation.isIncluded || relation.isResizing || relation.isEqual) {
                 if (iterator.LeftMoved) {
@@ -177,6 +177,7 @@ module.exports = class DiffRangeSet {
             endRight: maxIRight,
             pairMode: true
         });
+        var leftSubject = null;
 
         var addResult = (group) => {
             result.push(group);
@@ -190,22 +191,23 @@ module.exports = class DiffRangeSet {
             leftSubject = null;
         };
         while (iteration.next()) {
-            if (iteration.Left) {
-                var leftSubject = this._createGroup(iteration.Left, !iteration.Left.created/* indicate if this group is existing one */);
+            if (leftSubject == null && iteration.Left) {
+                leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */);
             }
             relation = CutOperation.getCutInfo(leftSubject, iteration.Right);
 
-            console.log(`========
-                left: ${this.pretty(iteration.Left)}
-         leftSubject: ${this.pretty(leftSubject)}
-               right: ${this.pretty(iteration.Right)}
-            movement: ${iteration.LeftMoved ? 'left' : 'right'}, from buffer: ${iteration.LeftIsFromBuffer}
-            relation: ${relation}`);
+         //    console.log(`========
+         //        left: ${this.pretty(iteration.Left)}
+         // leftSubject: ${this.pretty(leftSubject)}
+         //       right: ${this.pretty(iteration.Right)}
+         //    movement: ${iteration.LeftMoved ? 'left' : 'right'}, from buffer: ${iteration.LeftIsFromBuffer}
+         //    relation: ${relation}`);
             switch (relation) {
                 case null:
                     if (leftSubject) {
                         result.push(leftSubject);
                     }
+                    leftSubject = null;
                     break;
                 case 'remove':
                     // right will completely remove current subject
@@ -224,23 +226,18 @@ module.exports = class DiffRangeSet {
                     var newEnd = leftSubject.end;
                     leftSubject.end = iteration.Right.start;
                     addResult(leftSubject);
-                    iteration.insertAsNextLeft({
+                    var nextLeft = {
                         start: newStart,
-                        end: newEnd,
-                        created: true
-                    });
+                        end: newEnd
+                    };
+                    iteration.insertAsNextLeft(nextLeft);
                     iteration.requestMoveRight(); // we are sure that this 'middle' element is not overlapping the future elements
 
                     break;
                 case 'top':
                     // if we cut the top of left range, we should reduce the range and put it back into the queue, then force to use this range in next step
                     leftSubject.start = iteration.Right.end;// maybe will be put into resized in future iteration
-                    iteration.insertAsNextLeft({
-                        start: leftSubject.start,
-                        end: leftSubject.end,
-                        reinserted: true
-                    });
-                    iteration.requestMoveLeft();
+                    iteration.requestSuspendLeft(); // for next step, do not override leftSubject in next iteration
                     iteration.requestMoveRight();
                     break;
                 case 'bottom':
@@ -250,6 +247,11 @@ module.exports = class DiffRangeSet {
                     addResult(leftSubject);
                     break;
                 case 'above':
+                    var nextItem = iteration._peekNextRight();
+                    var cutInfo = CutOperation.getCutInfo(leftSubject, nextItem);
+                    if (cutInfo == 'below' || cutInfo == null) {
+                        addResult(leftSubject);
+                    }
                     break;
                 case 'below':
                     // any right range below the left one will enter this execution path

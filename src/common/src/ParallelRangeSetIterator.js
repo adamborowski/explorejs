@@ -23,6 +23,8 @@ class ParallelRangeSetIterator {
         this._right = rightSet[this._iRight] || null;
         this._moveLeftRequested = false;
         this._moveRightRequested = false;
+        this._suspendLeftRequested = false;
+        this._suspendRightRequested = false;
         this.counter = -1;
         this.leftCounter = -1;
         this.rightCounter = -1;
@@ -32,11 +34,15 @@ class ParallelRangeSetIterator {
      * @return {Boolean} true if next pair is available
      */
     next() {
-        this.counter++; 
+        this.counter++;
         var moveLeftRequested = this._moveLeftRequested;
         var moveRightRequested = this._moveRightRequested;
+        var suspendLeftRequested = this._suspendLeftRequested;
+        var suspendRightRequested = this._suspendRightRequested;
         this._moveLeftRequested = false;
         this._moveRightRequested = false;
+        this._suspendLeftRequested = false;
+        this._suspendRightRequested = false;
         var left = this._left;
         var right = this._right;
         var nextLeft = this._peekNextLeft();
@@ -44,11 +50,11 @@ class ParallelRangeSetIterator {
 
         if (this._options.pairMode && this.counter == 0) {
             var moved = false;
-            if (left == null && this.CanMoveLeft) {
+            if (left == null && this.CanMoveLeft && !suspendLeftRequested) {
                 this._moveLeft();
                 moved = true;
             }
-            if (right == null && this.CanMoveRight) {
+            if (right == null && this.CanMoveRight && !suspendRightRequested) {
                 this._moveRight();
                 moved = true;
             }
@@ -95,7 +101,9 @@ class ParallelRangeSetIterator {
             if (moveRightRequested) {
                 this._tryMoveRight(); // do this before actual move to not override move flag
             }
-            this._moveLeft();
+            if (!suspendLeftRequested) {
+                this._moveLeft();
+            }
             return true;
         } else {
             if (this._options.endRight === this._iRight) {
@@ -104,7 +112,9 @@ class ParallelRangeSetIterator {
             if (moveLeftRequested) {
                 this._tryMoveLeft(); // do this before actual move to not override move flag
             }
-            this._moveRight();
+            if (!suspendRightRequested) {
+                this._moveRight();
+            }
             return true;
         }
     }
@@ -153,6 +163,14 @@ class ParallelRangeSetIterator {
 
     requestMoveRight() {
         this._moveRightRequested = true;
+    }
+
+    requestSuspendLeft() {
+        this._suspendLeftRequested = true;
+    }
+
+    requestSuspendRight() {
+        this._suspendRightRequested = true;
     }
 
     /**
