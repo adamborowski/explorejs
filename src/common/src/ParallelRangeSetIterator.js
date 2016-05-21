@@ -19,12 +19,18 @@ class ParallelRangeSetIterator {
         this._leftBuffer = [];
         this._left = leftSet[this._iLeft] || null; // most cases: leftSet[-1] = null
         this._right = rightSet[this._iRight] || null;
+        this._moveLeftRequested = false;
+        this._moveRightRequested = false;
     }
 
     /**
      * @return {Boolean} true if next pair is available
      */
     next() {
+        var moveLeftRequested = this._moveLeftRequested;
+        var moveRightRequested = this._moveRightRequested;
+        this._moveLeftRequested = false;
+        this._moveRightRequested = false;
         var left = this._left;
         var right = this._right;
         var nextLeft = this._peekNextLeft();
@@ -64,11 +70,17 @@ class ParallelRangeSetIterator {
             if (this._options.endLeft === this._iLeft) {
                 return false;
             }
+            if (moveRightRequested) {
+                this._moveRight(); // do this before actual move to not override move flag
+            }
             this._moveLeft();
             return true;
         } else {
             if (this._options.endRight === this._iRight) {
                 return false;
+            }
+            if (this._moveLeftRequested) {
+                this._moveLeft(); // do this before actual move to not override move flag
             }
             this._moveRight();
             return true;
@@ -111,6 +123,14 @@ class ParallelRangeSetIterator {
 
     get LeftIsFromBuffer() {
         return this._leftIsFromBuffer;
+    }
+
+    requestMoveLeft() {
+        this._moveLeftRequested = true;
+    }
+
+    requestMoveRight() {
+        this._moveRightRequested = true;
     }
 
     /**

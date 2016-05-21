@@ -1,5 +1,11 @@
 module.exports = class CutOperation {
     static getCutInfo(subject, cutter) {
+        if(subject==null){
+            return null;
+        }
+        if(cutter == null){
+            return null;
+        }
         var start = this._getPointInfo(subject, cutter.start);
         var end = this._getPointInfo(subject, cutter.end);
         if (end == 'above' || end == 'start') {

@@ -364,12 +364,12 @@ var qintervals = require('qintervals');
                     result: rng('[0 1]')
                 });
             });
-            it("remove all touching ranges", ()=> {
-                expect(DiffRangeSet.subtract(rng('1 2 2 10'), rng('1 8 9 19 21 26'))).to.deep.equal({
+            it("remove with additional ranges", ()=> {
+                expect(DiffRangeSet.subtract(rng('1 2 3 10'), rng('1 8 9 19 21 26 27 28 29 30 31 32 33 34'))).to.deep.equal({
                     added: [],
                     removed: rng('1 2'),
-                    resized: rng('[2->8 10->9]'),
-                    result: rng('[2->8 10->9]')
+                    resized: rng('[3->8 10->9]'),
+                    result: rng('[3->8 10->9]')
                 });
             });
             it("remove range equal to last cutter", ()=> {
@@ -380,20 +380,18 @@ var qintervals = require('qintervals');
                     result: []
                 });
             });
+            it("remove from empty set", ()=> {
+                expect(DiffRangeSet.subtract([], rng('0 1 1 2'))).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: []
+                });
+            });
         });
         describe('random tests', ()=> {
 
-            function randomRangeSet(size) {
-                var cnt = 0;
-                var output = [];
-                for (var i = 0; i < size; i++) {
-                    var randomSpace = rand.intBetween(0, 3);
-                    var randomSize = rand.intBetween(1, 10);
-                    output.push({start: cnt + randomSpace, end: cnt + randomSpace + randomSize});
-                    cnt += randomSpace + randomSize;
-                }
-                return output;
-            }
+
 
             var rand = gen.create("DiffRangeSetTest subtract");
 
@@ -405,8 +403,8 @@ var qintervals = require('qintervals');
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 3);
                     var numRight = rand.intBetween(0, 3);
-                    var left = randomRangeSet(numLeft);
-                    var right = randomRangeSet(numRight);
+                    var left = TestUtil.randomRangeSet(numLeft, rand);
+                    var right = TestUtil.randomRangeSet(numRight, rand);
 
                     console.log(left);
                     console.log(right);

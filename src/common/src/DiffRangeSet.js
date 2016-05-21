@@ -177,19 +177,36 @@ module.exports = class DiffRangeSet {
             endRight: maxIRight
         });
         iteration.next(); // we omit the first pair (null, X) or (X, null)
+        var lastSurrived = null;
+
+        var groupSurvived = (group) => {
+            if (!this._rangeEquals(lastSurrived, group)) {
+                lastSurrived = group;
+                result.push(lastSurrived);
+                if (lastSurrived.existing == null) {
+                    added.push(lastSurrived);
+                }
+                if (this._isGroupChanged(lastSurrived)) {
+                    resized.push(lastSurrived);
+                }
+            }
+            iteration.requestMoveLeft();
+            leftSubject = null;
+        };
         while (iteration.next()) {
-            leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */);
+            if (leftSubject == null && iteration.Left != null) {
+                leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */);
+            }
             relation = CutOperation.getCutInfo(leftSubject, iteration.Right);
             console.log(`========
                 left: ${this.pretty(iteration.Left)}
+         leftSubject: ${this.pretty(leftSubject)}
                right: ${this.pretty(iteration.Right)}
             movement: ${iteration.LeftMoved ? 'left' : 'right'}
-         leftSubject: ${this.pretty(leftSubject)}
             relation: ${relation}`);
             if (relation == 'below') {
-                // we should close previous group
-                this._finishGroup(leftSubject, added, resized, result);
-                leftSubject = null;
+                // any right range below the left one will enter this execution path
+                groupSurvived(leftSubject);
             }
             else if (relation == "remove") {
                 // right will completely remove current subject
@@ -201,36 +218,54 @@ module.exports = class DiffRangeSet {
                 }
                 leftSubject = null;
             }
-            else if (relation == 'middle') {// todo tam gdzie powstają nowe zbiory - trzeba dodać iteracje, bo
+            else if (relation == 'middle') {
                 // right will split subject into two subjects
                 var newStart = iteration.Right.end;
                 var newEnd = leftSubject.end;
                 leftSubject.end = iteration.Right.start;
-                this._finishGroup(leftSubject, added, resized, result);
+                groupSurvived(leftSubject);
                 iteration.insertAsNextLeft({
                     start: newStart,
                     end: newEnd
                 });
-                leftSubject = null;
+                iteration.requestMoveRight(); // we are sure that this 'middle' element is not overlapping the future elements
 
             }
             else if (relation == 'top') {
-                leftSubject.start = iteration.Right.end;
+                leftSubject.start = iteration.Right.end;// maybe will be put into resized in future iteration
             }
             else if (relation == 'bottom') {
+                // warto wtedy wymusic moveLeft w następnej iteracij
+                // jeśli usuwamy dół obiektu, mamy prawo go zakonczyc
                 leftSubject.end = iteration.Right.start;
-                this._finishGroup(leftSubject, added, resized, result);
-                leftSubject = null;
+                groupSurvived(leftSubject);
             }
         }
 
         // after all iterations, we have still one group open
         if (leftSubject) {
             // there is no group if we add empty set to empty set
-            this._finishGroup(leftSubject, added, resized, result);
+            groupSurvived(leftSubject);
         }
 
         return this._result(result, added, removed, resized);
+    }
+
+    static _rangeEquals(a, b) {
+        if (a == b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        if (a.existing != null || b.existing != null) {
+            console.log(a, b)
+            return this._rangeEquals(a.existing, b.existing);
+        }
+        if (a.start == b.start && a.end == b.end) {
+            return true;
+        }
+        return false;
     }
 
     static _result(result, added, removed, resized) {
