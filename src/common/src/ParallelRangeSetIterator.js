@@ -1,12 +1,14 @@
 var _ = require('underscore');
 var defaultOptions = {
-    startLeft: 0, startRight: 0, endLeft: null, endRight: null
+    startLeft: 0, startRight: 0, endLeft: null, endRight: null,
+    pairMode: false // assure pairs are changing (starting with both left and right set + edge cases)
 };
 /**
- * Iterator for comparing two ordered sets pair by pair.
+ * Iterator for two ordered sets. Each iteration it chooses the next closest range from left or right set.
  * It supports adding extra range during iterating.
  * It executes in place with memory complexity O(1)
  * It is needed to perform addition and substraction operations for two oreded range sets.
+ * TOTO add special mode 'pairMode' to iterate over pairs not over next closed range from any set
  * @type {ParallelRangeSetIterator}
  */
 class ParallelRangeSetIterator {
@@ -21,12 +23,16 @@ class ParallelRangeSetIterator {
         this._right = rightSet[this._iRight] || null;
         this._moveLeftRequested = false;
         this._moveRightRequested = false;
+        this.counter = -1;
+        this.leftCounter = -1;
+        this.rightCounter = -1;
     }
 
     /**
      * @return {Boolean} true if next pair is available
      */
     next() {
+        this.counter++; 
         var moveLeftRequested = this._moveLeftRequested;
         var moveRightRequested = this._moveRightRequested;
         this._moveLeftRequested = false;
@@ -36,8 +42,22 @@ class ParallelRangeSetIterator {
         var nextLeft = this._peekNextLeft();
         var nextRight = this._peekNextRight();
 
+        if (this._options.pairMode && this.counter == 0) {
+            var moved = false;
+            if (left == null && this.CanMoveLeft) {
+                this._moveLeft();
+                moved = true;
+            }
+            if (right == null && this.CanMoveRight) {
+                this._moveRight();
+                moved = true;
+            }
+            return moved;
+        }
+
 
         var leftPoint = Infinity, rightPoint = Infinity;
+
 
         if (nextLeft) {
             leftPoint = nextLeft.start;
@@ -45,6 +65,8 @@ class ParallelRangeSetIterator {
         if (nextRight) {
             rightPoint = nextRight.start;
         }
+
+
         if (nextLeft && nextRight && leftPoint == rightPoint) {
             if (left || right) {
                 if (left) {
@@ -71,7 +93,7 @@ class ParallelRangeSetIterator {
                 return false;
             }
             if (moveRightRequested) {
-                this._moveRight(); // do this before actual move to not override move flag
+                this._tryMoveRight(); // do this before actual move to not override move flag
             }
             this._moveLeft();
             return true;
@@ -79,8 +101,8 @@ class ParallelRangeSetIterator {
             if (this._options.endRight === this._iRight) {
                 return false;
             }
-            if (this._moveLeftRequested) {
-                this._moveLeft(); // do this before actual move to not override move flag
+            if (moveLeftRequested) {
+                this._tryMoveLeft(); // do this before actual move to not override move flag
             }
             this._moveRight();
             return true;
@@ -150,10 +172,19 @@ class ParallelRangeSetIterator {
         return this._rightSet[this._iRight + 1];
     }
 
+    get CanMoveLeft() {
+        return this._peekNextLeft() != null;
+    }
+
+    get CanMoveRight() {
+        return this._peekNextRight() != null;
+    }
+
     /**
      * @private
      */
     _moveLeft() {
+        this.leftCounter++;
         if (this._leftBuffer.length) {
             this._left = this._leftBuffer.shift();
             this._leftIsFromBuffer = true;
@@ -170,9 +201,22 @@ class ParallelRangeSetIterator {
      * @private
      */
     _moveRight() {
+        this.rightCounter++;
         this._iRight++;
         this._leftMoved = false;
         this._right = this._rightSet[this._iRight];
+    }
+
+    _tryMoveLeft() {
+        if (this._iLeft < this._leftSet.length && (this._options.endLeft == null || this._iLeft < this._options.endLeft)) {
+            this._moveLeft();
+        }
+    }
+
+    _tryMoveRight() {
+        if (this._iRight < this._rightSet.length - 1 && (this._options.endRight == null || this._iRight < this._options.endRight)) {
+            this._moveRight();
+        }
     }
 }
 module.exports = ParallelRangeSetIterator;

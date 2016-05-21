@@ -169,83 +169,99 @@ module.exports = class DiffRangeSet {
     static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
         var result = [], added = [], removed = [], resized = [];
 
-        var leftSubject = null, relation;
+        var relation;
         var iteration = new ParallelRangeSetIterator(leftSet, rightSet, {
             startLeft: iLeft,
             startRight: iRight,
             endLeft: maxILeft,
-            endRight: maxIRight
+            endRight: maxIRight,
+            pairMode: true
         });
-        iteration.next(); // we omit the first pair (null, X) or (X, null)
-        var lastSurrived = null;
 
-        var groupSurvived = (group) => {
-            if (!this._rangeEquals(lastSurrived, group)) {
-                lastSurrived = group;
-                result.push(lastSurrived);
-                if (lastSurrived.existing == null) {
-                    added.push(lastSurrived);
-                }
-                if (this._isGroupChanged(lastSurrived)) {
-                    resized.push(lastSurrived);
-                }
+        var addResult = (group) => {
+            result.push(group);
+            if (group.existing == null) {
+                added.push(group);
+            }
+            if (this._isGroupChanged(group)) {
+                resized.push(group);
             }
             iteration.requestMoveLeft();
             leftSubject = null;
         };
         while (iteration.next()) {
-            if (leftSubject == null && iteration.Left != null) {
-                leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */);
+            if (iteration.Left) {
+                var leftSubject = this._createGroup(iteration.Left, !iteration.Left.created/* indicate if this group is existing one */);
             }
             relation = CutOperation.getCutInfo(leftSubject, iteration.Right);
+
             console.log(`========
                 left: ${this.pretty(iteration.Left)}
          leftSubject: ${this.pretty(leftSubject)}
                right: ${this.pretty(iteration.Right)}
-            movement: ${iteration.LeftMoved ? 'left' : 'right'}
+            movement: ${iteration.LeftMoved ? 'left' : 'right'}, from buffer: ${iteration.LeftIsFromBuffer}
             relation: ${relation}`);
-            if (relation == 'below') {
-                // any right range below the left one will enter this execution path
-                groupSurvived(leftSubject);
-            }
-            else if (relation == "remove") {
-                // right will completely remove current subject
-                if (leftSubject.existing) {
-                    removed.push(leftSubject.existing);
-                }
-                else {
-                    // ignore - this groups was created temporarily as a consequence of earlier iteration
-                }
-                leftSubject = null;
-            }
-            else if (relation == 'middle') {
-                // right will split subject into two subjects
-                var newStart = iteration.Right.end;
-                var newEnd = leftSubject.end;
-                leftSubject.end = iteration.Right.start;
-                groupSurvived(leftSubject);
-                iteration.insertAsNextLeft({
-                    start: newStart,
-                    end: newEnd
-                });
-                iteration.requestMoveRight(); // we are sure that this 'middle' element is not overlapping the future elements
+            switch (relation) {
+                case null:
+                    if (leftSubject) {
+                        result.push(leftSubject);
+                    }
+                    break;
+                case 'remove':
+                    // right will completely remove current subject
+                    if (leftSubject.existing) {
+                        removed.push(leftSubject.existing);
+                    }
+                    else {
+                        // ignore - this groups was created temporarily as a consequence of earlier iteration
+                    }
+                    iteration.requestMoveLeft();
+                    leftSubject = null;
+                    break;
+                case 'middle':
+                    // right will split subject into two subjects
+                    var newStart = iteration.Right.end;
+                    var newEnd = leftSubject.end;
+                    leftSubject.end = iteration.Right.start;
+                    addResult(leftSubject);
+                    iteration.insertAsNextLeft({
+                        start: newStart,
+                        end: newEnd,
+                        created: true
+                    });
+                    iteration.requestMoveRight(); // we are sure that this 'middle' element is not overlapping the future elements
 
-            }
-            else if (relation == 'top') {
-                leftSubject.start = iteration.Right.end;// maybe will be put into resized in future iteration
-            }
-            else if (relation == 'bottom') {
-                // warto wtedy wymusic moveLeft w następnej iteracij
-                // jeśli usuwamy dół obiektu, mamy prawo go zakonczyc
-                leftSubject.end = iteration.Right.start;
-                groupSurvived(leftSubject);
+                    break;
+                case 'top':
+                    // if we cut the top of left range, we should reduce the range and put it back into the queue, then force to use this range in next step
+                    leftSubject.start = iteration.Right.end;// maybe will be put into resized in future iteration
+                    iteration.insertAsNextLeft({
+                        start: leftSubject.start,
+                        end: leftSubject.end,
+                        reinserted: true
+                    });
+                    iteration.requestMoveLeft();
+                    iteration.requestMoveRight();
+                    break;
+                case 'bottom':
+                    // warto wtedy wymusic moveLeft w następnej iteracij
+                    // jeśli usuwamy dół obiektu, mamy prawo go zakonczyc
+                    leftSubject.end = iteration.Right.start;
+                    addResult(leftSubject);
+                    break;
+                case 'above':
+                    break;
+                case 'below':
+                    // any right range below the left one will enter this execution path
+                    addResult(leftSubject);
+                    break;
             }
         }
 
         // after all iterations, we have still one group open
-        if (leftSubject) {
+        if (leftSubject && {top: true, above: true, middle: true}[relation] == true) {
             // there is no group if we add empty set to empty set
-            groupSurvived(leftSubject);
+            addResult(leftSubject);
         }
 
         return this._result(result, added, removed, resized);
@@ -259,7 +275,6 @@ module.exports = class DiffRangeSet {
             return false;
         }
         if (a.existing != null || b.existing != null) {
-            console.log(a, b)
             return this._rangeEquals(a.existing, b.existing);
         }
         if (a.start == b.start && a.end == b.end) {

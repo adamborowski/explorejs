@@ -250,12 +250,18 @@ var qintervals = require('qintervals');
             function find(range, array) {
                 return array.find((a)=>a.start == range.start && a.end == range.end)
             }
-            for (var i = 0; i < 100; i++) {
+
+            for (var i = 0; i < 1000; i++) {
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 10);
                     var numRight = rand.intBetween(0, 10);
                     var left = randomRangeSet(numLeft);
                     var right = randomRangeSet(numRight);
+
+                    console.log(left);
+                    console.log(right);
+
+
                     var ret = DiffRangeSet.add(left, right);
                     var cmp = qintervals.union(left, right).toObjects();
                     var result = ret.result.map((a)=> {
@@ -388,6 +394,54 @@ var qintervals = require('qintervals');
                     result: []
                 });
             });
+            it("remove whole range, then split in the middle", ()=> {
+                expect(DiffRangeSet.subtract(rng('1 10 12 15 15 25'), rng('0 10 11 12 15 18'))).to.deep.equal({
+                    added: [],
+                    removed: rng('1 10'),
+                    resized: rng('[15->18 25]'),
+                    result: rng('[12 15] [15->18 25]')
+                });
+            });
+            it("split first range", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 10 13 15 15 16'), rng('3 4'))).to.deep.equal({
+                    added: rng('4 10'),
+                    removed: [],
+                    resized: rng('[0 10->3]'),
+                    result: rng('[0 10->3] 4 10 [13 15] [15 16]')
+                });
+            });
+            it("subtract empty set", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 1'), [])).to.deep.equal({
+                    added: [],
+                    removed: [],
+                    resized: [],
+                    result: rng('[0 1]')
+                });
+            });
+            it("remove set, then resize by two touching, last leave as is", ()=> {
+                expect(DiffRangeSet.subtract(rng('2 6 7 17 18 28'), rng('0 7 7 12 12 13'))).to.deep.equal({
+                    added: [],
+                    removed: rng('2 6'),
+                    resized: rng('[7->13 17]'),
+                    result: rng('[7->13 17] [18 28]')
+                });
+            });
+            it("remove top, then split by another ranges", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 10'), rng('0 5 6 7 8 9'))).to.deep.equal({
+                    added: rng('7 8 9 10'),
+                    removed: [],
+                    resized: rng('[0->5 10->6]'),
+                    result: rng('[0->5 10->6] 7 8 9 10')
+                });
+            });
+            it("split one by two with touching neighbours", ()=> {
+                expect(DiffRangeSet.subtract(rng('0 1 1 10'), rng('2 6 9 10 13 20'))).to.deep.equal({
+                    added: rng('6 9'),
+                    removed: [],
+                    resized: rng('[1 10->2]'),
+                    result: rng('[0 1] [1 10->2] 6 9')
+                });
+            });
         });
         describe('random tests', ()=> {
 
@@ -399,7 +453,7 @@ var qintervals = require('qintervals');
                 return array.find((a)=>a.start == range.start && a.end == range.end)
             }
 
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < 1000; i++) {
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 3);
                     var numRight = rand.intBetween(0, 3);
@@ -411,12 +465,14 @@ var qintervals = require('qintervals');
 
                     var ret = DiffRangeSet.subtract(left, right);
                     var cmp = qintervals.subtract(left, right).toObjects();
+                    var result = qintervals.union(ret.result.map((a)=> {
+                        return {from: a.start, to: a.end}
+                    })).toObjects();
                     console.log('ret', ret);
                     console.log('cmp, ', cmp);
-                    var result = ret.result.map((a)=> {
-                        return {from: a.start, to: a.end}
-                    });
-                    expect(cmp).to.deep.equal(result);
+                    console.log('result, ', result);
+
+                    expect(result).to.deep.equal(cmp);
 
                     // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as qintervals
 
@@ -432,10 +488,10 @@ var qintervals = require('qintervals');
                     }
                     restore.sort((a, b)=>a.start - b.start);
 
-                    expect(restore).to.deep.equal(cmp.map((a)=> {
-                        return {start: a.from, end: a.to}
-                    }));
+                    restore = qintervals.union(restore).toObjects();
+                    console.log('restore', restore);
 
+                    expect(restore).to.deep.equal(cmp);
 
                 });
             }

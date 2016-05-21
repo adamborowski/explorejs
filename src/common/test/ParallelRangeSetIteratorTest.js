@@ -107,6 +107,346 @@ describe('ParallelRangeSetIterator', ()=> {
                 [G, P, 'right']
             ]);
         });
+        it('simple iteration without adding elements v2', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(0, 1);
+            B = addLeft(1, 10);
+            K = addRight(2, 6);
+            L = addRight(9, 10);
+            M = addRight(13, 20);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet);
+            while (iterator.next()) {
+                addStep(iterator);
+            }
+            expect(steps).to.deep.equal([
+                [A, null, 'left'],
+                [B, null, 'left'],
+                [B, K, 'right'],
+                [B, L, 'right'],
+                [B, M, 'right']
+            ]);
+        });
+        it('simple iteration without adding elements v3', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(1000, 1001);
+            B = addLeft(1002, 1003);
+            C = addLeft(1004, 1005);
+            K = addRight(1, 2);
+            L = addRight(3, 4);
+            M = addRight(5, 6);
+            N = addRight(6, 7);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet);
+            while (iterator.next()) {
+                addStep(iterator);
+            }
+            expect(steps).to.deep.equal([
+                [null, K, 'right'],
+                [null, L, 'right'],
+                [null, M, 'right'],
+                [null, N, 'right'],
+                [A, N, 'left'],
+                [B, N, 'left'],
+                [C, N, 'left']
+            ]);
+        });
+        it('pairMode iteration', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(1000, 1001);
+            B = addLeft(1002, 1003);
+            C = addLeft(1004, 1005);
+            K = addRight(1, 2);
+            L = addRight(3, 4);
+            M = addRight(5, 6);
+            N = addRight(6, 7);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet, {pairMode: true});
+            while (iterator.next()) {
+                steps.push([iterator.Left, iterator.Right]);
+            }
+            expect(steps).to.deep.equal([
+                [A, K],
+                [A, L],
+                [A, M],
+                [A, N],
+                [B, N],
+                [C, N]
+            ]);
+        });
+        it('pairMode iteration v2', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(0, 1);
+            B = addLeft(1, 10);
+            K = addRight(2, 6);
+            L = addRight(9, 10);
+            M = addRight(13, 20);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet, {pairMode: true});
+            while (iterator.next()) {
+                steps.push([iterator.Left, iterator.Right]);
+            }
+            expect(steps).to.deep.equal([
+                [A, K],
+                [B, K],
+                [B, L],
+                [B, M]
+            ]);
+        });
+        it('pairMode iteration only left side', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(1000, 1001);
+            B = addLeft(1002, 1003);
+            C = addLeft(1004, 1005);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet, {pairMode: true});
+            while (iterator.next()) {
+                steps.push([iterator.Left, iterator.Right]);
+            }
+            expect(steps).to.deep.equal([
+                [A, null],
+                [B, null],
+                [C, null]
+            ]);
+        });
+        it('simple iteration only left elements', ()=> {
+
+            /*
+             *  1    / K
+             *  2   A  K
+             *  3   A  K
+             *      A\
+             *  5   A  L
+             *         L
+             *       / L
+             *  8   B  L
+             *  9   B  L
+             *      |  L
+             * 11   C  L
+             * 12   C  L
+             *      |  L
+             * 14   D  L
+             * 15   D  L
+             *      |  L
+             * 17   E  L
+             * 18   E
+             *      |
+             * 20   F
+             * 21   F\ M
+             * 22   F  M
+             * 23   F  N
+             * 24   F  N
+             *       /
+             * 26   G
+             *      G
+             * 28   G
+             *       \
+             * 30      O
+             * 31      O
+             *         |
+             * 33      P
+             * 34      P
+             *
+             */
+            A = addLeft(2, 5);
+            B = addLeft(8, 9);
+            C = addLeft(11, 12);
+            D = addLeft(14, 15);
+            E = addLeft(17, 18);
+            F = addLeft(20, 24);
+            iterator = new ParallelRangeSetIterator(leftSet, rightSet);
+            while (iterator.next()) {
+                addStep(iterator);
+            }
+            expect(steps).to.deep.equal([
+                [A, null, 'left'],
+                [B, null, 'left'],
+                [C, null, 'left'],
+                [D, null, 'left'],
+                [E, null, 'left'],
+                [F, null, 'left']
+            ]);
+        });
         it('simple iteration with requesting move', ()=> {
 
             /*
