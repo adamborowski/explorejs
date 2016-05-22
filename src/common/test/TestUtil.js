@@ -1,4 +1,5 @@
 var gen = require('random-seed');
+var padding = require('string-padding');
 module.exports = class TestUtil {
     static rng(...items) {
         if (items.length == 1 && typeof items[0] == 'string') {
@@ -63,6 +64,65 @@ module.exports = class TestUtil {
             cnt += randomSpace + randomSize;
         }
         return output;
+    }
+
+    static repeat(str, times) {
+        var s = "";
+        for (var i = 0; i < times; i++) {
+            s += str;
+        }
+        return s;
+    }
+
+
+    static getRangeDrawing(rangeSets, names, scale) {
+        var lines = [];
+        scale = scale || 6;
+        names = names.split('');
+        var max = -Infinity;
+
+        function putStringIntoArray(array, pos, string) {
+            for (var i = 0; i < string.length; i++) {
+                array[pos + i] = string[i];
+            }
+        }
+
+        for (var rangeSet of rangeSets) {
+            var last = rangeSet[rangeSet.length - 1].end;
+            max = Math.max(max, last);
+            var line = [];
+            var numbers = [];
+            for (var i = 0; i <= last * scale; i++) {
+                line[i] = " ";
+                numbers[i] = " ";
+
+            }
+            var previousRangeEnd = -Infinity;
+            for (var range of rangeSet) {
+                var r = {start: range.start * scale, end: range.end * scale};
+                if (previousRangeEnd == range.start) {
+                    line[r.start] = '┳';
+                } else {
+                    line[r.start] = '┏';
+                    putStringIntoArray(numbers, r.start, padding(range.start.toString(), 3, ' ', padding.RIGHT));
+                }
+                putStringIntoArray(numbers, r.end - 2, padding(range.end.toString(), 3, ' ', padding.LEFT));
+                line[r.end] = '┓';
+                for (var j = r.start + 1; j < r.end; j++) {
+                    line[j] = '━';
+                }
+                previousRangeEnd = range.end;
+            }
+            line.unshift('├', ' ' + names.shift() + ' ');
+            numbers.unshift('│   ');
+            lines.push(line.join(""));
+            lines.push(numbers.join(""));
+        }
+        var upLine = '┌' + this.repeat('─', (max * scale) + 6);
+        var dnLine = '└' + this.repeat('─', (max * scale) + 6);
+        lines.unshift(upLine);
+        lines.push(dnLine);
+        return lines.join("\n");
     }
 
 
