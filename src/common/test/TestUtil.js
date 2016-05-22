@@ -3,7 +3,7 @@ var padding = require('string-padding');
 module.exports = class TestUtil {
     static rng(...items) {
         if (items.length == 1 && typeof items[0] == 'string') {
-            items = items[0].match(/\[.*?]|(?:\d+\.?\d*\s+\d+\.?\d*)/g);
+            items = items[0].match(/\[.*?]|(?:\d+\.?\d*\s+\d+\.?\d*)/g) || [];
             return items.map((str)=> {
                 var obj = {};
                 if (str.startsWith('[')) {
@@ -78,8 +78,13 @@ module.exports = class TestUtil {
     static getRangeDrawing(rangeSets, names, scale) {
         var lines = [];
         scale = scale || 6;
+        if (names == null) {
+            names = "ABCDEFGHIJKLMNOPRSTUWXYZ";
+        }
         names = names.split('');
-        var max = -Infinity;
+        var max = rangeSets.reduce((a, b)=> {
+            return Math.max(a, b.length == 0 ? 0 : b[b.length - 1].end)
+        }, 0);
 
         function putStringIntoArray(array, pos, string) {
             for (var i = 0; i < string.length; i++) {
@@ -88,11 +93,9 @@ module.exports = class TestUtil {
         }
 
         for (var rangeSet of rangeSets) {
-            var last = rangeSet[rangeSet.length - 1].end;
-            max = Math.max(max, last);
             var line = [];
             var numbers = [];
-            for (var i = 0; i <= last * scale; i++) {
+            for (var i = 0; i <= max * scale; i++) {
                 line[i] = " ";
                 numbers[i] = " ";
 
@@ -115,11 +118,14 @@ module.exports = class TestUtil {
             }
             line.unshift('├', ' ' + names.shift() + ' ');
             numbers.unshift('│   ');
+            numbers.push('  │');
+            line.push('  │');
+
             lines.push(line.join(""));
             lines.push(numbers.join(""));
         }
-        var upLine = '┌' + this.repeat('─', (max * scale) + 6);
-        var dnLine = '└' + this.repeat('─', (max * scale) + 6);
+        var upLine = '┌' + this.repeat('─', (max * scale) + 6) + '┐';
+        var dnLine = '└' + this.repeat('─', (max * scale) + 6) + '┘';
         lines.unshift(upLine);
         lines.push(dnLine);
         return lines.join("\n");

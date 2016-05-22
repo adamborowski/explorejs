@@ -10,7 +10,8 @@ module.exports = class MergeOperation {
 
         return {
             T: T2Diff,
-            B: B2Diff
+            B: B2Diff,
+            R: R_sub_F1
         }
     }
 
