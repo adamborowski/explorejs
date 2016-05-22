@@ -54,14 +54,40 @@ module.exports = class TestUtil {
         return r;
     }
 
-    static randomRangeSet(size, rand) {
+    static randomRangeSet(size, rand, spaceRange, sizeRange) {
+        if (spaceRange == null) {
+            spaceRange = {start: 0, end: 3};
+        }
+        if (sizeRange == null) {
+            sizeRange = {start: 1, end: 10};
+        }
+
+        var genRange = (range)=> {
+            if (typeof(range) == 'function') {
+                return range();
+            }
+            return rand.intBetween(range.start, range.end);
+        };
+
         var cnt = 0;
         var output = [];
-        for (var i = 0; i < size; i++) {
-            var randomSpace = rand.intBetween(0, 3);
-            var randomSize = rand.intBetween(1, 10);
+
+        function step() {
+            var randomSpace = genRange(spaceRange);
+            var randomSize = genRange(sizeRange);
             output.push({start: cnt + randomSpace, end: cnt + randomSpace + randomSize});
             cnt += randomSpace + randomSize;
+        }
+
+        if (typeof(size) == 'function') {
+            do {
+                step();
+            } while (size(output));
+        }
+        else {
+            for (var i = 0; i < size; i++) {
+                step();
+            }
         }
         return output;
     }
@@ -131,5 +157,27 @@ module.exports = class TestUtil {
         return lines.join("\n");
     }
 
+    static
+    getSwitcher(rand, numItems) {
+        return new RandomSwitcher(rand, numItems);
+    }
 
 };
+
+class RandomSwitcher {
+    constructor(rand, numItems) {
+        this.numItems = numItems;
+        this.rand = rand;
+        this.lastItem = null;
+    }
+
+    next() {
+        var randomNumber = this.rand.intBetween(0, this.numItems - 2);
+        if (randomNumber == this.lastItem) {
+            randomNumber++;
+        }
+        randomNumber = randomNumber % this.numItems;
+        this.lastItem = randomNumber;
+        return randomNumber;
+    }
+}

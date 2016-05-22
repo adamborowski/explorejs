@@ -2,6 +2,7 @@ var expect = require("chai").expect;
 var MergeOperation = require("../../src/layered/MergeOperation");
 var TestUtil = require('../TestUtil');
 var rng = TestUtil.rng;
+var gen = require('random-seed');
 
 function perform(config) {
     var F = rng(config.F);
@@ -150,6 +151,43 @@ describe('MergeOperation', ()=> {
                 R: {added: '', removed: '', resized: '', result: '[0 12]'}
             }
         });
+    });
+    describe('Randomized tests', ()=> {
+        var numRandomizedTests = 100;
+        var rand = gen.create("MergeOperation randomized test");
+        for (var i = 0; i < numRandomizedTests; i++) {
+            it('random #' + i, ()=> {
+
+                var setSize = rand.intBetween(0, 30);
+                var rangeSet = TestUtil.randomRangeSet(setSize, rand, ()=>rand.floatBetween(0, 1) > 0.3 ? 0 : rand.intBetween(1, 10), {
+                    start: 1,
+                    end: 7
+                });
+                var F = [], T = [], B = [], R = [];
+                var sets = [F, T, B];
+                var randomSwitcher = TestUtil.getSwitcher(rand, 3);
+                for (var range of rangeSet) {
+                    sets[randomSwitcher.next()].push(range);
+
+                }
+
+                var margin = rand.intBetween(-5, 5);
+
+                R = TestUtil.randomRangeSet((output)=>rangeSet.length == 0 ? false : output[output.length - 1].end + margin < rangeSet[rangeSet.length - 1].end, rand, {
+                    start: 1,
+                    end: 5
+                }, {
+                    start: 1,
+                    end: 10
+                });
+                sets.push(R);
+                console.log(TestUtil.getRangeDrawing(sets, 'FTBR'));
+
+                var diff = MergeOperation.execute(B, T, F, R);
+                var resultDrawing = TestUtil.getRangeDrawing([F, diff.T.result, diff.B.result, diff.R.result], 'FTBR');
+                console.log(resultDrawing);
+            });
+        }
     });
     //TODO: randomized tests
     /**
