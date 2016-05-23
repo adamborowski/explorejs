@@ -86,7 +86,7 @@ gulp.task('unit', () => {
             return;
         }
 
-        return gulp.src('unit-tests/test.bundle.js', {read: false})
+        return gulp.src('build/unit-tests/test.bundle.js', {read: false})
             // gulp-mocha needs filepaths so you can't have any plugins before it
             .pipe(mocha({reporter: 'nyan'}));
     });

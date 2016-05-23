@@ -7,7 +7,7 @@ module.exports = {
         index: './unit-tests/index.js'
     },
     output: {
-        path: path.resolve(__dirname, 'unit-tests'),
+        path: path.resolve(__dirname, 'build/unit-tests'),
         filename: 'test.bundle.js'
     },
     module: {
