@@ -3,7 +3,7 @@ var TestUtil = require("./TestUtil");
 var rng = TestUtil.rng;
 var DiffRangeSet = require("../src/DiffRangeSet");
 var gen = require('random-seed');
-var qintervals = require('qintervals');
+var xspans = require('xspans');
     describe("DiffRangeSet", ()=> {
     before(()=> {
     });
@@ -251,25 +251,23 @@ var qintervals = require('qintervals');
                 return array.find((a)=>a.start == range.start && a.end == range.end)
             }
 
-            for (var i = 0; i < 1000; i++) {
+            for (var i = 0; i < 500; i++) {
                 it('#' + i, ()=> {
                     var numLeft = rand.intBetween(0, 10);
                     var numRight = rand.intBetween(0, 10);
                     var left = randomRangeSet(numLeft);
                     var right = randomRangeSet(numRight);
 
-                    console.log(left);
-                    console.log(right);
+                    // console.log(left);
+                    // console.log(right);
 
 
                     var ret = DiffRangeSet.add(left, right);
-                    var cmp = qintervals.union(left, right).toObjects();
-                    var result = ret.result.map((a)=> {
-                        return {from: a.start, to: a.end}
-                    });
+                    var cmp = xspans.union(left, right).toObjects("start", "end");
+                    var result = ret.result.map(a=> ({start: a.start, end: a.end}));
                     expect(cmp).to.deep.equal(result);
 
-                    // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as qintervals
+                    // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as xspans
 
                     var restore = left.filter((a)=>find(a, ret.removed) == null);
                     for (var o of ret.resized) {
@@ -283,9 +281,7 @@ var qintervals = require('qintervals');
                     }
                     restore.sort((a, b)=>a.start - b.start);
 
-                    expect(cmp.map((a)=> {
-                        return {start: a.from, end: a.to}
-                    })).to.deep.equal(restore);
+                    expect(cmp).to.deep.equal(restore);
 
 
                 });
@@ -469,7 +465,7 @@ var qintervals = require('qintervals');
 
             var cnt = -1;
 
-            for (var i = 0; i < 1000; i++) {
+            for (var i = 0; i < 500; i++) {
                 it('#' + i, ()=> {
                     cnt++;
                     var numLeft = rand.intBetween(0, 3);
@@ -478,32 +474,23 @@ var qintervals = require('qintervals');
                     var right = TestUtil.randomRangeSet(numRight, rand);
 
                     var ret = DiffRangeSet.subtract(left, right);
-                    var cmp = qintervals.subtract(left, right).subtract(right).toObjects();//dobule subract due to https://github.com/exjs/qintervals/issues/1
-                    var result = qintervals.union(ret.result.map((a)=> {
-                        return {from: a.start, to: a.end}
-                    })).toObjects();
+                    var cmp = xspans.subtract(left, right).toObjects("start", "end");
+                    var result = xspans.union(ret.result.map(a=> ({
+                        start: a.start,
+                        end: a.end
+                    }))).toObjects("start", "end");
+                    // console.log(TestUtil.getRangeDrawing([left, right, ret.result], 'ABC'))
+
                     // console.log('ret', ret);
                     // console.log('cmp, ', cmp);
                     // console.log('result, ', result);
+                    // console.log(JSON.stringify(ret));
 
                     expect(result).to.deep.equal(cmp);
 
-                    // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as qintervals
+                    // to test, try to transform "left" by ret.removed and ret.resized and ret.added to check if it gives same result as xspans
 
-                    var restore = left.filter((a)=>find(a, ret.removed) == null);
-                    for (var o of ret.resized) {
-                        var itemInLeft = find(o.existing, left);
-                        itemInLeft.start = o.start;
-                        itemInLeft.end = o.end;
-                    }
-
-                    for (var o of ret.added) {
-                        restore.push(o);
-                    }
-                    restore.sort((a, b)=>a.start - b.start);
-
-                    restore = qintervals.union(restore).toObjects();
-                    // console.log('restore', restore);
+                    var restore = TestUtil.transformSet(left, ret.added, ret.removed, ret.resized);
 
                     expect(restore).to.deep.equal(cmp);
 

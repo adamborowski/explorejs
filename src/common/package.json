@@ -4,17 +4,17 @@
   "description": "Common classes used in both server and client side",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --harmony --compilers js:babel-register"
+    "test": "./node_modules/.bin/mocha --recursive --reporter spec --harmony --compilers js:babel-register"
   },
   "author": "Adam Borowski",
   "license": "MIT",
   "dependencies": {
     "binary-search-tree": "^0.2.6",
     "binarysearch": "^1.0.0",
-    "qintervals": "^0.2.2",
     "random-seed": "^0.3.0",
     "string-padding": "^1.0.2",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "xspans": "^1.0.0"
   },
   "devDependencies": {
     "babel-register": "^6.7.2",

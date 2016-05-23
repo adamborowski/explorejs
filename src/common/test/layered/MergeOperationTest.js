@@ -3,6 +3,7 @@ var MergeOperation = require("../../src/layered/MergeOperation");
 var TestUtil = require('../TestUtil');
 var rng = TestUtil.rng;
 var gen = require('random-seed');
+var xspans = require('xspans');
 
 function perform(config) {
     var F = rng(config.F);
@@ -10,11 +11,11 @@ function perform(config) {
     var B = rng(config.B);
     var R = rng(config.R);
     var rangeDrawing = TestUtil.getRangeDrawing([F, T, B, R], 'FTBR');
-    console.log('\n\n>> Layer merge diff test\n');
-    console.log(rangeDrawing);
+    // console.log('\n\n>> Layer merge diff test\n');
+    // console.log(rangeDrawing);
     var diff = MergeOperation.execute(B, T, F, R);
     var resultDrawing = TestUtil.getRangeDrawing([F, diff.T.result, diff.B.result, diff.R.result], 'FTBR');
-    console.log(resultDrawing);
+    // console.log(resultDrawing);
 
     expect(diff).to.deep.equal({
         T: {
@@ -153,48 +154,55 @@ describe('MergeOperation', ()=> {
         });
     });
     describe('Randomized tests', ()=> {
-        var numRandomizedTests = 100;
+        var numRandomizedTests = 500;
         var rand = gen.create("MergeOperation randomized test");
         for (var i = 0; i < numRandomizedTests; i++) {
             it('random #' + i, ()=> {
 
+                // prepare Front, Target and Back layers
                 var setSize = rand.intBetween(0, 30);
                 var rangeSet = TestUtil.randomRangeSet(setSize, rand, ()=>rand.floatBetween(0, 1) > 0.3 ? 0 : rand.intBetween(1, 10), {
                     start: 1,
                     end: 7
                 });
-                var F = [], T = [], B = [], R = [];
-                var sets = [F, T, B];
+                var F = [], T = [], B = [], R = [], sets = [F, T, B, R];
                 var randomSwitcher = TestUtil.getSwitcher(rand, 3);
                 for (var range of rangeSet) {
                     sets[randomSwitcher.next()].push(range);
-
                 }
 
+                // prepare merge operand
                 var margin = rand.intBetween(-5, 5);
-
-                R = TestUtil.randomRangeSet((output)=>rangeSet.length == 0 ? false : output[output.length - 1].end + margin < rangeSet[rangeSet.length - 1].end, rand, {
+                R.push(...TestUtil.randomRangeSet((output)=>rangeSet.length == 0 ? false : output[output.length - 1].end + margin < rangeSet[rangeSet.length - 1].end, rand, {
                     start: 1,
                     end: 5
                 }, {
                     start: 1,
                     end: 10
-                });
-                sets.push(R);
-                console.log(TestUtil.getRangeDrawing(sets, 'FTBR'));
+                }));
 
+                // perform tested operation
                 var diff = MergeOperation.execute(B, T, F, R);
-                var resultDrawing = TestUtil.getRangeDrawing([F, diff.T.result, diff.B.result, diff.R.result], 'FTBR');
-                console.log(resultDrawing);
+
+                // check expected values
+                var T2_cmp = xspans.union(T, R).subtract(F).toObjects("start", "end");
+                var B2_cmp = xspans.subtract(B, T2_cmp).subtract(F).toObjects("start", "end");
+                var R2_cmp = xspans.subtract(R, F).toObjects("start", "end");
+
+                expect(diff.T.result.map(TestUtil.cleanRange)).to.be.deep.equal(T2_cmp);
+                expect(diff.B.result.map(TestUtil.cleanRange)).to.be.deep.equal(B2_cmp);
+                expect(diff.R.result.map(TestUtil.cleanRange)).to.be.deep.equal(R2_cmp);
+
+                // try transform input set by diff instructions to get the expected result
+                expect(TestUtil.transformSet(T, diff.T.added, diff.T.removed, diff.T.resized)).to.deep.equal(T2_cmp);
+                expect(TestUtil.transformSet(B, diff.B.added, diff.B.removed, diff.B.resized)).to.deep.equal(B2_cmp);
+                expect(TestUtil.transformSet(R, diff.R.added, diff.R.removed, diff.R.resized)).to.deep.equal(R2_cmp);
+
+
+                // console.log(TestUtil.getRangeDrawing(sets, 'FTBR'));
+                // console.log(TestUtil.getRangeDrawing([F, diff.T.result, diff.B.result, diff.R.result], 'FTBR'));
+
             });
         }
     });
-    //TODO: randomized tests
-    /**
-     * 1. get next range (draw new length, sets are touching previous)
-     * 2. draw layer to assign it.
-     *
-     * 3. get results
-     * 4. use qintervals to build the projection (B=B-T-T1-F, T = T+T1 - F, F=F) and deeply compare
-     */
 });

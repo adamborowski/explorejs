@@ -1,5 +1,6 @@
 var gen = require('random-seed');
 var padding = require('string-padding');
+var xspans = require('xspans');
 module.exports = class TestUtil {
     static rng(...items) {
         if (items.length == 1 && typeof items[0] == 'string') {
@@ -157,10 +158,35 @@ module.exports = class TestUtil {
         return lines.join("\n");
     }
 
-    static
-    getSwitcher(rand, numItems) {
+    static getSwitcher(rand, numItems) {
         return new RandomSwitcher(rand, numItems);
     }
+
+    static transformSet(rangeSet, added, removed, resized) {
+        function find(range, array) {
+            return array.find((a)=>a.start == range.start && a.end == range.end)
+        }
+
+        var restore = rangeSet.filter((a)=>find(a, removed) == null);
+        for (var o of resized) {
+            var itemInLeft = find(o.existing, rangeSet);
+            itemInLeft.start = o.start;
+            itemInLeft.end = o.end;
+        }
+
+        for (var o of added) {
+            restore.push(o);
+        }
+        restore.sort((a, b)=>a.start - b.start);
+
+        restore = xspans.union(restore).toObjects("start", "end");
+        return restore;
+    }
+
+    static cleanRange(range) {
+        return {start: range.start, end: range.end};
+    }
+
 
 };
 
