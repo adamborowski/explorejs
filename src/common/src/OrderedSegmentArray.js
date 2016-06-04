@@ -39,8 +39,8 @@ class OrderedSegmentArray {
         var rightBoundKey = this.options.rightBoundKey;
         var rangeLeft = range[0][leftBoundKey];
         var rangeRight = range[range.length - 1][rightBoundKey];
-        var leftNeighborIndex = this._findBoundNotAfter(rangeLeft, this._rightBoundComparator);
-        var rightNeighborIndex = this._findBoundNotBefore(rangeRight, this._leftBoundComparator);
+        var leftNeighborIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeLeft, this._rightBoundComparator);
+        var rightNeighborIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeRight, this._leftBoundComparator);
         var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
 
         if (numberSegmentsInside == 0) {
@@ -69,8 +69,8 @@ class OrderedSegmentArray {
         var rightBoundKey = this.options.rightBoundKey;
         var rangeLeft = range[0][leftBoundKey];
         var rangeRight = range[range.length - 1][rightBoundKey];
-        var leftNeighborIndex = this._findBoundNotAfter(rangeLeft, this._rightBoundComparator);
-        var rightNeighborIndex = this._findBoundNotBefore(rangeRight, this._leftBoundComparator);
+        var leftNeighborIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeLeft, this._rightBoundComparator);
+        var rightNeighborIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeRight, this._leftBoundComparator);
 
         var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
         var overlappedSegments = this._data.slice(leftNeighborIndex + 1, rightNeighborIndex);
@@ -175,8 +175,8 @@ class OrderedSegmentArray {
             leftBoundClosed: this.options.leftBoundClosed,
             rightBoundClosed: this.options.rightBoundClosed
         });
-        var firstSegmentIndex = this._findBoundNotBefore(rangeLeftBound, this._rightBoundComparator);
-        var lastSegmentIndex = this._findBoundNotAfter(rangeRightBound, this._leftBoundComparator);
+        var firstSegmentIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeLeftBound, this._rightBoundComparator);
+        var lastSegmentIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeRightBound, this._leftBoundComparator);
 
         // exclude touching segments for open bounds
 
@@ -192,28 +192,75 @@ class OrderedSegmentArray {
         return {left: firstSegmentIndex, right: lastSegmentIndex};
     }
 
-    _findBoundNotAfter(boundValue, boundComparator) {
-        if (this._data.length == 0) {
+    static _findBoundNotAfter(data, boundValue, boundComparator) {
+        if (data.length == 0) {
             return 0;
         }
-        var index = bs.closest(this._data, boundValue, boundComparator);
-        if (boundComparator(this._data[index], boundValue) > 0) {
+        var index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) > 0) {
             // found bound is greater
             return index - 1;
         }
         return index;
     }
 
-    _findBoundNotBefore(boundValue, boundComparator) {
-        if (this._data.length == 0) {
+    static _findBoundNotBefore(data, boundValue, boundComparator) {
+        if (data.length == 0) {
             return 0;
         }
-        var index = bs.closest(this._data, boundValue, boundComparator);
-        if (boundComparator(this._data[index], boundValue) < 0) {
+        var index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) < 0) {
             // found bound is lower
             return index + 1;
         }
         return index;
+    }
+
+    static splitRangeSetOverlapping(rangeSet, start, end) {
+        var indices = this.getOverlapBoundIndices(rangeSet, start, end);
+        var before = rangeSet.slice(0, indices.start);
+        var overlap = rangeSet.slice(indices.start, indices.end);
+        var after = rangeSet.slice(indices.end);
+        return {before, overlap, after, start: indices.start, end: indices.end};
+    }
+
+    /**
+     * Return the indices of bound ranges in a range specified by {@param start} and {@param end} parameters
+     * @param rangeSet {{start:number, end:number}[]}
+     * @param start the range start parameter
+     * @param end the range end parameter
+     * @return {{start: number, end: number}}
+     * start: an index where overlap begins
+     * end: an index of first range not overlapping given range, after {@code start} range
+     * if start == end, then no ranges overlapping, although you can insert given range at start position
+     */
+    static getOverlapBoundIndices(rangeSet, start, end) {
+        if (rangeSet.length == 0) {
+            return {
+                start: 0,
+                end: 0
+            }
+        }
+        var leftIndex = bs.closest(rangeSet, start, this._rangeEndComparator);
+        var rightIndex = bs.closest(rangeSet, end, this._rangeStartComparator);
+        if (rangeSet[leftIndex] != null && rangeSet[leftIndex].end <= start) {
+            leftIndex++;
+        }
+        if (rangeSet[rightIndex] != null && rangeSet[rightIndex].start < end) {
+            rightIndex++;
+        }
+        return {
+            start: leftIndex,
+            end: rightIndex
+        }
+    }
+
+    static _rangeStartComparator(range, start) {
+        return range.start - start;
+    }
+
+    static _rangeEndComparator(range, end) {
+        return range.end - end;
     }
 
 }

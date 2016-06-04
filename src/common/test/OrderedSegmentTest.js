@@ -2,6 +2,8 @@ var expect = require('chai').expect;
 var OrderedSegmentArray = require("../src/OrderedSegmentArray");
 var _ = require('underscore');
 var gen = require('random-seed');
+var TestUtil = require('./TestUtil');
+var rng = TestUtil.rng;
 /**
  * @param leftBoundKey
  * @param rightBoundKey
@@ -13,7 +15,7 @@ function getArray(leftBoundKey, rightBoundKey, leftBoundClosed, rightBoundClosed
     return new OrderedSegmentArray({leftBoundKey, rightBoundKey, leftBoundClosed, rightBoundClosed})
 }
 
-describe("OrderedRangeArray test", () => {
+describe("OrderedSegment test", () => {
     var data;
 
     before(() => {
@@ -532,5 +534,170 @@ describe("OrderedRangeArray test", () => {
         });
 
 
+    });
+    describe('getOverlapBoundIndices() test', ()=> {
+        it('adding to empty set', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng(''), 5, 6)).to.deep.equal({start: 0, end: 0});
+        });
+        it('adding after', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 2 3 4 5'), 5, 6)).to.deep.equal({
+                start: 3,
+                end: 3
+            });
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 2 3 4 4.5'), 5, 6)).to.deep.equal({
+                start: 3,
+                end: 3
+            });
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('2 3 4 4.5'), 100, 101)).to.deep.equal({
+                start: 2,
+                end: 2
+            });
+        });
+        it('adding before', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('3.5 4 5 6 7 8'), 0, 3)).to.deep.equal({
+                start: 0,
+                end: 0
+            });
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('3 4 7 8'), 0, 3)).to.deep.equal({
+                start: 0,
+                end: 0
+            });
+        });
+        it('adding inside not overlapping', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 4 5 6 7'), 2, 3)).to.deep.equal({
+                start: 1,
+                end: 1
+            });
+        });
+        it('adding inside, overlapping', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 4 5 6 7'), 2, 5)).to.deep.equal({
+                start: 1,
+                end: 2
+            });
+        });
+        it('adding inside, overlapping all', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 4 5 6 7'), -1000, 1000)).to.deep.equal({
+                start: 0,
+                end: 3
+            });
+        });
+        it('adding inside,touching and overlapping', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 4 5 6 7'), 1, 6)).to.deep.equal({
+                start: 1,
+                end: 2
+            });
+        });
+        it('adding inside, cross-overlapping', ()=> {
+            expect(OrderedSegmentArray.getOverlapBoundIndices(rng('0 1 4 5 6 7'), 0.5, 6.5)).to.deep.equal({
+                start: 0,
+                end: 3
+            });
+        });
+    });
+    describe('splitRangeSetOverlapping() test', ()=> {
+        it('split empty set', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng(''), 5, 6)).to.deep.equal({
+                start: 0,
+                end: 0,
+                before: [],
+                overlap: [],
+                after: []
+            });
+        });
+        it('split after', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 1 2 2 3'), 5, 6)).to.deep.equal({
+                start: 3,
+                end: 3,
+                before: rng('0 1 1 2 2 3'),
+                overlap: [],
+                after: []
+            });
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 1 2 2 3'), 3, 6)).to.deep.equal({
+                start: 3,
+                end: 3,
+                before: rng('0 1 1 2 2 3'),
+                overlap: [],
+                after: []
+            });
+        });
+        it('split before', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('1 2 2 3 3 4'), 0, 0.5)).to.deep.equal({
+                start: 0,
+                end: 0,
+                before: rng(''),
+                overlap: rng(''),
+                after: rng('1 2 2 3 3 4')
+            });
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('1 2 2 3 3 4'), 0, 1)).to.deep.equal({
+                start: 0,
+                end: 0,
+                before: rng(''),
+                overlap: rng(''),
+                after: rng('1 2 2 3 3 4')
+            });
+        });
+        it('adding inside not overlapping', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), 2, 3)).to.deep.equal({
+                start: 1,
+                end: 1,
+                before: rng('0 1'),
+                overlap: rng(''),
+                after: rng('4 5 6 7')
+            });
+        });
+        it('adding inside, overlapping', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), 2, 5)).to.deep.equal({
+                start: 1,
+                end: 2,
+                before: rng('0 1'),
+                overlap: rng('4 5'),
+                after: rng('6 7')
+            });
+        });
+        it('adding inside, overlapping all', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), -1000, 1000)).to.deep.equal({
+                start: 0,
+                end: 3,
+                before: [],
+                overlap: rng('0 1 4 5 6 7'),
+                after: []
+            });
+        });
+        it('adding inside,touching and overlapping', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), 1, 6)).to.deep.equal({
+                start: 1,
+                end: 2,
+                before: rng('0 1'),
+                overlap: rng('4 5'),
+                after: rng('6 7')
+            });
+        });
+        it('adding inside, cross-overlapping', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), 0.5, 6.5)).to.deep.equal({
+                start: 0,
+                end: 3,
+                before: [],
+                overlap: rng('0 1 4 5 6 7'),
+                after: []
+            });
+        });
+        it('adding first part, cross-overlapping', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), -1, 5)).to.deep.equal({
+                start: 0,
+                end: 2,
+                before: [],
+                overlap: rng('0 1 4 5'),
+                after: rng('6 7')
+            });
+        });
+        it('adding last part, cross-overlapping', ()=> {
+            expect(OrderedSegmentArray.splitRangeSetOverlapping(rng('0 1 4 5 6 7'), 4, 7)).to.deep.equal({
+                start: 1,
+                end: 3,
+                before: rng('0 1'),
+                overlap: rng('4 5 6 7'),
+                after: rng('')
+            });
+        });
     });
 });
