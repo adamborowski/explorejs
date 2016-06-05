@@ -9,7 +9,6 @@
   "author": "Adam Borowski",
   "license": "MIT",
   "dependencies": {
-    "explorejs-common": "file:///Users/aborowski/src/explorejs/src/common"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
