@@ -1,5 +1,5 @@
-import * as OrderedSegmentArray from "explorejs-common/src/OrderedSegmentArray"
-import * as MergeOperation from "explorejs-common/src/layered/MergeOperation";
+import OrderedSegmentArray from "explorejs-common/src/OrderedSegmentArray"
+import MergeOperation from "explorejs-common/src/layered/MergeOperation";
 /**
  * Cache projection
  * Calculates diffs in meaning of rendering effect (how user sees that)
@@ -42,11 +42,13 @@ export default class CacheProjection {
 
     /**
      * Update projection range indices by inserting ranges at specific level.
-     * Fire proper events to be handled by DataStore
+     * ??Fire proper events to be handled by DataStore
+     * As a side effect, projection array is changed
      * @param levelId
      * @param rangeSet
+     * @return {*} difference: added, removed, resized (all ranges contain levelId)
      */
-    recompileProjection(levelId, rangeSet) {
+    recompile(levelId, rangeSet) {
         if (rangeSet.length == 0) {
             console.info("CacheProjection::recompileProjection(): got empty array, no recompile is needed.")
             return; // no recompile is needed
@@ -58,9 +60,19 @@ export default class CacheProjection {
 
         var layers = this._distributeRangesToLayers(split.overlap, levelId);
 
-        var result = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet);
+        var operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet.map(a=>({
+            start: a.start,
+            end: a.end,
+            levelId: levelId
+        })), (r)=>({levelId: r.levelId}));
 
-        return result;
+
+        var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort((a, b)=>a.start - b.start);
+
+
+        this.projection = [].concat(split.before, overlappedResult, split.after);
+
+        return operation;
 
 
         // perform MergeOperation

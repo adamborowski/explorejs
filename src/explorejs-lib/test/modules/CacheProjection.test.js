@@ -2,7 +2,8 @@ import * as chai from 'chai';
 var expect = chai.expect;
 import CacheProjection from "/modules/CacheProjection";
 import TestUtil from "explorejs-common/test/TestUtil";
-describe("CacheProjection test", () => {
+var rng = TestUtil.rng;
+describe("CacheProjection", () => {
     var r, levelIds, cacheProjection;
 
     function l(start, end, levelId) {
@@ -17,7 +18,7 @@ describe("CacheProjection test", () => {
         levelIds = ['raw', '10s', '30s', '1m', '10m', '30m', '1h', '8h', '1d', '7d', '30d', '1y'];
 
     });
-    describe("_distributeRangesToLayers", () => {
+    describe("_distributeRangesToLayers()", () => {
         beforeEach(()=> {
             r = [l(0, 3, 'raw'), l(4, 5, '1h'), l(5, 7, 'raw'), l(8, 13, '30m'), l(14, 19, '1h'), l(20, 30, '1d'), l(31, 32, 'raw'), l(32, 100, '7d')];
             cacheProjection = new CacheProjection().setup('raw', levelIds);
@@ -74,7 +75,7 @@ describe("CacheProjection test", () => {
         });
 
     });
-    describe("recompileProjection", ()=> {
+    describe("recompile()", ()=> {
         var levelRanges = [
             ['raw', '1 3'],
             ['10s', '4 5'],
@@ -106,6 +107,9 @@ describe("CacheProjection test", () => {
 
         it('basic example', ()=> {
             console.log(TestUtil.getRangeDrawing([cacheProjection.projection],null, 8));
+            var diff = cacheProjection.recompile('30s', rng('2 8'));
+            console.log(TestUtil.getRangeDrawing([cacheProjection.projection],null, 8));
+
         });
     });
 });

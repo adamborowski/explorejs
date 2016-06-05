@@ -20,8 +20,10 @@ module.exports = class DiffRangeSet {
 
     }
 
-    static _createGroup(range, fromExistingRange) {
-        var group = {start: range.start, end: range.end};
+    static _createGroup(range, fromExistingRange, copyFn) {
+        var group = copyFn(range);
+        group.start = range.start;
+        group.end = range.end;
         if (fromExistingRange) {
             group.existing = range;
         }
@@ -37,8 +39,11 @@ module.exports = class DiffRangeSet {
      * @param {Number} [maxILeft]
      * @param {Number} [maxIRight]
      */
-    static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
+    static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn) {
         var result = [], added = [], removed = [], resized = [];
+        if (copyFn == null) {
+            copyFn = (x)=>({});
+        }
 
         var currentGroup = null, relation;
         var iterator = new ParallelRangeSetIterator(leftSet, rightSet, {
@@ -50,7 +55,7 @@ module.exports = class DiffRangeSet {
         while (iterator.next()) {
             if (currentGroup == null) {
                 // this is only for first group
-                currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved);
+                currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved, copyFn);
             }
             relation = this._computeOverlapRelation(currentGroup, iterator.Current);
             // console.log(`========
@@ -88,7 +93,7 @@ module.exports = class DiffRangeSet {
             else if (relation.isAfter) {
                 // first, delete current group
                 this._finishGroup(currentGroup, added, resized, result);
-                currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved);
+                currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved, copyFn);
             }
 
         }
@@ -166,8 +171,12 @@ module.exports = class DiffRangeSet {
      * @param [maxILeft]
      * @param [maxIRight]
      */
-    static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight) {
+    static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn) {
         var result = [], added = [], removed = [], resized = [];
+
+        if (copyFn == null) {
+            copyFn = (x)=>({});
+        }
 
         var relation;
         var iteration = new ParallelRangeSetIterator(leftSet, rightSet, {
@@ -192,7 +201,7 @@ module.exports = class DiffRangeSet {
         };
         while (iteration.next()) {
             if (leftSubject == null && iteration.Left) {
-                leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */);
+                leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */, copyFn);
             }
             relation = CutOperation.getCutInfo(leftSubject, iteration.Right);
 
@@ -222,17 +231,16 @@ module.exports = class DiffRangeSet {
                     break;
                 case 'middle':
                     // right will split subject into two subjects
+                    var nextLeft = copyFn(leftSubject.existing);
                     var newStart = iteration.Right.end;
                     var newEnd = leftSubject.end;
                     leftSubject.end = iteration.Right.start;
                     addResult(leftSubject);
-                    var nextLeft = {
-                        start: newStart,
-                        end: newEnd
-                    };
+
+                    nextLeft.start = newStart;
+                    nextLeft.end = newEnd;
                     iteration.insertAsNextLeft(nextLeft);
                     iteration.requestMoveRight(); // we are sure that this 'middle' element is not overlapping the future elements
-
                     break;
                 case 'top':
                     // if we cut the top of left range, we should reduce the range and put it back into the queue, then force to use this range in next step
