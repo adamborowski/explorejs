@@ -108,6 +108,7 @@ describe("CacheProjection", () => {
         it('basic example', ()=> {
             console.log(TestUtil.getRangeDrawing([cacheProjection.projection],null, 8));
             var diff = cacheProjection.recompile('30s', rng('2 8'));
+            console.log(diff);
             console.log(TestUtil.getRangeDrawing([cacheProjection.projection],null, 8));
 
         });

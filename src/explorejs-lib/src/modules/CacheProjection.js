@@ -53,6 +53,11 @@ export default class CacheProjection {
             console.info("CacheProjection::recompileProjection(): got empty array, no recompile is needed.")
             return; // no recompile is needed
         }
+        rangeSet = rangeSet.map(a=>({
+            start: a.start,
+            end: a.end,
+            levelId: levelId
+        }));
         /**
          * @type {{before, overlap, after, start, end}|*}
          */
@@ -60,25 +65,32 @@ export default class CacheProjection {
 
         var layers = this._distributeRangesToLayers(split.overlap, levelId);
 
-        var operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet.map(a=>({
-            start: a.start,
-            end: a.end,
-            levelId: levelId
-        })), (r)=>({levelId: r.levelId}));
+        var operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet, (r)=>({levelId: r.levelId}));
 
 
-        var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort((a, b)=>a.start - b.start);
+        var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort(this._sortFn);
 
 
         this.projection = [].concat(split.before, overlappedResult, split.after);
 
-        return operation;
+        var added = [].concat(operation.T.added, operation.B.added).sort(this._sortFn);
+        var resized = [].concat(operation.T.resized, operation.B.resized).sort(this._sortFn);
+        var removed = [].concat(operation.T.removed, operation.B.removed).sort(this._sortFn);
+
+
+        return {
+            added, removed, resized
+        };
 
 
         // perform MergeOperation
         // this.projection=join before+result+after
         // return diff info coming from the MergeOperation result
 
+    }
+
+    _sortFn(a, b) {
+        return a.start - b.start;
     }
 
     _distributeRangesToLayers(rangeSet, levelId) {

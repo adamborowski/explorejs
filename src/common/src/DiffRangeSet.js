@@ -110,8 +110,7 @@ module.exports = class DiffRangeSet {
     static _finishGroup(currentGroup, added, resized, result) {
         if (currentGroup.existing == null) {
             // there were no existing ranges to resize
-            var addedItem = {start: currentGroup.start, end: currentGroup.end};
-            added.push(addedItem);
+            added.push(currentGroup);
 
         }
         else if (this._isGroupChanged(currentGroup)) {
