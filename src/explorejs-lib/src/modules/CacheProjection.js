@@ -11,7 +11,7 @@ import * as MergeOperation from "explorejs-common/src/layered/MergeOperation";
 export default class CacheProjection {
     /**
      *
-     * @param levelId
+     * @param levelId id of projection level. For example if 1m is given, this will not consider any data from 30s, 10s and raw level)
      * @param levelIds
      * @return {CacheProjection}
      */
@@ -59,6 +59,8 @@ export default class CacheProjection {
         var layers = this._distributeRangesToLayers(split.overlap, levelId);
 
         var result = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet);
+
+        return result;
 
 
         // perform MergeOperation

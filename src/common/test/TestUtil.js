@@ -130,6 +130,11 @@ module.exports = class TestUtil {
             var previousRangeEnd = -Infinity;
             for (var range of rangeSet) {
                 var r = {start: range.start * scale, end: range.end * scale};
+                var levelIdLabelWidth = 4;
+                if (range.levelId != null && r.end - r.start > levelIdLabelWidth) {
+                    putStringIntoArray(numbers, Math.floor((r.start + r.end) / 2) - levelIdLabelWidth/2, padding(range.levelId, levelIdLabelWidth, ' ', padding.BOTH));
+                }
+
                 if (previousRangeEnd == range.start) {
                     line[r.start] = '┳';
                 } else {

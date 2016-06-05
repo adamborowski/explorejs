@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 var expect = chai.expect;
 import CacheProjection from "/modules/CacheProjection";
+import TestUtil from "explorejs-common/test/TestUtil";
 describe("CacheProjection test", () => {
     var r, levelIds, cacheProjection;
 
@@ -14,11 +15,12 @@ describe("CacheProjection test", () => {
 
     beforeEach(()=> {
         levelIds = ['raw', '10s', '30s', '1m', '10m', '30m', '1h', '8h', '1d', '7d', '30d', '1y'];
-        cacheProjection = new CacheProjection().setup('raw', levelIds);
+
     });
     describe("_distributeRangesToLayers", () => {
         beforeEach(()=> {
             r = [l(0, 3, 'raw'), l(4, 5, '1h'), l(5, 7, 'raw'), l(8, 13, '30m'), l(14, 19, '1h'), l(20, 30, '1d'), l(31, 32, 'raw'), l(32, 100, '7d')];
+            cacheProjection = new CacheProjection().setup('raw', levelIds);
         });
         it('merge not existing', ()=> {
             expect(()=>cacheProjection._distributeRangesToLayers(r, '12s')).to.throw(RangeError);
@@ -71,5 +73,39 @@ describe("CacheProjection test", () => {
             });
         });
 
+    });
+    describe("recompileProjection", ()=> {
+        var levelRanges = [
+            ['raw', '1 3'],
+            ['10s', '4 5'],
+            ['30s', ''],
+            ['1m', ''],
+            ['30m', '7 9 10 11'],
+            ['1h', '5 6 9 10'],
+            ['8h', ''],
+            ['1d', ''],
+            ['7d', ''],
+            ['30d', ''],
+            ['1y', '']
+        ];
+
+        function transpose(configuration) {
+            var array = [];
+            for (var conf of configuration) {
+                array.push(...TestUtil.rng(conf[1]).map(r=>({start: r.start, end: r.end, levelId: conf[0]})));
+            }
+            array.sort((a, b)=>a.start - b.start);
+            return array;
+        }
+
+        beforeEach(()=> {
+            cacheProjection = new CacheProjection().setup('raw', levelIds);
+            cacheProjection.projection = transpose(levelRanges);
+        });
+
+
+        it('basic example', ()=> {
+            console.log(TestUtil.getRangeDrawing([cacheProjection.projection],null, 8));
+        });
     });
 });
