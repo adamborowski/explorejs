@@ -1,15 +1,11 @@
+var nodeExternals = require('webpack-node-externals');
 'use strict';
 var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: {
-        index: './unit-tests/index.js'
-    },
-    output: {
-        path: path.resolve(__dirname, 'build/unit-tests'),
-        filename: 'test.bundle.js'
-    },
+    target: 'node', // in order to ignore built-in modules like path, fs, etc.
+    externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
     module: {
         loaders: [
             {
@@ -21,10 +17,6 @@ module.exports = {
                         'es2015'
                     ]
                 }
-            },
-            {
-                test: /\.html$/,
-                loader: 'raw'
             }
         ]
     },

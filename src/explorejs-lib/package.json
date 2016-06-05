@@ -1,0 +1,25 @@
+{
+  "name": "explorejs",
+  "version": "1.0.0",
+  "description": "ExploreJS time series data proxy for charting libraries",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive --reporter spec --harmony --compilers js:babel-register --require babel-core/register"
+  },
+  "author": "Adam Borowski",
+  "license": "MIT",
+  "dependencies": {
+    "explorejs-common": "file:///Users/aborowski/src/explorejs/src/common"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.7.2",
+    "babel-root-import": "^3.2.2",
+    "chai": "^3.5.0",
+    "chai-subset": "^1.2.2",
+    "mocha": "^2.5.3",
+    "mocha-webpack": "^0.3.1",
+    "webpack": "^1.13.1",
+    "webpack-node-externals": "^1.2.0"
+  }
+}

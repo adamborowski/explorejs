@@ -3,6 +3,7 @@ css
 
 #build
 build
+.tmp
 
 #mac
 .DS_Store

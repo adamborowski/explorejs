@@ -1,4 +1,5 @@
 import LevelCache from "./LevelCache";
+import CacheProjection from "./CacheProjection";
 import IndexedList from "explorejs-common/src/IndexedList";
 /**
  * @property {CacheManager} CacheManager
@@ -16,11 +17,17 @@ export default class SerieCache {
         var manifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
         var levels = manifest.levels;
         this._levelCacheSet = new IndexedList();
+        this._levelProjectionSet = new IndexedList();
+
         for (var level of [{id: 'raw'}].concat(levels)) {
             var levelCache = new LevelCache(level);
+            var levelProjection = new CacheProjection(level);
             levelCache.SerieCache = this;
+            levelProjection.SerieCache = this;
             this._levelCacheSet.add(level.id, levelCache);
+            this._levelProjectionSet.add(level.id, levelProjection);
             levelCache.setup();
+            levelProjection.setup();
         }
 
     }

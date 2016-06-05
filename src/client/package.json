@@ -58,13 +58,15 @@
     "karma-mocha": "^0.2.1",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",
-    "mocha": "^2.3.4",
+    "mocha": "^2.5.3",
+    "mocha-webpack": "^0.3.1",
     "postcss-loader": "^0.8.0",
     "raw-loader": "^0.5.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.0",
-    "webpack": "^1.12.10",
-    "webpack-dev-server": "^1.14.0"
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.0",
+    "webpack-node-externals": "^1.2.0"
   }
 }
