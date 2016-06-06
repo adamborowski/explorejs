@@ -15,7 +15,7 @@ export default class SerieCache {
     }
 
     setup() {
-        var manifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
+        var manifest = this._serieManifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
         var levels = manifest.levels;
         this._levelCacheSet = new IndexedList();
         this._levelProjectionEventSet = new IndexedList();
@@ -48,6 +48,10 @@ export default class SerieCache {
 
     }
 
+    getProjectionEventAtLevel(levelId) {
+        return this._levelProjectionEventSet.get(levelId);
+    }
+
     _getRangeOfDiff(diff) {
         if (diff == null) {
             return null;
@@ -70,5 +74,9 @@ export default class SerieCache {
 
     getRangeOfData(data) {
         return {start: data.$s, end: data.$e};
+    }
+
+    getSerieManifest() {
+        return this._serieManifest;
     }
 }
