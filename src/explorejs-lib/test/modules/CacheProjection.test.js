@@ -3,28 +3,10 @@ var expect = chai.expect;
 import CacheProjection from "/modules/CacheProjection";
 import TestUtil from "explorejs-common/test/TestUtil";
 var rng = TestUtil.rng;
+var l = TestUtil.rangeOnLevel;
+var ll = TestUtil.rangesOnLevel.bind(TestUtil);
 describe("CacheProjection", () => {
     var r, levelIds, cacheProjection;
-
-    function l(levelId, start, end, existingStart, existingEnd) {
-        if (typeof levelId == 'string') {
-            var args = levelId.split(' ');
-            levelId = args[0];
-            start = Number(args[1]);
-            end = Number(args[2]);
-            existingStart = Number(args[3]);
-            existingEnd = Number(args[4]);
-        }
-        var o = {start: start, end: end, levelId: levelId};
-        if (!isNaN(existingStart)) {
-            o.existing = {start: existingStart, end: existingEnd, levelId: levelId};
-        }
-        return o;
-    }
-
-    function ll(ranges) {
-        return ranges.split(';').filter(a=>a).map(a=>l(a.trim()));
-    }
 
     function spl(str) {
         return str ? str.split(' ').map(a=>r[a]) : [];
@@ -124,13 +106,13 @@ describe("CacheProjection", () => {
             var diff = cacheProjection.recompile(config.atLevel, rng(config.withRanges));
 
             var finalProjection = cacheProjection.projection;
-            console.log(TestUtil.getRangeDrawing([startProjection, rangeSetWithLabels, finalProjection], null, 8));
+            console.log(TestUtil.getRangeDrawing([startProjection, rangeSetWithLabels, finalProjection], ["before","new","after"], 8));
             expect(diff).to.deep.equal({
                 added: ll(config.added), resized: ll(config.resized), removed: ll(config.removed)
             });
             expect(cacheProjection.projection).to.deep.equal(ll(config.projection));
         };
-        it('basic example, projection at level raw', ()=> {
+        it('recompile with empty set', ()=> {
             cacheProjection = new CacheProjection().setup('raw', levelIds);
             cacheProjection.projection = transpose(levelRanges);
             expect(cacheProjection.recompile('30s', [])).to.be.null;

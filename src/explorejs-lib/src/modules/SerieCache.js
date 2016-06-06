@@ -40,6 +40,5 @@ export default class SerieCache {
      */
     putDataAtLevel(level, data) {
         this._levelCacheSet.get(level).putData(data);
-        
     }
 }

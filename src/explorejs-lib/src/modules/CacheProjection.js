@@ -53,6 +53,9 @@ export default class CacheProjection {
             console.log("CacheProjection::recompileProjection(): got empty array, no recompile is needed.")
             return null; // no recompile is needed
         }
+        if (!this.levelNumbers.hasOwnProperty(levelId)) {
+            throw new RangeError(`Level of id ${levelId} is not supported.`);
+        }
         if (this.levelNumbers[levelId] < this.levelNumbers[this.levelId]) {
             throw new RangeError("CacheProjecton::recomplieProjection: level outside projection"); // no recompile is needed
         }

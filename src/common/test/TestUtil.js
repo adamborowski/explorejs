@@ -108,7 +108,14 @@ module.exports = class TestUtil {
         if (names == null) {
             names = "ABCDEFGHIJKLMNOPRSTUWXYZ";
         }
-        names = names.split('');
+        if (typeof names == 'string') {
+            names = names.split('');
+        }
+
+
+        var namesWidth = names.reduce((r, a)=>Math.max(a.length, r), 0);
+
+
         var max = rangeSets.reduce((a, b)=> {
             return Math.max(a, b.length == 0 ? 0 : b[b.length - 1].end)
         }, 0);
@@ -132,7 +139,7 @@ module.exports = class TestUtil {
                 var r = {start: range.start * scale, end: range.end * scale};
                 var levelIdLabelWidth = 4;
                 if (range.levelId != null && r.end - r.start > levelIdLabelWidth) {
-                    putStringIntoArray(numbers, Math.floor((r.start + r.end) / 2) - levelIdLabelWidth / 2, padding(range.levelId, levelIdLabelWidth, ' ', padding.BOTH));
+                    putStringIntoArray(numbers, Math.floor((r.start + r.end ) / 2) - levelIdLabelWidth / 2, padding(range.levelId, levelIdLabelWidth, ' ', padding.BOTH));
                 }
 
                 if (previousRangeEnd == range.start) {
@@ -148,16 +155,16 @@ module.exports = class TestUtil {
                 }
                 previousRangeEnd = range.end;
             }
-            line.unshift('├', ' ' + names.shift() + ' ');
-            numbers.unshift('│   ');
+            line.unshift('├', ' ' + padding(names.shift(), namesWidth, ' ', padding.RIGHT) + ' ');
+            numbers.unshift('│  ' + this.repeat(" ", namesWidth));
             numbers.push('  │');
             line.push('  │');
 
             lines.push(line.join(""));
             lines.push(numbers.join(""));
         }
-        var upLine = '┌' + this.repeat('─', (max * scale) + 6) + '┐';
-        var dnLine = '└' + this.repeat('─', (max * scale) + 6) + '┘';
+        var upLine = '┌' + this.repeat('─', (max * scale + namesWidth) + 5) + '┐';
+        var dnLine = '└' + this.repeat('─', (max * scale + namesWidth) + 5) + '┘';
         lines.unshift(upLine);
         lines.push(dnLine);
         return lines.join("\n");
@@ -190,6 +197,26 @@ module.exports = class TestUtil {
 
     static cleanRange(range) {
         return {start: range.start, end: range.end};
+    }
+
+    static rangeOnLevel(levelId, start, end, existingStart, existingEnd) {
+        if (typeof levelId == 'string') {
+            var args = levelId.split(' ');
+            levelId = args[0];
+            start = Number(args[1]);
+            end = Number(args[2]);
+            existingStart = Number(args[3]);
+            existingEnd = Number(args[4]);
+        }
+        var o = {start: start, end: end, levelId: levelId};
+        if (!isNaN(existingStart)) {
+            o.existing = {start: existingStart, end: existingEnd, levelId: levelId};
+        }
+        return o;
+    }
+
+    static rangesOnLevel(ranges) {
+        return ranges.split(';').filter(a=>a).map(a=>this.rangeOnLevel(a.trim()));
     }
 
 
