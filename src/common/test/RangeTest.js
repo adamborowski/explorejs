@@ -1,7 +1,7 @@
 var expect = require("chai").expect;
 var Range = require('../src/Range');
 
-describe("RangeScopedEventTest", ()=> {
+describe("Range", ()=> {
     describe("Range hasCommon test", ()=> {
         describe('range bounds are disjoint', ()=> {
             it("a inside b ", ()=> {

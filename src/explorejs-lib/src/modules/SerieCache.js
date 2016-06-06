@@ -1,6 +1,7 @@
 import LevelCache from "./LevelCache";
-import CacheProjection from "./CacheProjection";
 import IndexedList from "explorejs-common/src/IndexedList";
+import {Builder} from "/modules/SerieCacheProjectionDisposer";
+import RangeScopedEvent from "explorejs-common/src/RangeScopedEvent";
 /**
  * @property {CacheManager} CacheManager
  */
@@ -17,28 +18,57 @@ export default class SerieCache {
         var manifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
         var levels = manifest.levels;
         this._levelCacheSet = new IndexedList();
-        this._levelProjectionSet = new IndexedList();
+        this._levelProjectionEventSet = new IndexedList();
 
-
-        var allLevels = [{id: 'raw'}].concat(levels);
+        var allLevels = [{id: 'raw'}].concat(levels).sort((a, b)=>a.step - b.step);
+        this._disposer = new Builder().withLevelIds(allLevels).build();
         for (var level of allLevels) {
             var levelCache = new LevelCache(level);
-            var levelProjection = new CacheProjection(level);
             levelCache.SerieCache = this;
-            levelProjection.SerieCache = this;
             this._levelCacheSet.add(level.id, levelCache);
-            this._levelProjectionSet.add(level.id, levelProjection);
+            this._levelProjectionEventSet.add(level.id, new RangeScopedEvent());
             levelCache.setup();
-            levelProjection.setup(level.id, allLevels);
         }
 
     }
 
     /**
-     * @param level the level of cache, e.g. 30s
+     * @param levelId the level id of cache, e.g. 30s
      * @param data
      */
-    putDataAtLevel(level, data) {
-        this._levelCacheSet.get(level).putData(data);
+    putDataAtLevel(levelId, data) {
+        this._levelCacheSet.get(levelId).putData(data);
+        var projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(data)]);
+        for (var diff of projectionDiffs) {
+            var rangeOfDiff = this._getRangeOfDiff(diff.result);
+            if (rangeOfDiff != null) {
+                this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', rangeOfDiff, diff.result);
+            }
+        }
+
+    }
+
+    _getRangeOfDiff(diff) {
+        if (diff == null) {
+            return null;
+        }
+
+        var range = {start: Infinity, end: -Infinity};
+
+        function updateRange(array) {
+            if (array.length) {
+                range.start = Math.min(range.start, array[0].start);
+                range.end = Math.max(range.end, array[array.length - 1].end);
+            }
+        }
+
+        updateRange(diff.added);
+        updateRange(diff.removed);
+        updateRange(diff.resized);
+        return range.start == Infinity && range.end == -Infinity ? null : range;
+    }
+
+    getRangeOfData(data) {
+        return {start: data.$s, end: data.$e};
     }
 }

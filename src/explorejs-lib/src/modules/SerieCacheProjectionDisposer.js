@@ -15,18 +15,16 @@ export default class SerieCacheProjectionDisposer {
      */
     recompile(levelId, rangeSet) {
         var projectionAtLevelIndex = this.cacheLevelIds.indexOf(levelId);
-        if(projectionAtLevelIndex==-1){
+        if (projectionAtLevelIndex == -1) {
             throw new RangeError(`SerieCacheProjectionDisposer::recompile level ${levelId} not supported.`)
         }
-        var diff = [];
+        var result = [];
         for (var i = 0; i <= projectionAtLevelIndex; i++) {
             var projection = this.projections[i];
-            var result = projection.recompile(levelId, rangeSet);
-            if (result && (result.added.length || result.removed.length || result.resized.length)) {
-                diff.push({projectionLevelId: projection.levelId, diff: result});
-            }
+            var diff = projection.recompile(levelId, rangeSet);
+            result.push({levelId: projection.levelId, diff});
         }
-        return diff;
+        return result;
     }
 
     getProjection(levelId) {
@@ -41,11 +39,18 @@ export class Builder {
         this.levelIds = [];
     }
 
+    /**
+     * @param levelIds
+     * @return {Builder}
+     */
     withLevelIds(levelIds) {
         this.levelIds = levelIds;
         return this;
     }
 
+    /**
+     * @return {SerieCacheProjectionDisposer}
+     */
     build() {
         var projections = this.levelIds.map((id, i)=>new CacheProjection().setup(id, this.levelIds.slice(i)));
         return new SerieCacheProjectionDisposer(projections);
