@@ -92,12 +92,6 @@ export default class CacheProjection {
         return {
             added, removed, resized
         };
-
-
-        // perform MergeOperation
-        // this.projection=join before+result+after
-        // return diff info coming from the MergeOperation result
-
     }
 
     _sortFn(a, b) {

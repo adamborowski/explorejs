@@ -18,9 +18,15 @@ export default class SerieCacheProjectionDisposer {
         if(projectionAtLevelIndex==-1){
             throw new RangeError(`SerieCacheProjectionDisposer::recompile level ${levelId} not supported.`)
         }
+        var diff = [];
         for (var i = 0; i <= projectionAtLevelIndex; i++) {
-            this.projections[i].recompile(levelId, rangeSet);
+            var projection = this.projections[i];
+            var result = projection.recompile(levelId, rangeSet);
+            if (result && (result.added.length || result.removed.length || result.resized.length)) {
+                diff.push({projectionLevelId: projection.levelId, diff: result});
+            }
         }
+        return diff;
     }
 
     getProjection(levelId) {
