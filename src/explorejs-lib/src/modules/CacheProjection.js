@@ -50,14 +50,18 @@ export default class CacheProjection {
      */
     recompile(levelId, rangeSet) {
         if (rangeSet.length == 0) {
-            console.info("CacheProjection::recompileProjection(): got empty array, no recompile is needed.")
-            return; // no recompile is needed
+            console.log("CacheProjection::recompileProjection(): got empty array, no recompile is needed.")
+            return null; // no recompile is needed
         }
-        rangeSet = rangeSet.map(a=>({
+        if (this.levelNumbers[levelId] < this.levelNumbers[this.levelId]) {
+            throw new RangeError("CacheProjecton::recomplieProjection: level outside projection"); // no recompile is needed
+        }
+        var mapFn = a=>({
             start: a.start,
             end: a.end,
             levelId: levelId
-        }));
+        });
+        rangeSet = rangeSet.map(mapFn);
         /**
          * @type {{before, overlap, after, start, end}|*}
          */
@@ -68,7 +72,11 @@ export default class CacheProjection {
         var operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet, (r)=>({levelId: r.levelId}));
 
 
-        var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort(this._sortFn);
+        var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort(this._sortFn).map(a=>({
+            start: a.start,
+            end: a.end,
+            levelId: a.levelId
+        }));
 
 
         this.projection = [].concat(split.before, overlappedResult, split.after);

@@ -230,7 +230,7 @@ module.exports = class DiffRangeSet {
                     break;
                 case 'middle':
                     // right will split subject into two subjects
-                    var nextLeft = copyFn(leftSubject.existing);
+                    var nextLeft = copyFn(leftSubject);
                     var newStart = iteration.Right.end;
                     var newEnd = leftSubject.end;
                     leftSubject.end = iteration.Right.start;
