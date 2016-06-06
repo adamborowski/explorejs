@@ -20,7 +20,7 @@ export default class SerieCache {
         this._levelCacheSet = new IndexedList();
         this._levelProjectionEventSet = new IndexedList();
 
-        var allLevels = [{id: 'raw'}].concat(levels).sort((a, b)=>a.step - b.step);
+        var allLevels = [{id: 'raw', step: 0}].concat(levels).sort((a, b)=>a.step - b.step);
         this._disposer = new Builder().withLevelIds(allLevels).build();
         for (var level of allLevels) {
             var levelCache = new LevelCache(level);
