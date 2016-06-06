@@ -65,6 +65,20 @@ describe('RangeScopedEvent', () => {
             expect(listeners.bar_50_50_point).to.be.not.called;
             expect(listeners.bar_30_70).to.be.not.called;
         });
+        it('all foo listeners except unreginstered one', ()=> {
+            event.removeListener("foo", listeners.foo_0_100);
+            event.fireEvent('foo', Range.closed(0, 100), 'foo data');
+
+            expect(listeners.foo_0_1).to.be.called;
+            expect(listeners.foo_0_100).to.be.not.called; // unregistered, shouldn't be called anymore
+            expect(listeners.foo_50_50_point).to.be.called;
+            expect(listeners.foo_30_70).to.be.called;
+
+            expect(listeners.bar_0_1).to.be.not.called;
+            expect(listeners.bar_0_100).to.be.not.called;
+            expect(listeners.bar_50_50_point).to.be.not.called;
+            expect(listeners.bar_30_70).to.be.not.called;
+        });
         it('foo listeners from 45 to 55', ()=> {
             event.fireEvent('foo', Range.closed(45, 55), 'foo data');
 
