@@ -19,7 +19,9 @@ export default class SerieCache {
         this._levelCacheSet = new IndexedList();
         this._levelProjectionSet = new IndexedList();
 
-        for (var level of [{id: 'raw'}].concat(levels)) {
+
+        var allLevels = [{id: 'raw'}].concat(levels);
+        for (var level of allLevels) {
             var levelCache = new LevelCache(level);
             var levelProjection = new CacheProjection(level);
             levelCache.SerieCache = this;
@@ -27,7 +29,7 @@ export default class SerieCache {
             this._levelCacheSet.add(level.id, levelCache);
             this._levelProjectionSet.add(level.id, levelProjection);
             levelCache.setup();
-            levelProjection.setup();
+            levelProjection.setup(level.id, allLevels);
         }
 
     }
@@ -38,5 +40,6 @@ export default class SerieCache {
      */
     putDataAtLevel(level, data) {
         this._levelCacheSet.get(level).putData(data);
+        
     }
 }
