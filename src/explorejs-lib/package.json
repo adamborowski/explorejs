@@ -19,6 +19,8 @@
     "hamjest": "^2.13.0",
     "mocha": "^2.5.3",
     "mocha-webpack": "^0.3.1",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0",
     "webpack": "^1.13.1",
     "webpack-node-externals": "^1.2.0"
   }

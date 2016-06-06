@@ -5,6 +5,23 @@ export default class SerieCacheProjectionDisposer {
      */
     constructor(cacheProjections) {
         this.projections = cacheProjections;
+        this.cacheLevelIds = cacheProjections.map(c=>c.levelId);
+    }
+
+    /**
+     * Calls recompile only on projections considering given level
+     * @param levelId
+     * @param rangeSet
+     */
+    recompile(levelId, rangeSet) {
+        var projectionAtLevelIndex = this.cacheLevelIds.indexOf(levelId);
+        for (var i = projectionAtLevelIndex; i < this.projections.length; i++) {
+            this.projections[i].recompile(levelId, rangeSet);
+        }
+    }
+
+    getProjection(levelId) {
+        return this.projections[this.cacheLevelIds.indexOf(levelId)];
     }
 
 
