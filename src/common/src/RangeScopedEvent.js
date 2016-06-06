@@ -27,7 +27,7 @@ class RangeScopedEvent {
     /**
      * call listeners with ranges overlapping by this range
      * @param name {string}
-     * @param range {{start, end}}
+     * @param range {Range}
      * @param eventData {*}
      */
     fireEvent(name, range, eventData) {

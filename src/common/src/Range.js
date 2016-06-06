@@ -1,10 +1,11 @@
 /**
+ * @class Range
  * @property {Number} left
  * @property {Number} right
  * @property {Number} leftClosed
  * @property {Number} rightClosed
  */
-module.exports = class Range {
+class Range {
     constructor(left, right, leftClosed, rightClosed) {
         this.left = left;
         this.right = right;
@@ -56,4 +57,5 @@ module.exports = class Range {
     }
 
 
-};
+}
+module.exports = Range;
