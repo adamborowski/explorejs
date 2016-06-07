@@ -14,11 +14,11 @@ export default class DynamicProjection {
     }
 
     onProjectionRecompile(diff) {
-
+        this._callback(diff);
     }
 
-    setup() {
-
+    setup(callback) {
+        this._callback = callback;
     }
 
     /**
@@ -38,13 +38,33 @@ export default class DynamicProjection {
             if (this.currentEvent != null) {
                 this.currentEvent.removeListener('recompile', this.onProjectionRecompile)
             }
+            var oldId = this.currentId;
             this.currentId = newLevelId;
             this.currentEvent = this.SerieCache.getProjectionEventAtLevel(this.currentId);
             this.currentEvent.addListener('recompile', paddedRange);
+            if (oldId != null) {
+                this.callDiffDueToProjectionChange(oldId, newLevelId);
+            }
         }
         else {
             this.SerieCache.getProjectionEventAtLevel(this.currentId).changeListener('recompile', this.onProjectionRecompile, paddedRange);
+            if (this.currentPaddedRange != null) {
+                this.callDiffDueToRangeChange(this.currentPaddedRange, paddedRange);
+            }
+
         }
+        //todo move this to predictor, move fitLevelId to DataSource
+        this.SerieCache.getLevelCache(this.currentId).requestDataForRange(Range.closed(start, end));
+        var widerLevel = this.getWiderLevel(this.currentId);
+        if (widerLevel) {
+            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedRange);
+        }
+        this.currentPaddedRange = paddedRange;
+    }
+
+    getWiderLevel(levelId) {
+        var ids = this.SerieCache.getSerieManifest().levels.map(a=>a.id);
+        return ids[ids.indexOf(levelId) + 1];
     }
 
     /**
@@ -73,5 +93,24 @@ export default class DynamicProjection {
             }
         }
         return 'raw';
+    }
+
+    callDiffDueToProjectionChange(oldId, newLevelId, oldRange, newRange) {
+        /* TODO call this.onProjectionRecompile with diff between old and new CacheProjection
+         * 1. oldRanges: from old projecton get overlapping with old range
+         * 2. newRanges: from new projection get overapping with new range
+         * 3. if new projection is wider (cannot see raw, 10s, etc)
+         * 3a. remove all unsupported ranges (iterate over old ranges and pick them) --> diff.removed
+         * 3b. oldRanges.add(newRanges) --> diff.added, diff.resized, diff.removed (removed as result of joining two)
+         * 4. if new projection is narrower (can see more, ex. raw, 10s, etc)
+         * 4a. from oldRanges remove all newly supported ranges (iterate over new ranges and pick them) --> diff.removed, diff.added, diff.resized (added as a result of splitting)
+         * 4b. oldRanges.add(new supported ranges) --> diff.added
+         *  todo test it!!
+         */
+    }
+
+    callDiffDueToRangeChange(oldRange, newRange) {
+        // TODO call this.onProjectionRecompile with diff between old and new paddedRange
+        // todo test it!!
     }
 }
