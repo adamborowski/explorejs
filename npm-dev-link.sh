@@ -10,3 +10,8 @@ npm link ${e}
 
 cd ../server
 npm link ${e}
+
+cd ../explorejs-lib
+npm link
+cd ../client
+npm link explorejs
