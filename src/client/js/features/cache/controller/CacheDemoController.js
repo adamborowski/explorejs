@@ -1,6 +1,6 @@
-import RequestManager from '../../../explorejs/modules/RequestManager';
-import DataRequest from '../../../explorejs/data/DataRequest';
-import CacheManager from "../../../explorejs/modules/CacheManager";
+import RequestManager from 'explorejs/src/modules/RequestManager';
+import DataRequest from 'explorejs/src/data/DataRequest';
+import CacheManager from "explorejs/src/modules/CacheManager";
 export default class CacheDemoController {
     constructor($scope, $filter) {
         this.$scope = $scope

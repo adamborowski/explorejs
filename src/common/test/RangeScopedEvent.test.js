@@ -4,8 +4,8 @@ var sinon = require("sinon");
 var sinonChai = require("sinon-chai");
 chai.use(sinonChai);
 
-import RangeScopedEvent from "../src/RangeScopedEvent";
-import Range from "../src/Range";
+var RangeScopedEvent = require("../src/RangeScopedEvent");
+var Range = require("../src/Range");
 
 describe('RangeScopedEvent', () => {
     /**
