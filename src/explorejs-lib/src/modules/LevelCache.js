@@ -56,7 +56,10 @@ export default class LevelCache {
         var requestManager = this.SerieCache.CacheManager.RequestManager;
         var serieId = this.SerieCache.options.serieId;
         // compute which data should we ask the server
-        var neededRanges = xspans.sub([range], this._dataIndex).toObjects('start', 'end');
+        var neededRanges = xspans.sub([{
+            start: range.left,
+            end: range.right
+        }], this._dataIndex).toObjects('start', 'end');
         for (var range of neededRanges) {
             requestManager.addRequest(new DataRequest(serieId, this.level.id, range.start, range.end, priority));
         }

@@ -4,6 +4,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {expect} from 'chai';
+import Range from "explorejs-common/src/Range";
 chai.use(sinonChai);
 
 import LevelCache from "../../src/modules/LevelCache";
@@ -102,7 +103,7 @@ describe('LevelCache', () => {
             setupTest({id: '10s', span: 10000});
             levelCache.putData(sdata('1 2 101; 2 3 131; 3 4 129; 4 5 136'));
 
-            expect(levelCache.requestDataForRange(srng('3 7')[0])).to.deep.equal(srng('5 7'));
+            expect(levelCache.requestDataForRange(Range.closed(3 * scale, 7 * scale))).to.deep.equal(srng('5 7'));
 
             expect(addRequestSpy).calledOnce.calledWith(new DataRequest('foo123', '10s', 5 * scale, 7 * scale, 1));
         });
@@ -112,7 +113,7 @@ describe('LevelCache', () => {
             levelCache.putData(sdata('2 3 131; 3 4 129; 4 5 136; 5 6 123'));
             levelCache.putData(sdata('11 12 1112; 12 13 1213; 13 14 1314; 14 15 1415'));
 
-            expect(levelCache.requestDataForRange(srng('0 20')[0])).to.deep.equal(srng('0 1; 6 11; 15 20'));
+            expect(levelCache.requestDataForRange(Range.closed(0 * scale, 20 * scale))).to.deep.equal(srng('0 1; 6 11; 15 20'));
 
             expect(addRequestSpy).calledThrice;
             expect(addRequestSpy).calledWith(new DataRequest('foo123', '10s', 0 * scale, 1 * scale, 1));
@@ -126,7 +127,7 @@ describe('LevelCache', () => {
             levelCache.putData(sdata('2 3 131; 3 4 129; 4 5 136; 5 6 123'));
             levelCache.putData(sdata('11 12 1112; 12 13 1213; 13 14 1314; 14 15 1415'));
 
-            expect(levelCache.requestDataForRange(srng('18 20')[0])).to.deep.equal(srng('18 20'));
+            expect(levelCache.requestDataForRange(Range.closed(18 * scale, 20 * scale))).to.deep.equal(srng('18 20'));
 
             expect(addRequestSpy).calledOnce;
             expect(addRequestSpy).calledWith(new DataRequest('foo123', '10s', 18 * scale, 20 * scale, 1));
@@ -137,7 +138,7 @@ describe('LevelCache', () => {
             levelCache.putData(sdata('2 3 131; 3 4 129; 4 5 136; 5 6 123'));
             levelCache.putData(sdata('11 12 1112; 12 13 1213; 13 14 1314; 14 15 1415'));
 
-            expect(levelCache.requestDataForRange(srng('3 6')[0])).to.be.empty;
+            expect(levelCache.requestDataForRange(Range.closed(3 * scale, 6 * scale))).to.be.empty;
 
             expect(addRequestSpy).not.called;
         });
