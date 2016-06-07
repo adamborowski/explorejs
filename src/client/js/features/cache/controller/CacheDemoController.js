@@ -3,6 +3,9 @@ import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 export default class CacheDemoController {
     constructor($scope, $filter) {
+        setInterval(()=> {
+            $scope.$apply();
+        }, 1000);
         this.$scope = $scope
         this.$filter = $filter;
         console.log('I am cache demo controller!!');
@@ -115,20 +118,23 @@ export default class CacheDemoController {
     }
 
     getX(range) {
-        return ((range.$s || range.$t) - this.startTime) / this.maxDuration * 960;
+        return ((range.start || range.$t) - this.startTime) / this.maxDuration * 960;
     }
 
     getWidth(range) {
-        var w = (range.$e || range.$t) - (range.$s || range.$t);
+        var w = (range.end || range.$t) - (range.start || range.$t);
         return Math.max(1, (w) / this.maxDuration * 960);
     }
 
     getRangeX() {
-        return this.getX({$s: new Date(this.$scope.rangeFrom).getTime(), $e: new Date(this.$scope.rangeTo).getTime()})
+        return this.getX({
+            start: new Date(this.$scope.rangeFrom).getTime(),
+            end: new Date(this.$scope.rangeTo).getTime()
+        })
     }
 
     getRangeWidth() {
-        var w = range.$e - range.$s;
+        var w = range.end - range.start;
         return Math.max(1, (w) / this.maxDuration * 960);
     }
 

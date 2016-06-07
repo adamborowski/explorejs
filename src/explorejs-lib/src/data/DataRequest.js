@@ -5,6 +5,12 @@ export default class DataRequest {
     constructor(serieId, level, openTime, closeTime, priority) {
         this.serieId = serieId;
         this.level = level;
+        if(openTime>closeTime){
+            var tmp = openTime;
+            openTime = closeTime;
+            closeTime = tmp;
+            console.warn('DataRequest: inverted openTime and closeTime');
+        }
         this.openTime = openTime;
         this.closeTime = closeTime;
     }

@@ -34,6 +34,9 @@ export default class LevelCache {
                 start: data[0][this._leftBoundKey],
                 end: data[data.length - 1][this._rightBoundKey]
             }]);
+            //<debug>
+            this._debug_data_index = this._dataIndex.toObjects('start', 'end');
+            //</debug>
             if (data[0].$ss != null) {
                 console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
             }

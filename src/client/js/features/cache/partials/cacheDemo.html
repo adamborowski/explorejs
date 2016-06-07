@@ -34,9 +34,9 @@
             <button type="button"
                     class="btn btn-default" ng-click="controller.flush()">Submit batch
             </button>
-            <button type="button"
-                    class="btn btn-default" ng-click="controller.dump()">dump structure
-            </button>
+            <!--<button type="button"-->
+            <!--class="btn btn-default" ng-click="controller.dump()">dump structure-->
+            <!--</button>-->
             <span class="form-control-static">
                         {{mouse|date:"yyyy-MM-dd HH:mm:ss"}}
             </span>
@@ -63,8 +63,8 @@
                          ng-repeat="aggregation in serie._levelCacheSet.values">
                         <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
                               ng-attr-x="{{controller.getX(range)}}"
-                              ng-repeat="range in aggregation._segmentArray._data"
-                              data-start="{{range.$s}}"
+                              ng-repeat="range in aggregation._debug_data_index"
+                              data-start="{{range.start}}"
                         ></rect>
                     </svg>
                 </div>
@@ -80,8 +80,8 @@
                             width="960" height="20" class="level-svg">
                         <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
                               ng-attr-x="{{controller.getX(range)}}"
-                              ng-repeat="range in aggregation._segmentArray._data"
-                              data-start="{{range.$s}}"
+                              ng-repeat="range in aggregation._debug_data_index"
+                              data-start="{{range.start}}"
                         ></rect>
                     </svg>
                 </td>

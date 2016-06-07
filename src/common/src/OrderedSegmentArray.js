@@ -90,7 +90,7 @@ class OrderedSegmentArray {
             // we have to merge
             // todo prevent unnecessary slice range1
             var merged = this._mergeRanges(overlappedSegments, range);
-            this._data.splice(leftNeighborIndex + 1, numberSegmentsInside, ...merged);
+            this._data.splice(leftNeighborIndex + 1, numberSegmentsInside, ...merged);//todo unuse splice to avoid browser limit errors with too many arguments ...merged
         }
 
 
