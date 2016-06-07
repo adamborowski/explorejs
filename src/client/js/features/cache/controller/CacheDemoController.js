@@ -156,7 +156,10 @@ export default class CacheDemoController {
     }
 
     selectAggAndSerie(agg, serie) {
-        this.$scope.selectedAggregation = this.$scope.availableAggregations.find((a)=>a.name == agg.level.id);
+        if (typeof agg != 'string') {
+            agg = agg.level.id;
+        }
+        this.$scope.selectedAggregation = this.$scope.availableAggregations.find((a)=>a.name == agg);
         this.$scope.selectedSerie = this.$scope.availableSeries.find((a)=>a.name == serie.options.serieId);
     }
 }

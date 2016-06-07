@@ -39,7 +39,7 @@ export default class SerieCache {
      */
     putDataAtLevel(levelId, data) {
         this._levelCacheSet.get(levelId).putData(data);
-        var projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(data)]);
+        var projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(levelId, data)]);
         for (var diff of projectionDiffs) {
             var rangeOfDiff = this._getRangeOfDiff(diff.diff);
             if (rangeOfDiff != null) {
@@ -85,8 +85,11 @@ export default class SerieCache {
         return range.left == Infinity && range.right == -Infinity ? null : range;
     }
 
-    getRangeOfData(data) {
+    getRangeOfData(levelId, data) {
         if (data.length) {
+            if (levelId == 'raw') {
+                return {start: data[0].$t, end: data[data.length - 1].$t};
+            }
             return {start: data[0].$s, end: data[data.length - 1].$e};
         }
         return null;

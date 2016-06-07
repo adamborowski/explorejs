@@ -21,6 +21,30 @@
   }
 }
 
+table thead td.projection-display svg.level-svg {
+  [data-level-id='raw'] {
+    fill: extract(@colors, 1);
+  }
+  [data-level-id='1h'] {
+    fill: extract(@colors, 2);
+  }
+  [data-level-id='6h'] {
+    fill: extract(@colors, 3);
+  }
+  [data-level-id='12h'] {
+    fill: extract(@colors, 4);
+  }
+  [data-level-id='1d'] {
+    fill: extract(@colors, 5);
+  }
+  [data-level-id='6d'] {
+    fill: extract(@colors, 6);
+  }
+  [data-level-id='30d'] {
+    fill: extract(@colors, 7);
+  }
+}
+
 .make-color-classes2(@i: length(@colors)) when (@i > 0) {
   .make-color-classes2(@i - 1);
   @color: extract(@colors, @i);
@@ -39,11 +63,16 @@ svg.level-svg {
 
 }
 
-table.aggregation-display tbody {
+table.aggregation-display tbody,table.aggregation-display thead {
   .make-color-classes();
 }
 
 table.aggregation-display thead {
+  tr:last-of-type {
+    td {
+      border-bottom: 3px solid #ffcc33;
+    }
+  }
   td.compile-view {
     div {
       position: relative;
