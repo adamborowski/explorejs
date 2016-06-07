@@ -55,6 +55,22 @@ module.exports = class TestUtil {
         return r;
     }
 
+    static dataFromStream(dataStr, scale) {
+        if (scale == null) {
+            scale = 1;
+        }
+        return dataStr.split(';').map(p=> {
+            var d = p.trim().split(' ');
+            if (d.length == 3) {
+                return {$s: Number(d[0]) * scale, $e: Number(d[1]) * scale, v: Number(d[2])}
+            }
+            if (d.length == 2) {
+                return {$t: Number(d[0]) * scale, v: Number(d[1])}
+            }
+            throw new RangeError('bad format');
+        });
+    }
+
     static randomRangeSet(size, rand, spaceRange, sizeRange) {
         if (spaceRange == null) {
             spaceRange = {start: 0, end: 3};

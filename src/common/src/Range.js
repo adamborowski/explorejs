@@ -29,6 +29,10 @@ class Range {
         return new Range(left, right, false, true);
     }
 
+    static unbounded() {
+        return new Range(-Infinity, Infinity, false, false);
+    }
+
     leftTouches(v) {
         return this.leftClosed && this.left == v;
     }
