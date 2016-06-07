@@ -6,7 +6,7 @@ import sinonChai from 'sinon-chai';
 import {expect} from 'chai';
 chai.use(sinonChai);
 
-import SerieCache from "/modules/SerieCache";
+import SerieCache from "../../src/modules/SerieCache";
 import TestUtil from "explorejs-common/test/TestUtil";
 import Range from 'explorejs-common/src/Range';
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);

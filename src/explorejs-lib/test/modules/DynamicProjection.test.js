@@ -2,7 +2,7 @@
 //putDataAtLevel
 import * as chai from 'chai';
 var expect = chai.expect;
-import DynamicProjection from "/modules/DynamicProjection";
+import DynamicProjection from "../../src/modules/DynamicProjection";
 import CacheProjection from "../../src/modules/CacheProjection";
 import TestUtil from "explorejs-common/test/TestUtil";
 import Range from "explorejs-common/src/Range";

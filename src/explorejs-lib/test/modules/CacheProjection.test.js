@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 var expect = chai.expect;
-import CacheProjection from "/modules/CacheProjection";
+import CacheProjection from "../../src/modules/CacheProjection";
 import TestUtil from "explorejs-common/test/TestUtil";
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;

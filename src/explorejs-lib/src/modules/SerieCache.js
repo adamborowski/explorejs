@@ -1,6 +1,6 @@
 import LevelCache from "./LevelCache";
 import IndexedList from "explorejs-common/src/IndexedList";
-import {Builder} from "/modules/SerieCacheProjectionDisposer";
+import {Builder} from "./SerieCacheProjectionDisposer";
 import RangeScopedEvent from "explorejs-common/src/RangeScopedEvent";
 /**
  * @property {CacheManager} CacheManager
