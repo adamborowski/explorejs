@@ -4,12 +4,5 @@
     "es2015"
   ],
   "plugins": [
-    [
-      "babel-root-import",
-      {
-        "rootPathPrefix": "/",
-        "rootPathSuffix": "src/"
-      }
-    ]
   ]
 }
