@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-
+var chai = require('chai');
 var expect = chai.expect;
 var sinon = require("sinon");
 var sinonChai = require("sinon-chai");
