@@ -231,8 +231,20 @@ module.exports = class TestUtil {
         return o;
     }
 
-    static rangesOnLevel(ranges) {
-        return ranges.split(';').filter(a=>a).map(a=>this.rangeOnLevel(a.trim()));
+    static rangesOnLevel(ranges, scale) {
+        if (scale == null) {
+            scale = 1;
+        }
+        return ranges.split(';').filter(a=>a).map(a=> {
+            var rangeOnLevel = this.rangeOnLevel(a.trim());
+            rangeOnLevel.start *= scale;
+            rangeOnLevel.end *= scale;
+            if (rangeOnLevel.existing) {
+                rangeOnLevel.existing.start *= scale;
+                rangeOnLevel.existing.end *= scale;
+            }
+            return rangeOnLevel
+        });
     }
 
 

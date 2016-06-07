@@ -43,7 +43,7 @@ export default class SerieCache {
         for (var diff of projectionDiffs) {
             var rangeOfDiff = this._getRangeOfDiff(diff.diff);
             if (rangeOfDiff != null) {
-                this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', rangeOfDiff, diff.result);
+                this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', rangeOfDiff, diff.diff);
             }
         }
 
@@ -70,19 +70,19 @@ export default class SerieCache {
             return null;
         }
 
-        var range = {start: Infinity, end: -Infinity};
+        var range = {left: Infinity, right: -Infinity};
 
         function updateRange(array) {
             if (array.length) {
-                range.start = Math.min(range.start, array[0].start);
-                range.end = Math.max(range.end, array[array.length - 1].end);
+                range.left = Math.min(range.left, array[0].start);
+                range.right = Math.max(range.right, array[array.length - 1].end);
             }
         }
 
         updateRange(diff.added);
         updateRange(diff.removed);
         updateRange(diff.resized);
-        return range.start == Infinity && range.end == -Infinity ? null : range;
+        return range.left == Infinity && range.right == -Infinity ? null : range;
     }
 
     getRangeOfData(data) {
