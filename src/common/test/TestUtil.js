@@ -1,7 +1,7 @@
 var gen = require('random-seed');
 var padding = require('string-padding');
 var xspans = require('xspans');
-module.exports = class TestUtil {
+class TestUtil {
     static rng(...items) {
         if (items.length == 1 && typeof items[0] == 'string') {
             items = items[0].match(/\[.*?]|(?:\d+\.?\d*\s+\d+\.?\d*)/g) || [];
@@ -248,7 +248,9 @@ module.exports = class TestUtil {
     }
 
 
-};
+}
+
+module.exports = TestUtil;
 
 class RandomSwitcher {
     constructor(rand, numItems) {
