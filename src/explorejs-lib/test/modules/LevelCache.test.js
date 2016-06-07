@@ -9,7 +9,6 @@ chai.use(sinonChai);
 import LevelCache from "../../src/modules/LevelCache";
 import TestUtil from "explorejs-common/test/TestUtil";
 import DataRequest from "../../src/data/DataRequest";
-import Range from "explorejs-common/src/Range"
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
