@@ -139,30 +139,60 @@ describe('DynamicProjection', () => {
             }))).to.deep.equal(targetProjectionData);
         }
 
-        it('example case 1', ()=> {
-            var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-            var targetData = ll('1d 0 70; 30d 140 150; 1d 150 180; 30d 180 190; 1y 190 230; 30d 230 250; 1d 250 280; 1y 280 290; 1d 290 310');
-            performTest(currentData, targetData, '1h', '1d', Range.unbounded(), Range.unbounded());
+        describe('narrower to wider, eg. 10s to 1h', ()=> {
+            it('example case 1', ()=> {
+                var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('1d 0 70; 30d 140 150; 1d 150 180; 30d 180 190; 1y 190 230; 30d 230 250; 1d 250 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, '1h', '1d', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 2', ()=> {
+                var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('1y 0 310');
+                performTest(currentData, targetData, 'raw', '1y', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 3', ()=> {
+                var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; raw 140 150; 1h 150 180; raw 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; raw 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('1y 0 260; 1y 275 300');
+                performTest(currentData, targetData, 'raw', '1y', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 4', ()=> {
+                var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, 'raw', '1h', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 5', ()=> {
+                var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('30d 4 80; 30d 140 150; 1y 150 180; 30d 180 190; 1y 190 200;  1y 210 230; 30d 230 250; 1y 250 290; 30d 290 310');
+                performTest(currentData, targetData, '1h', '30d', Range.unbounded(), Range.unbounded());
+            });
         });
-        it('example case 2', ()=> {
-            var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-            var targetData = ll('1y 0 310');
-            performTest(currentData, targetData, 'raw', '1y', Range.unbounded(), Range.unbounded());
-        });
-        it('example case 3', ()=> {
-            var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; raw 140 150; 1h 150 180; raw 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; raw 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-            var targetData = ll('1y 0 260; 1y 275 300');
-            performTest(currentData, targetData, 'raw', '1y', Range.unbounded(), Range.unbounded());
-        });
-        it('example case 4', ()=> {
-            var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-            var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-            performTest(currentData, targetData, 'raw', '1h', Range.unbounded(), Range.unbounded());
-        });
-        it('example case 5', ()=> {
-            var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-            var targetData = ll('30d 4 80; 30d 140 150; 1y 150 180; 30d 180 190; 1y 190 200;  1y 210 230; 30d 230 250; 1y 250 290; 30d 290 310');
-            performTest(currentData, targetData, '1h', '30d', Range.unbounded(), Range.unbounded());
+
+        describe('wider to narrower, eg. 1d to 1h', ()=> {
+            it('example case 1', ()=> {
+                var currentData = ll('1d 0 70; 30d 140 150; 1d 150 180; 30d 180 190; 1y 190 230; 30d 230 250; 1d 250 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, '1d', '1h', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 2', ()=> {
+                var currentData = ll('1y 0 310');
+                var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, '1y', 'raw', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 3', ()=> {
+                var currentData = ll('1y 0 260; 1y 275 300');
+                var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; raw 140 150; 1h 150 180; raw 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; raw 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, '1y', 'raw', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 4', ()=> {
+                var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, '1h', 'raw', Range.unbounded(), Range.unbounded());
+            });
+            it('example case 5', ()=> {
+                var currentData = ll('30d 4 80; 30d 140 150; 1y 150 180; 30d 180 190; 1y 190 200;  1y 210 230; 30d 230 250; 1y 250 290; 30d 290 310');
+                var targetData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
+                performTest(currentData, targetData, '30d', '1h', Range.unbounded(), Range.unbounded());
+            });
         });
     });
 });

@@ -100,6 +100,14 @@ export default class DynamicProjection {
         return 'raw';
     }
 
+    _copyFn(a) {
+        return {levelId: a.levelId};
+    }
+
+    _compareFn(a, b) {
+        return a.levelId == b.levelId;
+    }
+
     callDiffDueToProjectionChange(currentLevelId, newLevelId, oldRange, newRange) {
         /* TODO call this.onProjectionRecompile with diff between old and new CacheProjection
          * 1. oldRanges: from old projecton get overlapping with old range
@@ -123,7 +131,7 @@ export default class DynamicProjection {
             // change to wider, narrower ranges should disappear
             // remove all usupported ranges
             var rangesToRemove = this._getUnsupportedRanges(oldProjectionRanges, newLevel);
-            var remainingRanges = DiffRangeSet.subtract(oldProjectionRanges, rangesToRemove, null, null, null, null, a=>({levelId: a.levelId}));
+            var remainingRanges = DiffRangeSet.subtract(oldProjectionRanges, rangesToRemove, null, null, null, null, this._copyFn);
             diff.removed.push(...remainingRanges.removed);
             if (remainingRanges.added.length || remainingRanges.resized.length) {
                 throw new Error("Somthing gone wrong, operands had to be not overlapping");
@@ -133,15 +141,27 @@ export default class DynamicProjection {
             //     [remainingRanges.added, remainingRanges.removed, remainingRanges.resized, remainingRanges.result],
             //     [' +', ' -', '->', '=='], 1));
 
-            var newRanges = DiffRangeSet.add(remainingRanges.result, newProjectionRanges, null, null, null, null, a=>({levelId: a.levelId}), (a, b)=>a.levelId == b.levelId);
+            var newRanges = DiffRangeSet.add(remainingRanges.result, newProjectionRanges, null, null, null, null, this._copyFn, this._compareFn);
             diff.added.push(...newRanges.added);
             diff.removed.push(...newRanges.removed);
             diff.resized.push(...newRanges.resized);
             diff.result.push(...newRanges.result);
 
         } else {
-            // change to narrower
-            throw new Error('not yet implemented')
+            // change to narrower, narrower ranges may appear
+            // from new projection get not supported by current level
+            var rangesToAdd = this._getUnsupportedRanges(newProjectionRanges, currentLevel);
+            var rangesWithHoles = DiffRangeSet.subtract(oldProjectionRanges, rangesToAdd, null, null, null, null, this._copyFn);
+            diff.added.push(...rangesWithHoles.added);
+            diff.removed.push(...rangesWithHoles.removed);
+            diff.resized.push(...rangesWithHoles.resized);
+            diff.result.push(...rangesWithHoles.result);
+
+            diff.added.push(...rangesToAdd);
+            diff.result.push(...rangesToAdd);
+
+            diff.result.sort((a, b)=>a.start - b.start);
+            diff.added.sort((a, b)=>a.start - b.start); // new supported ranges and splitted ranges may overlap
         }
         return diff;
     }
