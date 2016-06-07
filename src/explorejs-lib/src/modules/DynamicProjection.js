@@ -1,4 +1,7 @@
 import Range from "explorejs-common/src/Range";
+import OrderedSegmentArray from "explorejs-common/src/OrderedSegmentArray"
+import IndexedList from "explorejs-common/src/IndexedList";
+import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
 /**
  * Class to dynamically choose right ProjectionEvent, depending on current viewport settings (start, end, scale)
  * @property {SerieCache} SerieCache
@@ -19,6 +22,8 @@ export default class DynamicProjection {
 
     setup(callback) {
         this._callback = callback;
+        this._levels = IndexedList.fromArray(this.SerieCache.getSerieManifest().levels, 'id');
+        this._levels.add('raw', {levelId: 'raw', step: 1});
     }
 
     /**
@@ -95,7 +100,7 @@ export default class DynamicProjection {
         return 'raw';
     }
 
-    callDiffDueToProjectionChange(oldId, newLevelId, oldRange, newRange) {
+    callDiffDueToProjectionChange(currentLevelId, newLevelId, oldRange, newRange) {
         /* TODO call this.onProjectionRecompile with diff between old and new CacheProjection
          * 1. oldRanges: from old projecton get overlapping with old range
          * 2. newRanges: from new projection get overapping with new range
@@ -107,10 +112,66 @@ export default class DynamicProjection {
          * 4b. oldRanges.add(new supported ranges) --> diff.added
          *  todo test it!!
          */
+        var currentLevel = this._levels.get(currentLevelId);
+        var newLevel = this._levels.get(newLevelId);
+        var oldProjection = this.SerieCache.getProjectionDisposer().getProjection(currentLevelId);
+        var newProjection = this.SerieCache.getProjectionDisposer().getProjection(newLevelId);
+        var oldProjectionRanges = OrderedSegmentArray.splitRangeSetOverlapping(oldProjection.projection, oldRange.left, oldRange.right).overlap;
+        var newProjectionRanges = OrderedSegmentArray.splitRangeSetOverlapping(newProjection.projection, newRange.left, newRange.right).overlap;
+        var diff = {added: [], removed: [], resized: [], result: []};
+        if (currentLevel.step < newLevel.step) {
+            // change to wider, narrower ranges should disappear
+            // remove all usupported ranges
+            var rangesToRemove = this._getUnsupportedRanges(oldProjectionRanges, newLevel);
+            var remainingRanges = DiffRangeSet.subtract(oldProjectionRanges, rangesToRemove, null, null, null, null, a=>({levelId: a.levelId}));
+            diff.removed.push(...remainingRanges.removed);
+            if (remainingRanges.added.length || remainingRanges.resized.length) {
+                throw new Error("Somthing gone wrong, operands had to be not overlapping");
+            }
+
+            // console.log(require('explorejs-common/test/TestUtil').getRangeDrawing(
+            //     [remainingRanges.added, remainingRanges.removed, remainingRanges.resized, remainingRanges.result],
+            //     [' +', ' -', '->', '=='], 1));
+
+            var newRanges = DiffRangeSet.add(remainingRanges.result, newProjectionRanges, null, null, null, null, a=>({levelId: a.levelId}), (a, b)=>a.levelId == b.levelId);
+            diff.added.push(...newRanges.added);
+            diff.removed.push(...newRanges.removed);
+            diff.resized.push(...newRanges.resized);
+            diff.result.push(...newRanges.result);
+
+        } else {
+            // change to narrower
+            throw new Error('not yet implemented')
+        }
+        return diff;
     }
+
+    /**
+     * Return only ranges that are no more valid if previous level was narrower
+     * @param rangeSet
+     * @param newLevel
+     * @return {*}
+     * @private
+     */
+    _getUnsupportedRanges(rangeSet, newLevel) {
+        return rangeSet.filter((r)=>this._levels.get(r.levelId).step < newLevel.step);
+    }
+
+    /**
+     * Return only ranges that are new comparing to old level
+     * @param rangeSet
+     * @param oldLevel
+     * @return {*}
+     * @private
+     */
+    _getNewlySupportedRanges(rangeSet, oldLevel) {
+        return rangeSet.filter((r)=>this._levels.get(r.levelId).step > oldLevel.step);
+    }
+
 
     callDiffDueToRangeChange(oldRange, newRange) {
         // TODO call this.onProjectionRecompile with diff between old and new paddedRange
         // todo test it!!
+        ;
     }
 }

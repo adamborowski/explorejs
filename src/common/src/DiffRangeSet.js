@@ -1,6 +1,6 @@
 var CutOperation = require('./CutOperation');
 var ParallelRangeSetIterator = require('./ParallelRangeSetIterator');
-module.exports = class DiffRangeSet {
+class DiffRangeSet {
 
     static pretty(obj) {
         var fields = [];
@@ -38,8 +38,9 @@ module.exports = class DiffRangeSet {
      * @param {Number} [iRight]
      * @param {Number} [maxILeft]
      * @param {Number} [maxIRight]
+     * @return {{added, removed, resized, result}}
      */
-    static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn) {
+    static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn, compareFn) {
         var result = [], added = [], removed = [], resized = [];
         if (copyFn == null) {
             copyFn = (x)=>({});
@@ -57,7 +58,7 @@ module.exports = class DiffRangeSet {
                 // this is only for first group
                 currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved, copyFn);
             }
-            relation = this._computeOverlapRelation(currentGroup, iterator.Current);
+            relation = this._computeOverlapRelation(currentGroup, iterator.Current, compareFn);
             // console.log(`========
             //     left: ${this.pretty(iterator.left)}
             //    right: ${this.pretty(iterator.right)}
@@ -131,12 +132,18 @@ module.exports = class DiffRangeSet {
     }
 
 
-    static _computeOverlapRelation(cmp, subject) {
+    static _computeOverlapRelation(cmp, subject, compareFn) {
         if (subject == null) {
             return {};
         }
         if (cmp == null) {
             return {};
+        }
+        if (compareFn != null) {
+            if (!compareFn(cmp, subject)) {
+                // we don't want to combine ranges that are not equal (for example different levelId)
+                return {isAfter:true};
+            }
         }
         if (subject.start > cmp.end) {
             return {isAfter: true};
@@ -169,6 +176,7 @@ module.exports = class DiffRangeSet {
      * @param [iRight]
      * @param [maxILeft]
      * @param [maxIRight]
+     * @return {{added, removed, resized, result}}
      */
     static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn) {
         var result = [], added = [], removed = [], resized = [];
@@ -302,4 +310,5 @@ module.exports = class DiffRangeSet {
     }
 
 
-};
+}
+module.exports = DiffRangeSet;

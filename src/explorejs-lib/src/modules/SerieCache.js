@@ -95,4 +95,11 @@ export default class SerieCache {
     getSerieManifest() {
         return this._serieManifest;
     }
+
+    /**
+     * @return {SerieCacheProjectionDisposer}
+     */
+    getProjectionDisposer() {
+        return this._disposer;
+    }
 }

@@ -1,10 +1,15 @@
-module.exports = class IndexedList {
+class IndexedList {
     constructor() {
         this._values = [];
         this._keys = [];
         this._dict = {};
     }
 
+    /**
+     * @param array
+     * @param key
+     * @return {IndexedList}
+     */
     static fromArray(array, key) {
         var l = new IndexedList();
         for (var item of array) {
@@ -65,4 +70,5 @@ module.exports = class IndexedList {
             callback(this._keys[i], this._values[i], i);
         }
     }
-};
+}
+module.exports = IndexedList;
