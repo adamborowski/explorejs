@@ -1,33 +1,62 @@
 import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
-// import {RangeScopedEvent} from 'explorejs-common/src/RangeScopedEvent';
+import DataRequest from "../data/DataRequest";
+import xspans from 'xspans';
 /**
  * @property {SerieCache} SerieCache
  */
 export default class LevelCache {
     constructor(level) {
         this.level = level;
-        // this.events = new RangeScopedEvent();
+        this._dataIndex
     }
 
     setup() {
+        this._leftBoundKey = this.level.id == 'raw' ? '$t' : '$s';
+        this._rightBoundKey = this.level.id == 'raw' ? '$t' : '$e';
         this._segmentArray = new OrderedSegmentArray({
             leftBoundClosed: true,
             rightBoundClosed: false,
-            leftBoundKey: this.level.id == 'raw' ? '$t' : '$s',
-            rightBoundKey: this.level.id == 'raw' ? '$t' : '$e'
+            leftBoundKey: this._leftBoundKey,
+            rightBoundKey: this._rightBoundKey
         });
+        this._dataIndex = xspans();
     }
 
     putData(data) {
-        this._segmentArray.mergeRange(data);
         // this.events.fireEvent('data', this._segmentArray._)
         // todo fire range-scoped events
-        if(data.length==0){
+        if (data.length == 0) {
             console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
         }
-        else{
-
-        console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
+        else {
+            this._segmentArray.mergeRange(data);
+            this._dataIndex.union([{
+                start: data[0][this._leftBoundKey],
+                end: data[data.length - 1][this._rightBoundKey]
+            }]);
+            if (data[0].$ss != null) {
+                console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
+            }
         }
+    }
+
+    /**
+     *
+     * @param {Range} range
+     * @param {number} [priority]
+     * @return {Array} actual ranges requested to the server
+     */
+    requestDataForRange(range, priority) {
+        if (priority == null) {
+            priority = 0;
+        }
+        var requestManager = this.SerieCache.CacheManager.RequestManager;
+        var serieId = this.SerieCache.options.serieId;
+        // compute which data should we ask the server
+        var neededRanges = xspans.sub([range], this._dataIndex).toObjects('start', 'end');
+        for (var range of neededRanges) {
+            requestManager.addRequest(new DataRequest(serieId, this.level.id, range.start, range.end, priority));
+        }
+        return neededRanges;
     }
 }
