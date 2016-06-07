@@ -46,16 +46,18 @@ export default class DynamicProjection {
             var oldId = this.currentId;
             this.currentId = newLevelId;
             this.currentEvent = this.SerieCache.getProjectionEventAtLevel(this.currentId);
-            this.currentEvent.addListener('recompile', paddedRange);
+            // this.currentEvent.addListener('recompile', paddedRange);
+            this.currentEvent.addListener('recompile', Range.unbounded());
             if (oldId != null) {
-                this.callDiffDueToProjectionChange(oldId, newLevelId);
+                var diff = this.callDiffDueToProjectionChange(oldId, newLevelId, Range.unbounded(), Range.unbounded());
+                this.onProjectionRecompile(diff);
             }
         }
         else {
-            this.SerieCache.getProjectionEventAtLevel(this.currentId).changeListener('recompile', this.onProjectionRecompile, paddedRange);
-            if (this.currentPaddedRange != null) {
-                this.callDiffDueToRangeChange(this.currentPaddedRange, paddedRange);
-            }
+            // this.SerieCache.getProjectionEventAtLevel(this.currentId).changeListener('recompile', this.onProjectionRecompile, paddedRange);
+            // if (this.currentPaddedRange != null) {
+            //     this.callDiffDueToRangeChange(this.currentPaddedRange, paddedRange);
+            // }
 
         }
         //todo move this to predictor, move fitLevelId to DataSource
@@ -137,10 +139,6 @@ export default class DynamicProjection {
                 throw new Error("Somthing gone wrong, operands had to be not overlapping");
             }
 
-            // console.log(require('explorejs-common/test/TestUtil').getRangeDrawing(
-            //     [remainingRanges.added, remainingRanges.removed, remainingRanges.resized, remainingRanges.result],
-            //     [' +', ' -', '->', '=='], 1));
-
             var newRanges = DiffRangeSet.add(remainingRanges.result, newProjectionRanges, null, null, null, null, this._copyFn, this._compareFn);
             diff.added.push(...newRanges.added);
             diff.removed.push(...newRanges.removed);
@@ -175,17 +173,6 @@ export default class DynamicProjection {
      */
     _getUnsupportedRanges(rangeSet, newLevel) {
         return rangeSet.filter((r)=>this._levels.get(r.levelId).step < newLevel.step);
-    }
-
-    /**
-     * Return only ranges that are new comparing to old level
-     * @param rangeSet
-     * @param oldLevel
-     * @return {*}
-     * @private
-     */
-    _getNewlySupportedRanges(rangeSet, oldLevel) {
-        return rangeSet.filter((r)=>this._levels.get(r.levelId).step > oldLevel.step);
     }
 
 
