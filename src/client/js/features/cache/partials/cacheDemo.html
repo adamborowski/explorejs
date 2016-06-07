@@ -43,11 +43,14 @@
         </form>
     </div>
 
-    <ul class="floating-bottom">
-        <li ng-repeat="argum in controller.rm._deferredAjaxCall._arguments">
-            {{argum}}
-        </li>
-    </ul>
+    <div class="chart-display">
+        Chart
+        <div id="main-chart">
+
+        </div>
+    </div>
+
+
     <h1>ExploreJS Cache Visual Debugger</h1>
     <div class="serie-display" ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
         <h3>{{serie.options.serieId}}</h3>
@@ -91,6 +94,10 @@
             </tbody>
         </table>
     </div>
-
+    <ul class="floating-bottom">
+        <li ng-repeat="argum in controller.rm._deferredAjaxCall._arguments">
+            {{argum}}
+        </li>
+    </ul>
 
 </div>

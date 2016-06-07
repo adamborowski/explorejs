@@ -1,6 +1,7 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
+import vis from "vis/dist/vis.js";
 export default class CacheDemoController {
     constructor($scope, $filter) {
         setInterval(()=> {
@@ -57,6 +58,8 @@ export default class CacheDemoController {
                 this.maxDuration = this.endTime - this.startTime;
             });
 
+            this.initChart();
+
             // rm.addRequest(new DataRequest('s001', '1h', '2015-11-12', '2015-12-12', 0));
             // rm.addRequest(new DataRequest('s004', '30m', '2015-11-12', '2015-12-12', 0));
             // rm.addRequest(new DataRequest('s002', '10s', '2016-01-02 13:12', '2016-01-02 13:34', 0));
@@ -67,11 +70,30 @@ export default class CacheDemoController {
         window.addRequest = function (serie, level, from, to) {
             rm.addRequest(new DataRequest(serie, level, from, to));
         };
-        window.rm=rm;
+        window.rm = rm;
 
 
+    }
 
+    initChart() {
+        var container = document.getElementById('main-chart');
+        var items = [
+            {x: '2014-06-11', y: 10},
+            {x: '2014-06-12', y: 25},
+            {x: '2014-06-13', y: 30},
+            {x: '2014-06-14', y: 10},
+            {x: '2014-06-15', y: 15},
+            {x: '2014-06-16', y: 30}
+        ];
 
+        var dataset = new vis.DataSet(items);
+        var options = {
+            start: '2014-06-10',
+            end: '2014-06-18'
+        };
+        var graph2d = new vis.Graph2d(container, dataset, options);
+        console.log(dataset);
+        console.log(graph2d)
     }
 
     //noinspection JSUnusedGlobalSymbols

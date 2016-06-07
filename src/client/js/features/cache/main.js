@@ -12,6 +12,7 @@ import FeatureBase from 'lib/FeatureBase';
 import Routes from './Routes';
 import CacheDemoController from './controller/CacheDemoController';
 import './style/cache.less';
+import './style/chart.less';
 class Feature extends FeatureBase {
 
     constructor(jquery) {
