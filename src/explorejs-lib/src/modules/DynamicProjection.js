@@ -11,7 +11,7 @@ import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
 export default class DynamicProjection {
     constructor() {
         this.ScreenPadding = 0.5; // 0.5 of actual viewport width will be appeneded to left and right viewport window
-        this.WantedUnitWidth = 10;
+        this.WantedUnitWidth = 100;
         this.currentId = null;
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
     }
@@ -46,8 +46,8 @@ export default class DynamicProjection {
             var oldId = this.currentId;
             this.currentId = newLevelId;
             this.currentEvent = this.SerieCache.getProjectionEventAtLevel(this.currentId);
-            // this.currentEvent.addListener('recompile', paddedRange);
-            this.currentEvent.addListener('recompile', Range.unbounded());
+            // this.currentEvent.addListener('recompile', paddedRange, this.onProjectionRecompile);
+            this.currentEvent.addListener('recompile', Range.unbounded(), this.onProjectionRecompile);
             if (oldId != null) {
                 var diff = this.callDiffDueToProjectionChange(oldId, newLevelId, Range.unbounded(), Range.unbounded());
                 this.onProjectionRecompile(diff);
@@ -60,12 +60,15 @@ export default class DynamicProjection {
             // }
 
         }
+
+        // console.log(`update view state start=${start} end=${end} scale=${scale}, level=${this.currentId}`);
+
         //todo move this to predictor, move fitLevelId to DataSource
         this.SerieCache.getLevelCache(this.currentId).requestDataForRange(Range.closed(start, end));
-        var widerLevel = this.getWiderLevel(this.currentId);
-        if (widerLevel) {
-            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedRange);
-        }
+        // var widerLevel = this.getWiderLevel(this.currentId);
+        // if (widerLevel) {
+        //     this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedRange);
+        // }
         this.currentPaddedRange = paddedRange;
     }
 

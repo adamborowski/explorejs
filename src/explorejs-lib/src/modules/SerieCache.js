@@ -38,6 +38,10 @@ export default class SerieCache {
      * @param data
      */
     putDataAtLevel(levelId, data) {
+        if (data.length == 0) {
+            console.info('SerieCache, no data put at level', levelId);
+            return;
+        }
         this._levelCacheSet.get(levelId).putData(data);
         var projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(levelId, data)]);
         for (var diff of projectionDiffs) {

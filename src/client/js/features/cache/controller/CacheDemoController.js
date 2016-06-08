@@ -2,6 +2,7 @@ import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import vis from "vis/dist/vis.js";
+import VisSource from "explorejs/src/datasource/VisJSSource";
 export default class CacheDemoController {
     constructor($scope, $filter) {
         setInterval(()=> {
@@ -77,23 +78,62 @@ export default class CacheDemoController {
 
     initChart() {
         var container = document.getElementById('main-chart');
-        var items = [
-            {x: '2014-06-11', y: 10},
-            {x: '2014-06-12', y: 25},
-            {x: '2014-06-13', y: 30},
-            {x: '2014-06-14', y: 10},
-            {x: '2014-06-15', y: 15},
-            {x: '2014-06-16', y: 30}
-        ];
+        var names = ['SquareShaded', 'Bargraph', 'Blank', 'CircleShaded'];
+        var groups = new vis.DataSet();
+        groups.add({
+            id: 0,
+            content: names[0],
+            options: {
+                drawPoints: {
+                    style: 'square' // square, circle
+                },
+                shaded: {
+                    orientation: 'bottom' // top, bottom
+                }
+            }
+        });
+
+        groups.add({
+            id: 1,
+            content: names[1],
+            options: {
+                style: 'bar'
+            }
+        });
+
+        groups.add({
+            id: 2,
+            content: names[2],
+            options: {drawPoints: false}
+        });
+
+        groups.add({
+            id: 3,
+            content: names[3],
+            options: {
+                drawPoints: {
+                    style: 'circle' // square, circle
+                },
+                shaded: {
+                    orientation: 'top' // top, bottom
+                }
+            }
+        });
+
+        var items = [];
 
         var dataset = new vis.DataSet(items);
         var options = {
-            start: '2014-06-10',
-            end: '2014-06-18'
+            defaultGroup: 'ungrouped',
+            // legend: true,
+            start: this.startTime,
+            end: this.endTime,
+            interpolation: false
         };
-        var graph2d = new vis.Graph2d(container, dataset, options);
-        console.log(dataset);
-        console.log(graph2d)
+        var graph2d = new vis.Graph2d(container, dataset, groups, options);
+
+        var visSource = new VisSource(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
+        this.visSource = visSource;
     }
 
     //noinspection JSUnusedGlobalSymbols

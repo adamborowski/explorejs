@@ -1,5 +1,9 @@
 import DynamicProjection from "./DynamicProjection";
 export default class DataSource {
+    /**
+     * @param {SerieCache} serieCache
+     * @param callback
+     */
     constructor(serieCache, callback) {
         this.serieCache = serieCache;
         this._callback = callback;

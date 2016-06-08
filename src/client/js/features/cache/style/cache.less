@@ -7,7 +7,7 @@
 }
 
 @colors: #199856, #CCFF33, #FFCC33, #F53D00,
-#b81e6e, #1e2660, #3af5ff;
+#b81e6e, #1e2660, #3af5ff, #08f, #ff7954;
 .make-color-classes(@i: length(@colors)) when (@i > 0) {
   .make-color-classes(@i - 1);
   @color: extract(@colors, @i);
@@ -25,23 +25,29 @@ table thead td.projection-display svg.level-svg {
   [data-level-id='raw'] {
     fill: extract(@colors, 1);
   }
-  [data-level-id='1h'] {
+  [data-level-id='10s'] {
     fill: extract(@colors, 2);
   }
-  [data-level-id='6h'] {
+  [data-level-id='30s'] {
     fill: extract(@colors, 3);
   }
-  [data-level-id='12h'] {
+  [data-level-id='1m'] {
     fill: extract(@colors, 4);
   }
-  [data-level-id='1d'] {
+  [data-level-id='10m'] {
     fill: extract(@colors, 5);
   }
-  [data-level-id='6d'] {
+  [data-level-id='1h'] {
     fill: extract(@colors, 6);
   }
-  [data-level-id='30d'] {
+  [data-level-id='1d'] {
     fill: extract(@colors, 7);
+  }
+  [data-level-id='30d'] {
+    fill: extract(@colors, 8);
+  }
+  [data-level-id='365d'] {
+    fill: extract(@colors, 9);
   }
 }
 

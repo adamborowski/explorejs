@@ -1,5 +1,6 @@
 var bs = require('binarysearch');
 var _ = require('underscore');
+var Range = require('./Range');
 var options = {
     leftBoundKey: 'left',
     rightBoundKey: 'right',
@@ -83,7 +84,7 @@ class OrderedSegmentArray {
             //segments are not overlapping
             this._data.splice(leftNeighborIndex + 1, 0, ...range);
         }
-        else if (numberSegmentsInside < 0) {
+        else if (numberSegmentsInside < 0 && range.length > 1) {
             throw new Error('This should not happened');
         }
         else {
@@ -161,6 +162,20 @@ class OrderedSegmentArray {
         }
         var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound, options);
         return this._data.slice(indexes.left, indexes.right + 1);
+    }
+
+    /**
+     *
+     * @param {Range} range
+     */
+    getRange2(range) {
+        var left = range.left;
+        var right = range.right;
+        var options = {
+            leftBoundClosed: range.leftClosed,
+            rightBoundClosed: range.rightClosed
+        };
+        return this.getRange(left, right, options);
     }
 
     /**

@@ -22,6 +22,14 @@ export default class LevelCache {
         this._dataIndex = xspans();
     }
 
+    /**
+     *
+     * @param {Range} range
+     */
+    getRange(range) {
+        return this._segmentArray.getRange2(range);
+    }
+
     putData(data) {
         // this.events.fireEvent('data', this._segmentArray._)
         // todo fire range-scoped events

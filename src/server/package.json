@@ -4,8 +4,10 @@
   "description": "Data Source for exploration in visual analysis",
   "main": "main.js",
   "dependencies": {
+    "binarysearch": "^1.0.0",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
+    "moment": "^2.13.0",
     "optimist": "^0.6.1",
     "proxy-middleware": "^0.15.0",
     "request": "^2.69.0"
