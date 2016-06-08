@@ -54,8 +54,10 @@ export default class CacheDemoController {
                 $scope.mouse = '2016-03-03';//rm.getManifestForSerie('s001').$start;
                 $scope.rangeTo = '2016-04-01';//rm.getManifestForSerie('s001').$end;
                 $scope.rm = rm;
-                this.startTime = rm.getManifestForSerie('s001').start;
-                this.endTime = rm.getManifestForSerie('s001').end;
+                // this.startTime = rm.getManifestForSerie('s001').start;
+                // this.endTime = rm.getManifestForSerie('s001').end;
+                this.startTime = new Date('2016-01-01').getTime();
+                this.endTime = new Date('2016-05-05').getTime();
                 this.maxDuration = this.endTime - this.startTime;
             });
 

@@ -10,7 +10,7 @@ import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
  */
 export default class DynamicProjection {
     constructor() {
-        this.ScreenPadding = 1; // 0.5 of actual viewport width will be appeneded to left and right viewport window
+        this.ScreenPadding = 0.5; // 0.5 of actual viewport width will be appeneded to left and right viewport window
         this.WantedUnitWidth = 100;
         this.currentId = null;
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
@@ -67,8 +67,11 @@ export default class DynamicProjection {
         this.SerieCache.getLevelCache(this.currentId).requestDataForRange(paddedRange);
         var widerLevel = this.getWiderLevel(this.currentId);
         if (widerLevel) {
+            var padWiderStart = start - (end - start) * this.ScreenPadding * 2;
+            var padWiderEnd = end + (end - start) * this.ScreenPadding * 2;
+            var paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
             console.log('wider', widerLevel)
-            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedRange);
+            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedWiderRange);
         }
         this.currentPaddedRange = paddedRange;
     }
