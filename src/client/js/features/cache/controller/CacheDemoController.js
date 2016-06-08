@@ -126,8 +126,8 @@ export default class CacheDemoController {
         var options = {
             defaultGroup: 'ungrouped',
             // legend: true,
-            start: this.startTime,
-            end: this.endTime,
+            start: '2016-02-01',
+            end: '2016-02-02',
             interpolation: false
         };
         var graph2d = new vis.Graph2d(container, dataset, groups, options);

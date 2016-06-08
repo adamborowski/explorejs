@@ -56,7 +56,7 @@
         <h3>{{serie.options.serieId}}</h3>
         <table class="table aggregation-display">
             <thead>
-            <tr ng-repeat="projection in serie._disposer.projections">
+            <tr ng-repeat="projection in serie._disposer.projections" ng-class="{projectionActive:controller.visSource.dataSource.dynamicProjection.currentId==projection.levelId}">
                 <td class="aggregation-display" style="white-space: nowrap;">
                     <span style="font-size:0.6em">↓</span> {{projection.levelId}}
                 </td>
