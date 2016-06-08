@@ -6,8 +6,8 @@
   }
 }
 
-@colors: #199856, #CCFF33, #FFCC33, #F53D00,
-#b81e6e, #1e2660, #3af5ff, #08f, #ff7954;
+@colors: #b81e6e, #9a7ad8, #3af5ff, #08f,
+#199856, #93b058, #FFCC33, #F53D00, #830e24;
 .make-color-classes(@i: length(@colors)) when (@i > 0) {
   .make-color-classes(@i - 1);
   @color: extract(@colors, @i);
@@ -25,6 +25,11 @@
   font-weight:bold;
   background: #efefef;
 }
+
+td.window-display svg rect {
+  fill: #333333 !important;
+}
+
 
 table thead td.projection-display svg.level-svg {
   [data-level-id='raw'] {

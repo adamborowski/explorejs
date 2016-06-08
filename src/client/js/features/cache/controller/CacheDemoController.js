@@ -131,9 +131,21 @@ export default class CacheDemoController {
             interpolation: false
         };
         var graph2d = new vis.Graph2d(container, dataset, groups, options);
+        this.graph2d = graph2d;
 
         var visSource = new VisSource(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
         this.visSource = visSource;
+    }
+
+    setViewportRange(start, end) {
+        this.graph2d.setWindow(start, end);
+    }
+
+    getViewportRange() {
+        if (this.graph2d == null || this.graph2d.getWindow() == null || isNaN(this.graph2d.getWindow().start.getTime())|| isNaN(this.graph2d.getWindow().end.getTime())) {
+            return {start: 0, end: 0};
+        }
+        return {start: this.graph2d.getWindow().start.getTime(), end: this.graph2d.getWindow().end.getTime()}
     }
 
     //noinspection JSUnusedGlobalSymbols

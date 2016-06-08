@@ -31,6 +31,9 @@
             <button type="submit"
                     class="btn btn-primary">Add request
             </button>
+            <button type="button" ng-click="controller.setViewportRange(rangeFrom, rangeTo )"
+                    class="btn btn-primary">Set viewport
+            </button>
             <button type="button"
                     class="btn btn-default" ng-click="controller.flush()">Submit batch
             </button>
@@ -70,6 +73,23 @@
                               ng-repeat="range in projection.projection"
                               data-start="{{range.start}}"
                               data-level-id="{{range.levelId}}"
+                        ></rect>
+                    </svg>
+                </td>
+            </tr>
+            <tr>
+                <td class="" style="white-space: nowrap;">
+                </td>
+                <td class="window-display"
+                >
+                    <svg
+                            ng-click="controller.applyMouse($event);"
+                            ng-mousemove="controller.mouse($event)"
+                            width="960" height="8" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(controller.getViewportRange())}}" height="20"
+                              ng-attr-x="{{controller.getX(controller.getViewportRange())}}"
+                              data-start="{{controller.getViewportRange().start}}"
+                              x="0" width="0"
                         ></rect>
                     </svg>
                 </td>
