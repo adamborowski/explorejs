@@ -23,8 +23,8 @@ export default class CacheDemoController {
 
 
             cacheManager.createSerieCache({serieId: 's001'});
-            cacheManager.createSerieCache({serieId: 's002'});
-            cacheManager.createSerieCache({serieId: 's003'});
+            // cacheManager.createSerieCache({serieId: 's002'});
+            // cacheManager.createSerieCache({serieId: 's003'});
 
 
             $scope.$apply(()=> {
