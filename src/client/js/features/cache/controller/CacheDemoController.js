@@ -54,10 +54,8 @@ export default class CacheDemoController {
                 $scope.mouse = '2016-03-03';//rm.getManifestForSerie('s001').$start;
                 $scope.rangeTo = '2016-04-01';//rm.getManifestForSerie('s001').$end;
                 $scope.rm = rm;
-                // this.startTime = rm.getManifestForSerie('s001').start;
-                // this.endTime = rm.getManifestForSerie('s001').end;
-                this.startTime = new Date('2016-01-01').getTime();
-                this.endTime = new Date('2016-05-05').getTime();
+                this.startTime = rm.getManifestForSerie('s001').start;
+                this.endTime = rm.getManifestForSerie('s001').end;
                 this.maxDuration = this.endTime - this.startTime;
             });
 
@@ -194,12 +192,12 @@ export default class CacheDemoController {
     }
 
     getX(range) {
-        return ((range.start || range.$t) - this.startTime) / this.maxDuration * 960;
+        return ((range.start || range.$t) - this.startTime) / this.maxDuration * 1360;
     }
 
     getWidth(range) {
         var w = (range.end || range.$t) - (range.start || range.$t);
-        return Math.max(1, (w) / this.maxDuration * 960);
+        return Math.max(1, (w) / this.maxDuration * 1360);
     }
 
     getRangeX() {
@@ -211,18 +209,18 @@ export default class CacheDemoController {
 
     getRangeWidth() {
         var w = range.end - range.start;
-        return Math.max(1, (w) / this.maxDuration * 960);
+        return Math.max(1, (w) / this.maxDuration * 1360);
     }
 
     mouse(event) {
         var x = event.offsetX;
-        var time = new Date(x / 960 * this.maxDuration + this.startTime);
+        var time = new Date(x / 1360 * this.maxDuration + this.startTime);
         this.$scope.mouse = time;
     }
 
     applyMouse(event) {
         var x = event.offsetX;
-        var time = new Date(x / 960 * this.maxDuration + this.startTime);
+        var time = new Date(x / 1360 * this.maxDuration + this.startTime);
         time = this.$filter('date')(time, 'yyyy-MM-dd HH:mm:ss')
         if (event.shiftKey) {
             this.$scope.rangeTo = time;

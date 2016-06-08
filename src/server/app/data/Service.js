@@ -13,8 +13,8 @@ module.exports = class Service {
             {id: '10m', 'step': 600000},
             {id: '1h', 'step': 3600000},
             {id: '1d', 'step': 86400000},
-            {id: '30d', 'step': 2592000000},
-            {id: '365d', 'step': 10370000000}
+            {id: '30d', 'step': 2592000000}
+            // {id: '365d', 'step': 10370000000}
         ];
 
         this.serieServices = new IndexedList();
