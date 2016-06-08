@@ -10,7 +10,7 @@ import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
  */
 export default class DynamicProjection {
     constructor() {
-        this.ScreenPadding = 0.5; // 0.5 of actual viewport width will be appeneded to left and right viewport window
+        this.ScreenPadding = 1; // 0.5 of actual viewport width will be appeneded to left and right viewport window
         this.WantedUnitWidth = 100;
         this.currentId = null;
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
@@ -35,8 +35,8 @@ export default class DynamicProjection {
     updateViewStateWithScale(start, end, scale) {
         var newLevelId = this._fitLevelId(scale);
 
-        var padStart = start - scale * this.ScreenPadding;
-        var padEnd = end + scale * this.ScreenPadding;
+        var padStart = start - (end - start) * this.ScreenPadding;
+        var padEnd = end + (end - start) * this.ScreenPadding;
         var paddedRange = Range.leftClosed(padStart, padEnd);
 
         if (newLevelId != this.currentId) {
@@ -64,11 +64,12 @@ export default class DynamicProjection {
         // console.log(`update view state start=${start} end=${end} scale=${scale}, level=${this.currentId}`);
 
         //todo move this to predictor, move fitLevelId to DataSource
-        this.SerieCache.getLevelCache(this.currentId).requestDataForRange(Range.closed(start, end));
-        // var widerLevel = this.getWiderLevel(this.currentId);
-        // if (widerLevel) {
-        //     this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedRange);
-        // }
+        this.SerieCache.getLevelCache(this.currentId).requestDataForRange(paddedRange);
+        var widerLevel = this.getWiderLevel(this.currentId);
+        if (widerLevel) {
+            console.log('wider', widerLevel)
+            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedRange);
+        }
         this.currentPaddedRange = paddedRange;
     }
 
