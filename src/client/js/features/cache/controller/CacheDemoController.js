@@ -3,7 +3,7 @@ import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import vis from "vis/dist/vis.js";
 import VisSource from "explorejs/src/datasource/VisJSSource";
-const vizWidth = 500;
+const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
         setInterval(()=> {
@@ -130,7 +130,8 @@ export default class CacheDemoController {
             // legend: true,
             start: '2016-02-01',
             end: '2016-02-02',
-            interpolation: false
+            interpolation: false,
+            height: 200
         };
         var graph2d = new vis.Graph2d(container, dataset, groups, options);
         this.graph2d = graph2d;

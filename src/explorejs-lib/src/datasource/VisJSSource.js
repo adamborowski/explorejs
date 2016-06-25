@@ -31,7 +31,9 @@ export default class VisJSSource {
     }
 
     onProjectionRecompile(diff) {
+        console.time('vis diff')
         // console.info(`diff, please add ${diff.added.length}, resize ${diff.resized.length}, remove ${diff.removed.length}`);
+        console.time('vis diff removed')
         for (var remove of diff.removed) {
             var data = this.dataSource.serieCache.getLevelCache(remove.levelId).getRange(Range.leftClosed(remove.start, remove.end));
             console.info('removing points', data.length)
@@ -42,6 +44,9 @@ export default class VisJSSource {
                 this.dataset.remove(data.map(a=> a.$s)); // assume data never overlap
             }
         }
+        console.timeEnd('vis diff removed')
+        console.time('vis diff resized')
+
         for (var resize of diff.resized) {
             var levelCache = this.dataSource.serieCache.getLevelCache(resize.levelId);
             var isRaw = resize.levelId == 'raw';
@@ -81,9 +86,13 @@ export default class VisJSSource {
                 }
             }
         }
+        console.timeEnd('vis diff resized')
+        console.time('vis diff added')
+
+
         for (var add of diff.added) {
             var data = this.dataSource.serieCache.getLevelCache(add.levelId).getRange(Range.leftClosed(add.start, add.end));
-            console.info('adding points', data.length)
+            console.info('adding points', data.length, data[0].$ss, data[data.length - 1].$ee, add.levelId);
             var isRaw = add.levelId == 'raw';
             if (isRaw) {
                 this.dataset.remove(data.map(a=>a.$t)); // assume data never overlap
@@ -93,6 +102,9 @@ export default class VisJSSource {
                 this.dataset.add(data.map(a=>({x: a.$s, y: a.a, id: a.$s}))); // assume data never overlap
             }
         }
+        console.timeEnd('vis diff added')
+
+        console.timeEnd('vis diff');
     }
 
     initVisInteraction() {
