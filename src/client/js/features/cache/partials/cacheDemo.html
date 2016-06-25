@@ -67,7 +67,7 @@
                     <svg
                             ng-click="controller.applyMouse($event); controller.selectAggAndSerie(projection.levelId, serie)"
                             ng-mousemove="controller.mouse($event)"
-                            width="1360" height="20" class="level-svg">
+                            width="{{vizWidth}}" height="20" class="level-svg">
                         <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in projection.projection"
@@ -85,7 +85,7 @@
                     <svg
                             ng-click="controller.applyMouse($event);"
                             ng-mousemove="controller.mouse($event)"
-                            width="1360" height="8" class="level-svg">
+                            width="{{vizWidth}}" height="8" class="level-svg">
                         <rect ng-attr-width="{{controller.getWidth(controller.getViewportRange())}}" height="20"
                               ng-attr-x="{{controller.getX(controller.getViewportRange())}}"
                               data-start="{{controller.getViewportRange().start}}"
@@ -102,7 +102,7 @@
                     <svg
                             ng-click="controller.applyMouse($event); controller.selectAggAndSerie(aggregation, serie)"
                             ng-mousemove="controller.mouse($event)"
-                            width="1360" height="20" class="level-svg">
+                            width="{{vizWidth}}" height="20" class="level-svg">
                         <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in aggregation._debug_data_index"

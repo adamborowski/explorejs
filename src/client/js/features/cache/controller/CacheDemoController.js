@@ -3,6 +3,7 @@ import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import vis from "vis/dist/vis.js";
 import VisSource from "explorejs/src/datasource/VisJSSource";
+const vizWidth = 500;
 export default class CacheDemoController {
     constructor($scope, $filter) {
         setInterval(()=> {
@@ -18,6 +19,7 @@ export default class CacheDemoController {
         rm.CacheManager = cacheManager;
         cacheManager.RequestManager = rm;
         $scope.selectedAggregation = {text: '...'};
+        $scope.vizWidth=vizWidth;
 
         rm.init(()=> {
 
@@ -147,36 +149,6 @@ export default class CacheDemoController {
         }
         return {start: this.graph2d.getWindow().start.getTime(), end: this.graph2d.getWindow().end.getTime()}
     }
-
-    //noinspection JSUnusedGlobalSymbols
-    testArrayPerformanceAsTimeSeriesBackend() {
-        console.time('creation test')
-        var array = new Array;
-        for (var i = 0; i < 10000; i++) {
-            array.push(i);
-        }
-        var array2 = new Array;
-        for (var j = 0; j < 3000; j++) {
-            array2.push(j);
-        }
-        console.timeEnd('creation test')
-
-        console.log(array.length);
-
-        console.time('remove test')
-        array.splice(4000, 2000);
-        console.timeEnd('remove test');
-        console.log(array.length);
-        console.time('concat test');
-        var argus = [4000, 0].concat(array2);
-        console.timeEnd('concat test');
-        console.time('insert test')
-        array.splice(...argus);
-        console.timeEnd('insert test');
-        console.log(array.length);
-
-    }
-
     loadRange(serie, from, to, level) {
         console.log('add request', serie, from, to, level)
         // this.rm.addRequest(new DataRequest('s001', level, from, to));
@@ -192,12 +164,12 @@ export default class CacheDemoController {
     }
 
     getX(range) {
-        return ((range.start || range.$t) - this.startTime) / this.maxDuration * 1360;
+        return ((range.start || range.$t) - this.startTime) / this.maxDuration * vizWidth;
     }
 
     getWidth(range) {
         var w = (range.end || range.$t) - (range.start || range.$t);
-        return Math.max(1, (w) / this.maxDuration * 1360);
+        return Math.max(1, (w) / this.maxDuration * vizWidth);
     }
 
     getRangeX() {
@@ -209,18 +181,18 @@ export default class CacheDemoController {
 
     getRangeWidth() {
         var w = range.end - range.start;
-        return Math.max(1, (w) / this.maxDuration * 1360);
+        return Math.max(1, (w) / this.maxDuration * vizWidth);
     }
 
     mouse(event) {
         var x = event.offsetX;
-        var time = new Date(x / 1360 * this.maxDuration + this.startTime);
+        var time = new Date(x / vizWidth * this.maxDuration + this.startTime);
         this.$scope.mouse = time;
     }
 
     applyMouse(event) {
         var x = event.offsetX;
-        var time = new Date(x / 1360 * this.maxDuration + this.startTime);
+        var time = new Date(x / vizWidth * this.maxDuration + this.startTime);
         time = this.$filter('date')(time, 'yyyy-MM-dd HH:mm:ss')
         if (event.shiftKey) {
             this.$scope.rangeTo = time;
