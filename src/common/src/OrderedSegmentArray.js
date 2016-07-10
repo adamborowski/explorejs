@@ -258,10 +258,10 @@ class OrderedSegmentArray {
         }
         var leftIndex = bs.closest(rangeSet, start, this._rangeEndComparator);
         var rightIndex = bs.closest(rangeSet, end, this._rangeStartComparator);
-        if (rangeSet[leftIndex] != null && rangeSet[leftIndex].end <= start) {
+        if (rangeSet[leftIndex] != null && rangeSet[leftIndex].end < start) {
             leftIndex++;
         }
-        if (rangeSet[rightIndex] != null && rangeSet[rightIndex].start < end) {
+        if (rangeSet[rightIndex] != null && rangeSet[rightIndex].start <= end) {
             rightIndex++;
         }
         return {

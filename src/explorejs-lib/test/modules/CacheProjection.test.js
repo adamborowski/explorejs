@@ -252,5 +252,77 @@ describe("CacheProjection", () => {
             });
 
         });
+        it('edge case, insert new data before any data, touching', ()=> {
+            cacheProjection = new CacheProjection().setup('1h', levelIds);
+            cacheProjection.projection = ll('1h 3 4');
+            performTest({
+                atLevel: '1h',
+                withRanges:'2 3',
+                added:'',
+                removed:'',
+                resized:'1h 2 4 3 4',
+                projection:'1h 2 4'
+            });
+        });
+        it('edge case, insert new data after any data, touching', ()=> {
+            cacheProjection = new CacheProjection().setup('1h', levelIds);
+            cacheProjection.projection = ll('1h 3 4');
+            performTest({
+                atLevel: '1h',
+                withRanges:'4 5',
+                added:'',
+                removed:'',
+                resized:'1h 3 5 3 4',
+                projection:'1h 3 5'
+            });
+        });
+        it('edge case, insert new data before any data, not touching', ()=> {
+            cacheProjection = new CacheProjection().setup('1h', levelIds);
+            cacheProjection.projection = ll('1h 3 4');
+            performTest({
+                atLevel: '1h',
+                withRanges:'1 2',
+                added:'1h 1 2',
+                removed:'',
+                resized:'',
+                projection:'1h 1 2; 1h 3 4'
+            });
+        });
+        it('edge case, insert new data after any data, not touching', ()=> {
+            cacheProjection = new CacheProjection().setup('1h', levelIds);
+            cacheProjection.projection = ll('1h 3 4');
+            performTest({
+                atLevel: '1h',
+                withRanges:'5 6',
+                added:'1h 5 6',
+                removed:'',
+                resized:'',
+                projection:'1h 3 4; 1h 5 6'
+            });
+        });
+        it('edge case, insert new data before and after any data, touching', ()=> {
+            cacheProjection = new CacheProjection().setup('1h', levelIds);
+            cacheProjection.projection = ll('1h 3 4');
+            performTest({
+                atLevel: '1h',
+                withRanges:'2 3 4 5',
+                added:'',
+                removed:'',
+                resized:'1h 2 5 3 4',
+                projection:'1h 2 5'
+            });
+        });
+        it('edge case, insert new data before and after any data, not touching', ()=> {
+            cacheProjection = new CacheProjection().setup('1h', levelIds);
+            cacheProjection.projection = ll('1h 3 4');
+            performTest({
+                atLevel: '1h',
+                withRanges:'1 2 5 6',
+                added:'1h 1 2; 1h 5 6',
+                removed:'',
+                resized:'',
+                projection:'1h 1 2; 1h 3 4; 1h 5 6'
+            });
+        });
     });
 });
