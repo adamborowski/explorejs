@@ -29,7 +29,8 @@ export default class DataSource {
         this.dynamicProjection.updateViewStateWithScale(start, end, scale);
         // call prediction engine to allow it to request new data at specific levels
         // TODO this.predictionEngine.updateViewStateWithScale(start, end, scale);
-        // TODO gain already existing cache
+        // TODO gain already existing cache - to juz sie powiadomi po zaloadowaniu skoro juz zaladowal
+        // this is required to have projection range-scoped
 
     }
 }

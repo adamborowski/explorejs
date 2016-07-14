@@ -27,6 +27,11 @@ export default class SerieCacheProjectionDisposer {
         return result;
     }
 
+    /**
+     *
+     * @param levelId
+     * @return {CacheProjection}
+     */
     getProjection(levelId) {
         return this.projections[this.cacheLevelIds.indexOf(levelId)];
     }

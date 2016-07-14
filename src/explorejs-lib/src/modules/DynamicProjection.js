@@ -66,13 +66,13 @@ export default class DynamicProjection {
         //todo move this to predictor, move fitLevelId to DataSource
         this.SerieCache.getLevelCache(this.currentId).requestDataForRange(paddedRange);
         var widerLevel = this.getWiderLevel(this.currentId);
-        if (widerLevel) {
-            var padWiderStart = start - (end - start) * this.ScreenPadding * 2;
-            var padWiderEnd = end + (end - start) * this.ScreenPadding * 2;
-            var paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
-            console.log('wider', widerLevel)
-            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedWiderRange);
-        }
+        // if (widerLevel) {
+        //     var padWiderStart = start - (end - start) * this.ScreenPadding * 2;
+        //     var padWiderEnd = end + (end - start) * this.ScreenPadding * 2;
+        //     var paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
+        //     console.log('wider', widerLevel)
+        //     this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedWiderRange);
+        // }
         this.currentPaddedRange = paddedRange;
     }
 

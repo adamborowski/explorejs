@@ -140,6 +140,22 @@ export default class CacheDemoController {
         this.visSource = visSource;
     }
 
+    loadRight() {
+        var window = this.graph2d.getWindow();
+        var length = window.end - window.start;
+        window.start = window.start.getTime() + length;
+        window.end = window.end.getTime() + length;
+        this.graph2d.setWindow(window);
+    }
+
+    loadLeft() {
+        var window = this.graph2d.getWindow();
+        var length = window.end - window.start;
+        window.start = window.start.getTime() - length;
+        window.end = window.end.getTime() - length;
+        this.graph2d.setWindow(window);
+    }
+
     setViewportRange(start, end) {
         this.graph2d.setWindow(start, end);
     }
@@ -200,6 +216,13 @@ export default class CacheDemoController {
         } else {
             this.$scope.rangeFrom = time;
         }
+    }
+
+    showProjectionCacheAtLevel(levelId) {
+        console.log(levelId);
+        var format = require('date-format');
+        var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
+        console.log(this.rm.CacheManager.getSerieCache('s001').getProjectionDisposer().getProjection(levelId).projection.map((a)=>`${fmt(a.start)} ${fmt(a.end)} ${a.levelId}`).join('\n'));
     }
 
     selectAggAndSerie(agg, serie) {

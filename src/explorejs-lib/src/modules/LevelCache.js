@@ -34,7 +34,7 @@ export default class LevelCache {
         // this.events.fireEvent('data', this._segmentArray._)
         // todo fire range-scoped events
         if (data.length == 0) {
-            console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
+            // console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
         }
         else {
             this._segmentArray.mergeRange(data);
@@ -45,9 +45,9 @@ export default class LevelCache {
             //<debug>
             this._debug_data_index = this._dataIndex.toObjects('start', 'end');
             //</debug>
-            if (data[0].$ss != null) {
-                console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
-            }
+            // if (data[0].$ss != null) {
+            //     console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
+            // }
         }
     }
 
@@ -68,6 +68,7 @@ export default class LevelCache {
             start: range.left,
             end: range.right
         }], this._dataIndex).toObjects('start', 'end');
+        //todo upewnic sie ze jak wraca data z serwera, nalezy sprawdzic, czy nie zmergowac cacheprojection
         for (var range of neededRanges) {
             requestManager.addRequest(new DataRequest(serieId, this.level.id, range.start, range.end, priority));
         }

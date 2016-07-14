@@ -2,6 +2,7 @@ import LevelCache from "./LevelCache";
 import IndexedList from "explorejs-common/src/IndexedList";
 import {Builder} from "./SerieCacheProjectionDisposer";
 import RangeScopedEvent from "explorejs-common/src/RangeScopedEvent";
+
 /**
  * @property {CacheManager} CacheManager
  */
@@ -39,7 +40,7 @@ export default class SerieCache {
      */
     putDataAtLevel(levelId, data) {
         if (data.length == 0) {
-            console.info('SerieCache, no data put at level', levelId);
+            // console.info('SerieCache, no data put at level', levelId);
             return;
         }
         this._levelCacheSet.get(levelId).putData(data);

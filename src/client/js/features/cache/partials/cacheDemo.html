@@ -2,26 +2,26 @@
     <div class="floating-panel">
         <form class="form-inline"
               ng-submit="controller.loadRange(selectedSerie.name, rangeFrom, rangeTo , selectedAggregation.name)">
-            <div class="form-group">
+            <div class="form-group form-group-sm">
                 <label>serie</label>
                 <button type="button" class="btn btn-default" bs-dropdown="availableSeries"
                         aria-haspopup="true" aria-expanded="false">
                     {{selectedSerie.text}}
                 </button>
             </div>
-            <div class="form-group">
+            <div class="form-group form-group-sm">
                 <label>From</label>
-                <input type="text" class="form-control" ng-model="rangeFrom"
+                <input type="text" class="form-control input-sm" ng-model="rangeFrom"
                        placeholder="2015-12-01">
             </div>
-            <div class="form-group">
+            <div class="form-group form-group-sm">
                 <label>To</label>
-                <input type="text" class="form-control" ng-model="rangeTo"
+                <input type="text" class="form-control input-sm" ng-model="rangeTo"
                        placeholder="2016-01-02">
             </div>
-            <div class="form-group">
+            <div class="form-group form-group-sm">
                 <label>level</label>
-                <button type="button" class="btn btn-default" bs-dropdown="availableAggregations"
+                <button type="button" class="btn btn-default btn-sm" bs-dropdown="availableAggregations"
                         aria-haspopup="true" aria-expanded="false">
                     {{selectedAggregation.text}}
                 </button>
@@ -29,13 +29,25 @@
 
 
             <button type="submit"
-                    class="btn btn-primary">Add request
+                    class="btn btn-primary btn-sm">Add request
             </button>
             <button type="button" ng-click="controller.setViewportRange(rangeFrom, rangeTo )"
-                    class="btn btn-primary">Set viewport
+                    class="btn btn-primary btn-sm">Set viewport
             </button>
             <button type="button"
-                    class="btn btn-default" ng-click="controller.flush()">Submit batch
+                    class="btn btn-default btn-sm" ng-click="controller.flush()">Submit batch
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.showProjectionCacheAtLevel(selectedAggregation.name)">CacheProjection
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.loadLeft()">&lt;&lt;
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.loadRight()">&gt;&gt;
             </button>
             <!--<button type="button"-->
             <!--class="btn btn-default" ng-click="controller.dump()">dump structure-->
