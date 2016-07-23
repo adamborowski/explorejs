@@ -39,7 +39,11 @@
             </button>
             <button type="button"
                     class="btn btn-default btn-sm"
-                    ng-click="controller.showProjectionCacheAtLevel(selectedAggregation.name)">CacheProjection
+                    ng-click="controller.showProjectionCacheAtLevel(selectedAggregation.name)">Projection
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.showCacheAtLevel(selectedAggregation.name)">Cache
             </button>
             <button type="button"
                     class="btn btn-default btn-sm"
@@ -56,18 +60,17 @@
                         {{mouse|date:"yyyy-MM-dd HH:mm:ss"}}
             </span>
         </form>
-    </div>
+        <div class="chart-display">
+            Chart projection on level {{controller.visSource.dataSource.dynamicProjection.currentId}}
+            <div id="main-chart">
 
-    <div class="chart-display">
-        Chart projection on level {{controller.visSource.dataSource.dynamicProjection.currentId}}
-        <div id="main-chart">
-
+            </div>
         </div>
     </div>
 
 
-    <h1>ExploreJS Cache Visual Profiler</h1>
-    <div class="serie-display" ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
+    <div style="margin-top:380px" class="serie-display"
+         ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
         <h3>{{serie.options.serieId}}</h3>
         <table class="table aggregation-display">
             <thead>
@@ -119,6 +122,7 @@
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in aggregation._debug_data_index"
                               data-start="{{range.start}}"
+                              data-level-id="{{aggregation.level.id}}"
                         ></rect>
                     </svg>
                 </td>

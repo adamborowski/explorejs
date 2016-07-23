@@ -52,9 +52,9 @@ export default class CacheDemoController {
                 });
                 $scope.selectedAggregation = $scope.availableAggregations[3]
                 $scope.selectedSerie = $scope.availableSeries[0];
-                $scope.rangeFrom = '2016-03-03';//rm.getManifestForSerie('s001').$start;
-                $scope.mouse = '2016-03-03';//rm.getManifestForSerie('s001').$start;
-                $scope.rangeTo = '2016-04-01';//rm.getManifestForSerie('s001').$end;
+                $scope.rangeFrom = '2016-01-01';//rm.getManifestForSerie('s001').$start;
+                $scope.mouse = '2016-01-03';//rm.getManifestForSerie('s001').$start;
+                $scope.rangeTo = '2016-01-02';//rm.getManifestForSerie('s001').$end;
                 $scope.rm = rm;
                 this.startTime = rm.getManifestForSerie('s001').start;
                 this.endTime = rm.getManifestForSerie('s001').end;
@@ -103,8 +103,8 @@ export default class CacheDemoController {
         var options = {
             defaultGroup: 'ungrouped',
             // legend: true,
-            start: '2016-02-01',
-            end: '2016-02-02',
+            start: '2016-01-01 09:55',
+            end: '2016-01-01 10:07',
             interpolation: false,
             height: 200
         };
@@ -198,6 +198,13 @@ export default class CacheDemoController {
         var format = require('date-format');
         var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
         console.log(this.rm.CacheManager.getSerieCache('s001').getProjectionDisposer().getProjection(levelId).projection.map((a)=>`${fmt(a.start)} ${fmt(a.end)} ${a.levelId}`).join('\n'));
+    }
+
+    showCacheAtLevel(levelId) {
+        console.log(levelId);
+        var format = require('date-format');
+        var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
+        console.log(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data.map((a)=>`${JSON.stringify(a)}`).join('\n'));
     }
 
     selectAggAndSerie(agg, serie) {
