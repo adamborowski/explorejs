@@ -55,6 +55,14 @@ class TestUtil {
         return r;
     }
 
+    static rangesFromRaw(str) {
+        str = str.trim();
+        if (str.length) {
+            return str.split(' ').map(a=>({start: Number(a), end: Number(a)}));
+        }
+        return [];
+    }
+
     static dataFromStream(dataStr, scale) {
         if (scale == null) {
             scale = 1;
@@ -154,9 +162,11 @@ class TestUtil {
             for (var range of rangeSet) {
                 var r = {start: range.start * scale, end: range.end * scale};
                 var levelIdLabelWidth = 4;
+
                 if (range.levelId != null && r.end - r.start > levelIdLabelWidth) {
                     putStringIntoArray(numbers, Math.floor((r.start + r.end ) / 2) - levelIdLabelWidth / 2, padding(range.levelId, levelIdLabelWidth, ' ', padding.BOTH));
                 }
+
 
                 if (previousRangeEnd == range.start) {
                     line[r.start] = '┳';
@@ -164,7 +174,12 @@ class TestUtil {
                     line[r.start] = '┏';
                     putStringIntoArray(numbers, r.start, padding(range.start.toString(), 3, ' ', padding.RIGHT));
                 }
-                putStringIntoArray(numbers, r.end - 2, padding(range.end.toString(), 3, ' ', padding.LEFT));
+                if (r.end == r.start) {
+                    line[r.end] = '●';
+                    continue;
+                } else {
+                    putStringIntoArray(numbers, r.end - 2, padding(range.end.toString(), 3, ' ', padding.LEFT));
+                }
                 line[r.end] = '┓';
                 for (var j = r.start + 1; j < r.end; j++) {
                     line[j] = '━';
@@ -213,6 +228,10 @@ class TestUtil {
 
     static cleanRange(range) {
         return {start: range.start, end: range.end};
+    }
+
+    static cleanRangeOnLevel(range) {
+        return {start: range.start, end: range.end, levelId: range.levelId};
     }
 
     static rangeOnLevel(levelId, start, end, existingStart, existingEnd) {
