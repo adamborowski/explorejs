@@ -48,6 +48,26 @@ describe("OrderedSegment test", () => {
             list._data = data;
             expect(list.getRange()).to.be.equal(data);
         });
+        it("getRange() for empty array should return empty array", () => {
+            var list = getArray('0', '1', true, true);
+            list._data = [];
+            expect(list.getRange(12, 155)).to.be.empty;
+        });
+        it("getRange() for for one element array should return proper value #1", () => {
+            var list = getArray('0', '1', true, true);
+            list._data = [[3, 4]];
+            expect(list.getRange(0, 155)).to.deep.equal([[3, 4]])
+        });
+        it("getRange() for argument outside data should return empty array #1", () => {
+            var list = getArray('0', '1', true, true);
+            list._data =data;
+            expect(list.getRange(1000, 2000)).to.be.empty;
+        });
+        it("getRange() for argument outside data should return empty array #1", () => {
+            var list = getArray('0', '1', true, true);
+            list._data = data;
+            expect(list.getRange(0, 1)).to.be.empty;
+        });
     });
 
 

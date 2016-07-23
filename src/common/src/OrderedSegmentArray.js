@@ -186,6 +186,9 @@ class OrderedSegmentArray {
      * @returns {{left: *, right: *}}
      */
     findRangeIndexes(rangeLeftBound, rangeRightBound, options) {
+        if (this._data.length == 0) {
+            return {left: -1, right: -1};
+        }
         options = _.defaults(options || {}, {
             leftBoundClosed: this.options.leftBoundClosed,
             rightBoundClosed: this.options.rightBoundClosed
@@ -194,6 +197,10 @@ class OrderedSegmentArray {
         var lastSegmentIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeRightBound, this._leftBoundComparator);
 
         // exclude touching segments for open bounds
+
+        if (firstSegmentIndex >= this._data.length || lastSegmentIndex < 0) {
+            return {left:-1, right:-1};
+        }
 
         var firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(this._data[firstSegmentIndex], rangeLeftBound);
         var lastSegmentLeft_vs_rangeRight = this._leftBoundComparator(this._data[lastSegmentIndex], rangeRightBound);
