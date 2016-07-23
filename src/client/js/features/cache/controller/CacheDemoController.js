@@ -97,7 +97,9 @@ export default class CacheDemoController {
 
         var items = [];
 
-        var dataset = new vis.DataSet(items);
+        var dataset = new vis.DataSet(items, {
+            queue:true
+        });
         var options = {
             defaultGroup: 'ungrouped',
             // legend: true,

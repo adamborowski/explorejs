@@ -51,6 +51,7 @@ export default class VisJSSource {
         {
             x: w.start, y: w.data.a, id: w.levelId + w.start + w.end
         })));
+        this.dataset.flush();
         console.timeEnd('vis diff added');
         console.timeEnd('vis diff');
         console.debug(removed.length + ' removed, ' + added.length + ' added.');
