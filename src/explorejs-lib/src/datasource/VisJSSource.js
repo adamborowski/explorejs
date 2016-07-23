@@ -31,80 +31,30 @@ export default class VisJSSource {
     }
 
     onProjectionRecompile(diff) {
-        console.time('vis diff')
+        console.time('vis diff');
         // console.info(`diff, please add ${diff.added.length}, resize ${diff.resized.length}, remove ${diff.removed.length}`);
-        console.time('vis diff removed')
-        for (var remove of diff.removed) {
-            var data = this.dataSource.serieCache.getLevelCache(remove.levelId).getRange(Range.leftClosed(remove.start, remove.end));
-            console.info('removing points', data.length)
-            var isRaw = remove.levelId == 'raw';
-            if (isRaw) {
-                this.dataset.remove(data.map(a=> a.$t)); // assume data never overlap
-            } else {
-                this.dataset.remove(data.map(a=> a.$s)); // assume data never overlap
-            }
-        }
-        console.timeEnd('vis diff removed')
-        console.time('vis diff resized')
 
-        for (var resize of diff.resized) {
-            var levelCache = this.dataSource.serieCache.getLevelCache(resize.levelId);
-            var isRaw = resize.levelId == 'raw';
-            if (resize.start < resize.existing.start) {// added to left
-                var data = levelCache.getRange(Range.leftClosed(resize.start, resize.existing.start));
-                if (isRaw) {
-                    this.dataset.add(data.map(a=>({x: a.$t, y: a.v, id: a.$t}))); // assume data never overlap
-                } else {
-                    this.dataset.add(data.map(a=>({x: a.$s, y: a.a, id: a.$s}))); // assume data never overlap
-                }
-            }
-            else {
-                var data = levelCache.getRange(Range.leftClosed(resize.existing.start, resize.start)); //removed from left
-                if (isRaw) {
-                    this.dataset.remove(data.map(a=> a.$t)); // assume data never overlap
-                } else {
-                    this.dataset.remove(data.map(a=> a.$s)); // assume data never overlap
+        var data = this.dataSource.getDataForDiff(diff);
 
-                }
-            }
+        console.time('vis diff removed');
+        var removed = this.dataSource.getDataForRanges(data.oldData);
+        this.dataset.remove(removed.map(w=>w.levelId + w.start + w.end));
+        console.timeEnd('vis diff removed');
 
-            if (resize.end > resize.existing.end) {// added to right
-                var data = levelCache.getRange(Range.leftClosed(resize.existing.end, resize.end));
-                if (isRaw) {
-                    this.dataset.add(data.map(a=>({x: a.$t, y: a.v, id: a.$t}))); // assume data never overlap
-                } else {
-                    this.dataset.add(data.map(a=>({x: a.$s, y: a.a, id: a.$s}))); // assume data never overlap
-                }
-            }
-            else {
-                var data = levelCache.getRange(Range.leftClosed(resize.end, resize.existing.end)); //removed from right
-                if (isRaw) {
-                    this.dataset.remove(data.map(a=> a.$t)); // assume data never overlap
-                } else {
-                    this.dataset.remove(data.map(a=> a.$s)); // assume data never overlap
+        console.time('vis diff added');
+        var added = data.newData;
 
-                }
-            }
-        }
-        console.timeEnd('vis diff resized')
-        console.time('vis diff added')
-
-
-        for (var add of diff.added) {
-            var data = this.dataSource.serieCache.getLevelCache(add.levelId).getRange(Range.leftClosed(add.start, add.end));
-            console.info('adding points', data.length, data[0].$ss, data[data.length - 1].$ee, add.levelId);
-            var isRaw = add.levelId == 'raw';
-            if (isRaw) {
-                this.dataset.remove(data.map(a=>a.$t)); // assume data never overlap
-                this.dataset.add(data.map(a=>({x: a.$t, y: a.v, id: a.$t}))); // assume data never overlap
-            } else {
-                this.dataset.remove(data.map(a=>a.$s)); // assume data never overlap
-                this.dataset.add(data.map(a=>({x: a.$s, y: a.a, id: a.$s}))); // assume data never overlap
-            }
-        }
-        console.timeEnd('vis diff added')
-
+        this.dataset.add(added.map(w=>(w.levelId == 'raw' ?
+        {
+            x: w.start, y: w.data.v, id: w.levelId + w.start + w.end
+        } :
+        {
+            x: w.start, y: w.data.a, id: w.levelId + w.start + w.end
+        })));
+        console.timeEnd('vis diff added');
         console.timeEnd('vis diff');
+        console.debug(removed.length + ' removed, ' + added.length + ' added.');
+
     }
 
     initVisInteraction() {

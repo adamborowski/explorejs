@@ -95,33 +95,6 @@ export default class CacheDemoController {
             }
         });
 
-        groups.add({
-            id: 1,
-            content: names[1],
-            options: {
-                style: 'bar'
-            }
-        });
-
-        groups.add({
-            id: 2,
-            content: names[2],
-            options: {drawPoints: false}
-        });
-
-        groups.add({
-            id: 3,
-            content: names[3],
-            options: {
-                drawPoints: {
-                    style: 'circle' // square, circle
-                },
-                shaded: {
-                    orientation: 'top' // top, bottom
-                }
-            }
-        });
-
         var items = [];
 
         var dataset = new vis.DataSet(items);

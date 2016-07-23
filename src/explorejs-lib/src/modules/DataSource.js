@@ -23,11 +23,19 @@ export default class DataSource {
         return resized.map((range)=> {
             // check if somethind is added on the left
             if (range.start < range.existing.start) {
-                return this.getDataWrappersForRange({start: range.start, end: range.existing.start});
+                return this.getDataWrappersForRange({
+                    start: range.start,
+                    end: range.existing.start,
+                    levelId: range.levelId
+                });
             }
             // check if somethind is added on the right
             if (range.end > range.existing.end) {
-                return this.getDataWrappersForRange({start: range.existing.end, end: range.end});
+                return this.getDataWrappersForRange({
+                    start: range.existing.end,
+                    end: range.end,
+                    levelId: range.levelId
+                });
             }
             return [];
         }).reduce((a, b)=>a.concat(b), []);
@@ -49,6 +57,10 @@ export default class DataSource {
 
     getNewDataForAddedRanges(added) {
         return added.map((a)=>this.getDataWrappersForRange(a)).reduce((a, b)=>a.concat(b), []);
+    }
+
+    getDataForRanges(ranges) {
+        return ranges.map((a)=>this.getDataWrappersForRange(a)).reduce((a, b)=>a.concat(b), []);
     }
 
     /**
