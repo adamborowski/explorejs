@@ -326,7 +326,7 @@ describe("DataSource", () => {
             performDiffTest({
                 cache: {
                     '1s': '2 3 7 8',
-                    '10s': '0 10',
+                    '10s': '0 10'
                 },
                 diff: {
                     added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
@@ -339,6 +339,24 @@ describe("DataSource", () => {
                     newWrappers: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',//todo
                     oldWrappers: '',
                     resizedWrappers: '10s 0 2 0 10' // resizedDataWrappers
+                }
+            });
+        });
+        it('problematic case, parts of points, zoom out (require fragment cache translation)', ()=> {
+            performDiffTest({
+                cache: {
+                    '1s': '2 3 7 8',
+                    '10s': '0 10'
+                },
+                diff: {
+                    added: '10s 0 2; 10s 3 7; 10s 8 10',
+                    removed: '',
+                    resized: ''
+                },
+                result: {
+                    newWrappers: '10s 0 2; 10s 3 7; 10s 8 10', // yes, same point wrapped into many smaller portions
+                    oldWrappers: '',
+                    resizedWrappers: ''
                 }
             });
         });
