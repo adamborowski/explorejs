@@ -360,5 +360,23 @@ describe("DataSource", () => {
                 }
             });
         });
+        it('problematic case, parts of points, zoom in (require fragment cache translation)', ()=> {
+            performDiffTest({
+                cache: {
+                    '1s': '2 3 7 8',
+                    '10s': '0 10'
+                },
+                diff: {
+                    added: '1s 2 3; 1s 7 8; 10s 3 7; 10s 8 10',
+                    removed: '',
+                    resized: '10s 0 2 0 10'
+                },
+                result: {
+                    addedWrappers: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
+                    removedWrappers: '',
+                    resizedWrappers: '10s 0 2 0 10'
+                }
+            });
+        });
     });
 });
