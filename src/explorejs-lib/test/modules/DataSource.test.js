@@ -288,5 +288,59 @@ describe("DataSource", () => {
                 }
             });
         });
+        it('problematic case, parts of points', ()=> {
+            performDiffTest({
+                cache: {
+                    'raw': '0 1 2 3 4 5 6 7 8',
+                    '3s': '0 3 3 6 6 9',
+                },
+                diff: {
+                    added: 'raw 0 8',
+                    removed: '',
+                    resized: '3s 8 9 6 9'
+                },
+                result: {
+                    newData: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; raw 4 4; raw 5 5; raw 6 6; raw 7 7',
+                    oldData: '3s 6 8'
+                }
+            });
+        });
+        it('problematic case, parts of points', ()=> {
+            performDiffTest({
+                cache: {
+                    'raw': '2 3 7 8',
+                    '10s': '0 10',
+                },
+                diff: {
+                    added: 'raw 2 3; 10s 3 7; raw 7 8; 10s 8 10',
+                    removed: '10s 2 3; 10s 7 8',
+                    resized: '10s 0 2 0 10'
+                },
+                result: {
+                    newData: '',//todo
+                    oldData: ''//todo
+                }
+            });
+        });
+        it('problematic case, parts of points, two aggregations', ()=> {
+            performDiffTest({
+                cache: {
+                    '1s': '2 3 7 8',
+                    '10s': '0 10',
+                },
+                diff: {
+                    added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
+                    removed: '10s 2 3; 10s 7 8',
+                    resized: '10s 0 2 0 10'
+                },
+                result: {
+                    // TODO takie rozwiązanie bazujące na mapowaniu range na dane - nie wystarcza chyba
+                    // trzeba mieć dodatkowo informację,
+                    newWrappers: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',//todo
+                    oldWrappers: '',
+                    resizedWrappers: '10s 0 2 0 10' // resizedDataWrappers
+                }
+            });
+        });
     });
 });
