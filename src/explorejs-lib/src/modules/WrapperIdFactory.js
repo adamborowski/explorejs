@@ -1,7 +1,7 @@
 const CONVERT_BASE = 36;
-const FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 import moment from "moment";
-export default class {
+export default class WrapperIdFactory {
     static optimized(wrapper) {
         return `${wrapper.start.toString(CONVERT_BASE)}:${wrapper.end.toString(CONVERT_BASE)}:${wrapper.levelId}`
     }

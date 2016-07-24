@@ -55,6 +55,7 @@ export default class DataSource {
         return result;
     }
 
+    //todo pass outer points in ranges through WrapperCache for both - new data and old data
     getNewDataForAddedRanges(added) {
         return added.map((a)=>this.getDataWrappersForRange(a)).reduce((a, b)=>a.concat(b), []);
     }

@@ -250,6 +250,21 @@ class TestUtil {
         return o;
     }
 
+    static rangeWithoutLevel(start, end, existingStart, existingEnd) {
+        if (typeof start == 'string') {
+            var args = start.split(' ');
+            start = Number(args[0]);
+            end = Number(args[1]);
+            existingStart = Number(args[2]);
+            existingEnd = Number(args[3]);
+        }
+        var o = {start: start, end: end};
+        if (!isNaN(existingStart)) {
+            o.existing = {start: existingStart, end: existingEnd};
+        }
+        return o;
+    }
+
     static rangesOnLevel(ranges, scale) {
         if (scale == null) {
             scale = 1;
@@ -264,6 +279,55 @@ class TestUtil {
             }
             return rangeOnLevel
         });
+    }
+
+    static rangesWithoutLevel(ranges, scale) {
+        if (scale == null) {
+            scale = 1;
+        }
+        return ranges.split(';').filter(a=>a).map(a=> {
+            var rangeOnLevel = this.rangeWithoutLevel(a.trim());
+            rangeOnLevel.start *= scale;
+            rangeOnLevel.end *= scale;
+            if (rangeOnLevel.existing) {
+                rangeOnLevel.existing.start *= scale;
+                rangeOnLevel.existing.end *= scale;
+            }
+            return rangeOnLevel
+        });
+    }
+
+    static arrayToObject(array, keyGen, valueGen) {
+        var res = {};
+        for (var item of array) {
+            res[keyGen(item)] = valueGen(item);
+        }
+        return res;
+    }
+
+    static mapObject(object, keyMap, valueMap) {
+        var a = {};
+        for (var key in object) {
+            //noinspection JSUnfilteredForInLoop
+            var newKey = keyMap ? keyMap(key) : key;
+            a[newKey] = valueMap ? valueMap(object[key]) : object[key];
+        }
+        return a;
+    }
+
+    static identity(self) {
+        return self;
+    }
+
+    static mapObjectValues(object, map) {
+        var r = [];
+        if (map == null) {
+            map = this.identity;
+        }
+        for (var key in object) {
+            r.push(map(object[key]));
+        }
+        return r;
     }
 
 
