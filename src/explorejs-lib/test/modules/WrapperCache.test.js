@@ -150,6 +150,28 @@ describe('WrapperCache', ()=> {
                 }
             });
         });
+        it('add register change because added one partial wrapper', ()=> {
+            performTest({
+                registers: {
+                    '1m 0 60': '0 30',
+                    '1m 120 180': '120 140; 160 180;',
+                    '10s 0 10': '5 10;'
+                },
+                dataPoint: '10s 10 20',
+                add: '10 14',
+                expectRegisters: {
+                    '1m 0 60': '0 30',
+                    '1m 120 180': '120 140; 160 180;',
+                    '10s 0 10': '5 10;',
+                    '10s 10 20': '10 14;'
+                },
+                expectDiff: {
+                    added: '10s 10 14',
+                    resized: '',
+                    removed: ''
+                }
+            });
+        });
     });
     describe('unregisterPointAtRange', ()=> {
         it('remove register because range was last in register', ()=> {
@@ -187,6 +209,24 @@ describe('WrapperCache', ()=> {
                     added: '',
                     resized: '',
                     removed: '1m 60 120'
+                }
+            });
+        });
+        it('no change because removed wrapper which didn\'t exist', ()=> {
+            const notChangedRegisters = {
+                '1m 0 60': '0 30',
+                '1m 120 180': '120 140; 160 180;',
+                '10s 0 10': '5 10;'
+            };
+            performTest({
+                registers: notChangedRegisters,
+                dataPoint: '1m 0 60',
+                remove: '30 60',
+                expectRegisters: notChangedRegisters,
+                expectDiff: {
+                    added: '',
+                    resized: '',
+                    removed: ''
                 }
             });
         });
