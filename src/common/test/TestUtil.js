@@ -234,6 +234,14 @@ class TestUtil {
         return {start: range.start, end: range.end, levelId: range.levelId};
     }
 
+    static cleanResizedRangeOnLevel(range) {
+        var a = TestUtil.cleanRangeOnLevel(range);
+        if (range.existing) {
+            a.existing = TestUtil.cleanRangeOnLevel(range.existing);
+        }
+        return a;
+    }
+
     static rangeOnLevel(levelId, start, end, existingStart, existingEnd) {
         if (typeof levelId == 'string') {
             var args = levelId.split(' ');

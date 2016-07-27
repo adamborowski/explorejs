@@ -89,7 +89,8 @@ export default class WrapperCache {
      */
     unregisterPointAtRange(dataPoint, start, end, levelId) {
         var wrapper = this._constructWrapper(dataPoint, start, end, levelId);
-        var registerId = this.idFactory(makeFullWrapper(wrapper)); //todo try to make id only once per data point (maybe by @code SerieCache#putData)
+        const fullWrapper = makeFullWrapper(wrapper);
+        var registerId = this.idFactory(fullWrapper); //todo try to make id only once per data point (maybe by @code SerieCache#putData)
         if (this.registers.has(registerId)) {
             var register = this.registers.get(registerId);
             var diff = register.removeWrapper(wrapper);
@@ -104,6 +105,14 @@ export default class WrapperCache {
             }
             delete diff.result;// this result is meaningless outside the wrapper cache
             return diff; // case 1, 2, 3, 4
+        }
+        else if (!isFullWrapper(wrapper)) {
+            // we remove only fragment from point which is not registered, so first we have to add this element, then remove element
+            var newRegister = this.registers.get(registerId);
+            newRegister.insertInitialWrapper(fullWrapper);
+            var diff = newRegister.removeWrapper(wrapper);
+            delete diff.result;
+            return diff;
         }
         else {
             return {removed: [wrapper], resized: [], added: []};

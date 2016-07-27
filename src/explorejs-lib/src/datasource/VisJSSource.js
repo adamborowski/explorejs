@@ -62,45 +62,6 @@ export default class VisJSSource {
         console.timeEnd('vis diff');
         console.debug(removed.length + ' removed, ' + added.length + ' added.');
 
-        // check coherency
-
-        var chartItems = this.dataset.get();
-        var projectionRanges = this.dataSource.serieCache.getProjectionDisposer().getProjection(this.dataSource.dynamicProjection.currentId).projection;
-        var projectionItems = this.dataSource.getDataForRanges(projectionRanges);
-        if (chartItems.length) {
-            var chartIds = chartItems.map((a)=>a.id).sort().join('\n');
-            var cacheIds = projectionItems.map((p)=>p.levelId == 'raw' ? id(p) : id({
-                start: p.data.$s,
-                end: p.data.$e,
-                levelId: p.levelId
-            })).sort().join('\n');
-            if (chartIds != cacheIds) {
-                var listener1 = function (e) {
-                    e.clipboardData.clearData();
-                    e.clipboardData.setData('text/plain', 'cache:\n' + cacheIds);
-                    window.removeEventListener('copy', listener1);
-                    window.addEventListener('copy', listener2);
-                    e.preventDefault();
-                };
-                var listener2 = function (e) {
-                    e.clipboardData.clearData();
-                    e.clipboardData.setData('text/plain', 'chart:\n' + chartIds);
-                    window.removeEventListener('copy', listener2);
-                    e.preventDefault();
-                };
-                window.addEventListener('copy', listener1);
-                console.error('incoherent cache');
-                debugger
-            }
-            else {
-                console.info('Cache and chart are coherent');
-            }
-        }
-        else {
-            console.warn('chart empty');
-        }
-
-
     }
 
     initVisInteraction() {

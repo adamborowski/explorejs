@@ -194,6 +194,22 @@ describe('WrapperCache', ()=> {
                 }
             });
         });
+        it('add register because part of full data point has to be removed', ()=> {
+            performTest({
+                registers: {
+                },
+                dataPoint: '1m 120 180',
+                remove: '160 170',
+                expectRegisters: {
+                    '1m 120 180': '120 160; 170 180',
+                },
+                expectDiff: {
+                    added: '1m 170 180',
+                    resized: '1m 120 160 120 180;',
+                    removed: ''
+                }
+            });
+        });
         it('no register change because removed one full wrapper', ()=> {
             const notChangedRegisters = {
                 '1m 0 60': '0 30',

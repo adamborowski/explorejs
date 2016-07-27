@@ -1,33 +1,42 @@
 import * as chai from 'chai';
 var expect = chai.expect;
 import DataSource from "../../src/modules/DataSource";
+import DataUtil from "../../src/data/DataUtil";
 import LevelCache from "../../src/modules/LevelCache";
 import TestUtil from "explorejs-common/test/TestUtil";
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
 
+var levelIds = ['raw', '1s', '2s', '3s', '5s', '10s'];
+
 function performDiffTest(config) {
     var cache = config.cache;
     var levelCaches = {};
     var drawingData = [];
     var drawingNames = [];
-    for (var levelId in cache) {
-        var levelRanges = levelId == 'raw' ? TestUtil.rangesFromRaw(cache[levelId]) : rng(cache[levelId]);
-        drawingData.push(levelRanges.map(a=>({start: a.start, end: a.end, levelId})));
-        drawingNames.push(levelId);
+    for (var levelId of levelIds) {
+        const rangesStr = cache[levelId];
         levelCaches[levelId] = new LevelCache({id: levelId});
         levelCaches[levelId].setup();
-        levelCaches[levelId].putData(levelRanges.map(x=>levelId == 'raw' ? {$t: x.start} : {$s: x.start, $e: x.end}));
+        if (rangesStr) {
+            var levelRanges = levelId == 'raw' ? TestUtil.rangesFromRaw(rangesStr) : rng(rangesStr);
+            drawingData.push(levelRanges.map(a=>({start: a.start, end: a.end, levelId})));
+            drawingNames.push(levelId);
+            levelCaches[levelId].putData(levelRanges.map(x=>levelId == 'raw' ? {$t: x.start} : {
+                $s: x.start,
+                $e: x.end
+            }));
+        }
     }
 
     const removed = ll(config.diff.removed);
     const added = ll(config.diff.added);
     const resized = ll(config.diff.resized);
     drawingData = drawingData.concat([
-        [], removed, added, resized.map(a=>a.existing), resized
+        [], removed, resized.map(a=>a.existing), resized, added
     ]);
-    drawingNames.push('=', 'del', 'add', 're-', 're+');
+    drawingNames.push('=', 'del', 're-', 're+', 'add');
 
 
     console.log(TestUtil.getRangeDrawing(drawingData, drawingNames, 8));
@@ -39,26 +48,27 @@ function performDiffTest(config) {
         getLevelCache: (levelId=>levelCaches[levelId]),
         getSerieManifest: ()=>({levels: []})
     }, ()=>null);
-    var data = ds.getDataForDiff({removed, added, resized});
-    console.log(TestUtil.getRangeDrawing([data.newData, data.oldData], ['new', 'old'], 8));
-    expect({newData: data.newData.map(TestUtil.cleanRangeOnLevel), oldData: data.oldData}).to.deep.equal({
-        newData: ll(config.result.newData),
-        oldData: ll(config.result.oldData)
+    var diff = ds.getWrapperDiffForProjectionDiff({removed, added, resized});
+    console.log(TestUtil.getRangeDrawing([diff.removed, diff.resized.map(r=>DataUtil.boundGetter(r.levelId).bounds(r.data)), diff.resized, diff.added], ['removed', 'resized', 'resized*', 'added'], 8));
+    expect({
+        removed: diff.removed.map(TestUtil.cleanRangeOnLevel),
+        resized: diff.resized.map(TestUtil.cleanResizedRangeOnLevel),
+        added: diff.added.map(TestUtil.cleanRangeOnLevel)
+    }).to.deep.equal({
+        removed: ll(config.result.removed),
+        resized: ll(config.result.resized),
+        added: ll(config.result.added)
     });
 }
 
 describe("DataSource", () => {
-    var r, levelIds, cacheProjection;
+    var r, cacheProjection;
 
     function spl(str) {
         return str ? str.split(' ').map(a=>r[a]) : [];
     }
 
-    beforeEach(()=> {
-        levelIds = ['raw', '2s', '5s'];
-
-    });
-    describe('getDataWrappersForRange', ()=> {
+    describe('extractWrapperDiffForRange', ()=> {
         it('should fit wrappers for raw data', ()=> {
             var levelCache = new LevelCache({id: 'raw'});
             levelCache.setup();
@@ -67,12 +77,20 @@ describe("DataSource", () => {
                 getLevelCache: ()=>levelCache,
                 getSerieManifest: ()=>({levels: []})
             }, ()=>null);
-            expect(ds.getDataWrappersForRange({start: 9, end: 14, levelId: 'raw'})).to.deep.equal([{
-                levelId: 'raw',
-                start: 10,
-                end: 10,
-                data: {'$t': 10}
-            }]);
+            var output = {added: [], removed: [], resized: []};
+            ds.extractWrapperDiffForRange({start: 9, end: 14, levelId: 'raw'}, true, output)
+            expect(output).to.deep.equal({
+                added: [{
+                    data: {$t: 10},
+                    end: 10,
+                    id: "raw [1970-01-01 01:00:00.010] [1970-01-01 01:00:00.010]",
+                    levelId: "raw",
+                    start: 10
+                }],
+                removed: [],
+                resized: []
+            });
+
         });
         it('should return empty array for no data', ()=> {
             var levelCache = new LevelCache({id: '5s'});
@@ -81,7 +99,9 @@ describe("DataSource", () => {
                 getLevelCache: ()=>levelCache,
                 getSerieManifest: ()=>({levels: []})
             }, ()=>null);
-            expect(ds.getDataWrappersForRange({start: 9, end: 14, levelId: '5s'})).to.be.empty;
+            var output = {added: [], resized: [], removed: []};
+            ds.extractWrapperDiffForRange({start: 9, end: 14, levelId: '5s'}, true, output);
+            expect(output).to.deep.equal({added: [], removed: [], resized: []});
         });
         it('should fit wrappers for raw data, exact point', ()=> {
             var levelCache = new LevelCache({id: 'raw'});
@@ -91,12 +111,18 @@ describe("DataSource", () => {
                 getLevelCache: ()=>levelCache,
                 getSerieManifest: ()=>({levels: []})
             }, ()=>null);
-            expect(ds.getDataWrappersForRange({start: 10, end: 15, levelId: 'raw'})).to.deep.equal([{
-                levelId: 'raw',
-                start: 10,
-                end: 10,
-                data: {'$t': 10}
-            }]);
+            var output = {added: [], resized: [], removed: []};
+            ds.extractWrapperDiffForRange({start: 10, end: 15, levelId: 'raw'}, true, output);
+            expect(output).to.deep.equal({
+                added: [{
+                    levelId: 'raw',
+                    start: 10,
+                    end: 10,
+                    id: "raw [1970-01-01 01:00:00.010] [1970-01-01 01:00:00.010]",
+                    data: {'$t': 10}
+                }],
+                removed: [], resized: []
+            });
         });
         it('should fit wrappers for aggregated data', ()=> {
             var levelCache = new LevelCache({id: '5s'});
@@ -106,25 +132,32 @@ describe("DataSource", () => {
                 getLevelCache: ()=>levelCache,
                 getSerieManifest: ()=>({levels: []})
             }, ()=>null);
-            expect(ds.getDataWrappersForRange({start: 9, end: 19, levelId: '5s'})).to.deep.equal([
-                {
-                    levelId: '5s',
-                    start: 9,
-                    end: 10,
-                    data: {'$s': 5, '$e': 10}
-                },
-                {
-                    levelId: '5s',
-                    start: 10,
-                    end: 15,
-                    data: {'$s': 10, '$e': 15}
-                },
-                {
-                    levelId: '5s',
-                    start: 15,
-                    end: 19,
-                    data: {'$s': 15, '$e': 20}
-                }]);
+            var output = {added: [], resized: [], removed: []};
+            ds.extractWrapperDiffForRange({start: 9, end: 19, levelId: '5s'}, true, output);
+            expect(output).to.deep.equal({
+                added: [
+                    {
+                        levelId: '5s',
+                        start: 9,
+                        end: 10,
+                        id: "5s [1970-01-01 01:00:00.009] [1970-01-01 01:00:00.010]",
+                        data: {'$s': 5, '$e': 10}
+                    },
+                    {
+                        levelId: '5s',
+                        start: 10,
+                        end: 15,
+                        id: "5s [1970-01-01 01:00:00.010] [1970-01-01 01:00:00.015]",
+                        data: {'$s': 10, '$e': 15}
+                    },
+                    {
+                        levelId: '5s',
+                        start: 15,
+                        end: 19,
+                        id: "5s [1970-01-01 01:00:00.015] [1970-01-01 01:00:00.019]",
+                        data: {'$s': 15, '$e': 20}
+                    }], resized: [], removed: []
+            });
         });
         it('should fit wrappers for aggregated data, no need for clipping ranges', ()=> {
             var levelCache = new LevelCache({id: '5s'});
@@ -134,13 +167,18 @@ describe("DataSource", () => {
                 getLevelCache: ()=>levelCache,
                 getSerieManifest: ()=>({levels: []})
             }, ()=>null);
-            expect(ds.getDataWrappersForRange({start: 10, end: 15, levelId: '5s'})).to.deep.equal([
-                {
-                    levelId: '5s',
-                    start: 10,
-                    end: 15,
-                    data: {'$s': 10, '$e': 15}
-                }]);
+            var output = {added: [], resized: [], removed: []};
+            ds.extractWrapperDiffForRange({start: 10, end: 15, levelId: '5s'}, true, output);
+            expect(output).to.deep.equal({
+                added: [
+                    {
+                        levelId: '5s',
+                        start: 10,
+                        end: 15,
+                        data: {'$s': 10, '$e': 15},
+                        id: "5s [1970-01-01 01:00:00.010] [1970-01-01 01:00:00.015]"
+                    }], resized: [], removed: []
+            });
         });
     });
     describe("getDataForDiff()", () => {
@@ -157,8 +195,9 @@ describe("DataSource", () => {
                     resized: '2s 20 22 20 25'
                 },
                 result: {
-                    newData: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; 2s 4 5; 5s 5 10; raw 10 10; raw 11 11',
-                    oldData: '2s 0 2; 1s 2 5; 2s 22 25'
+                    added: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; 2s 4 5; 5s 5 10; raw 10 10; raw 11 11',
+                    removed: '2s 0 2;',
+                    resized: ''
                 }
             });
         });
@@ -175,8 +214,9 @@ describe("DataSource", () => {
                     resized: '2s 20 22 20 25'
                 },
                 result: {
-                    newData: '',
-                    oldData: '2s 0 2; 1s 2 5; 2s 22 25'
+                    added: '',
+                    resized: '',
+                    removed: ''
                 }
             });
         });
@@ -193,8 +233,9 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newData: '',
-                    oldData: ''
+                    added: '',
+                    removed: '',
+                    resized: ''
                 }
             });
         });
@@ -211,8 +252,9 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newData: '',
-                    oldData: ''
+                    added: '',
+                    removed: '',
+                    resized: ''
                 }
             });
         });
@@ -229,8 +271,9 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newData: '5s 0 5; 5s 5 10',
-                    oldData: 'raw 0 10'
+                    added: '5s 0 5; 5s 5 10',
+                    removed: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; raw 4 4; raw 5 5; raw 6 6; raw 7 7; raw 8 8; raw 9 9',
+                    resized: ''
                 }
             });
         });
@@ -247,8 +290,9 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newData: '5s 0 5; 5s 5 10',
-                    oldData: 'raw 0 10'
+                    added: '5s 0 5; 5s 5 10',
+                    removed: 'raw 0 0; raw 1 1; raw 8 8; raw 9 9',
+                    resized: ''
                 }
             });
         });
@@ -256,7 +300,7 @@ describe("DataSource", () => {
             performDiffTest({
                 cache: {
                     'raw': '0 1 2 3 4 5 6 7 8 9',
-                    '2s': '0 2 4 6 8',
+                    '2s': '0 2 4 6 8 10',
                     '5s': '10 15'
                 },
                 diff: {
@@ -265,8 +309,9 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newData: '',
-                    oldData: 'raw 0 10'
+                    added: '',
+                    removed: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; raw 4 4; raw 5 5; raw 6 6; raw 7 7; raw 8 8; raw 9 9',
+                    resized: ''
                 }
             });
         });
@@ -274,7 +319,7 @@ describe("DataSource", () => {
             performDiffTest({
                 cache: {
                     'raw': '0 1 2 3 4 5 6 7 8 9',
-                    '2s': '0 2 4 6 8',
+                    '2s': '0 2 4 6 8 10',
                     '5s': '10 15'
                 },
                 diff: {
@@ -283,8 +328,9 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newData: '5s 10 11',
-                    oldData: 'raw 0 10'
+                    added: '5s 10 11',
+                    removed: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; raw 4 4; raw 5 5; raw 6 6; raw 7 7; raw 8 8; raw 9 9;',
+                    resized: ''
                 }
             });
         });
@@ -295,34 +341,36 @@ describe("DataSource", () => {
                     '3s': '0 3 3 6 6 9',
                 },
                 diff: {
-                    added: 'raw 0 8',
-                    removed: '',
-                    resized: '3s 8 9 6 9'
+                    removed: '3s 0 3; 3s 3 6',
+                    resized: '3s 8 9 6 9',
+                    added: 'raw 0 8'
                 },
                 result: {
-                    newData: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; raw 4 4; raw 5 5; raw 6 6; raw 7 7',
-                    oldData: '3s 6 8'
+                    added: 'raw 0 0; raw 1 1; raw 2 2; raw 3 3; raw 4 4; raw 5 5; raw 6 6; raw 7 7',
+                    removed: '3s 0 3; 3s 3 6;',
+                    resized: '3s 8 9 6 9'
                 }
             });
         });
-        it('problematic case, parts of points', ()=> {
+        it('problematic case, parts of points #2', ()=> { // zoom in from 10s to raw
             performDiffTest({
                 cache: {
-                    'raw': '2 3 7 8',
+                    '1s': '2 3 7 8',
                     '10s': '0 10',
                 },
                 diff: {
-                    added: 'raw 2 3; 10s 3 7; raw 7 8; 10s 8 10',
-                    removed: '10s 2 3; 10s 7 8',
-                    resized: '10s 0 2 0 10'
+                    added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
+                    removed: '',
+                    resized: '10s 0 2 0 10'// resize first 10s to make gap for raw
                 },
                 result: {
-                    newData: '',//todo
-                    oldData: ''//todo
+                    added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
+                    removed: '',
+                    resized: '10s 0 2 0 10'
                 }
             });
         });
-        it('problematic case, parts of points, two aggregations', ()=> {
+        it('problematic case, parts of points, two aggregations', ()=> { // zoom in
             performDiffTest({
                 cache: {
                     '1s': '2 3 7 8',
@@ -330,19 +378,17 @@ describe("DataSource", () => {
                 },
                 diff: {
                     added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
-                    removed: '10s 2 3; 10s 7 8',
+                    removed: '',
                     resized: '10s 0 2 0 10'
                 },
                 result: {
-                    // TODO takie rozwiązanie bazujące na mapowaniu range na dane - nie wystarcza chyba
-                    // trzeba mieć dodatkowo informację,
-                    newWrappers: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',//todo
-                    oldWrappers: '',
-                    resizedWrappers: '10s 0 2 0 10' // resizedDataWrappers
+                    added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',//todo
+                    removed: '',
+                    resized: '10s 0 2 0 10' // resizedDataWrappers
                 }
             });
         });
-        it('problematic case, parts of points, zoom out (require fragment cache translation)', ()=> {
+        it('problematic case, parts of points, zoom out', ()=> {
             performDiffTest({
                 cache: {
                     '1s': '2 3 7 8',
@@ -354,27 +400,27 @@ describe("DataSource", () => {
                     resized: ''
                 },
                 result: {
-                    newWrappers: '10s 0 2; 10s 3 7; 10s 8 10', // yes, same point wrapped into many smaller portions
-                    oldWrappers: '',
-                    resizedWrappers: ''
+                    added: '10s 0 2; 10s 3 7; 10s 8 10', // yes, same point wrapped into many smaller portions
+                    removed: '',
+                    resized: ''
                 }
             });
         });
-        it('problematic case, parts of points, zoom in (require fragment cache translation)', ()=> {
+        it('problematic case, parts of points, zoom in', ()=> {
             performDiffTest({
                 cache: {
                     '1s': '2 3 7 8',
                     '10s': '0 10'
                 },
                 diff: {
-                    added: '1s 2 3; 1s 7 8; 10s 3 7; 10s 8 10',
+                    added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
                     removed: '',
                     resized: '10s 0 2 0 10'
                 },
                 result: {
-                    addedWrappers: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
-                    removedWrappers: '',
-                    resizedWrappers: '10s 0 2 0 10'
+                    added: '1s 2 3; 10s 3 7; 1s 7 8; 10s 8 10',
+                    removed: '',
+                    resized: '10s 0 2 0 10'
                 }
             });
         });
