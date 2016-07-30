@@ -159,6 +159,41 @@ describe("DataSource", () => {
                     }], resized: [], removed: []
             });
         });
+        it('should create wrappers of same point where there was no wrapper in cache', ()=> {
+            var levelCache = new LevelCache({id: '10s'});
+            levelCache.setup();
+            levelCache.putData(rng('0 10 10 20 20 30').map(x=>({$s: x.start, $e: x.end} )));
+            var ds = new DataSource({
+                getLevelCache: ()=>levelCache,
+                getSerieManifest: ()=>({levels: []})
+            }, ()=>null);
+            var output = {added: [], resized: [], removed: []};
+            ds.extractWrapperDiffForRange({start: 9, end: 19, levelId: '5s'}, true, output);
+            expect(output).to.deep.equal({
+                added: [
+                    {
+                        levelId: '5s',
+                        start: 9,
+                        end: 10,
+                        id: "5s [1970-01-01 01:00:00.009] [1970-01-01 01:00:00.010]",
+                        data: {'$s': 5, '$e': 10}
+                    },
+                    {
+                        levelId: '5s',
+                        start: 10,
+                        end: 15,
+                        id: "5s [1970-01-01 01:00:00.010] [1970-01-01 01:00:00.015]",
+                        data: {'$s': 10, '$e': 15}
+                    },
+                    {
+                        levelId: '5s',
+                        start: 15,
+                        end: 19,
+                        id: "5s [1970-01-01 01:00:00.015] [1970-01-01 01:00:00.019]",
+                        data: {'$s': 15, '$e': 20}
+                    }], resized: [], removed: []
+            });
+        });
         it('should fit wrappers for aggregated data, no need for clipping ranges', ()=> {
             var levelCache = new LevelCache({id: '5s'});
             levelCache.setup();

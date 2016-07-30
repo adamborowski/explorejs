@@ -1,7 +1,7 @@
 import DataSource from "../modules/DataSource";
 import Range from "explorejs-common/src/Range";
 import moment from 'moment';
-export default class VisJSSource {
+export default class VisJSAdapter {
     /**
      *
      * @param {SerieCache} serieCache
@@ -32,35 +32,44 @@ export default class VisJSSource {
         console.time('vis diff');
         // console.info(`diff, please add ${diff.added.length}, resize ${diff.resized.length}, remove ${diff.removed.length}`);
 
-        var data = this.dataSource.getDataForDiff(diff);
+        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
 
-        if (data.newData.length == 0 && data.oldData.length == 0) {
+        if (dataDiff.added.length == 0 && dataDiff.removed.length == 0 && dataDiff.resized.length == 0) {
             console.info('no change after recompile');
             return;
         }
 
         console.time('vis diff removed');
-        var removed = this.dataSource.getDataForRanges(data.oldData);
 
 
-        this.dataset.remove(removed.map(id));
+        this.dataset.remove(dataDiff.removed.map(a=>a.id));
+        this.dataset.remove(dataDiff.resized.map(a=>a.id));
         this.dataset.flush();
         console.timeEnd('vis diff removed');
 
         console.time('vis diff added');
-        var added = data.newData;
+        var added = dataDiff.added;
 
         this.dataset.add(added.map(w=>(w.levelId == 'raw' ?
         {
-            x: w.start, y: w.data.v, id: id(w)
+            x: w.start, y: w.data.v, id: w.id
         } :
         {
-            x: w.start, y: w.data.a, id: id(w)
+            x: w.start, y: w.data.a, id: w.id
         })));
+        this.dataset.add(dataDiff.resized.map(w=>(w.levelId == 'raw' ?
+        {
+            x: w.start, y: w.data.v, id: w.id
+        } :
+        {
+            x: w.start, y: w.data.a, id: w.id
+        })));
+
+
         this.dataset.flush();
         console.timeEnd('vis diff added');
         console.timeEnd('vis diff');
-        console.debug(removed.length + ' removed, ' + added.length + ' added.');
+        console.debug(dataDiff.removed.length + ' removed, ' + dataDiff.resized.length + ' resized, ' + added.length + ' added.');
 
     }
 
