@@ -51,12 +51,12 @@ function performTest(config) {
     var diff;
     var registersBefore = extractRegisters();
     if (config.add != null) {
-        var addConfig = TestUtil.rangeWithoutLevel(config.add);
-        diff = wrapperCache.registerPointAtRange(dataPoint, addConfig.start, addConfig.end, dataPointConfig.levelId);
+        var addRanges = TestUtil.rangesWithoutLevel(config.add);
+        diff = wrapperCache.registerRangesForPoint(dataPoint, addRanges, dataPointConfig.levelId);
     }
     else if (config.remove != null) {
-        var removeConfig = TestUtil.rangeWithoutLevel(config.remove);
-        diff = wrapperCache.unregisterPointAtRange(dataPoint, removeConfig.start, removeConfig.end, dataPointConfig.levelId);
+        var removeRanges = TestUtil.rangesWithoutLevel(config.remove);
+        diff = wrapperCache.unregisterRangesForPoint(dataPoint, removeRanges, dataPointConfig.levelId);
     }
 
     var purgeRange = (r)=> {
@@ -132,6 +132,21 @@ describe('WrapperCache', ()=> {
                 }
             });
         });
+        it('remove register because ranges complement full range', ()=> {
+            performTest({
+                registers: {
+                    '1m 0 60': '10 20; 30 40; 50 60',
+                },
+                dataPoint: '1m 0 60',
+                add: '0 10; 20 30; 40 50',
+                expectRegisters: {},
+                expectDiff: {
+                    added: '',
+                    resized: '1m 0 60 10 20',
+                    removed: '1m 30 40; 1m 50 60'
+                }
+            });
+        });
         it('no register change because added one full wrapper', ()=> {
             const notChangedRegisters = {
                 '1m 0 60': '0 30',
@@ -172,6 +187,46 @@ describe('WrapperCache', ()=> {
                 }
             });
         });
+        it('add register change because added some partial wrappers', ()=> {
+            performTest({
+                registers: {
+                    '1m 0 60': '0 30',
+                    '1m 120 180': '120 140; 160 180;',
+                    '10s 0 10': '5 10;'
+                },
+                dataPoint: '10s 10 20',
+                add: '10 14; 16 17; 18 19',
+                expectRegisters: {
+                    '1m 0 60': '0 30',
+                    '1m 120 180': '120 140; 160 180;',
+                    '10s 0 10': '5 10;',
+                    '10s 10 20': '10 14; 16 17; 18 19'
+                },
+                expectDiff: {
+                    added: '10s 10 14; 10s 16 17; 10s 18 19',
+                    resized: '',
+                    removed: ''
+                }
+            });
+        });
+        it('no change, no effect', ()=> {
+            const notChangedRegisters = {
+                '1m 0 60': '0 30',
+                '1m 120 180': '120 140; 160 180;',
+                '10s 0 10': '5 10;'
+            };
+            performTest({
+                registers: notChangedRegisters,
+                dataPoint: '1m 0 60',
+                add: '',
+                expectRegisters: notChangedRegisters,
+                expectDiff: {
+                    added: '',
+                    resized: '',
+                    removed: ''
+                }
+            });
+        });
     });
     describe('unregisterPointAtRange', ()=> {
         it('remove register because range was last in register', ()=> {
@@ -194,6 +249,51 @@ describe('WrapperCache', ()=> {
                 }
             });
         });
+        it('remove register because ranges were last in register', ()=> {
+            performTest({
+                registers: {
+                    '1m 0 60': '0 30; 40 50; 55 60',
+                },
+                dataPoint: '1m 0 60',
+                remove: '0 30; 40 50; 55 60',
+                expectRegisters: {},
+                expectDiff: {
+                    added: '',
+                    resized: '',
+                    removed: '1m 0 30; 1m 40 50; 1m 55 60'
+                }
+            });
+        });
+        it('remove register because ranges complement full range', ()=> {
+            performTest({
+                registers: {
+                    '1m 0 60': '10 20; 30 40; 50 60',
+                },
+                dataPoint: '1m 0 60',
+                remove: '0 60',
+                expectRegisters: {},
+                expectDiff: {
+                    added: '',
+                    resized: '',
+                    removed: '1m 10 20; 1m 30 40; 1m 50 60'
+                }
+            });
+        });
+        it('remove many ranges of same data point, whole point is already added', ()=> {
+            performTest({
+                registers: {},
+                dataPoint: '1m 120 180',
+                remove: '130 140; 150 160',
+                expectRegisters: {
+                    '1m 120 180': '120 130; 140 150; 160 180',
+                },
+                expectDiff: {
+                    added: '1m 140 150; 1m 160 180',
+                    resized: '1m 120 130 120 180',
+                    removed: ''
+                }
+            });
+        });
         it('add register because part of full data point has to be removed', ()=> {
             performTest({
                 registers: {
@@ -205,6 +305,22 @@ describe('WrapperCache', ()=> {
                 },
                 expectDiff: {
                     added: '1m 170 180',
+                    resized: '1m 120 160 120 180;',
+                    removed: ''
+                }
+            });
+        });
+        it('add register because part of full data point has to be removed', ()=> {
+            performTest({
+                registers: {
+                },
+                dataPoint: '1m 120 180',
+                remove: '160 170; 175 177',
+                expectRegisters: {
+                    '1m 120 180': '120 160; 170 175; 177 180',
+                },
+                expectDiff: {
+                    added: '1m 170 175; 1m 177 180',
                     resized: '1m 120 160 120 180;',
                     removed: ''
                 }
@@ -238,6 +354,24 @@ describe('WrapperCache', ()=> {
                 registers: notChangedRegisters,
                 dataPoint: '1m 0 60',
                 remove: '30 60',
+                expectRegisters: notChangedRegisters,
+                expectDiff: {
+                    added: '',
+                    resized: '',
+                    removed: ''
+                }
+            });
+        });
+        it('no change, no effect', ()=> {
+            const notChangedRegisters = {
+                '1m 0 60': '0 30',
+                '1m 120 180': '120 140; 160 180;',
+                '10s 0 10': '5 10;'
+            };
+            performTest({
+                registers: notChangedRegisters,
+                dataPoint: '1m 0 60',
+                remove: '',
                 expectRegisters: notChangedRegisters,
                 expectDiff: {
                     added: '',

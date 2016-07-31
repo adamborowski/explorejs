@@ -1,6 +1,8 @@
 import DiffRangeSet from 'explorejs-common/src/DiffRangeSet';
 import FactoryDictonary from 'explorejs-common/src/FactoryDictionary';
 import WrapperIdFactory from './WrapperIdFactory';
+import DataUtil from "../data/DataUtil";
+import {last} from 'explorejs-common/src/Array';
 /**
  * @typedef {{start, end, levelId, data}} WrapperType
  * @typedef {{removed, resized, added}} DiffType
@@ -30,31 +32,42 @@ export default class WrapperCache {
     /**
      * Insert new wrapper
      * @param dataPoint {*} raw data point
-     * @param start {number} wrapper start time
-     * @param end {number} wrapper end time
+     * @param ranges {Range[]} wrapper ranges
      * @param levelId {string} id of data cache level
      * @return {DiffRangeSetResultType} if wrapper was not registered - the wrapper itself. If the wrapper was registered - diff information
      * Note that wrapper is registered only if it is only part of whole data point
      * @example If there is a register for [10s 0 10] with fragment wrappers [10s 0 4] and [10s 6 10] we know that another point (ex. [2s4 6]) is present on chart
      * Next, we scroll out, data from level 2s disappear, so we are about to insert [10s 4 6] fragment which is the missing part of the register.
      * We find proper register for it, merge the wrapper into the register, then we realize that now we have full data point covered, so we can *remove the register*
+     * @example having one 10s aggregation on chart and 1s 2 3; 1s 4 5; 1s 6 7 in cache, when going to zoom,
+     *  1s 2 3; 1s 4 5; 1s 6 7 have to be added, but 10s 2 3; 10s 4 5; 10s 6 7 have to be removed
+     *  this 2 3; 4 5; 6 7; are wrappers of the same point
      */
-    registerPointAtRange(dataPoint, start, end, levelId) {
-        var wrapper = this._constructWrapper(dataPoint, start, end, levelId);
-        if (isFullWrapper(wrapper)) {
+    registerRangesForPoint(dataPoint, ranges, levelId) {
+        if (ranges.length == 0) {
+            return {removed: [], resized: [], added: []};
+        }
+        // assert
+        var dataRange = DataUtil.boundGetter(levelId).bounds(dataPoint);
+        if (ranges[0].end < dataRange.start || last(ranges).end > dataRange.end) {
+            throw new Error('Ranges have to be constrained to one data point');
+        }
+
+        var wrappers = ranges.map(r=>this._constructWrapper(dataPoint, r.start, r.end, levelId));
+        if (representsFullWrapper(wrappers)) {
             // this wrapper doesn't need to be registered at the moment, because it covers whole point
-            return {removed: [], resized: [], added: [wrapper]}
+            return {removed: [], resized: [], added: wrappers}
         }
         else {
-            var registerId = this.idFactory(makeFullWrapper(wrapper));
+            var registerId = this.idFactory(makeFullWrapper(dataPoint, levelId));
             /**
              * @type {PointRegistry}
              */
             var register = this.registers.get(registerId);
             if (register.isEmpty()) {
-                register.insertInitialWrapper(wrapper);
+                register.insertInitialWrappers(wrappers);
                 // this is the first wrapper for this data point
-                return {removed: [], resized: [], added: [wrapper]};
+                return {removed: [], resized: [], added: wrappers};
             }
             else {
                 /* this is not first wrapper in the register, adding if may cause different results
@@ -63,12 +76,12 @@ export default class WrapperCache {
                  * 3. resize exisiting wrapper becaue it touches existing one
                  * 4. remove existing wrapper because it fills a gap between two wrappers
                  */
-                var diff = register.insertWrapper(wrapper);
-                if (diff.result == 0) {
+                var diff = register.insertWrappers(wrappers);
+                if (diff.result.length == 0) {
                     throw new Error('Assertion failed: after adding wrapper there should\'t be empty result');
                 }
 
-                if (diff.result.length == 1 && isFullWrapper(diff.result[0])) {
+                if (diff.result.length == 1 && representsFullWrapper(diff.result)) {
                     // after merge this wrapper, we no longer need the register because it is no longer fragmented
                     this.registers.remove(registerId);
                 }
@@ -82,18 +95,25 @@ export default class WrapperCache {
     /**
      * Unregister data point for specified range, which may share the same data point with other wrappers in the cache.
      * @param dataPoint {*} raw data point
-     * @param start {number} wrapper start time
-     * @param end {number} wrapper end time
+     * @param ranges {Range[]} wrapper ranges
      * @param levelId {string} id of data cache level
      * @return {DiffType} diff as a result of range subtraction
      */
-    unregisterPointAtRange(dataPoint, start, end, levelId) {
-        var wrapper = this._constructWrapper(dataPoint, start, end, levelId);
-        const fullWrapper = makeFullWrapper(wrapper);
+    unregisterRangesForPoint(dataPoint, ranges, levelId) {
+        if (ranges.length == 0) {
+            return {removed: [], resized: [], added: []};
+        }
+        // assert
+        var dataRange = DataUtil.boundGetter(levelId).bounds(dataPoint);
+        if (ranges[0].end < dataRange.start || last(ranges).end > dataRange.end) {
+            throw new Error('Ranges have to be constrained to one data point');
+        }
+        var wrappers = ranges.map(r=>this._constructWrapper(dataPoint, r.start, r.end, levelId));
+        const fullWrapper = makeFullWrapper(dataPoint, levelId);
         var registerId = this.idFactory(fullWrapper); //todo try to make id only once per data point (maybe by @code SerieCache#putData)
         if (this.registers.has(registerId)) {
             var register = this.registers.get(registerId);
-            var diff = register.removeWrapper(wrapper);
+            var diff = register.removeWrappers(wrappers);
             /* if we remove wrapper from registry:
              * 1. whole registry is removed, if there are no more wrappers
              * 2. other wrapper may get resized, if this wrapper touched it before
@@ -106,16 +126,16 @@ export default class WrapperCache {
             delete diff.result;// this result is meaningless outside the wrapper cache
             return diff; // case 1, 2, 3, 4
         }
-        else if (!isFullWrapper(wrapper)) {
+        else if (!representsFullWrapper(wrappers)) {
             // we remove only fragment from point which is not registered, so first we have to add this element, then remove element
             var newRegister = this.registers.get(registerId);
-            newRegister.insertInitialWrapper(fullWrapper);
-            var diff = newRegister.removeWrapper(wrapper);
+            newRegister.insertInitialWrappers([fullWrapper]);
+            var diff = newRegister.removeWrappers(wrappers);
             delete diff.result;
             return diff;
         }
         else {
-            return {removed: [wrapper], resized: [], added: []};
+            return {removed: wrappers, resized: [], added: []};
         }
     }
 
@@ -141,28 +161,32 @@ export default class WrapperCache {
 }
 /**
  * Checks if given wrapper covers whole data point
- * @param {WrapperType} wrapper
- * @return {boolean} true if wrapper covers whole data point, false if wrapper covers only its fragment
+ * @param {WrapperType[]|*} wrappers
+ * @return {boolean} true if there is only one wrapper and it covers whole data point, false if wrappers cover only its fragments
  */
-function isFullWrapper(wrapper) {
+function representsFullWrapper(wrappers) {
+    if (wrappers.length != 1) {
+        return false; //full wrapper
+    }
+    var wrapper = wrappers[0];
     return wrapper.levelId == 'raw' ? wrapper.start == wrapper.data.$t && wrapper.end == wrapper.data.$t : wrapper.start == wrapper.data.$s && wrapper.end == wrapper.data.$e;
 }
 
-function makeFullWrapper(wrapper) {
-    if (wrapper.levelId == 'raw') {
+function makeFullWrapper(dataPoint, levelId) {
+    if (levelId == 'raw') {
         return {
-            levelId: wrapper.levelId,
-            data: wrapper.data,
-            start: wrapper.data.$t,
-            end: wrapper.data.$t
+            levelId,
+            data: dataPoint,
+            start: dataPoint.$t,
+            end: dataPoint.$t
         }
     }
     else {
         return {
-            levelId: wrapper.levelId,
-            data: wrapper.data,
-            start: wrapper.data.$s,
-            end: wrapper.data.$e
+            levelId,
+            data: dataPoint,
+            start: dataPoint.$s,
+            end: dataPoint.$e
         }
     }
 }
@@ -181,12 +205,12 @@ class PointRegistry {
 
     /**
      * insert wrapper into registry of shared data point
-     * @param wrapper
+     * @param wrappers
      * After
      * @return {DiffRangeSetResultType} diff information about inserting new range
      */
-    insertWrapper(wrapper) {
-        var diff = DiffRangeSet.add(this._wrappers, [wrapper], null, null, null, null, (wrapper)=>({
+    insertWrappers(wrappers) {
+        var diff = DiffRangeSet.add(this._wrappers, wrappers, null, null, null, null, (wrapper)=>({
             levelId: wrapper.levelId,
             data: wrapper.data
         }));
@@ -194,12 +218,12 @@ class PointRegistry {
         return diff;
     }
 
-    insertInitialWrapper(wrapper) {
-        this._wrappers = [wrapper];
+    insertInitialWrappers(wrappers) {
+        this._wrappers = wrappers;
     }
 
-    removeWrapper(wrapper) {
-        var diff = DiffRangeSet.subtract(this._wrappers, [wrapper], null, null, null, null, (wrapper)=>({
+    removeWrappers(wrappers) {
+        var diff = DiffRangeSet.subtract(this._wrappers, wrappers, null, null, null, null, (wrapper)=>({
             levelId: wrapper.levelId,
             data: wrapper.data
         }));
