@@ -27,5 +27,19 @@ class Accumulator {
         array.forEach(a=>this.accumulate(a));
         this.finish();
     }
+
+    /**
+     * Splits given array to different arrays based on comparison argument.
+     * This creates groups of subsequent elements which are the same (by evaluating comparator)
+     * @param array
+     * @param cmp comparator function
+     * @param [ret] {Array} output array, if not specified, new array will be created
+     * @return {Array} output array
+     */
+    static splitArray(array, cmp, ret = []) {
+        var acc = new Accumulator(cmp, a=>ret.push(a));
+        acc.processArray(array);
+        return ret;
+    }
 }
 module.exports = Accumulator;
