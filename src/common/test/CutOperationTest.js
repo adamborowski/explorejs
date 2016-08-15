@@ -41,4 +41,7 @@ describe('CutOperation', ()=> {
     it('cutter outside touching tobottomp', ()=> {
         expect(CutOperation.getCutInfo(subject, {start: 0, end: 8})).to.equal('remove');
     });
+    it('cutter two points', ()=> {
+        expect(CutOperation.getCutInfo({start:1,end:1}, {start: 1, end: 1})).to.equal('remove');
+    });
 });
