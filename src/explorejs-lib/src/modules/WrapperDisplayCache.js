@@ -1,5 +1,4 @@
 import Range from 'explorejs-common/src/Range';
-import WrapperIdFactory from './WrapperIdFactory';
 import DiffRangeSet from 'explorejs-common/src/DiffRangeSet';
 import Array from 'explorejs-common/src/Array';
 import DataUtil from "../data/DataUtil";
@@ -17,7 +16,6 @@ export default class WrapperDisplayCache {
     constructor(serieCache) {
         this.serieCache = serieCache;
         this.wrappers = [];
-        this.idFactory = WrapperIdFactory.debug;
     }
 
 
@@ -31,11 +29,6 @@ export default class WrapperDisplayCache {
         var dataPoints = this.serieCache.getLevelCache(range.levelId).getRange(Range[range.levelId == 'raw' ? 'leftClosed' : 'opened'](range.start, range.end));
         var boundGetter = DataUtil.boundGetter(range.levelId);
         var wrappers = dataPoints.map(d=>({
-            id: this.idFactory({
-                start: boundGetter.start(d),
-                end: boundGetter.end(d),
-                levelId: range.levelId
-            }),
             data: d,
             start: boundGetter.start(d),
             end: boundGetter.end(d),
@@ -58,19 +51,13 @@ export default class WrapperDisplayCache {
     _patchWrappers(added, removed) {
         const copyFn = r => ({
             data: r.data,
-            id: r.id,
             levelId: r.levelId
         });
         const cmpFn = (a, b)=>a.data == b.data;
-        const cloneRange = r=>({start: r.start, end: r.end, data: r.data, levelId: r.levelId, id: r.id});
+        const cloneRange = r=>({start: r.start, end: r.end, data: r.data, levelId: r.levelId});
 
 
-        console.log(this.wrappers)
-        console.log('----')
-        console.log(removed)
-        console.log('=====')
         var removeDiff = DiffRangeSet.subtract(this.wrappers, removed, null, null, null, null, copyFn);
-        console.log(removeDiff)
 
         var addDiff = DiffRangeSet.add(removeDiff.result.map(cloneRange), added, null, null, null, null, copyFn, cmpFn);
         var totalDiff = {

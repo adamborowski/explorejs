@@ -201,6 +201,10 @@ class TestUtil {
         return lines.join("\n");
     }
 
+    static getDiffDrawing(diff, scale = 7) {
+        return this.getRangeDrawing([diff.removed, diff.resized.map(x=>x.existing), diff.resized, diff.added, diff.result], ['DEL', 'RES', 'RES*', 'ADD', '='], scale)
+    }
+
     static getSwitcher(rand, numItems) {
         return new RandomSwitcher(rand, numItems);
     }

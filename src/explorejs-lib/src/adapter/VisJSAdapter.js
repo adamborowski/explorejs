@@ -1,5 +1,4 @@
 import DataSource from "../modules/DataSource";
-import Range from "explorejs-common/src/Range";
 import moment from 'moment';
 export default class VisJSAdapter {
     /**
@@ -22,15 +21,13 @@ export default class VisJSAdapter {
     }
 
     onProjectionRecompile(diff) {
+        const f = 'HH:mm:ss';
+
         function id(p) {
-            const f = 'HH:mm:ss';
             var start = p.start;
             var end = p.end;
             return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
         }
-
-        console.time('vis diff');
-        // console.info(`diff, please add ${diff.added.length}, resize ${diff.resized.length}, remove ${diff.removed.length}`);
 
         var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
 
@@ -39,38 +36,11 @@ export default class VisJSAdapter {
             return;
         }
 
-        console.time('vis diff removed');
-
-
-        this.dataset.remove(dataDiff.removed.map(a=>a.id));
-        this.dataset.remove(dataDiff.resized.map(a=>a.id));
-        this.dataset.flush();
-        console.timeEnd('vis diff removed');
-
-        console.time('vis diff added');
-        var added = dataDiff.added;
-
-        this.dataset.add(added.map(w=>(w.levelId == 'raw' ?
-        {
-            x: w.start, y: w.data.v, id: w.id
-        } :
-        {
-            x: w.start, y: w.data.a, id: w.id
+        this.dataset.remove([].concat(dataDiff.removed.map(a=>id(a)), dataDiff.resized.map(a=>id(a.existing))));
+        this.dataset.add([].concat(dataDiff.added, dataDiff.resized).map(a=>({
+            x: a.start, y: a.levelId == 'raw' ? a.data.v : a.data.a, levelId: a.levelId, id: id(a)
         })));
-        this.dataset.add(dataDiff.resized.map(w=>(w.levelId == 'raw' ?
-        {
-            x: w.start, y: w.data.v, id: w.id
-        } :
-        {
-            x: w.start, y: w.data.a, id: w.id
-        })));
-
-
         this.dataset.flush();
-        console.timeEnd('vis diff added');
-        console.timeEnd('vis diff');
-        console.debug(dataDiff.removed.length + ' removed, ' + dataDiff.resized.length + ' resized, ' + added.length + ' added.');
-
     }
 
     initVisInteraction() {

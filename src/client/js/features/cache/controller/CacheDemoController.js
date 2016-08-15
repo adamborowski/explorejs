@@ -2,7 +2,7 @@ import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import vis from "vis/dist/vis.js";
-import VisSource from "explorejs/src/datasource/VisJSSource";
+import VisAdapter from "explorejs/src/adapter/VisJSAdapter";
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -111,7 +111,7 @@ export default class CacheDemoController {
         var graph2d = new vis.Graph2d(container, dataset, groups, options);
         this.graph2d = graph2d;
 
-        var visSource = new VisSource(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
+        var visSource = new VisAdapter(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
         this.visSource = visSource;
     }
 
