@@ -344,6 +344,14 @@ describe("OrderedSegment test", () => {
         });
 
     });
+    describe('merge existing range', ()=> {
+        it('test1', ()=> {
+            var list = getArray('0', '1', true, true);
+            list._data = [[0, 0], [1, 1], [2, 2], [3, 3]];
+            list.mergeRange([[0, 0], [1, 1], [2, 2], [3, 3]]);
+            expect(list._data).to.deep.equal([[0, 0], [1, 1], [2, 2], [3, 3]]);
+        });
+    });
     describe('merge range into a gap', ()=> {
         it('_mergeRanges test', ()=> {
             var list = getArray('0', '1', true, true);
