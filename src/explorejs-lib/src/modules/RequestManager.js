@@ -13,6 +13,10 @@ export default class RequestManager {
     /**
      *
      * @param request {DataRequest}
+     * TODO merge queued requests if priority allows, instead of appending them!!!
+     * TODO store active ajax range set, queued range sets, then
+     * request = request - activeAjaxRanges
+     * queuedRanges +=request
      */
     addRequest(request) {
         this._deferredAjaxCall.invoke(request);

@@ -29,18 +29,22 @@ export default class VisJSAdapter {
             return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
         }
 
+        console.time('wrapper diff');
         var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
-
+        console.timeEnd('wrapper diff');
         if (dataDiff.added.length == 0 && dataDiff.removed.length == 0 && dataDiff.resized.length == 0) {
             console.info('no change after recompile');
             return;
         }
-
+        console.time('chart data update');
         this.dataset.remove([].concat(dataDiff.removed.map(a=>id(a)), dataDiff.resized.map(a=>id(a.existing))));
         this.dataset.add([].concat(dataDiff.added, dataDiff.resized).map(a=>({
             x: a.start, y: a.levelId == 'raw' ? a.data.v : a.data.a, levelId: a.levelId, id: id(a)
         })));
+        console.timeEnd('chart data update');
+        console.time('chart flush');
         this.dataset.flush();
+        console.timeEnd('chart flush');
     }
 
     initVisInteraction() {
