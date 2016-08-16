@@ -53,7 +53,7 @@ export default class WrapperDisplayCache {
             data: r.data,
             levelId: r.levelId
         });
-        const cmpFn = (a, b)=>a.data == b.data;
+        const cmpFn = (a, b)=>a.data.id == b.data.id;
         const cloneRange = r=>({start: r.start, end: r.end, data: r.data, levelId: r.levelId});
 
 

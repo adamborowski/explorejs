@@ -75,8 +75,8 @@ class OrderedSegmentArray {
 
         var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
         var overlappedSegments = this._data.slice(leftNeighborIndex + 1, rightNeighborIndex);
-        this._log('data', this._data)
-        this._log('range', range)
+        this._log('data', this._data);
+        this._log('range', range);
         this._log('overlapping segments', overlappedSegments);
         this._log('merging inside', numberSegmentsInside, overlappedSegments);
 

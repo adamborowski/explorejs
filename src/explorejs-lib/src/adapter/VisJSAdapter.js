@@ -21,7 +21,7 @@ export default class VisJSAdapter {
     }
 
     onProjectionRecompile(diff) {
-        const f = 'HH:mm:ss';
+        const f = 'YYYY-MM-DD HH:mm:ss';
 
         function id(p) {
             var start = p.start;

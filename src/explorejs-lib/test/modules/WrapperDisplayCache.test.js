@@ -2,16 +2,23 @@ import * as chai from 'chai';
 var expect = chai.expect;
 import WrapperDisplayCache from '../../src/modules/WrapperDisplayCache';
 import TestUtil from "explorejs-common/test/TestUtil";
+import WrapperIdFactory from "../../src/modules/WrapperIdFactory";
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
+var idll = a=>TestUtil.rangesOnLevel(a).map(r=> {
+    r.data = {id: 'same everywhere for testing'};
+    return r;
+});
+
+
 
 describe('WrapperDisplayCache', ()=> {
     describe('_patchWrappers', ()=> {
         it('test scenario 1', ()=> {
             var cache = new WrapperDisplayCache(null);
-            cache.wrappers = ll('1m 0 5; 2m 5 8; 1m 8 9; 2m 9 10');
-            var diff2 = cache._patchWrappers(ll('1m 5 8; 1m 8 10'), ll('2m 5 8; 2m 9 11'));
+            cache.wrappers = idll('1m 0 5; 2m 5 8; 1m 8 9; 2m 9 10');
+            var diff2 = cache._patchWrappers(idll('1m 5 8; 1m 8 10'), idll('2m 5 8; 2m 9 11'));
             expect({
                 added: diff2.added.map(TestUtil.cleanResizedRangeOnLevel),
                 removed: diff2.removed.map(TestUtil.cleanResizedRangeOnLevel),
@@ -23,23 +30,4 @@ describe('WrapperDisplayCache', ()=> {
             });
         });
     });
-    // describe('top-bottom tests', ()=> {
-    //     performTest({
-    //         cache: {
-    //             '1s': '0 1 1 2 2 3 3 4 4 5 5 6',
-    //             '2s': '2 4 6 8',
-    //             '5s': '0 5 10 15'
-    //         },
-    //         wrappers: '5s 0 1; 1s 1 2; 2s 2 4; 5s 4 5; 5s 10 14;',
-    //         update: {
-    //             removed: '1s 1 2; 2s 2 4; 5s 4 14',
-    //             resized: '5s 0 14 0 1',
-    //             added: '',
-    //
-    //         },
-    //         expectDiff: {
-    //             removed:''
-    //         }
-    //     });
-    // });
 });

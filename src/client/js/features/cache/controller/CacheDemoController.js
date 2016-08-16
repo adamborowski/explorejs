@@ -204,7 +204,10 @@ export default class CacheDemoController {
         console.log(levelId);
         var format = require('date-format');
         var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
-        console.log(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data.map((a)=>`${JSON.stringify(a)}`).join('\n'));
+        console.log('level cache')
+        console.table(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data);
+        console.log('wrappers')
+        console.table(this.visSource.dataSource.wrapperCache.wrappers);
     }
 
     selectAggAndSerie(agg, serie) {

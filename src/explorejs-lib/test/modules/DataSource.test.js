@@ -4,6 +4,7 @@ import DataSource from "../../src/modules/DataSource";
 import DataUtil from "../../src/data/DataUtil";
 import LevelCache from "../../src/modules/LevelCache";
 import TestUtil from "explorejs-common/test/TestUtil";
+import WrapperIdFactory from "../../src/modules/WrapperIdFactory";
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
@@ -26,6 +27,9 @@ function performDiffTest(config) {
             levelCaches[levelId].putData(levelRanges.map(x=>levelId == 'raw' ? {$t: x.start} : {
                 $s: x.start,
                 $e: x.end
+            }).map(a=> {
+                a.id = WrapperIdFactory.globalDebug(levelId, a);
+                return a;
             }));
         }
     }

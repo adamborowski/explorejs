@@ -9,4 +9,11 @@ export default class WrapperIdFactory {
     static debug(wrapper) {
         return `${wrapper.levelId} [${moment(wrapper.start).format(FORMAT)}] [${moment(wrapper.end).format(FORMAT)}]`
     }
+
+    static globalDebug(levelId, data) {
+        if (levelId == 'raw') {
+            return `${levelId} [${moment(data.$t).format(FORMAT)}]`;
+        }
+        return `${levelId} [${moment(data.$s).format(FORMAT)}] [${moment(data.$e).format(FORMAT)}]`;
+    }
 }
