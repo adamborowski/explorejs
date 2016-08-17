@@ -1,6 +1,7 @@
 import DataRequest from '../data/DataRequest';
 import IndexedList from 'explorejs-common/src/IndexedList';
 import SerieCache from "./SerieCache";
+import WrapperIdFactory from "./WrapperIdFactory";
 /**
  * @property {RequestManager} RequestManager
  */
@@ -9,6 +10,7 @@ export default class CacheManager {
 
     constructor() {
         this.serieCacheSet = new IndexedList();
+        this.idFactory = WrapperIdFactory.globalDebug;
     }
 
 
@@ -43,6 +45,9 @@ export default class CacheManager {
      */
     putData(series) {
         for (var serieResponse of series) {
+            for (var d of serieResponse.data) {
+                d.id = this.idFactory(serieResponse.level, d);
+            }
             this.getSerieCache(serieResponse.serieId).putDataAtLevel(serieResponse.level, serieResponse.data)
         }
     }

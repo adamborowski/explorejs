@@ -1,5 +1,9 @@
 var CutOperation = require('./CutOperation');
 var ParallelRangeSetIterator = require('./ParallelRangeSetIterator');
+/**
+ * @typedef {{removed, resized, added, result}} DiffRangeSetResultType
+ */
+
 class DiffRangeSet {
 
     static pretty(obj) {
@@ -38,7 +42,7 @@ class DiffRangeSet {
      * @param {Number} [iRight]
      * @param {Number} [maxILeft]
      * @param {Number} [maxIRight]
-     * @return {{added, removed, resized, result}}
+     * @return {DiffRangeSetResultType}
      */
     static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn, compareFn) {
         var result = [], added = [], removed = [], resized = [];
@@ -176,7 +180,7 @@ class DiffRangeSet {
      * @param [iRight]
      * @param [maxILeft]
      * @param [maxIRight]
-     * @return {{added, removed, resized, result}}
+     * @return {DiffRangeSetResultType}
      */
     static subtract(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn) {
         var result = [], added = [], removed = [], resized = [];

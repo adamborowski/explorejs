@@ -7,12 +7,16 @@ import IndexedList from 'explorejs-common/src/IndexedList';
 export default class RequestManager {
 
     constructor() {
-        this._deferredAjaxCall = new DeferredAction(this._performBatchRequest.bind(this), 200);
+        this._deferredAjaxCall = new DeferredAction(this._performBatchRequest.bind(this), 100);
     }
 
     /**
      *
      * @param request {DataRequest}
+     * TODO merge queued requests if priority allows, instead of appending them!!!
+     * TODO store active ajax range set, queued range sets, then
+     * request = request - activeAjaxRanges
+     * queuedRanges +=request
      */
     addRequest(request) {
         this._deferredAjaxCall.invoke(request);

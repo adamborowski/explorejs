@@ -2,7 +2,7 @@ import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import vis from "vis/dist/vis.js";
-import VisSource from "explorejs/src/datasource/VisJSSource";
+import VisAdapter from "explorejs/src/adapter/VisJSAdapter";
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -52,9 +52,9 @@ export default class CacheDemoController {
                 });
                 $scope.selectedAggregation = $scope.availableAggregations[3]
                 $scope.selectedSerie = $scope.availableSeries[0];
-                $scope.rangeFrom = '2016-03-03';//rm.getManifestForSerie('s001').$start;
-                $scope.mouse = '2016-03-03';//rm.getManifestForSerie('s001').$start;
-                $scope.rangeTo = '2016-04-01';//rm.getManifestForSerie('s001').$end;
+                $scope.rangeFrom = '2016-01-01';//rm.getManifestForSerie('s001').$start;
+                $scope.mouse = '2016-01-03';//rm.getManifestForSerie('s001').$start;
+                $scope.rangeTo = '2016-01-02';//rm.getManifestForSerie('s001').$end;
                 $scope.rm = rm;
                 this.startTime = rm.getManifestForSerie('s001').start;
                 this.endTime = rm.getManifestForSerie('s001').end;
@@ -103,15 +103,15 @@ export default class CacheDemoController {
         var options = {
             defaultGroup: 'ungrouped',
             // legend: true,
-            start: '2016-02-01',
-            end: '2016-02-02',
+            start: '2016-01-01 09:55',
+            end: '2016-01-01 10:07',
             interpolation: false,
             height: 200
         };
         var graph2d = new vis.Graph2d(container, dataset, groups, options);
         this.graph2d = graph2d;
 
-        var visSource = new VisSource(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
+        var visSource = new VisAdapter(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
         this.visSource = visSource;
     }
 
@@ -198,6 +198,16 @@ export default class CacheDemoController {
         var format = require('date-format');
         var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
         console.log(this.rm.CacheManager.getSerieCache('s001').getProjectionDisposer().getProjection(levelId).projection.map((a)=>`${fmt(a.start)} ${fmt(a.end)} ${a.levelId}`).join('\n'));
+    }
+
+    showCacheAtLevel(levelId) {
+        console.log(levelId);
+        var format = require('date-format');
+        var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
+        console.log('level cache')
+        console.table(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data);
+        console.log('wrappers')
+        console.table(this.visSource.dataSource.wrapperCache.wrappers);
     }
 
     selectAggAndSerie(agg, serie) {

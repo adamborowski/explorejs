@@ -6,6 +6,9 @@ module.exports = class CutOperation {
         if(cutter == null){
             return null;
         }
+        if (subject.start == cutter.start && subject.start == subject.end && subject.start == cutter.end) {
+            return 'remove';
+        }
         var start = this._getPointInfo(subject, cutter.start);
         var end = this._getPointInfo(subject, cutter.end);
         if (end == 'above' || end == 'start') {

@@ -7,7 +7,6 @@ module.exports = class Service {
         this.series = series;
         this.levels = [
             {id: 'raw', 'step': 1000},
-            {id: '10s', 'step': 10000},
             {id: '30s', 'step': 30000},
             {id: '1m', 'step': 60000},
             {id: '10m', 'step': 600000},

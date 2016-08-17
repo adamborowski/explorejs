@@ -1,17 +1,32 @@
 "use strict";
-module.exports = class FactoryDictionary {
+/**
+ * @template TValue
+ */
+class FactoryDictionary {
     constructor(factory) {
         this.factory = factory;
         this.dict = {};
         this.keys = [];
     }
 
+    /**
+     * @param key
+     * @return {TValue}
+     */
     get(key) {
         if (!this.dict.hasOwnProperty(key)) {
             this.dict[key] = this.factory(key);
             this.keys.push(key);
         }
         return this.dict[key];
+    }
+
+    remove(key) {
+        delete this.dict[key];
+    }
+
+    has(key) {
+        return this.dict.hasOwnProperty(key);
     }
 
     forEach(func) {
@@ -31,8 +46,14 @@ module.exports = class FactoryDictionary {
     getValues() {
         var a = [];
         for (var i = 0; i < this.keys.length; i++) {
-            a.push(this.dict[this.keys[i]]);
+            if (this.dict.hasOwnProperty(this.keys[i])) {
+                a.push(this.dict[this.keys[i]]);
+            }
+            else {
+                // this element was removed in the past but we don't want to splice keys array as getValues is used rarely
+            }
         }
         return a;
     }
-};
+}
+module.exports = FactoryDictionary;

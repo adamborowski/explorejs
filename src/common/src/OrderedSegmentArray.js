@@ -70,13 +70,13 @@ class OrderedSegmentArray {
         var rightBoundKey = this.options.rightBoundKey;
         var rangeLeft = range[0][leftBoundKey];
         var rangeRight = range[range.length - 1][rightBoundKey];
-        var leftNeighborIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeLeft, this._rightBoundComparator);
-        var rightNeighborIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeRight, this._leftBoundComparator);
+        var leftNeighborIndex = OrderedSegmentArray._findBoundBefore(this._data, rangeLeft, this._rightBoundComparator);
+        var rightNeighborIndex = OrderedSegmentArray._findBoundAfter(this._data, rangeRight, this._leftBoundComparator);
 
         var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
         var overlappedSegments = this._data.slice(leftNeighborIndex + 1, rightNeighborIndex);
-        this._log('data', this._data)
-        this._log('range', range)
+        this._log('data', this._data);
+        this._log('range', range);
         this._log('overlapping segments', overlappedSegments);
         this._log('merging inside', numberSegmentsInside, overlappedSegments);
 
@@ -225,6 +225,17 @@ class OrderedSegmentArray {
         }
         return index;
     }
+    static _findBoundBefore(data, boundValue, boundComparator) {
+        if (data.length == 0) {
+            return 0;
+        }
+        var index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) >= 0) {
+            // found bound is greater
+            return index - 1;
+        }
+        return index;
+    }
 
     static _findBoundNotBefore(data, boundValue, boundComparator) {
         if (data.length == 0) {
@@ -232,6 +243,17 @@ class OrderedSegmentArray {
         }
         var index = bs.closest(data, boundValue, boundComparator);
         if (boundComparator(data[index], boundValue) < 0) {
+            // found bound is lower
+            return index + 1;
+        }
+        return index;
+    }
+    static _findBoundAfter(data, boundValue, boundComparator) {
+        if (data.length == 0) {
+            return 0;
+        }
+        var index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) <= 0) {
             // found bound is lower
             return index + 1;
         }

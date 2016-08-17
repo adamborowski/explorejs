@@ -60,6 +60,6 @@ module.exports = class SerieService {
     }
 
     getEndTime() {
-        return this.rawData[this.rawData.length - 1].$t;
+        return this.rawData[this.rawData.length - 1].$t + (this.rawData[1].$t - this.rawData[0].$t);
     }
 };

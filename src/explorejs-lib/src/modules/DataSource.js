@@ -1,5 +1,8 @@
-import DynamicProjection from "./DynamicProjection";
-import Range from "explorejs-common/src/Range";
+import DynamicProjection from './DynamicProjection';
+import WrapperDisplayCache from './WrapperDisplayCache';
+/**
+ * @typedef {{added:WrapperType[], removed:WrapperType[], resized:WrapperType[]}} WrapperDiffType
+ */
 export default class DataSource {
     /**
      * @param {SerieCache} serieCache
@@ -12,95 +15,17 @@ export default class DataSource {
         this.dynamicProjection = new DynamicProjection();
         this.dynamicProjection.SerieCache = serieCache;
         this.dynamicProjection.setup(this.onProjectionChange);
+        this.wrapperCache = new WrapperDisplayCache(serieCache);
     }
-
-    /**
-     * Get data which have to be put on the chart due to projection/data ranges resize
-     * @param resized {{start, end, levelId}[]} the array of ranges which are resized
-     * @return {Array<{$s, $e, v, a, ...}>} array of original raw points, points come from different levels
-     */
-    getNewDataForResizedRanges(resized) {
-        return resized.map((range)=> {
-            // check if somethind is added on the left
-            if (range.start < range.existing.start) {
-                return this.getDataWrappersForRange({
-                    start: range.start,
-                    end: range.existing.start,
-                    levelId: range.levelId
-                });
-            }
-            // check if somethind is added on the right
-            if (range.end > range.existing.end) {
-                return this.getDataWrappersForRange({
-                    start: range.existing.end,
-                    end: range.end,
-                    levelId: range.levelId
-                });
-            }
-            return [];
-        }).reduce((a, b)=>a.concat(b), []);
-    }
-
-    getRemovedRangesForDiff(diff) {
-        var result = [];
-        result = result.concat(diff.removed);
-        for (var range of diff.resized) {
-            if (range.start > range.existing.start) {
-                result.push({start: range.existing.start, end: range.start, levelId: range.levelId});
-            }
-            if (range.end < range.existing.end) {
-                result.push({start: range.end, end: range.existing.end, levelId: range.levelId});
-            }
-        }
-        return result;
-    }
-
-    getNewDataForAddedRanges(added) {
-        return added.map((a)=>this.getDataWrappersForRange(a)).reduce((a, b)=>a.concat(b), []);
-    }
-
-    getDataForRanges(ranges) {
-        return ranges.map((a)=>this.getDataWrappersForRange(a)).reduce((a, b)=>a.concat(b), []);
-    }
-
-    /**
-     * NOTE: Should be test covered
-     * Get every cache point wapped into object with additional information: levelId, effective time bounds, wrapped cache point
-     * @param range
-     */
-    getDataWrappersForRange(range) {
-        const levelId = range.levelId;
-        var levelCache = this.serieCache.getLevelCache(levelId);
-        // for raw points we get all from <start, end)
-        // for aggregations we get all from (start, end)
-        var rawPoints = levelCache.getRange(Range[levelId == 'raw' ? 'leftClosed' : 'opened'](range.start, range.end));
-        var wrappers;
-        if (levelId == 'raw') {
-            wrappers = rawPoints.map(p=>({levelId, start: p.$t, end: p.$t, data: p}))
-        }
-        else {
-            wrappers = rawPoints.map(p=>({levelId, start: p.$s, end: p.$e, data: p}))
-        }
-        if (wrappers.length) {
-            // narrow outer wrappers to fit the range
-            wrappers[0].start = Math.max(wrappers[0].start, range.start);
-            wrappers[wrappers.length - 1].end = Math.min(wrappers[wrappers.length - 1].end, range.end);
-        }
-        return wrappers;
-    }
-
 
     /**
      * Get data sufficient to update a chart
      * @param diff
-     * @return {{newData: *, oldData: *}} newData - array of raw data to add to the chart without levelId - if levelId is needed, just check diff for range
+     * @return {WrapperDiffType}
      * for new data - special data wrapper: which level, actual range (note that it may be different than aggregation range after projeciton compilation), and actual data point
      */
-    getDataForDiff(diff) {
-        return {
-            newData: this.getNewDataForAddedRanges(diff.added).concat(this.getNewDataForResizedRanges(diff.resized)),
-            oldData: this.getRemovedRangesForDiff(diff)
-        };
+    getWrapperDiffForProjectionDiff(diff) {
+        return this.wrapperCache.update(diff);
     }
 
     onProjectionChange(diff) {

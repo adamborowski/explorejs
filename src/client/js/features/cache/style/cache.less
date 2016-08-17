@@ -5,21 +5,21 @@
     margin: 20px 0;
   }
 }
-
-@colors: #b81e6e, #9a7ad8, #3af5ff, #08f,
+//
+@colors: #b81e6e, #9a7ad8, #08f,
 #199856, #93b058, #FFCC33, #F53D00, #830e24;
-.make-color-classes(@i: length(@colors)) when (@i > 0) {
-  .make-color-classes(@i - 1);
-  @color: extract(@colors, @i);
-  tr:nth-of-type(@{i}) {
-    svg rect {
-      fill: @color;
-    }
-    svg {
-      background: hsl(hue(@color), 50%, 90%);
-    }
-  }
-}
+//.make-color-classes(@i: length(@colors)) when (@i > 0) {
+//  .make-color-classes(@i - 1);
+//  @color: extract(@colors, @i);
+//  tr:nth-of-type(@{i}) {
+//    svg rect {
+//      fill: @color;
+//    }
+//    svg {
+//      background: hsl(hue(@color), 50%, 90%);
+//    }
+//  }
+//}
 
 .projectionActive td {
   font-weight:bold;
@@ -32,7 +32,7 @@ td.window-display svg rect {
 }
 
 
-table thead td.projection-display svg.level-svg {
+table thead td.projection-display svg.level-svg, .aggregation-data-display {
   [data-level-id='raw'] {
     fill: extract(@colors, 1);
   }
@@ -62,16 +62,16 @@ table thead td.projection-display svg.level-svg {
   }
 }
 
-.make-color-classes2(@i: length(@colors)) when (@i > 0) {
-  .make-color-classes2(@i - 1);
-  @color: extract(@colors, @i);
-  svg:nth-of-type(@{i}) {
-    rect {
-      fill: @color;
-    }
-    z-index: 20 - @i;
-  }
-}
+//.make-color-classes2(@i: length(@colors)) when (@i > 0) {
+//  .make-color-classes2(@i - 1);
+//  @color: extract(@colors, @i);
+//  svg:nth-of-type(@{i}) {
+//    rect {
+//      fill: @color;
+//    }
+//    z-index: 20 - @i;
+//  }
+//}
 
 svg.level-svg {
   background: #efefef;
@@ -81,7 +81,7 @@ svg.level-svg {
 }
 
 table.aggregation-display tbody,table.aggregation-display thead {
-  .make-color-classes();
+  //.make-color-classes();
   td {
     padding: 8px 0;
   }
@@ -106,7 +106,7 @@ table.aggregation-display thead {
       }
     }
   }
-  .make-color-classes2();
+  //.make-color-classes2();
 }
 
 .floating-panel {
