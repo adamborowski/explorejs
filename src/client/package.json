@@ -34,8 +34,10 @@
     "bootstrap-additions": "0.3.1",
     "bootstrap-slider": "^6.0.7",
     "date-format": "0.0.2",
+    "dygraphs": "^1.1.1",
+    "highcharts": "^4.2.6",
     "howler": "^1.1.29",
-    "jquery": "^2.2.0",
+    "jquery": "^2.2.4",
     "splash-screen": "^2.2.2",
     "vis": "^4.16.1",
     "zingchart": "^2.4.1"

@@ -1,8 +1,10 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import zingchart from 'zingchart';
-import ZingAdapter from "../../../../../explorejs-lib/src/adapter/ZingAdapter";
+import HighChartsAdapter from "explorejs/src/adapter/HighChartsAdapter";
+import HighCharts from "highcharts";
+import HighChartsMore from 'highcharts/highcharts-more';
+HighChartsMore(HighCharts);
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -19,7 +21,7 @@ export default class CacheDemoController {
         rm.CacheManager = cacheManager;
         cacheManager.RequestManager = rm;
         $scope.selectedAggregation = {text: '...'};
-        $scope.vizWidth=vizWidth;
+        $scope.vizWidth = vizWidth;
 
         rm.init(()=> {
 
@@ -79,34 +81,38 @@ export default class CacheDemoController {
     }
 
     initChart() {
-        var zing = zingchart.render({
-            id: "main-chart",
-            height: 300,
-            data: {
-                type: "line",
-                scaleY: {
-                    autoFit: true
+        var chart = HighCharts.chart('main-chart', {
+            chart: {
+                height: 300,
+                zoomType: 'x',
+                panning: true,
+                panKey: 'shift',
+                animation: false
+            },
+            series: [
+                {
+                    data: [],
+                    name: 'zakres',
+                    type: 'arearange'
                 },
-                "scale-x": {
-                    zooming: true,
-                    transform: {
-                        type: 'date',
-                        all: '%m/%d/%y  %h:%i %A'
-                    }
-                },
-                "series": [
-                    {
-                        /* Chart data object */
-                        // "aspect": "segment",
-                        "values": [
-                            [0, 30],
-                        ]
-                    }
-                ]
+                {
+                    name: 'wartoć średnia',
+                    data: [],
+                }
+            ],
+            xAxis: {
+                type: 'datetime'
+            },
+            title: {
+                text: 'High Charts integration'
             }
         });
-        this.adapter = new ZingAdapter(this.rm.CacheManager.getSerieCache('s001'), zing);
-        this.zing = zing;
+        this.adapter = new HighChartsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, HighCharts, (length)=> {
+            this.$scope.$apply(()=> {
+                this.$scope.numPoints = length;
+            });
+        });
+        this.chart = chart;
         this.adapter.setDisplayedRange(new Date('2016-01-01 09:55').getTime(), new Date('2016-01-01 10:07').getTime());
     }
 
@@ -126,6 +132,16 @@ export default class CacheDemoController {
         this.adapter.setDisplayedRange(window.start - length, window.end - length)
     }
 
+    zoom(step) {
+        var window = this.getWindow();
+        var start = window.start;
+        var end = window.end;
+        var middle = (end + start) / 2;
+        var length = end - start;
+        var addition = length * step;
+        this.adapter.setDisplayedRange(middle - addition / 2, middle + addition / 2);
+    }
+
     setViewportRange(start, end) {
         this.adapter.setDisplayedRange(new Date(start).getTime(), new Date(end).getTime()
         );
@@ -137,6 +153,7 @@ export default class CacheDemoController {
         }
         return this.adapter.getDisplayedRange();
     }
+
     loadRange(serie, from, to, level) {
         console.log('add request', serie, from, to, level)
         // this.rm.addRequest(new DataRequest('s001', level, from, to));

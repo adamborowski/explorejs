@@ -53,6 +53,14 @@
                     class="btn btn-default btn-sm"
                     ng-click="controller.loadRight()">&gt;&gt;
             </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.zoom(0.5)">+
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.zoom(2)">-
+            </button>
             <!--<button type="button"-->
             <!--class="btn btn-default" ng-click="controller.dump()">dump structure-->
             <!--</button>-->
@@ -61,7 +69,8 @@
             </span>
         </form>
         <div class="chart-display">
-            Chart projection on level {{controller.adapter.dataSource.dynamicProjection.currentId}}
+            Chart projection on level {{controller.adapter.dataSource.dynamicProjection.currentId}} ({{numPoints}}
+            points)
             <div id="main-chart">
 
             </div>
