@@ -1,8 +1,8 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import vis from "vis/dist/vis.js";
-import VisAdapter from "explorejs/src/adapter/VisJSAdapter";
+import zingchart from 'zingchart';
+import ZingAdapter from "../../../../../explorejs-lib/src/adapter/ZingAdapter";
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -79,67 +79,63 @@ export default class CacheDemoController {
     }
 
     initChart() {
-        var container = document.getElementById('main-chart');
-        var names = ['SquareShaded', 'Bargraph', 'Blank', 'CircleShaded'];
-        var groups = new vis.DataSet();
-        groups.add({
-            id: 0,
-            content: names[0],
-            options: {
-                drawPoints: {
-                    style: 'square' // square, circle
+        var zing = zingchart.render({
+            id: "main-chart",
+            height: 300,
+            data: {
+                type: "line",
+                scaleY: {
+                    autoFit: true
                 },
-                shaded: {
-                    orientation: 'bottom' // top, bottom
-                }
+                "scale-x": {
+                    zooming: true,
+                    transform: {
+                        type: 'date',
+                        all: '%m/%d/%y  %h:%i %A'
+                    }
+                },
+                "series": [
+                    {
+                        /* Chart data object */
+                        // "aspect": "segment",
+                        "values": [
+                            [0, 30],
+                        ]
+                    }
+                ]
             }
         });
+        this.adapter = new ZingAdapter(this.rm.CacheManager.getSerieCache('s001'), zing);
+        this.zing = zing;
+        this.adapter.setDisplayedRange(new Date('2016-01-01 09:55').getTime(), new Date('2016-01-01 10:07').getTime());
+    }
 
-        var items = [];
-
-        var dataset = new vis.DataSet(items, {
-            queue:true
-        });
-        var options = {
-            defaultGroup: 'ungrouped',
-            // legend: true,
-            start: '2016-01-01 09:55',
-            end: '2016-01-01 10:07',
-            interpolation: false,
-            height: 200
-        };
-        var graph2d = new vis.Graph2d(container, dataset, groups, options);
-        this.graph2d = graph2d;
-
-        var visSource = new VisAdapter(this.rm.CacheManager.getSerieCache('s001'), graph2d, dataset, groups);
-        this.visSource = visSource;
+    getWindow() {
+        return this.adapter.getDisplayedRange();
     }
 
     loadRight() {
-        var window = this.graph2d.getWindow();
+        var window = this.getWindow();
         var length = window.end - window.start;
-        window.start = window.start.getTime() + length;
-        window.end = window.end.getTime() + length;
-        this.graph2d.setWindow(window);
+        this.adapter.setDisplayedRange(window.start + length, window.end + length)
     }
 
     loadLeft() {
-        var window = this.graph2d.getWindow();
+        var window = this.getWindow();
         var length = window.end - window.start;
-        window.start = window.start.getTime() - length;
-        window.end = window.end.getTime() - length;
-        this.graph2d.setWindow(window);
+        this.adapter.setDisplayedRange(window.start - length, window.end - length)
     }
 
     setViewportRange(start, end) {
-        this.graph2d.setWindow(start, end);
+        this.adapter.setDisplayedRange(new Date(start).getTime(), new Date(end).getTime()
+        );
     }
 
     getViewportRange() {
-        if (this.graph2d == null || this.graph2d.getWindow() == null || isNaN(this.graph2d.getWindow().start.getTime())|| isNaN(this.graph2d.getWindow().end.getTime())) {
+        if (this.adapter == null) {
             return {start: 0, end: 0};
         }
-        return {start: this.graph2d.getWindow().start.getTime(), end: this.graph2d.getWindow().end.getTime()}
+        return this.adapter.getDisplayedRange();
     }
     loadRange(serie, from, to, level) {
         console.log('add request', serie, from, to, level)
@@ -207,7 +203,7 @@ export default class CacheDemoController {
         console.log('level cache')
         console.table(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data);
         console.log('wrappers')
-        console.table(this.visSource.dataSource.wrapperCache.wrappers);
+        console.table(this.adapter.dataSource.wrapperCache.wrappers);
     }
 
     selectAggAndSerie(agg, serie) {

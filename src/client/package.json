@@ -37,7 +37,8 @@
     "howler": "^1.1.29",
     "jquery": "^2.2.0",
     "splash-screen": "^2.2.2",
-    "vis": "^4.16.1"
+    "vis": "^4.16.1",
+    "zingchart": "^2.4.1"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.8",
