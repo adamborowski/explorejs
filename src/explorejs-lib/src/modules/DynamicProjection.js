@@ -11,7 +11,7 @@ import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
 export default class DynamicProjection {
     constructor() {
         this.ScreenPadding = 0.5; // 0.5 of actual viewport width will be appeneded to left and right viewport window
-        this.WantedUnitWidth = 100;
+        this.WantedUnitWidth = 30;
         this.currentId = null;
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
     }

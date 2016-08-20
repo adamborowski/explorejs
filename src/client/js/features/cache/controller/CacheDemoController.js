@@ -89,22 +89,32 @@ export default class CacheDemoController {
                 panKey: 'shift',
                 animation: false
             },
+            tooltip: {
+                valueDecimals: 3
+            },
             series: [
                 {
                     data: [],
-                    name: 'zakres',
-                    type: 'arearange'
+                    name: 'range',
+                    type: 'areasplinerange',
+                    step: true
+
                 },
                 {
-                    name: 'wartoć średnia',
+                    name: 'average',
+                    type: 'spline',
+                    marker: {
+                        enabled: false
+                    },
                     data: [],
+                    step: true
                 }
             ],
             xAxis: {
                 type: 'datetime'
             },
             title: {
-                text: 'High Charts integration'
+                text: 'HighCharts + ExploreJS integration'
             }
         });
         this.adapter = new HighChartsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, HighCharts, (length)=> {
@@ -113,7 +123,7 @@ export default class CacheDemoController {
             });
         });
         this.chart = chart;
-        this.adapter.setDisplayedRange(new Date('2016-01-01 09:55').getTime(), new Date('2016-01-01 10:07').getTime());
+        this.adapter.setDisplayedRange(new Date('1965-01-01').getTime(), new Date('2075-01-01').getTime());
     }
 
     getWindow() {

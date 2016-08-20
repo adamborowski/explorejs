@@ -15,7 +15,8 @@ module.exports = class Aggregator {
             max: null,
             count: null,
             openTime: null,
-            closeTime: null
+            closeTime: null,
+            missed: 0
         };
     }
 
@@ -38,6 +39,10 @@ module.exports = class Aggregator {
     }
 
     processValue(value) {
+        if (isNaN(value)) {
+            this.missed++;
+            return;
+        }
         this.step.sum += value;
         this.step.count++;
         if (value < this.step.min) {

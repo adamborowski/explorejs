@@ -7,7 +7,8 @@
 }
 //
 @colors: #b81e6e, #9a7ad8, #08f,
-#199856, #93b058, #FFCC33, #F53D00, #830e24;
+#199856, #93b058, #FFCC33, #F53D00, #830e24,
+#774a04, #59737c;
 //.make-color-classes(@i: length(@colors)) when (@i > 0) {
 //  .make-color-classes(@i - 1);
 //  @color: extract(@colors, @i);
@@ -54,11 +55,14 @@ table thead td.projection-display svg.level-svg, .aggregation-data-display {
   [data-level-id='1d'] {
     fill: extract(@colors, 7);
   }
-  [data-level-id='30d'] {
+  [data-level-id='7d'] {
     fill: extract(@colors, 8);
   }
-  [data-level-id='365d'] {
+  [data-level-id='30d'] {
     fill: extract(@colors, 9);
+  }
+  [data-level-id='1y'] {
+    fill: extract(@colors, 10);
   }
 }
 
