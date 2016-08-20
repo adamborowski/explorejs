@@ -11,7 +11,7 @@ module.exports = class Api extends AbstractApi {
         super(app);
         this.config = config;
         this.dataService = new Service([
-            new Serie("s001", new Generator().getData(DateUtil.fromStringDate('2014-01-01 10:00'), DateUtil.fromStringDate('2016-09-28 12:00'), 10000)),
+            new Serie("s001", new Generator().getData(DateUtil.fromStringDate('2013-01-01 10:00'), DateUtil.fromStringDate('2016-09-28 12:00'), 10000)),
             // new Serie("s002", new Generator().getData(DateUtil.fromStringDate('2016-01-01'), DateUtil.fromStringDate('2016-03-04 12:00'), 10000)),
             // new Serie("s003", new Generator().getData(DateUtil.fromStringDate('2015-01-01'), DateUtil.fromStringDate('2016-03-04 12:00'), 10000)),
         ]);
