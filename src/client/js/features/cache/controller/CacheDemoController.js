@@ -1,10 +1,7 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import HighChartsAdapter from "explorejs/src/adapter/HighChartsAdapter";
-import HighCharts from "highcharts";
-import HighChartsMore from 'highcharts/highcharts-more';
-HighChartsMore(HighCharts);
+import PlotlyAdapter from "explorejs/src/adapter/PlotlyAdapter";
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -81,49 +78,16 @@ export default class CacheDemoController {
     }
 
     initChart() {
-        var chart = HighCharts.chart('main-chart', {
-            chart: {
-                height: 300,
-                zoomType: 'x',
-                panning: true,
-                panKey: 'shift',
-                animation: false
-            },
-            tooltip: {
-                valueDecimals: 3
-            },
-            series: [
-                {
-                    data: [],
-                    name: 'range',
-                    type: 'areasplinerange',
-                    step: true
 
-                },
-                {
-                    name: 'average',
-                    type: 'spline',
-                    marker: {
-                        enabled: false
-                    },
-                    data: [],
-                    step: true
-                }
-            ],
-            xAxis: {
-                type: 'datetime'
-            },
-            title: {
-                text: 'HighCharts + ExploreJS integration'
-            }
-        });
-        this.adapter = new HighChartsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, HighCharts, (length)=> {
+        const chart = document.getElementById('main-chart');
+        var Plotly = require('plotly.js/src/plotly');
+        this.adapter = new PlotlyAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, Plotly, (length)=> {
             this.$scope.$apply(()=> {
                 this.$scope.numPoints = length;
             });
         });
-        this.chart = chart;
-        this.adapter.setDisplayedRange(new Date('1965-01-01').getTime(), new Date('2075-01-01').getTime());
+
+        this.adapter.setDisplayedRange(new Date('2012-01-01').getTime(), new Date('2018-01-01').getTime());
     }
 
     getWindow() {
@@ -133,13 +97,13 @@ export default class CacheDemoController {
     loadRight() {
         var window = this.getWindow();
         var length = window.end - window.start;
-        this.adapter.setDisplayedRange(window.start + length, window.end + length)
+        this.adapter.setDisplayedRange(window.start + length/2, window.end + length/2)
     }
 
     loadLeft() {
         var window = this.getWindow();
         var length = window.end - window.start;
-        this.adapter.setDisplayedRange(window.start - length, window.end - length)
+        this.adapter.setDisplayedRange(window.start - length/2, window.end - length/2)
     }
 
     zoom(step) {
