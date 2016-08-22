@@ -71,6 +71,7 @@ export default class PlotlyAdapter {
                 xaxis: {
                     type: 'date'
                 },
+                showlegend: false
             },
             {
                 scrollZoom: true
