@@ -1,7 +1,7 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import PlotlyAdapter from "explorejs/src/adapter/PlotlyAdapter";
+import FlotAdapter from "explorejs/src/adapter/FlotAdapter";
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -79,9 +79,64 @@ export default class CacheDemoController {
 
     initChart() {
 
-        const chart = document.getElementById('main-chart');
-        var Plotly = require('plotly.js/src/plotly');
-        this.adapter = new PlotlyAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, Plotly, (length)=> {
+        var $ = require('jquery');
+        window.jQuery = $; // hack :(
+        var Flot = require('jquery-flot');
+        require('jquery-flot/jquery.flot.time');
+        require('jquery-flot/jquery.flot.fillbetween');
+        require('jquery-flot/jquery.flot.navigate');
+
+        //
+
+        /**
+         * Flot plugin for adding additional auto scalling modes.
+         *
+         * @author Joel Oughton
+         */
+        (function ($) {
+            function init(plot) {
+
+                plot.autoScale = function () {
+                    var opts = plot.getYAxes()[0].options;
+                    var data = plot.getData();
+
+                    var xaxis = plot.getAxes().xaxis;
+                    const maxRed = (acc, val)=>Math.max(acc, val[1]);
+                    const minRed = (acc, val)=>Math.min(acc, val[1]);
+                    if (data.length == 3) {
+                        const boundFilter = data=>data[1] != null && !isNaN(data[1]) && data[0] >= xaxis.options.min && data[0] <= xaxis.options.max;
+                        var max = data[0].data.filter(boundFilter).reduce(maxRed, Number.NEGATIVE_INFINITY);
+                        var min = data[1].data.filter(boundFilter).reduce(minRed, Number.POSITIVE_INFINITY);
+
+                        var margin = Math.abs(max - min) * opts.autoscaleMargin;
+
+                        opts.min = min - margin;
+                        opts.max = max + margin;
+                    }
+
+
+                    // plot.setupGrid();
+                    // plot.draw();
+
+                    return {
+                        min: opts.min,
+                        max: opts.max
+                    };
+                }
+            }
+
+            $.plot.plugins.push({
+                init: init,
+                name: "autoscalemode",
+                version: "0.6"
+            });
+        })(jQuery);
+
+
+        //
+
+        const chart = $('#main-chart');
+        this.adapter = new FlotAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, Flot, $, (length)=> {
             this.$scope.$apply(()=> {
                 this.$scope.numPoints = length;
             });
@@ -97,13 +152,13 @@ export default class CacheDemoController {
     loadRight() {
         var window = this.getWindow();
         var length = window.end - window.start;
-        this.adapter.setDisplayedRange(window.start + length/2, window.end + length/2)
+        this.adapter.setDisplayedRange(window.start + length / 2, window.end + length / 2)
     }
 
     loadLeft() {
         var window = this.getWindow();
         var length = window.end - window.start;
-        this.adapter.setDisplayedRange(window.start - length/2, window.end - length/2)
+        this.adapter.setDisplayedRange(window.start - length / 2, window.end - length / 2)
     }
 
     zoom(step) {
