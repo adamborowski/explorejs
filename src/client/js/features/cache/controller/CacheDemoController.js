@@ -2,6 +2,7 @@ import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import FlotAdapter from "explorejs/src/adapter/FlotAdapter";
+import AutoScale from 'explorejs/src/utils/charts/flot/AutoScale';
 const vizWidth = 920;
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -86,55 +87,8 @@ export default class CacheDemoController {
         require('jquery-flot/jquery.flot.fillbetween');
         require('jquery-flot/jquery.flot.navigate');
 
-        //
 
-        /**
-         * Flot plugin for adding additional auto scalling modes.
-         *
-         * @author Joel Oughton
-         */
-        (function ($) {
-            function init(plot) {
-
-                plot.autoScale = function () {
-                    var opts = plot.getYAxes()[0].options;
-                    var data = plot.getData();
-
-                    var xaxis = plot.getAxes().xaxis;
-                    const maxRed = (acc, val)=>Math.max(acc, val[1]);
-                    const minRed = (acc, val)=>Math.min(acc, val[1]);
-                    if (data.length == 3) {
-                        const boundFilter = data=>data[1] != null && !isNaN(data[1]) && data[0] >= xaxis.options.min && data[0] <= xaxis.options.max;
-                        var max = data[0].data.filter(boundFilter).reduce(maxRed, Number.NEGATIVE_INFINITY);
-                        var min = data[1].data.filter(boundFilter).reduce(minRed, Number.POSITIVE_INFINITY);
-
-                        var margin = Math.abs(max - min) * opts.autoscaleMargin;
-
-                        opts.min = min - margin;
-                        opts.max = max + margin;
-                    }
-
-
-                    // plot.setupGrid();
-                    // plot.draw();
-
-                    return {
-                        min: opts.min,
-                        max: opts.max
-                    };
-                }
-            }
-
-            $.plot.plugins.push({
-                init: init,
-                name: "autoscalemode",
-                version: "0.6"
-            });
-        })(jQuery);
-
-
-        //
-
+        new AutoScale($);
         const chart = $('#main-chart');
         this.adapter = new FlotAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, Flot, $, (length)=> {
             this.$scope.$apply(()=> {

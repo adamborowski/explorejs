@@ -23,8 +23,6 @@ export default class FlotAdapter {
 
     init() {
 
-        var color = '#bbddee';
-        var borderColor = '#6699bb';
 
         this.plot = this.$.plot(this.chart, [], {
 
@@ -49,13 +47,11 @@ export default class FlotAdapter {
             this.dataSource.updateViewState(range.start, range.end, this.plot.width());
         }, 100);
 
-        var setupGrid = this.plot.setupGrid;
-        this.plot.setupGrid = ()=> {
-            this.plot.autoScale();
-            var r = setupGrid.apply(this.plot, arguments);
+        this.chart.on('plot_setupGrid', ()=> {
             throttledUpdate(this.getDisplayedRange());
-            return r;
-        };
+        });
+
+
         this.plot.setupGrid();
     }
 
