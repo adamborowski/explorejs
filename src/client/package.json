@@ -30,6 +30,7 @@
     "angular-strap": "^2.3.6",
     "angular-sweetnotifier": "^2.0.3",
     "angular-theme-spinner": "^1.2.3",
+    "as-jqplot": "^1.0.8",
     "bootstrap": "^3.3.6",
     "bootstrap-additions": "0.3.1",
     "bootstrap-slider": "^6.0.7",

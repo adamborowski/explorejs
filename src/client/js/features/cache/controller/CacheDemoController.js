@@ -1,9 +1,14 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import FlotAdapter from "explorejs/src/adapter/FlotAdapter";
-import AutoScale from 'explorejs/src/utils/charts/flot/AutoScale';
+import JQPlotAdapter from "explorejs/src/adapter/JQPlotAdapter";
 const vizWidth = 920;
+import $ from 'jquery';
+window.jQuery = $; // hack :(
+require('as-jqplot/dist/jquery.jqplot.js');
+require('as-jqplot/dist/plugins/jqplot.dateAxisRenderer');
+require('as-jqplot/dist/plugins/jqplot.cursor');
+import 'as-jqplot/dist/jquery.jqplot.css';
 export default class CacheDemoController {
     constructor($scope, $filter) {
         setInterval(()=> {
@@ -80,17 +85,8 @@ export default class CacheDemoController {
 
     initChart() {
 
-        var $ = require('jquery');
-        window.jQuery = $; // hack :(
-        var Flot = require('jquery-flot');
-        require('jquery-flot/jquery.flot.time');
-        require('jquery-flot/jquery.flot.fillbetween');
-        require('jquery-flot/jquery.flot.navigate');
-
-
-        new AutoScale($);
         const chart = $('#main-chart');
-        this.adapter = new FlotAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, Flot, $, (length)=> {
+        this.adapter = new JQPlotAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, $, (length)=> {
             this.$scope.$apply(()=> {
                 this.$scope.numPoints = length;
             });
