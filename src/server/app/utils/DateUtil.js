@@ -1,6 +1,9 @@
 var moment = require('moment');
 module.exports = class DateUtil {
     static fromString(str) {
+        if (Number(str) < 0) {
+            str = 0;
+        }
         return moment(str);
     }
 

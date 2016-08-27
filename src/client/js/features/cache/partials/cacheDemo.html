@@ -53,6 +53,14 @@
                     class="btn btn-default btn-sm"
                     ng-click="controller.loadRight()">&gt;&gt;
             </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.zoom(0.5)">+
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-sm"
+                    ng-click="controller.zoom(2)">-
+            </button>
             <!--<button type="button"-->
             <!--class="btn btn-default" ng-click="controller.dump()">dump structure-->
             <!--</button>-->
@@ -61,7 +69,8 @@
             </span>
         </form>
         <div class="chart-display">
-            Chart projection on level {{controller.visSource.dataSource.dynamicProjection.currentId}}
+            Chart projection on level {{controller.adapter.dataSource.dynamicProjection.currentId}} ({{numPoints}}
+            points)
             <div id="main-chart">
 
             </div>
@@ -69,12 +78,11 @@
     </div>
 
 
-    <div style="margin-top:380px" class="serie-display"
+    <div style="margin-top:450px" class="serie-display"
          ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
-        <h3>{{serie.options.serieId}}</h3>
         <table class="table aggregation-display">
             <thead>
-            <tr ng-repeat="projection in serie._disposer.projections" ng-class="{projectionActive:controller.visSource.dataSource.dynamicProjection.currentId==projection.levelId}">
+            <tr ng-repeat="projection in serie._disposer.projections" ng-class="{projectionActive:controller.adapter.dataSource.dynamicProjection.currentId==projection.levelId}">
                 <td class="aggregation-display" style="white-space: nowrap;">
                     <span style="font-size:0.6em">↓</span> {{projection.levelId}}
                 </td>
@@ -82,8 +90,8 @@
                     <svg
                             ng-click="controller.applyMouse($event); controller.selectAggAndSerie(projection.levelId, serie)"
                             ng-mousemove="controller.mouse($event)"
-                            width="{{vizWidth}}" height="20" class="level-svg">
-                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in projection.projection"
                               data-start="{{range.start}}"
@@ -117,8 +125,8 @@
                     <svg
                             ng-click="controller.applyMouse($event); controller.selectAggAndSerie(aggregation, serie)"
                             ng-mousemove="controller.mouse($event)"
-                            width="{{vizWidth}}" height="20" class="level-svg">
-                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in aggregation._debug_data_index"
                               data-start="{{range.start}}"

@@ -1,9 +1,22 @@
 var DateUtil = require('../utils/DateUtil')
+
+var lineByLine = require('n-readlines');
+
+
 module.exports = class Generator {
 
+    constructor() {
+        var filename = 'server/data/data1.txt';
+        this.liner = new lineByLine(filename);
+        this.cnt = 0;
+    }
+
     fun(x) {
-        // return Math.sin(x) * (Math.sqrt(x) / Math.tan(x));
-        return 50+Math.pow((Math.log(x)/40000000000),3)*Math.sin(x/1000)+Math.sin(2*x/10000)+Math.sin(Math.sqrt(x/100))
+        this.cnt++;
+        if (this.cnt % 100000 == 0) {
+            console.log(`Processed ${this.cnt} values`);
+        }
+        return Number(this.liner.next().toString());
     }
 
     getData(from, to, interval) {

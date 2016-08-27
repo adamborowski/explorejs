@@ -7,13 +7,15 @@ module.exports = class Service {
         this.series = series;
         this.levels = [
             {id: 'raw', 'step': 1000},
-            {id: '30s', 'step': 30000},
-            {id: '1m', 'step': 60000},
-            {id: '10m', 'step': 600000},
-            {id: '1h', 'step': 3600000},
-            {id: '1d', 'step': 86400000},
-            {id: '30d', 'step': 2592000000}
-            // {id: '365d', 'step': 10370000000}
+            {id: '30s', 'step': 30 * 1000},
+            {id: '1m', 'step': 60 * 1000},
+            {id: '10m', 'step': 10 * 60 * 1000},
+            {id: '1h', 'step': 60 * 60 * 1000},
+            {id: '8h', 'step': 8 * 60 * 60 * 1000},
+            {id: '1d', 'step': 24 * 60 * 60 * 1000},
+            {id: '7d', 'step': 7 * 24 * 60 * 60 * 1000},
+            {id: '30d', 'step': 30 * 24 * 60 * 60 * 1000},
+            {id: '1y', 'step': 365 * 24 * 60 * 60 * 1000}
         ];
 
         this.serieServices = new IndexedList();
