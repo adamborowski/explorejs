@@ -1,14 +1,11 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import JQPlotAdapter from "explorejs/src/adapter/JQPlotAdapter";
+import DygraphsAdapter from "explorejs/src/adapter/DygraphsAdapter";
+import Dygraphs from "dygraphs";
 const vizWidth = 920;
 import $ from 'jquery';
-window.jQuery = $; // hack :(
-require('as-jqplot/dist/jquery.jqplot.js');
-require('as-jqplot/dist/plugins/jqplot.dateAxisRenderer');
-require('as-jqplot/dist/plugins/jqplot.cursor');
-import 'as-jqplot/dist/jquery.jqplot.css';
+
 export default class CacheDemoController {
     constructor($scope, $filter) {
         setInterval(()=> {
@@ -86,13 +83,13 @@ export default class CacheDemoController {
     initChart() {
 
         const chart = $('#main-chart');
-        this.adapter = new JQPlotAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, $, (length)=> {
+        this.adapter = new DygraphsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, $, Dygraphs, (length) => {
             this.$scope.$apply(()=> {
                 this.$scope.numPoints = length;
             });
         });
 
-        this.adapter.setDisplayedRange(new Date('2012-01-01').getTime(), new Date('2018-01-01').getTime());
+        this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
     }
 
     getWindow() {
@@ -122,8 +119,7 @@ export default class CacheDemoController {
     }
 
     setViewportRange(start, end) {
-        this.adapter.setDisplayedRange(new Date(start).getTime(), new Date(end).getTime()
-        );
+        this.adapter.setDisplayedRange(new Date(start).getTime(), new Date(end).getTime());
     }
 
     getViewportRange() {
