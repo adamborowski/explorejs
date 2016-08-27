@@ -78,9 +78,8 @@
     </div>
 
 
-    <div style="margin-top:500px" class="serie-display"
+    <div style="margin-top:450px" class="serie-display"
          ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
-        <h3>{{serie.options.serieId}}</h3>
         <table class="table aggregation-display">
             <thead>
             <tr ng-repeat="projection in serie._disposer.projections" ng-class="{projectionActive:controller.adapter.dataSource.dynamicProjection.currentId==projection.levelId}">
@@ -91,8 +90,8 @@
                     <svg
                             ng-click="controller.applyMouse($event); controller.selectAggAndSerie(projection.levelId, serie)"
                             ng-mousemove="controller.mouse($event)"
-                            width="{{vizWidth}}" height="20" class="level-svg">
-                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in projection.projection"
                               data-start="{{range.start}}"
@@ -126,8 +125,8 @@
                     <svg
                             ng-click="controller.applyMouse($event); controller.selectAggAndSerie(aggregation, serie)"
                             ng-mousemove="controller.mouse($event)"
-                            width="{{vizWidth}}" height="20" class="level-svg">
-                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="20"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
                               ng-attr-x="{{controller.getX(range)}}"
                               ng-repeat="range in aggregation._debug_data_index"
                               data-start="{{range.start}}"
