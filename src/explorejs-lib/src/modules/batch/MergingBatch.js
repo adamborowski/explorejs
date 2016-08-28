@@ -8,14 +8,19 @@ export default class MerginbBatch {
      * @param {function(DataRequest[])} callback  parameter with
      * @param delay of performing batch request
      */
-    constructor(callback, delay = 150) {
+    constructor(callback, delay = 100) {
         this.callback = callback;
-        this.factory = new FactoryDictionary((serieId)=>new FactoryDictionary((levelId)=>({
+        this.queuedRanges = this.createRangeQueue();
+        this.pendingRanges = this.createRangeQueue();
+        this.deferredAction = new DeferredAction(this._delayedPerformRequest.bind(this), delay);
+    }
+
+    createRangeQueue() {
+        return new FactoryDictionary((serieId)=>new FactoryDictionary((levelId)=>({
             serieId,
             levelId,
             ranges: []
         })));
-        this.deferredAction = new DeferredAction(this._delayedCallback.bind(this), delay);
     }
 
     /**
@@ -23,25 +28,58 @@ export default class MerginbBatch {
      */
     addRequest(request) {
         console.trace();
-        const rangesOnLevel = this.factory.get(request.serieId).get(request.level);
-        rangesOnLevel.ranges = DiffRangeSet.add(rangesOnLevel.ranges, [{
-            start: request.openTime,
-            end: request.closeTime
-        }]).result;
+        const pendingRanges = this.pendingRanges.get(request.serieId).get(request.level);
+        const queuedRanges = this.queuedRanges.get(request.serieId).get(request.level);
+        var requestedRange = {start: request.openTime, end: request.closeTime};
+
+        var requestedButNotPendingRanges = DiffRangeSet.subtract([requestedRange], pendingRanges.ranges).result;
+
+        queuedRanges.ranges = DiffRangeSet.add(queuedRanges.ranges, requestedButNotPendingRanges).result;
         this.deferredAction.invoke();
     }
 
-    _delayedCallback() {
-        var requests = _.flatten(
-            this.factory.getValues().map(
-                f=>f.getValues().map(
-                    onLevel=>onLevel.ranges.map(
-                        r =>new DataRequest(onLevel.serieId, onLevel.levelId, r.start, r.end)))));
-        this.factory.clear();
+    _delayedPerformRequest() {
+        console.time('delayed perform')
+        const queuedRangeSets = this.getRangeSet(this.queuedRanges);
+        var requests = _.flatten(queuedRangeSets.map(set=>set.ranges.map(r =>new DataRequest(set.serieId, set.levelId, r.start, r.end))));
+
+        // add all queued ranges to pending ranges, clear queued ranges
+        for (var queuedRangeSet of queuedRangeSets) {
+            var pendingSet = this.pendingRanges.get(queuedRangeSet.serieId).get(queuedRangeSet.levelId);
+            pendingSet.ranges = DiffRangeSet.add(pendingSet.ranges, queuedRangeSet.ranges).result;
+        }
+        this.queuedRanges.clear();
+
+        console.timeEnd('delayed perform')
+
         this.callback(requests);
     }
 
-    requestsLoaded() {
+    getRangeSet(queue) {
+        var arr = [];
+        for (var a of queue.getValues()) {
+            for (var b of a.getValues()) {
+                arr.push(b);
+            }
+        }
+        return arr;
+    }
 
+
+    /**
+     *
+     * @param requests {DataRequest[]}
+     */
+    requestsLoaded(requests) {
+        console.time('requests loaded')
+        // remove ranges from given requests from pending requests
+        for (var request of requests) {
+            var pendingRangeSet = this.pendingRanges.get(request.serieId).get(request.level);
+            pendingRangeSet.ranges = DiffRangeSet.subtract(pendingRangeSet.ranges, [{
+                start: request.openTime,
+                end: request.closeTime
+            }]).result;
+        }
+        console.timeEnd('requests loaded')
     }
 }
