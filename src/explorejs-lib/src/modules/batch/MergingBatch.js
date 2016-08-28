@@ -2,6 +2,7 @@ import FactoryDictionary from 'explorejs-common/src/FactoryDictionary';
 import DeferredAction from "../../utils/DeferredAction";
 import DiffRangeSet from 'explorejs-common/src/DiffRangeSet';
 import DataRequest from '../../data/DataRequest';
+import _ from 'underscore';
 export default class MerginbBatch {
     /**
      * @param {function(DataRequest[])} callback  parameter with
@@ -30,16 +31,12 @@ export default class MerginbBatch {
         this.deferredAction.invoke();
     }
 
-    _delayedCallback() {//todo underscore flatten .map(.map(new DataReqtest))
-        console.log('delayed callback')
-        var requests = [];
-        for (var onSerie of this.factory.getValues()) {
-            for (var onLevel of onSerie.getValues()) {
-                for (var range of onLevel.ranges) {
-                    requests.push(new DataRequest(onLevel.serieId, onLevel.levelId, range.start, range.end));
-                }
-            }
-        }
+    _delayedCallback() {
+        var requests = _.flatten(
+            this.factory.getValues().map(
+                f=>f.getValues().map(
+                    onLevel=>onLevel.ranges.map(
+                        r =>new DataRequest(onLevel.serieId, onLevel.levelId, r.start, r.end)))));
         this.factory.clear();
         this.callback(requests);
     }
