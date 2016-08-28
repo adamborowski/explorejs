@@ -14,4 +14,8 @@ export default class SimpleBatch {
     addRequest(request) {
         this._deferredAjaxCall.invoke(request);
     }
+
+    requestsLoaded(requests) {
+        //noop, this is very simple batch, no reusing ranges being loaded at the moment
+    }
 }

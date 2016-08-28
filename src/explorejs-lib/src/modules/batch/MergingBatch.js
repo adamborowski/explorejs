@@ -2,7 +2,6 @@ import FactoryDictionary from 'explorejs-common/src/FactoryDictionary';
 import DeferredAction from "../../utils/DeferredAction";
 import DiffRangeSet from 'explorejs-common/src/DiffRangeSet';
 import DataRequest from '../../data/DataRequest';
-import _ from 'underscore';
 export default class MerginbBatch {
     /**
      * @param {function(DataRequest[])} callback  parameter with
@@ -43,5 +42,9 @@ export default class MerginbBatch {
         }
         this.factory.clear();
         this.callback(requests);
+    }
+
+    requestsLoaded() {
+
     }
 }

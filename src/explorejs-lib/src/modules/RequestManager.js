@@ -67,6 +67,7 @@ export default class RequestManager {
             else {
                 console.error('error');
             }
+            this.batch.requestsLoaded(requests);
         };
         xhr.send(JSON.stringify(data));
     }
