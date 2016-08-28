@@ -25,7 +25,7 @@ export default class DygraphsAdapter {
 
         var throttledUpdate = _.debounce(()=> {
             var range = this.getDisplayedRange();
-            this.dataSource.updateViewState(range.start, range.end, this.plot.getArea().w);
+            this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
         }, 100);
         this.plot = new this.Dygraphs(this.chart.attr('id'), [[new Date(), [0, 250, 300]]], {
             customBars: true,

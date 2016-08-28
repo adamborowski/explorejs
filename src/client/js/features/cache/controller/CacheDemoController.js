@@ -5,6 +5,8 @@ import DygraphsAdapter from "explorejs/src/adapter/DygraphsAdapter";
 import Dygraphs from "dygraphs";
 const vizWidth = 920;
 import $ from 'jquery';
+import BasicViewportModel from "explorejs/src/prediction/BasicViewportModel";
+import WiderContextModel from "explorejs/src/prediction/WiderContextModel";
 
 export default class CacheDemoController {
     constructor($scope, $filter) {
@@ -90,6 +92,14 @@ export default class CacheDemoController {
         });
 
         this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
+        this.addPredictionModels();
+    }
+
+    addPredictionModels() {
+        this.adapter.dataSource.predictionEngine.addModels([
+            new BasicViewportModel(),
+            new WiderContextModel()
+        ]);
     }
 
     getWindow() {
