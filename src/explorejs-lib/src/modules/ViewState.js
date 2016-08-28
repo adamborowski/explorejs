@@ -1,5 +1,6 @@
 //for DynamicProjection and PredictionEngine
 import Event from 'explorejs-common/src/Event';
+import _ from 'underscore';
 const EVENT_NAME = "update";
 export default class ViewState {
     constructor(levels) {
@@ -38,7 +39,12 @@ export default class ViewState {
     update() {
         this._scale = (this._end - this._start) / this._viewportWidth;
         this._currentLevelId = this._calculateLevelId();
-        this._event.fireEvent(EVENT_NAME, this);
+        //
+        var newState = this.getState();
+        if (!_.isEqual(newState, this._lastState)) {
+            this._event.fireEvent(EVENT_NAME, this);
+        }
+        this._lastState = newState;
     }
 
     /**

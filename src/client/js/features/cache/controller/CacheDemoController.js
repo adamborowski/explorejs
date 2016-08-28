@@ -90,9 +90,8 @@ export default class CacheDemoController {
                 this.$scope.numPoints = length;
             });
         });
-
-        this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
         this.addPredictionModels();
+        this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
     }
 
     addPredictionModels() {

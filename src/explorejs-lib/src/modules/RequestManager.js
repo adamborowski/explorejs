@@ -1,13 +1,17 @@
 import DataRequest from '../data/DataRequest';
-import DeferredAction from "../utils/DeferredAction";
 import IndexedList from 'explorejs-common/src/IndexedList';
+import SimpleBatch from "./batch/SimpleBatch";
+import MergingBatch from "./batch/MergingBatch";
 /**
  * @property {CacheManager} CacheManager
  */
 export default class RequestManager {
 
-    constructor() {
-        this._deferredAjaxCall = new DeferredAction(this._performBatchRequest.bind(this), 100);
+    constructor(apiManifestUrl = "/api/manifest", apiBatchUrl = "/api/batch") {
+        this.apiManifestUrl = apiManifestUrl;
+        this.apiBatchUrl = apiBatchUrl;
+        // this.batch = new SimpleBatch(this._performBatchRequest.bind(this));
+        this.batch = new MergingBatch(this._performBatchRequest.bind(this));
     }
 
     /**
@@ -19,12 +23,7 @@ export default class RequestManager {
      * queuedRanges +=request
      */
     addRequest(request) {
-        this._deferredAjaxCall.invoke(request);
-    }
-
-    increasePriority(request) {
-        // TODO implement reprioritizing when implementing deferred request batching
-        // noop
+        this.batch.addRequest(request);
     }
 
     /**
@@ -32,7 +31,7 @@ export default class RequestManager {
      */
     init(callback) {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/api/manifest", true);
+        xhr.open("GET", this.apiManifestUrl, true);
         xhr.onload = ()=> {
             if (xhr.status === 200) {
                 var manifest = JSON.parse(xhr.responseText);
@@ -52,9 +51,13 @@ export default class RequestManager {
      * @private
      */
     _performBatchRequest(requests) {
+        if (requests.length == 0) {
+            console.info('Perform batch request with no data, cancelling');
+            return;
+        }
         var data = {series: requests.map((request)=>request.toServerFormat())};
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/batch", true);
+        xhr.open("POST", this.apiBatchUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = ()=> {
             if (xhr.status === 200) {

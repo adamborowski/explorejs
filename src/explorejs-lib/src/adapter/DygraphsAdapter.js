@@ -23,39 +23,25 @@ export default class DygraphsAdapter {
 
     init() {
 
-        var throttledUpdate = _.debounce(()=> {
-            var range = this.getDisplayedRange();
-            this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
-        }, 100);
+        const updateViewStateBasedOnDisplayedRange = ()=> {
+            if (this.plot) { //ignore first time callback
+                var range = this.getDisplayedRange();
+                console.info('update viewport!!')
+                this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
+            }
+        };
         this.plot = new this.Dygraphs(this.chart.attr('id'), [[new Date(), [0, 250, 300]]], {
             customBars: true,
             strokeWidth: 1,
-            drawCallback: throttledUpdate,
+            drawCallback: updateViewStateBasedOnDisplayedRange,
+            zoomCallback: updateViewStateBasedOnDisplayedRange,
             axes: {
-                y: {
-                },
+                y: {},
                 x: {
                     axisLabelFormatter: this.Dygraphs.dateAxisLabelFormatter
                 }
-            },
-            // 'top': {
-            //     strokeWidth: 0.0,
-            //     drawPoints: true,
-            //     pointSize: 4,
-            //     highlightCircleSize: 6
-            // },
-            // 'value': {
-            //     strokeWidth: 1.0,
-            //     drawPoints: true,
-            //     pointSize: 1.5
-            // },
-            // 'bottom': {
-            //     strokeWidth: 3,
-            //     highlightCircleSize: 10
-            // }
+            }
         });
-
-
 
 
     }

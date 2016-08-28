@@ -3,8 +3,16 @@
  * @template TValue
  */
 class FactoryDictionary {
+    /**
+     *
+     * @param factory {fuction(string)} factory function with key as argument
+     */
     constructor(factory) {
         this.factory = factory;
+        this.clear();
+    }
+
+    clear(){
         this.dict = {};
         this.keys = [];
     }
