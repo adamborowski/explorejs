@@ -6,6 +6,7 @@
   "dependencies": {
     "binarysearch": "^1.0.0",
     "body-parser": "^1.15.0",
+    "compression": "^1.6.2",
     "express": "^4.13.4",
     "moment": "^2.13.0",
     "n-readlines": "^0.2.5",

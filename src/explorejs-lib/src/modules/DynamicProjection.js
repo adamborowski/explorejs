@@ -1,7 +1,7 @@
-import Range from "explorejs-common/src/Range";
 import OrderedSegmentArray from "explorejs-common/src/OrderedSegmentArray"
 import IndexedList from "explorejs-common/src/IndexedList";
 import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
+import Range from 'explorejs-common/src/Range';
 /**
  * Class to dynamically choose right ProjectionEvent, depending on current viewport settings (start, end, scale)
  * @property {SerieCache} SerieCache
@@ -9,11 +9,15 @@ import DiffRangeSet from "explorejs-common/src/DiffRangeSet";
  * @property {number} WantedUnitWidth - how wide (in pixels) should be current level unit best displayed
  */
 export default class DynamicProjection {
-    constructor() {
-        this.ScreenPadding = 0.5; // 0.5 of actual viewport width will be appeneded to left and right viewport window
-        this.WantedUnitWidth = 4;
+    /**
+     *
+     * @param viewState {ViewState}
+     */
+    constructor(viewState) {
+        this.viewState = viewState;
         this.currentId = null;
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
+        viewState.addListener(this.onViewStateUpdate.bind(this));
     }
 
     onProjectionRecompile(diff) {
@@ -28,17 +32,10 @@ export default class DynamicProjection {
 
     /**
      * pick right levelId rebind
-     * @param start
-     * @param end
-     * @param scale
+     * @param viewState {ViewState}
      */
-    updateViewStateWithScale(start, end, scale) {
-        var newLevelId = this._fitLevelId(scale);
-
-        var padStart = start - (end - start) * this.ScreenPadding;
-        var padEnd = end + (end - start) * this.ScreenPadding;
-        var paddedRange = Range.leftClosed(padStart, padEnd);
-
+    onViewStateUpdate(viewState) {
+        var newLevelId = viewState.getCurentLevelId();
         if (newLevelId != this.currentId) {
             if (this.currentEvent != null) {
                 this.currentEvent.removeListener('recompile', this.onProjectionRecompile)
@@ -53,61 +50,12 @@ export default class DynamicProjection {
                 this.onProjectionRecompile(diff);
             }
         }
-        else {
-            // this.SerieCache.getProjectionEventAtLevel(this.currentId).changeListener('recompile', this.onProjectionRecompile, paddedRange);
-            // if (this.currentPaddedRange != null) {
-            //     this.callDiffDueToRangeChange(this.currentPaddedRange, paddedRange);
-            // }
-
-        }
 
         // console.log(`update view state start=${start} end=${end} scale=${scale}, level=${this.currentId}`);
 
-        //todo move this to predictor, move fitLevelId to DataSource
-        this.SerieCache.getLevelCache(this.currentId).requestDataForRange(paddedRange);
-        var widerLevel = this.getWiderLevel(this.currentId);
-        if (widerLevel) {
-            var padWiderStart = start - (end - start) * this.ScreenPadding * 2;
-            var padWiderEnd = end + (end - start) * this.ScreenPadding * 2;
-            var paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
-            console.log('wider', widerLevel)
-            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedWiderRange);
-        }
-        this.currentPaddedRange = paddedRange;
+
     }
 
-    getWiderLevel(levelId) {
-        var ids = this.SerieCache.getSerieManifest().levels.map(a=>a.id);
-        return ids[ids.indexOf(levelId) + 1];
-    }
-
-    /**
-     * Calculate the most fitting level based on avaliable levels, current viewport state and expected step unit width
-     * The target is to have most grain segments not wider than this value.
-     * @example if we set WantedUnitWidth = 100, we choose appropriate level unit to have 100 px width
-     * start=0, end=100000, width = 500, scale = 200 (200 milliseconds/px)
-     * raw (step=1000) will  display own data every 5 px (1000 ms /(200 ms/px))
-     * 10s (step=10000) will display own data every 50px  (10000 ms / (200 ms/px))
-     * 30s (step=30000) will display own data every 150px (30000 ms / (200 ms/px))
-     * The question is: which level we should choose? The answer is: This one with displayed unit width the closest not greater than {@code WantedUnitWidth}.
-     * So if in this case we have WantedUnitWidth = 100px, we choose 10s as 50px is the closest not greater than 100px
-     * @param {number} scale milliseconds per one pixel on the viewport
-     * @private
-     */
-    _fitLevelId(scale) {
-        var levels = this.SerieCache.getSerieManifest().levels;
-        var expectedUnitWidth = this.WantedUnitWidth;
-        // go from the bigger level (eg. 1y) and find first with unit displayed width not greater than WantedUnitWidth
-        for (var i = levels.length - 1; i >= 0; i--) {
-            var level = levels[i];
-            var unitWidth = level.step / scale;
-            // console.log(`${level.id} will take ${unitWidth} ~ should be closely under ${expectedUnitWidth}`);
-            if (unitWidth <= expectedUnitWidth) {
-                return level.id;
-            }
-        }
-        return 'raw';
-    }
 
     _copyFn(a) {
         return {levelId: a.levelId};

@@ -4,6 +4,7 @@ var path = require('path');
 var proxy = require('proxy-middleware');
 var url = require('url');
 var bodyParser = require('body-parser')
+var compression = require('compression')
 module.exports = class WebServer {
     constructor(config) {
         this.config = config;
@@ -14,6 +15,7 @@ module.exports = class WebServer {
 
         var api = new Api(app, {files: this.config.files, sourcePath: this.config.sourcePath});
         app.use(bodyParser.json());
+        app.use(compression());
         api.load();
 
         if (this.config.devServer) {
