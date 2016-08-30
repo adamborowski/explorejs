@@ -260,12 +260,35 @@ class OrderedSegmentArray {
         return index;
     }
 
-    static splitRangeSetOverlapping(rangeSet, start, end) {
-        var indices = this.getOverlapBoundIndices(rangeSet, start, end);
+    static splitRangeSetOverlapping(rangeSet, start, end, {leftClosed = true, rightClosed = true}={}) {
+        var indices = this.getOverlapBoundIndices(rangeSet, start, end, {leftClosed, rightClosed});
         var before = rangeSet.slice(0, indices.start);
         var overlap = rangeSet.slice(indices.start, indices.end);
         var after = rangeSet.slice(indices.end);
         return {before, overlap, after, start: indices.start, end: indices.end};
+    }
+
+    //TODO should be moved somewhere else
+    static cutRangeSet(rangeSet, start, end, copyFn) {
+        var split = this.splitRangeSetOverlapping(rangeSet, start, end, {leftClosed: false, rightClosed: false});
+
+        const leftRangeToSplit = split.overlap[0];
+        const rightRangeToSplit = split.overlap[split.overlap.length - 1];
+        if (leftRangeToSplit && leftRangeToSplit.start < start) {
+            var leftRangeClone = copyFn ? copyFn(leftRangeToSplit) : {};
+            leftRangeClone.start = leftRangeToSplit.start;
+            leftRangeClone.end = start;
+            leftRangeToSplit.start = start;
+            split.before.push(leftRangeClone);
+        }
+        if (rightRangeToSplit && rightRangeToSplit.end > end) {
+            var rightRangeClone = copyFn ? copyFn(rightRangeToSplit) : {};
+            rightRangeClone.start = end;
+            rightRangeClone.end = rightRangeToSplit.end;
+            rightRangeToSplit.end = end;
+            split.after.push(rightRangeClone);
+        }
+        return split;
     }
 
     /**
@@ -278,19 +301,26 @@ class OrderedSegmentArray {
      * end: an index of first range not overlapping given range, after {@code start} range
      * if start == end, then no ranges overlapping, although you can insert given range at start position
      */
-    static getOverlapBoundIndices(rangeSet, start, end) {
+    static getOverlapBoundIndices(rangeSet, start, end, {leftClosed = true, rightClosed = true}={}) {
         if (rangeSet.length == 0) {
             return {
                 start: 0,
                 end: 0
             }
         }
+
+        var range = new Range(start, end, leftClosed, rightClosed);
+
         var leftIndex = bs.closest(rangeSet, start, this._rangeEndComparator);
         var rightIndex = bs.closest(rangeSet, end, this._rangeStartComparator);
-        if (rangeSet[leftIndex] != null && rangeSet[leftIndex].end < start) {
+        const leftRange = rangeSet[leftIndex];
+        const rightRange = rangeSet[rightIndex];
+
+
+        if (leftRange != null && Range.closed(leftRange.start, leftRange.end).isBefore(range)) {
             leftIndex++;
         }
-        if (rangeSet[rightIndex] != null && rangeSet[rightIndex].start <= end) {
+        if (rightRange != null && !Range.closed(rightRange.start, rightRange.end).isAfter(range)) {
             rightIndex++;
         }
         return {

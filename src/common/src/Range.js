@@ -50,14 +50,43 @@ class Range {
      * @param other {Range}
      */
     hasCommon(other) {
-        var b = other.right > this.left && other.left < this.right;
-        if (b) {
+        if (other.right > this.left && other.left < this.right) {
             return true;
         }
         return this.leftClosed && other.leftClosed && this.left == other.left
             || this.rightClosed && other.rightClosed && this.right == other.right
             || this.rightClosed && other.leftClosed && this.right == other.left
             || this.leftClosed && other.rightClosed && this.left == other.right;
+    }
+
+    isBefore(other, touch = false) {
+        if (this.right < other.left) {
+            return true;
+        }
+        if (this.right == other.left) {
+            if (touch && this.leftClosed && other.leftClosed) {
+                return true;
+            }
+            if (!(this.rightClosed && other.leftClosed)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isAfter(other, touch = false) {
+        if (this.left > other.right) {
+            return true;
+        }
+        if (this.left == other.right) {
+            if (touch && (this.leftClosed && other.rightClosed)) {
+                return true;
+            }
+            if (!(this.leftClosed && other.rightClosed)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
