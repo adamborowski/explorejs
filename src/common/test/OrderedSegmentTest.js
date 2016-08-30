@@ -861,5 +861,32 @@ describe("OrderedSegment test", () => {
                 after: rng('')
             });
         });
+        it('test2', ()=> {
+            expect(OrderedSegmentArray.cutRangeSet(rng('0 1 3 4 4 5'), 4.5, 5.5)).to.deep.equal({
+                start: 2,
+                end: 3,
+                before: rng('0 1 3 4 4 4.5'),
+                overlap: rng('4.5 5'),
+                after: rng('')
+            });
+        });
+        it('test3', ()=> {
+            expect(OrderedSegmentArray.cutRangeSet(rng('0 1 3 4 4 5'), 4.25, 4.75)).to.deep.equal({
+                start: 2,
+                end: 3,
+                before: rng('0 1 3 4 4 4.25'),
+                overlap: rng('4.25 4.75'),
+                after: rng('4.75 5')
+            });
+        });
+        it('test4', ()=> {
+            expect(OrderedSegmentArray.cutRangeSet(rng('0 1 3 4 4 5'),0.5, 4.5)).to.deep.equal({
+                start: 0,
+                end: 3,
+                before: rng('0 0.5'),
+                overlap: rng('0.5 1 3 4 4 4.5'),
+                after: rng('4.5 5')
+            });
+        });
     });
 });
