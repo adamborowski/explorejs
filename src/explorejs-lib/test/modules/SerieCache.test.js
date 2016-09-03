@@ -9,6 +9,7 @@ chai.use(sinonChai);
 import SerieCache from "../../src/modules/SerieCache";
 import TestUtil from "explorejs-common/test/TestUtil";
 import Range from 'explorejs-common/src/Range';
+const sma = sinon.match.any;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
 
 var stream = TestUtil.dataFromStream.bind(TestUtil);
@@ -106,10 +107,10 @@ describe('SerieCache', () => {
                 removed: [],
                 resized: []
             };
-            expect(listeners.$raw_unbounded).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$raw_4_to_14).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$10s_unbounded).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$10s_4_to_14).to.be.calledOnce.calledWith(expectedDiff);
+            expect(listeners.$raw_unbounded).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$raw_4_to_14).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10s_unbounded).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10s_4_to_14).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
             expect(listeners.$1m_unbounded).to.be.not.called;
             expect(listeners.$1m_4_to_14).to.be.not.called;
             expect(listeners.$10m_unbounded).to.be.not.called;
@@ -123,9 +124,9 @@ describe('SerieCache', () => {
                 added: ll('10s 110 114', 10000), removed: [], resized: []
             };
 
-            expect(listeners.$raw_unbounded).to.be.calledTwice.calledWith(expectedDiff);
+            expect(listeners.$raw_unbounded).to.be.calledTwice.calledWith(sma, sma, sma, expectedDiff);
             expect(listeners.$raw_4_to_14).to.be.calledOnce; // range not overlap
-            expect(listeners.$10s_unbounded).to.be.calledTwice.calledWith(expectedDiff);
+            expect(listeners.$10s_unbounded).to.be.calledTwice.calledWith(sma, sma, sma, expectedDiff);
             expect(listeners.$10s_4_to_14).to.be.calledOnce; // range not overlap
             expect(listeners.$1m_unbounded).to.be.not.called;
             expect(listeners.$1m_4_to_14).to.be.not.called;
@@ -148,14 +149,14 @@ describe('SerieCache', () => {
                 removed: [],
                 resized: []
             };
-            expect(listeners.$raw_unbounded).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$raw_4_to_14).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$10s_unbounded).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$10s_4_to_14).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$1m_unbounded).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$1m_4_to_14).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$10m_unbounded).to.be.calledOnce.calledWith(expectedDiff);
-            expect(listeners.$10m_4_to_14).to.be.calledOnce.calledWith(expectedDiff);
+            expect(listeners.$raw_unbounded).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$raw_4_to_14).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10s_unbounded).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10s_4_to_14).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$1m_unbounded).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$1m_4_to_14).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10m_unbounded).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10m_4_to_14).to.be.calledOnce.calledWith(sma, sma, sma, expectedDiff);
             expect(listeners.$1h_unbounded).to.be.not.called;
             expect(listeners.$1h_4_to_14).to.be.not.called;
 
@@ -167,12 +168,12 @@ describe('SerieCache', () => {
                 removed: ll(''),
                 resized: ll('10m 10 12.1 10 14', scale10m)
             };
-            expect(listeners.$raw_unbounded).calledWith(expectedDiff);
-            expect(listeners.$raw_4_to_14).calledWith(expectedDiff);
-            expect(listeners.$10s_unbounded).calledWith(expectedDiff);
-            expect(listeners.$10s_4_to_14).calledWith(expectedDiff);
-            expect(listeners.$1m_unbounded).calledWith(expectedDiff);
-            expect(listeners.$1m_4_to_14).calledWith(expectedDiff);
+            expect(listeners.$raw_unbounded).calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$raw_4_to_14).calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10s_unbounded).calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$10s_4_to_14).calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$1m_unbounded).calledWith(sma, sma, sma, expectedDiff);
+            expect(listeners.$1m_4_to_14).calledWith(sma, sma, sma, expectedDiff);
             expect(listeners.$10m_unbounded).calledOnce;
             expect(listeners.$10m_4_to_14).calledOnce;
             expect(listeners.$1h_unbounded).not.called;
@@ -182,17 +183,17 @@ describe('SerieCache', () => {
 
 
             var expectedDiffForFineLevels = {added: ll('1h 14 18', scale10m), removed: [], resized: []};
-            expect(listeners.$raw_unbounded).calledWith(expectedDiffForFineLevels);
+            expect(listeners.$raw_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
             expect(listeners.$raw_4_to_14).calledTwice;//listener not overlap
-            expect(listeners.$10s_unbounded).calledWith(expectedDiffForFineLevels);
+            expect(listeners.$10s_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
             expect(listeners.$10s_4_to_14).calledTwice;//listener not overlap
-            expect(listeners.$1m_unbounded).calledWith(expectedDiffForFineLevels);
+            expect(listeners.$1m_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
             expect(listeners.$1m_4_to_14).calledTwice;//listener not overlap
-            expect(listeners.$10m_unbounded).calledWith(expectedDiffForFineLevels);
+            expect(listeners.$10m_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
             expect(listeners.$10m_4_to_14).calledOnce;//listener not overlap
             var expectedDiffForCoarseLevels = {added: ll('1h 12 18', scale10m), removed: [], resized: []};
-            expect(listeners.$1h_unbounded).calledWith(expectedDiffForCoarseLevels);
-            expect(listeners.$1h_4_to_14).calledWith(expectedDiffForCoarseLevels);
+            expect(listeners.$1h_unbounded).calledWith(sma, sma, sma, expectedDiffForCoarseLevels);
+            expect(listeners.$1h_4_to_14).calledWith(sma, sma, sma, expectedDiffForCoarseLevels);
         });
     });
 });

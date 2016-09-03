@@ -161,6 +161,9 @@ class OrderedSegmentArray {
             return this._data;
         }
         var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound, options);
+        if (options.oneMore) {
+            indexes.right++;
+        }
         return this._data.slice(indexes.left, indexes.right + 1);
     }
 
@@ -168,12 +171,13 @@ class OrderedSegmentArray {
      *
      * @param {Range} range
      */
-    getRange2(range) {
+    getRange2(range, oneMore = false) {
         var left = range.left;
         var right = range.right;
         var options = {
             leftBoundClosed: range.leftClosed,
-            rightBoundClosed: range.rightClosed
+            rightBoundClosed: range.rightClosed,
+            oneMore: oneMore
         };
         return this.getRange(left, right, options);
     }
@@ -272,23 +276,63 @@ class OrderedSegmentArray {
     static cutRangeSet(rangeSet, start, end, copyFn) {
         var split = this.splitRangeSetOverlapping(rangeSet, start, end, {leftClosed: false, rightClosed: false});
 
-        const leftRangeToSplit = split.overlap[0];
-        const rightRangeToSplit = split.overlap[split.overlap.length - 1];
-        if (leftRangeToSplit && leftRangeToSplit.start < start) {
-            var leftRangeClone = copyFn ? copyFn(leftRangeToSplit) : {};
-            leftRangeClone.start = leftRangeToSplit.start;
-            leftRangeClone.end = start;
-            leftRangeToSplit.start = start;
-            split.before.push(leftRangeClone);
+        const leftBound = split.overlap[0];
+        if (leftBound && leftBound.start < start) {
+            var leftBoundLeftClone = copyFn ? copyFn(leftBound) : {};
+            leftBoundLeftClone.start = leftBound.start;
+            leftBoundLeftClone.end = start;
+            var leftBoundRightClone = copyFn ? copyFn(leftBound) : {};
+            leftBoundRightClone.start = start;
+            leftBoundRightClone.end = leftBound.end;
+            split.before.push(leftBoundLeftClone);
+            split.overlap[0] = leftBoundRightClone;
         }
-        if (rightRangeToSplit && rightRangeToSplit.end > end) {
-            var rightRangeClone = copyFn ? copyFn(rightRangeToSplit) : {};
-            rightRangeClone.start = end;
-            rightRangeClone.end = rightRangeToSplit.end;
-            rightRangeToSplit.end = end;
-            split.after.push(rightRangeClone);
+
+        const rightBound = split.overlap[split.overlap.length - 1];
+        if (rightBound && rightBound.end > end) {
+            var rightBoundLeftClone = copyFn ? copyFn(rightBound) : {};
+            rightBoundLeftClone.start = rightBound.start;
+            rightBoundLeftClone.end = end;
+            var rightBoundRightClone = copyFn ? copyFn(rightBound) : {};
+            rightBoundRightClone.start = end;
+            rightBoundRightClone.end = rightBound.end;
+            split.after.push(rightBoundRightClone);
+            split.overlap[split.overlap.length - 1] = rightBoundLeftClone;
         }
         return split;
+    }
+
+    /**
+     * Join two array of touching ranges but merge toucing ranges if are compared
+     * @param leftRange
+     * @param rightRange
+     * @param copyFn
+     * @param cmpFn
+     * @return {Array.<*>}
+     */
+    static joinTouchingRangeArrays(leftRange, rightRange, copyFn = (a)=>({levelId: a.levelId}), cmpFn = (a, b)=>a.levelId == b.levelId) {
+        if (leftRange.length == 0) {
+            return [].concat(rightRange);
+        }
+        if (rightRange.length == 0) {
+            return [].concat(leftRange);
+        }
+        // now we have both ranges with at least one element
+        const leftBoundRange = leftRange[leftRange.length - 1];
+        const rightBoundRange = rightRange[0];
+        if (cmpFn(leftBoundRange, rightBoundRange)) {
+            // we have to join ranges if touches, throw error if overlaps
+            if (leftBoundRange.end > rightBoundRange.start) {
+                throw new Error('cannot join range arrays: boundary ranges overlap');
+            }
+            if (leftBoundRange.end == rightBoundRange.start) {
+                var extended = copyFn(leftBoundRange);
+                extended.start = leftBoundRange.start;
+                extended.end = rightBoundRange.end;
+                return leftRange.slice(0, -1).concat([extended], rightRange.slice(1));
+            }
+        }
+        return [].concat(leftRange, rightRange);
     }
 
     /**

@@ -3,7 +3,6 @@
 import * as chai from 'chai';
 var expect = chai.expect;
 import DynamicProjection from "../../src/modules/DynamicProjection";
-import CacheProjection from "../../src/modules/CacheProjection";
 import TestUtil from "explorejs-common/test/TestUtil";
 import Range from "explorejs-common/src/Range";
 import ViewState from "../../src/modules/ViewState";
@@ -63,29 +62,7 @@ describe('DynamicProjection', () => {
             })).to.be.empty;
         });
     });
-    // describe('_getNewlySupportedRanges()', ()=> {
-    //     it('example case', ()=> {
-    //         var rangeSet = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
-    //         expect(dynamicProjection._getNewlySupportedRanges(rangeSet, {
-    //             id: '30d',
-    //             step: 30 * 24 * 60 * 60 * 1000
-    //         })).to.deep.equal(ll(''));
-    //         expect(dynamicProjection._getNewlySupportedRanges(rangeSet, {
-    //             id: '1d',
-    //             step: 24 * 60 * 60 * 1000
-    //         })).to.deep.equal(ll(''));
-    //         expect(dynamicProjection._getNewlySupportedRanges(rangeSet, {
-    //             id: '1h',
-    //             step: 60 * 60 * 1000
-    //         })).to.deep.equal(ll(''));
-    //         expect(dynamicProjection._getNewlySupportedRanges(rangeSet, {
-    //             id: 'raw',
-    //             step: 0
-    //         })).to.deep.equal(ll(''));
-    //     });
-    // });
-    describe('callDiffDueToProjectionChange()', ()=> {
-        //todo put some data at different levels
+    describe('calcDiffDueToProjectionChange() - unbounded ranges', ()=> {
         function performTest(currentProjectionData, targetProjectionData, currentLevelId, targetLevelId, currentRange, targetRange) {
             dynamicProjection.SerieCache.getProjectionDisposer = ()=>({ //mock
                 getProjection: (levelId)=> {
@@ -94,12 +71,15 @@ describe('DynamicProjection', () => {
                     throw new Error(`Unexpected ask for projection ${levelId} during tests`);
                 }
             });
-            var diff = dynamicProjection.callDiffDueToProjectionChange(currentLevelId, targetLevelId, currentRange, targetRange);
+            var diff = dynamicProjection.calcDiffDueToProjectionChange(currentLevelId, targetLevelId, currentRange, targetRange);
+
+            var result = TestUtil.applyDiff(currentProjectionData, diff);
+
             console.log(TestUtil.getRangeDrawing(
-                [currentProjectionData, diff.removed, diff.resized.map(a=>a.existing), diff.resized, diff.added, diff.result, targetProjectionData],
+                [currentProjectionData, diff.removed, diff.resized.map(a=>a.existing), diff.resized, diff.added, targetProjectionData],
                 ['current', 'removed', 'resized from ', 'resized to', 'added', 'result', 'expected'], 1));
 
-            expect(diff.result.map(a=>({
+            expect(result.map(a=>({
                 start: a.start,
                 end: a.end,
                 levelId: a.levelId
@@ -161,5 +141,37 @@ describe('DynamicProjection', () => {
                 performTest(currentData, targetData, '30d', '1h', Range.unbounded(), Range.unbounded());
             });
         });
+    });
+    describe('calcDiffDueToProjectionChange() - bounded ranges', ()=> {
+        function performTest(currentProjectionData, targetProjectionData, currentLevelId, targetLevelId, currentRange, targetRange) {
+            dynamicProjection.SerieCache.getProjectionDisposer = ()=>({ //mock
+                getProjection: (levelId)=> {
+                    if (levelId == currentLevelId) return {projection: currentProjectionData};
+                    if (levelId == targetLevelId) return {projection: targetProjectionData};
+                    throw new Error(`Unexpected ask for projection ${levelId} during tests`);
+                }
+            });
+            var diff = dynamicProjection.calcDiffDueToProjectionChange(currentLevelId, targetLevelId, currentRange, targetRange);
+            var result = TestUtil.applyDiff(currentProjectionData, diff);
+            console.log(TestUtil.getRangeDrawing(
+                [currentProjectionData, diff.removed, diff.resized.map(a=>a.existing), diff.resized, diff.added, result, targetProjectionData],
+                ['current', 'removed', 'resized from ', 'resized to', 'added', 'result', 'expected'], 1));
+
+            expect(result.map(a=>({
+                start: a.start,
+                end: a.end,
+                levelId: a.levelId
+            }))).to.deep.equal(targetProjectionData);
+        }
+
+        describe('zoomin zoomout', ()=> {
+            it('example case 1', ()=> {
+                var currentData = ll('1d 0 100');
+                var targetData = ll('1h 0 100');
+                performTest(currentData, targetData, '1h', '1h', Range.closed(20, 80), Range.unbounded(100, 200));
+            });
+        });
+
+
     });
 });

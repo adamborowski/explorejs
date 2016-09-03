@@ -26,8 +26,8 @@ export default class LevelCache {
      *
      * @param {Range} range
      */
-    getRange(range) {
-        return this._segmentArray.getRange2(range);
+    getRange(range, oneMore=false) {
+        return this._segmentArray.getRange2(range, oneMore);
     }
 
     putData(data) {

@@ -62,7 +62,7 @@ class RangeScopedEvent {
         var listeners = this.listeners.get(name);
         for (var listener of listeners) {
             if (listener.range.hasCommon(range)) {
-                listener.callback(eventData);
+                listener.callback(name, range, listener.range, eventData);
             }
         }
     }

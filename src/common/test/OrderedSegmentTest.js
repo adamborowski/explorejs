@@ -4,6 +4,7 @@ var _ = require('underscore');
 var gen = require('random-seed');
 var TestUtil = require('./TestUtil');
 var rng = TestUtil.rng;
+const ll = TestUtil.rangesOnLevel.bind(TestUtil);
 /**
  * @param leftBoundKey
  * @param rightBoundKey
@@ -889,4 +890,29 @@ describe("OrderedSegment test", () => {
             });
         });
     });
+    describe('joinTouchingRangeArrays', ()=> {
+        it('join touching compared ranges', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll('1h 0 1; 1d 3 4; 1h 4 5'), ll('1h 5 6; 2d 6 7'))).to.deep.equal(ll('1h 0 1; 1d 3 4; 1h 4 6; 2d 6 7'));
+        });
+        it('do not join touching not compared ranges', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll('1h 0 1; 1d 3 4; 1m 4 5'), ll('1h 5 6; 2d 6 7'))).to.deep.equal(ll('1h 0 1; 1d 3 4; 1m 4 5; 1h 5 6; 2d 6 7'));
+        });
+        it('empty first array', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll(''), ll('1h 5 6; 2d 6 7'))).to.deep.equal(ll('1h 5 6; 2d 6 7'));
+        });
+        it('empty second array', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll('1h 5 6; 2d 6 7'), ll(''))).to.deep.equal(ll('1h 5 6; 2d 6 7'));
+        });
+
+        it('empty both arrays', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll(''), ll(''))).to.deep.equal(ll(''));
+        });
+        it('do not join not touching ranges of same level id', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll('1h 0 1; 1d 1 2'), ll('1d 10 11; 1h 12 13'))).to.deep.equal(ll('1h 0 1; 1d 1 2; 1d 10 11; 1h 12 13'));
+        });
+        it('do not join not touching ranges of diffrent level id', ()=> {
+            expect(OrderedSegmentArray.joinTouchingRangeArrays(ll('1h 0 1; 1m 1 2'), ll('1d 10 11; 1h 12 13'))).to.deep.equal(ll('1h 0 1; 1m 1 2; 1d 10 11; 1h 12 13'));
+        });
+
+    })
 });

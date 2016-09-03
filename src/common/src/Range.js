@@ -1,3 +1,4 @@
+const moment = require('moment');
 /**
  * @class Range
  * @property {Number} left
@@ -42,6 +43,10 @@ class Range {
     }
 
     containsPoint(v) {
+    }
+
+    static ofStartEnd(range, leftClosed = true, rightClosed = true) {
+        return new Range(range.start, range.end, leftClosed, rightClosed);
     }
 
     /**
@@ -89,6 +94,10 @@ class Range {
         return false;
     }
 
+    toString() {
+        const f = 'YYYY-MM-DD HH:mm:ss';
+        return `${this.leftClosed ? '<' : '('}${moment(this.left).format(f)}; ${moment(this.right).format(f)}${this.rightClosed ? '>' : ')'}`;
+    }
 
 }
 module.exports = Range;
