@@ -156,7 +156,7 @@ class OrderedSegmentArray {
      * @param rangeRightBound right bound to find last segment
      * @returns {Array}
      */
-    getRange(rangeLeftBound, rangeRightBound, options) {
+    getRange(rangeLeftBound, rangeRightBound, options = {}) {
         if (arguments.length == 0) {
             return this._data;
         }
