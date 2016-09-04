@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var Range = require('./Range');
 var defaultOptions = {
     startLeft: 0, startRight: 0, endLeft: null, endRight: null,
     pairMode: false // assure pairs are changing (starting with both left and right set + edge cases)
@@ -127,9 +128,9 @@ class ParallelRangeSetIterator {
         }
         else {
             throw new Error(`Cannot insert the range at the current position. It will break the order instead. 
-            Current is ${JSON.stringify(this._left)}, 
-            Next is ${JSON.stringify(this._peekNextLeft())}, 
-            New is ${JSON.stringify(range)}`);
+            Current is ${Range.ofStartEnd(this._left).toString()}, 
+            Next is ${Range.ofStartEnd(this._peekNextLeft()).toString()}, 
+            New is ${Range.ofStartEnd(range).toString()}`);
         }
     }
 

@@ -342,6 +342,22 @@ class TestUtil {
         return r;
     }
 
+    //todo move to src, use Array.mergeSorted etc instead of heavy array.sort
+    static applyDiff(array, diff, copyFn = a=>({levelId: a.levelId})) {
+        var result = array.filter(a=>diff.removed.findIndex(b=>a.start == b.start && a.end == b.end) == -1);
+        for (const res of diff.resized) {
+            var resultIndex = result.findIndex(r=>r.start == res.existing.start && r.end == res.existing.end);
+            if (resultIndex != -1) {
+                var resCopy = copyFn(res);
+                resCopy.start = res.start;
+                resCopy.end = res.end;
+                result[resultIndex] = resCopy;
+            }
+        }
+        result = result.concat(diff.added);
+        result.sort((a, b)=>a.start - b.start);
+        return result;
+    }
 
 }
 

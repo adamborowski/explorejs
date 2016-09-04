@@ -26,7 +26,6 @@ export default class DygraphsAdapter {
         const updateViewStateBasedOnDisplayedRange = ()=> {
             if (this.plot) { //ignore first time callback
                 var range = this.getDisplayedRange();
-                console.info('update viewport!!')
                 this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
             }
         };
@@ -58,35 +57,18 @@ export default class DygraphsAdapter {
         this.plot.updateOptions({dateWindow: [start, end]});
     }
 
-    _makeValueIndex() {
-        var map = {};
-        const array = this.chart.series[0].data;
-        for (var i = 0; i < array.length; i++) {
-            map[array[i][0]] = i;
-        }
-        return map;
-    }
 
-    onProjectionRecompile(diff) {
-        const f = 'YYYY-MM-DD HH:mm:ss';
+    onProjectionRecompile() {
 
-        function id(p) {
-            var start = p.start;
-            var end = p.end;
-            return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
-        }
+        var result = this.dataSource.getWrappers();
 
-
-        console.time('wrapper diff');
-        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
-        console.timeEnd('wrapper diff');
-
-
-        const bars = dataDiff.result.map(a=>[new Date(a.start), a.levelId == 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
+        console.time('adapter update');
+        const bars = result.map(a=>[new Date(a.start), a.levelId == 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
 
         this.plot.updateOptions({
             file: bars
         });
+        console.timeEnd('adapter update');
         this.debugCallback(bars.length);
 
     }

@@ -6,7 +6,7 @@ export default class ViewState {
     constructor(levels) {
         this._levels = levels;
         this._event = new Event();
-        this._preferredUnitWidth = 10;
+        this._preferredUnitWidth = 1;
     }
 
     updateViewportWidth(value, update = true) {
@@ -69,7 +69,7 @@ export default class ViewState {
             var unitWidth = level.step / this._scale;
             // console.log(`${level.id} will take ${unitWidth} ~ should be closely under ${expectedUnitWidth}`);
             if (unitWidth <= expectedUnitWidth) {
-                return level.id;
+                return level.id; // todo accept level if it not break new rule (minUnitWidth - np 0.8) if not return upper on - because this will require too many data points, for example 10k on 1k wide chart
             }
         }
         return 'raw';

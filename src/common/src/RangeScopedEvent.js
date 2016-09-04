@@ -11,12 +11,18 @@ class RangeScopedEvent {
         this.listeners = new FactoryDictionary(()=>[]);
     }
 
+    /**
+     * Adds a listener to event type on specified range
+     * @param type {String} event type
+     * @param range {Range}
+     * @param callback {function}
+     */
     addListener(type, range, callback) {
         this.listeners.get(type).push({range, callback});
     }
 
     /**
-     *
+     * Updates listener's range
      * @param {string} type
      * @param {function} callback
      * @param {Range} newRange
@@ -29,9 +35,7 @@ class RangeScopedEvent {
              * @var {Range} listener.range
              */
             if (listener.callback == callback) {
-                listener.range.start = newRange.start;
-                listener.range.end = newRange.end;
-                listeners.splice(listeners.indexOf(listener), 1);
+                listener.range = newRange;
                 return listener;
             }
         }
@@ -48,7 +52,8 @@ class RangeScopedEvent {
     }
 
     /**
-     * call listeners with ranges overlapping by this range
+     * Fire event occured on same range - only callbacks which can hear will be called
+     * call listeners with ranges overlapping by given range
      * @param name {string}
      * @param range {Range}
      * @param eventData {*}
@@ -57,7 +62,7 @@ class RangeScopedEvent {
         var listeners = this.listeners.get(name);
         for (var listener of listeners) {
             if (listener.range.hasCommon(range)) {
-                listener.callback(eventData);
+                listener.callback(name, range, listener.range, eventData);
             }
         }
     }

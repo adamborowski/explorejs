@@ -2,9 +2,9 @@ import PredictionModel from "../modules/PredictionModel";
 import Range from "explorejs-common/src/Range";
 export default class BasicViewportModel extends PredictionModel {
 
-    constructor() {
+    constructor(contextPaddingRatio=0.5) {
         super();
-        this.contextPaddingRatio = 0.5;
+        this.contextPaddingRatio = contextPaddingRatio;
     }
 
     update() {

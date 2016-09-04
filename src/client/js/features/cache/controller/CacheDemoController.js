@@ -15,7 +15,6 @@ export default class CacheDemoController {
         }, 1000);
         this.$scope = $scope
         this.$filter = $filter;
-        console.log('I am cache demo controller!!');
         // todo make simple initializer which hides following init chain. it will get simple JSON config
         var rm = new RequestManager();
         var cacheManager = new CacheManager();
@@ -86,12 +85,23 @@ export default class CacheDemoController {
 
         const chart = $('#main-chart');
         this.adapter = new DygraphsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, $, Dygraphs, (length) => {
-            this.$scope.$apply(()=> {
+            const apl = ()=> {
                 this.$scope.numPoints = length;
-            });
+            };
+            if (this.$scope.$$phase) {
+                this.$scope.numPoints = length;
+            } else {
+                this.$scope.$apply(apl);
+            }
         });
         this.addPredictionModels();
         this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
+        window.addEventListener('keydown', e=> {
+            if (e.keyCode == 'D'.charCodeAt(0)) {
+                var $s = this.$scope;
+                this.loadRange($s.selectedSerie.name, $s.rangeFrom, $s.rangeTo, $s.selectedAggregation.name);
+            }
+        });
     }
 
     addPredictionModels() {
@@ -140,12 +150,7 @@ export default class CacheDemoController {
 
     loadRange(serie, from, to, level) {
         console.log('add request', serie, from, to, level)
-        // this.rm.addRequest(new DataRequest('s001', level, from, to));
-        this.rm._deferredAjaxCall._arguments.push(new DataRequest(serie, level, from, to));
-    }
-
-    flush() {
-        this.rm._deferredAjaxCall._timeoutCallback();
+        this.rm.addRequest(new DataRequest(serie, level, new Date(from).getTime(), new Date(to).getTime()));
     }
 
     dump() {
@@ -182,7 +187,7 @@ export default class CacheDemoController {
     applyMouse(event) {
         var x = event.offsetX;
         var time = new Date(x / vizWidth * this.maxDuration + this.startTime);
-        time = this.$filter('date')(time, 'yyyy-MM-dd HH:mm:ss')
+        time = this.$filter('date')(time, 'yyyy-MM-dd HH:mm:ss');
         if (event.shiftKey) {
             this.$scope.rangeTo = time;
         } else {
@@ -191,7 +196,7 @@ export default class CacheDemoController {
     }
 
     showProjectionCacheAtLevel(levelId) {
-        console.log(levelId);
+        console.log("projection at level", levelId);
         var format = require('date-format');
         var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
         console.log(this.rm.CacheManager.getSerieCache('s001').getProjectionDisposer().getProjection(levelId).projection.map((a)=>`${fmt(a.start)} ${fmt(a.end)} ${a.levelId}`).join('\n'));
@@ -205,6 +210,11 @@ export default class CacheDemoController {
         console.table(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data);
         console.log('wrappers')
         console.table(this.adapter.dataSource.wrapperCache.wrappers);
+    }
+
+    showWrappers() {
+        console.log("wrapper cache")
+        console.table(this.adapter.dataSource._newWrappers);
     }
 
     selectAggAndSerie(agg, serie) {

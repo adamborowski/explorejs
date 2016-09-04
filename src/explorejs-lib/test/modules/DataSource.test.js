@@ -41,8 +41,8 @@ function performDiffTest(config) {
         getLevelCache: (levelId=>levelCaches[levelId]),
         getSerieManifest: ()=>({levels: []})
     }, ()=>null);
-    const wrappers = ll(config.wrappers).map(ds.wrapperCache._wrapRange.bind(ds.wrapperCache)).reduce((a, b)=>a.concat(b), []);
-    ds.wrapperCache.wrappers = wrappers;
+    const wrappers = ds._wrapRanges(ll(config.wrappers));
+    ds._newWrappers = wrappers;
     drawingData = drawingData.concat([
         wrappers, [], removed, resized.map(a=>a.existing), resized, added
     ]);

@@ -1,7 +1,8 @@
-import LevelCache from "./LevelCache";
-import IndexedList from "explorejs-common/src/IndexedList";
-import {Builder} from "./SerieCacheProjectionDisposer";
-import RangeScopedEvent from "explorejs-common/src/RangeScopedEvent";
+import LevelCache from './LevelCache';
+import IndexedList from 'explorejs-common/src/IndexedList';
+import {Builder} from './SerieCacheProjectionDisposer';
+import RangeScopedEvent from 'explorejs-common/src/RangeScopedEvent';
+import Range from 'explorejs-common/src/Range';
 
 /**
  * @property {CacheManager} CacheManager
@@ -48,7 +49,7 @@ export default class SerieCache {
         for (var diff of projectionDiffs) {
             var rangeOfDiff = this._getRangeOfDiff(diff.diff);
             if (rangeOfDiff != null) {
-                this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', rangeOfDiff, diff.diff);
+                this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', Range.leftClosed(rangeOfDiff.left, rangeOfDiff.right), diff.diff);
             }
         }
 
