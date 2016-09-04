@@ -1,8 +1,9 @@
 import RequestManager from 'explorejs/src/modules/RequestManager';
 import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
-import DygraphsAdapter from "explorejs/src/adapter/DygraphsAdapter";
+import VisJSAdapter from "explorejs/src/adapter/VisJSAdapter";
 import Dygraphs from "dygraphs";
+import vis from 'vis'
 const vizWidth = 920;
 import $ from 'jquery';
 import BasicViewportModel from "explorejs/src/prediction/BasicViewportModel";
@@ -84,7 +85,7 @@ export default class CacheDemoController {
     initChart() {
 
         const chart = $('#main-chart');
-        this.adapter = new DygraphsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, $, Dygraphs, (length) => {
+        this.adapter = new VisJSAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, vis, (length) => {
             const apl = ()=> {
                 this.$scope.numPoints = length;
             };

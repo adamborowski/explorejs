@@ -8,16 +8,60 @@ export default class VisJSAdapter {
      * @param dataset
      * @param groups
      */
-    constructor(serieCache, graph2d, dataset, groups) {
+    constructor(serieCache, chart, vis, debugCallback) {
+        this.vis = vis;
+        this.chart = chart;
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
-        //todo init vis js configuration
-        graph2d.on('rangechanged', (e)=> {
-            this.dataSource.updateViewState(e.start.getTime(), e.end.getTime(), graph2d.body.dom.center.clientWidth)
+
+        this.init();
+        this.graph.on('rangechanged', (e)=> {
+            this.dataSource.getViewState().updateRangeAndViewportWidth({
+                start: e.start.getTime(),
+                end: e.end.getTime()
+            }, this.graph.body.dom.center.clientWidth);
         });
-        this.dataSource.updateViewState(graph2d.range.start, graph2d.range.end, graph2d.body.dom.center.clientWidth)
+
+        this.debugCallback = debugCallback;
+    }
+
+    init() {
+        var groups = new this.vis.DataSet();
+        groups.add({
+            id: 0,
+            content: 'test',
+
+            options: {
+
+                shaded: {
+                    orientation: 'bottom' // top, bottom
+                },
+            },
+
+
+        });
+
+        var items = [];
+
+        var dataset = new this.vis.DataSet(items, {
+            queue: true
+        });
+        var options = {
+            defaultGroup: 'ungrouped',
+            // legend: true,
+            start: '2016-01-01 09:55',
+            end: '2016-01-01 10:07',
+            interpolation: false,
+            height: 200,
+            drawPoints: false,
+            sort: false
+        };
+
         this.dataset = dataset;
+        var graph2d = new this.vis.Graph2d(this.chart[0], dataset, groups, options);
+        this.graph = graph2d;
         this.groups = groups;
+
     }
 
     onProjectionRecompile(diff) {
@@ -29,27 +73,28 @@ export default class VisJSAdapter {
             return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
         }
 
-        console.time('wrapper diff');
-        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
-        console.timeEnd('wrapper diff');
-        if (dataDiff.added.length == 0 && dataDiff.removed.length == 0 && dataDiff.resized.length == 0) {
-            console.info('no change after recompile');
-            return;
-        }
-        console.time('chart data update');
-        this.dataset.remove([].concat(dataDiff.removed.map(a=>id(a)), dataDiff.resized.map(a=>id(a.existing))));
-        this.dataset.add([].concat(dataDiff.added, dataDiff.resized).map(a=>({
+        var result = this.dataSource.getWrappers();
+
+
+        this.dataset.clear();
+
+        this.dataset.add([].concat(result).map(a=>({
             x: a.start, y: a.levelId == 'raw' ? a.data.v : a.data.a, levelId: a.levelId, id: id(a)
         })));
-        console.timeEnd('chart data update');
-        console.time('chart flush');
+
         this.dataset.flush();
-        console.timeEnd('chart flush');
+
+
+        this.debugCallback(this.dataset.length);
     }
 
-    initVisInteraction() {
-        this.vis.on('changeViewport_foo_bar', ()=> {
-            this.dataSource.updateViewState(this.vis.viewport.start, this.vis.viewport.end, this.vis.viewport.displayWidth);
-        });
+    getDisplayedRange() {
+        return {start: this.graph.getWindow().start.getTime(), end: this.graph.getWindow().end.getTime()}
     }
+
+    setDisplayedRange(start, end) {
+        this.graph.setWindow(start, end);
+    }
+
+
 }
