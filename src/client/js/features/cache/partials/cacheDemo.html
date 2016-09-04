@@ -130,7 +130,7 @@
                             width="{{vizWidth}}" height="15" class="level-svg">
                         <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
                               ng-attr-x="{{controller.getX(range)}}"
-                              ng-repeat="range in controller.adapter.dataSource.wrapperCache.debugIndex"
+                              ng-repeat="range in controller.adapter.dataSource._newProjectionRanges"
                               data-start="{{range.start}}"
                               data-level-id="{{range.levelId}}"
                         ></rect>

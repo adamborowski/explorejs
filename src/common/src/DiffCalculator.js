@@ -23,7 +23,7 @@ class DiffCalculator {
         const groups = new FactoryDictionary(g=>({leftSet: [], rightSet: [], group: g}));
 
         leftSet.slice(leftStart, leftEnd).forEach(r=>groups.get(groupFn(r)).leftSet.push(r));
-        rightSet.slice(rightSet, rightEnd).forEach(r=>groups.get(groupFn(r)).rightSet.push(r));
+        rightSet.slice(rightStart, rightEnd).forEach(r=>groups.get(groupFn(r)).rightSet.push(r));
 
 
         const diffs = groups.getValues().map(g=>this.diffSameRanges(g.leftSet, g.rightSet, copyFn));

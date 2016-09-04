@@ -1,6 +1,7 @@
 //todo _getRangeOfDiff
 //putDataAtLevel
 import * as chai from 'chai';
+import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
 var expect = chai.expect;
 import DynamicProjection from "../../src/modules/DynamicProjection";
 import TestUtil from "explorejs-common/test/TestUtil";
@@ -62,30 +63,36 @@ describe('DynamicProjection', () => {
             })).to.be.empty;
         });
     });
-    describe('calcDiffDueToProjectionChange() - unbounded ranges', ()=> {
-        function performTest(currentProjectionData, targetProjectionData, currentLevelId, targetLevelId, currentRange, targetRange) {
-            dynamicProjection.SerieCache.getProjectionDisposer = ()=>({ //mock
-                getProjection: (levelId)=> {
-                    if (levelId == currentLevelId) return {projection: currentProjectionData};
-                    if (levelId == targetLevelId) return {projection: targetProjectionData};
-                    throw new Error(`Unexpected ask for projection ${levelId} during tests`);
-                }
-            });
-            var diff = dynamicProjection.calcDiffDueToProjectionChange(currentLevelId, targetLevelId, currentRange, targetRange);
+    function performTest(currentRanges, targetRanges, currentLevelId, targetLevelId, currentRange, targetRange) {
+        dynamicProjection.SerieCache.getProjectionDisposer = ()=>({ //mock
+            getProjection: (levelId)=> {
+                if (levelId == currentLevelId) return {projection: currentRanges};
+                if (levelId == targetLevelId) return {projection: targetRanges};
+                throw new Error(`Unexpected ask for projection ${levelId} during tests`);
+            }
+        });
+        var clippedCurrentRanges = OrderedSegmentArray.cutRangeSet(currentRanges, currentRange.left, currentRange.right, a=>({levelId: a.levelId})).overlap;
+        var clippedTargetRanges = OrderedSegmentArray.cutRangeSet(targetRanges, targetRange.left, targetRange.right, a=>({levelId: a.levelId})).overlap;
 
-            var result = TestUtil.applyDiff(currentProjectionData, diff);
+        var diff = dynamicProjection.calcDiffDueToProjectionChange(currentLevelId, targetLevelId, currentRange, targetRange);
+        var result = TestUtil.applyDiff(clippedCurrentRanges, diff);
 
-            console.log(TestUtil.getRangeDrawing(
-                [currentProjectionData, diff.removed, diff.resized.map(a=>a.existing), diff.resized, diff.added, targetProjectionData],
-                ['current', 'removed', 'resized from ', 'resized to', 'added', 'result', 'expected'], 1));
+        console.log(TestUtil.getRangeDrawing(
+            [clippedCurrentRanges, diff.removed, diff.resized.map(a=>a.existing), diff.resized, diff.added, result, clippedTargetRanges],
+            ['current', 'removed', 'resized from ', 'resized to', 'added', 'result', 'expected'], 1));
 
-            expect(result.map(a=>({
-                start: a.start,
-                end: a.end,
-                levelId: a.levelId
-            }))).to.deep.equal(targetProjectionData);
+        expect(result.map(a=>({
+            start: a.start,
+            end: a.end,
+            levelId: a.levelId
+        }))).to.deep.equal(clippedTargetRanges);
+        if (result.length) {
+            expect(result[0].start).to.be.not.lessThan(targetRange.left);
+            expect(result[result.length - 1].end).to.be.not.greaterThan(targetRange.right);
+
         }
-
+    }
+    describe('calcDiffDueToProjectionChange() - unbounded ranges', ()=> {
         describe('narrower to wider, eg. 10s to 1h', ()=> {
             it('example case 1', ()=> {
                 var currentData = ll('1h 0 10; 1d 10 70; 1h 70 140; 30d 140 150; 1h 150 180; 30d 180 190; 1y 190 200; 1h 200 210; 1y 210 230; 30d 230 250; 1h 250 270; 1d 270 280; 1y 280 290; 1d 290 310');
@@ -143,35 +150,24 @@ describe('DynamicProjection', () => {
         });
     });
     describe('calcDiffDueToProjectionChange() - bounded ranges', ()=> {
-        function performTest(currentProjectionData, targetProjectionData, currentLevelId, targetLevelId, currentRange, targetRange) {
-            dynamicProjection.SerieCache.getProjectionDisposer = ()=>({ //mock
-                getProjection: (levelId)=> {
-                    if (levelId == currentLevelId) return {projection: currentProjectionData};
-                    if (levelId == targetLevelId) return {projection: targetProjectionData};
-                    throw new Error(`Unexpected ask for projection ${levelId} during tests`);
-                }
-            });
-            var diff = dynamicProjection.calcDiffDueToProjectionChange(currentLevelId, targetLevelId, currentRange, targetRange);
-            var result = TestUtil.applyDiff(currentProjectionData, diff);
-            console.log(TestUtil.getRangeDrawing(
-                [currentProjectionData, diff.removed, diff.resized.map(a=>a.existing), diff.resized, diff.added, result, targetProjectionData],
-                ['current', 'removed', 'resized from ', 'resized to', 'added', 'result', 'expected'], 1));
-
-            expect(result.map(a=>({
-                start: a.start,
-                end: a.end,
-                levelId: a.levelId
-            }))).to.deep.equal(targetProjectionData);
-        }
 
         describe('zoomin zoomout', ()=> {
             it('example case 1', ()=> {
                 var currentData = ll('1d 0 100');
                 var targetData = ll('1h 0 100');
-                performTest(currentData, targetData, '1h', '1h', Range.closed(20, 80), Range.unbounded(100, 200));
+                performTest(currentData, targetData, '1d', '1h', Range.closed(20, 80), Range.closed(100, 200));
+            });
+            it('example case 2', ()=> {
+                var currentData = ll('1d 0 100');
+                var targetData = ll('1h 0 100');
+                performTest(currentData, targetData, '1d', '1h', Range.closed(20, 80), Range.closed(70, 79));
+            });
+            it('example case 3 - move only', ()=> {
+                var currentData = ll('1d 0 100');
+                var targetData = ll('1d 0 100');
+                performTest(currentData, targetData, '1d', '1d', Range.closed(70, 100), Range.closed(40, 80));
             });
         });
-
 
     });
 });

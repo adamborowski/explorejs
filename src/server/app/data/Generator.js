@@ -14,9 +14,9 @@ module.exports = class Generator {
     fun(x) {
         this.cnt++;
         if (this.cnt % 100000 == 0) {
-            console.log(`Processed ${this.cnt} values`);
+            console.log(`Generated ${this.cnt} values`);
         }
-        return Number(this.liner.next().toString());
+        return Number(this.liner.next().toString()); // todo maybe increate read buffer to speed up IO operation
     }
 
     getData(from, to, interval) {

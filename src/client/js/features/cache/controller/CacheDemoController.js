@@ -15,7 +15,6 @@ export default class CacheDemoController {
         }, 1000);
         this.$scope = $scope
         this.$filter = $filter;
-        console.log('I am cache demo controller!!');
         // todo make simple initializer which hides following init chain. it will get simple JSON config
         var rm = new RequestManager();
         var cacheManager = new CacheManager();
@@ -97,6 +96,12 @@ export default class CacheDemoController {
         });
         this.addPredictionModels();
         this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
+        window.addEventListener('keydown', e=> {
+            if (e.keyCode == 'D'.charCodeAt(0)) {
+                var $s = this.$scope;
+                this.loadRange($s.selectedSerie.name, $s.rangeFrom, $s.rangeTo, $s.selectedAggregation.name);
+            }
+        });
     }
 
     addPredictionModels() {

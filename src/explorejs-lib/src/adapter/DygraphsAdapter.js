@@ -26,7 +26,6 @@ export default class DygraphsAdapter {
         const updateViewStateBasedOnDisplayedRange = ()=> {
             if (this.plot) { //ignore first time callback
                 var range = this.getDisplayedRange();
-                console.info('update viewport!!')
                 this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
             }
         };
@@ -61,13 +60,15 @@ export default class DygraphsAdapter {
 
     onProjectionRecompile() {
 
-        var result = this.dataSource.getWrappersForProjection();
+        var result = this.dataSource.getWrappers();
 
+        console.time('adapter update');
         const bars = result.map(a=>[new Date(a.start), a.levelId == 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
 
         this.plot.updateOptions({
             file: bars
         });
+        console.timeEnd('adapter update');
         this.debugCallback(bars.length);
 
     }

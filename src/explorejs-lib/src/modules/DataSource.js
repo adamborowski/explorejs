@@ -1,7 +1,9 @@
 import DynamicProjection from './DynamicProjection';
-import WrapperDisplayCache from './WrapperDisplayCache';
 import PredictionEngine from "./PredictionEngine";
 import ViewState from "./ViewState";
+import DataUtil from "../data/DataUtil";
+import Range from 'explorejs-common/src/Range';
+
 /**
  * @typedef {{added:WrapperType[], removed:WrapperType[], resized:WrapperType[]}} WrapperDiffType
  */
@@ -17,8 +19,42 @@ export default class DataSource {
         this.dynamicProjection = new DynamicProjection(this._viewState);
         this.dynamicProjection.SerieCache = serieCache;
         this.dynamicProjection.setup(this._onProjectionChange.bind(this));
-        this.wrapperCache = new WrapperDisplayCache(serieCache);
         this.predictionEngine = new PredictionEngine(serieCache, this._viewState);
+        this._oldProjectionRanges = [];
+        this._newProjectionRanges = [];
+    }
+
+    /**
+     * Returns array of wrapped data points, where outer wrappers have adjusted boundaries according to given range
+     * @param range
+     * @private
+     * @return {RangeType[]}
+     */
+    _wrapRange(range, oneMore = false) {
+        var dataPoints = this.serieCache.getLevelCache(range.levelId).getRange(Range[range.levelId == 'raw' ? 'leftClosed' : 'opened'](range.start, range.end), oneMore);
+        var boundGetter = DataUtil.boundGetter(range.levelId);
+        var wrappers = dataPoints.map(d=>({
+            data: d,
+            start: boundGetter.start(d),
+            end: boundGetter.end(d),
+            levelId: range.levelId
+        }));
+        if (wrappers.length) {
+            wrappers[0].start = Math.max(wrappers[0].start, range.start);
+            wrappers[wrappers.length - 1].end = Math.min(wrappers[wrappers.length - 1].end, range.end);
+        }
+        return wrappers;
+    }
+
+    /**
+     * It will wrap all ranges, the last with oneMore=true to have pa
+     * @param ranges
+     * @param lastOneMore
+     * @private
+     */
+    _wrapRanges(ranges, lastOneMore = true) {
+        const lastRangeIndex = ranges.length - 1;
+        return ranges.map((r, i)=>this._wrapRange(r, lastOneMore && i == lastRangeIndex)).reduce((a, b)=>a.concat(b), []);
     }
 
     /**
@@ -28,8 +64,8 @@ export default class DataSource {
      * @return {WrapperDiffType}
      * for new data - special data wrapper: which level, actual range (note that it may be different than aggregation range after projeciton compilation), and actual data point
      */
-    getWrapperDiffForProjectionDiff(diff) {
-        return this.wrapperCache.update(diff);
+    calculateWrappersDiffToPrevious() {
+        throw new Error('Not yet implemented');
     }
 
     /**
@@ -37,11 +73,23 @@ export default class DataSource {
      * @private
      * @param diff
      */
-    _onProjectionChange(diff) {
-        //todo gather data from cache for new and resized ranges
-        // todo gather only data visible for this viewport (when diff contains ranges exceeding this viewport + padding)
-        // every range fill with "data" field with data gathered form cache
-        this._callback(diff);
+    _onProjectionChange(newProjectionRanges) {
+        this._oldProjectionRanges = this._newProjectionRanges;
+        this._newProjectionRanges = newProjectionRanges;
+        this._oldWrappers = this._newWrappers;
+        this._newWrappers = this._wrapRanges(newProjectionRanges);
+        this._callback();
+
+        /**
+         * TODO zrezygnować z WrapperCache
+         * niech DataSource będzie stanowy - przy onProjectionChange niech wylicza nowe wrappers
+         * source.getWrappers() - getter
+         * UWAGA! nie ma tutaj sensu obliczać diffa a priori przez DynamicProjection - niech to będzie metoda na zawołanie
+         */
+    }
+
+    getWrappers() {
+        return this._newWrappers;
     }
 
     getViewState() {

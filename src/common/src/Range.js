@@ -94,6 +94,18 @@ class Range {
         return false;
     }
 
+    /**
+     *
+     * @param other {Range}
+     * @return {boolean}
+     */
+    equals(other) {
+        return this.leftClosed == other.leftClosed
+            && this.rightClosed == other.rightClosed
+            && this.left == other.left
+            && this.right == other.right;
+    }
+
     toString() {
         const f = 'YYYY-MM-DD HH:mm:ss';
         return `${this.leftClosed ? '<' : '('}${moment(this.left).format(f)}; ${moment(this.right).format(f)}${this.rightClosed ? '>' : ')'}`;

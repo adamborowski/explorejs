@@ -889,6 +889,15 @@ describe("OrderedSegment test", () => {
                 after: rng('4.5 5')
             });
         });
+        it('test5', ()=> {
+            expect(OrderedSegmentArray.cutRangeSet(rng('0 100'),20, 80)).to.deep.equal({
+                start: 0,
+                end: 1,
+                before: rng('0 20'),
+                overlap: rng('20 80'),
+                after: rng('80 100')
+            });
+        });
     });
     describe('joinTouchingRangeArrays', ()=> {
         it('join touching compared ranges', ()=> {

@@ -52,7 +52,6 @@ export default class RequestManager {
      */
     _performBatchRequest(requests) {
         if (requests.length == 0) {
-            console.info('Perform batch request with no data, cancelling');
             return;
         }
         var data = {series: requests.map((request)=>request.toServerFormat())};
