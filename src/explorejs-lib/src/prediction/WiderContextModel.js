@@ -2,9 +2,10 @@ import PredictionModel from "../modules/PredictionModel";
 import Range from "explorejs-common/src/Range";
 export default class WiderContextModel extends PredictionModel {
 
-    constructor() {
+    constructor(roundPrecision = 0.3) {
         super();
         this.contextPaddingRatio = 1; // 0.5 of actual viewport width will be appeneded to left and right viewport window
+        this.roundPrecision = roundPrecision;
     }
 
     update() {
@@ -16,8 +17,9 @@ export default class WiderContextModel extends PredictionModel {
             var padWiderStart = start - (end - start) * this.contextPaddingRatio;
             var padWiderEnd = end + (end - start) * this.contextPaddingRatio;
             var paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
-            console.log('wider', widerLevel);
-            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(paddedWiderRange);
+            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(
+                paddedWiderRange.expandToFitPrecision(this.viewState.pixelsToTime(this.roundPrecision * this.viewState.getViewportWidth())
+                ));
         }
     }
 

@@ -10,13 +10,14 @@ import Range from 'explorejs-common/src/Range';
  */
 export default class DynamicProjection {
     /**
-     *
+     * @param roundPrecision the resolution of range in relation to view state range
      * @param viewState {ViewState}
      */
-    constructor(viewState) {
+    constructor(viewState, roundPrecision = 0.1) {
         this.viewState = viewState;
         this.currentLevelId = null;
         this.currentRange = null;
+        this.roundPrecision = roundPrecision;
         this.cacheUpdateHandler = this.cacheUpdateHandler.bind(this);
         viewState.addListener(this.onViewStateUpdate.bind(this));
     }
@@ -41,6 +42,9 @@ export default class DynamicProjection {
         var oldRange = this.currentRange;
         var newLevelId = viewState.getCurentLevelId();
         var newRange = Range.opened(viewState.getStart(), viewState.getEnd());
+
+        newRange.expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
+
         if (this.currentEvent != null) {
             this.currentEvent.removeListener('recompile', this.cacheUpdateHandler)
         }

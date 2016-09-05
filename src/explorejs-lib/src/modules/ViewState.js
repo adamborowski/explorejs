@@ -95,10 +95,22 @@ export default class ViewState {
         return this._viewportWidth;
     }
 
+    pixelsToTime(val) {
+        return val * this._scale;
+    }
+
+    timeToPixels(val) {
+        return val / this._scale;
+    }
+
     getPreferredUnitWidth() {
         return this._preferredUnitWidth;
     }
 
+    /**
+     * how many time per pixel
+     * @return {number|*}
+     */
     getScale() {
         return this._scale;
     }

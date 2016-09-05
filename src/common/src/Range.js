@@ -94,6 +94,12 @@ class Range {
         return false;
     }
 
+    expandToFitPrecision(precision) {
+        this.left = Math.floor(this.left / precision) * precision;
+        this.right = Math.ceil(this.right / precision) * precision;
+        return this;
+    }
+
     /**
      *
      * @param other {Range}
