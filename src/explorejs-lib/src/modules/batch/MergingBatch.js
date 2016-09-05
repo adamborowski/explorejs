@@ -27,7 +27,6 @@ export default class MerginbBatch {
      * @param request {DataRequest}
      */
     addRequest(request) {
-        console.trace();
         const pendingRanges = this.pendingRanges.get(request.serieId).get(request.level);
         const queuedRanges = this.queuedRanges.get(request.serieId).get(request.level);
         var requestedRange = {start: request.openTime, end: request.closeTime};
