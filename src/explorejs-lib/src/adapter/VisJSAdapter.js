@@ -1,5 +1,6 @@
 import DataSource from "../modules/DataSource";
 import moment from 'moment';
+import Array from 'explorejs-common/src/Array';
 export default class VisJSAdapter {
     /**
      *
@@ -28,17 +29,9 @@ export default class VisJSAdapter {
     init() {
         var groups = new this.vis.DataSet();
         groups.add({
-            id: 0,
+            id: '0',
             content: 'test',
-
-            options: {
-
-                shaded: {
-                    orientation: 'bottom' // top, bottom
-                },
-            },
-
-
+            className: 'vis-graph-group5'
         });
 
         var items = [];
@@ -47,14 +40,13 @@ export default class VisJSAdapter {
             queue: true
         });
         var options = {
-            defaultGroup: 'ungrouped',
+            defaultGroup: '0',
             // legend: true,
             start: '2016-01-01 09:55',
             end: '2016-01-01 10:07',
             interpolation: false,
             height: 200,
             drawPoints: false,
-            sort: false
         };
 
         this.dataset = dataset;
@@ -64,26 +56,25 @@ export default class VisJSAdapter {
 
     }
 
-    onProjectionRecompile(diff) {
-        const f = 'YYYY-MM-DD HH:mm:ss';
+    onProjectionRecompile() {
 
         function id(p) {
             var start = p.start;
             var end = p.end;
-            return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
+            return start + "~" + end + '@' + p.levelId;
         }
 
-        var result = this.dataSource.getWrappers();
+        var diff = this.dataSource.calculateWrappersDiffToPrevious();
 
 
-        this.dataset.clear();
+        this.dataset.remove(diff.removed.concat(diff.resized.map(a=>a.existing)).map(a=>id(a)));
 
-        this.dataset.add([].concat(result).map(a=>({
-            x: a.start, y: a.levelId == 'raw' ? a.data.v : a.data.a, levelId: a.levelId, id: id(a)
+        const mergeSorted = Array.mergeSorted(diff.added, diff.resized);
+        this.dataset.add(mergeSorted.map(a=>({
+            x: a.start, y: a.levelId == 'raw' ? a.data.v : a.data.a, levelId: a.levelId, id: id(a), group: '0'
         })));
 
         this.dataset.flush();
-
 
         this.debugCallback(this.dataset.length);
     }
