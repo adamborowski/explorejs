@@ -38,12 +38,9 @@ export default class DynamicProjection {
      * @param viewState {ViewState}
      */
     onViewStateUpdate(viewState) {
-        var oldLevelId = this.currentLevelId;
         var oldRange = this.currentRange;
         var newLevelId = viewState.getCurentLevelId();
-        var newRange = Range.opened(viewState.getStart(), viewState.getEnd());
-
-        newRange.expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
+        var newRange = Range.opened(viewState.getStart(), viewState.getEnd()).expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
 
         if (this.currentEvent != null) {
             this.currentEvent.removeListener('recompile', this.cacheUpdateHandler)
@@ -53,7 +50,6 @@ export default class DynamicProjection {
         this.currentRange = newRange;
         this.currentEvent = this.SerieCache.getProjectionEventAtLevel(this.currentLevelId);
         this.currentEvent.addListener('recompile', this.currentRange, this.cacheUpdateHandler);
-        // this.currentEvent.addListener('recompile', Range.unbounded(), this.onProjectionRecompile);
         if (oldRange != null && !oldRange.equals(newRange)) {
             // check if currentRange and newRange differ
             this._callback(this.getProjectionTruncated(newRange.left, newRange.right, newLevelId));
@@ -63,14 +59,6 @@ export default class DynamicProjection {
 
     _copyFn(a) {
         return {levelId: a.levelId};
-    }
-
-    _copyFnWithExisting(a) {
-        return {levelId: a.levelId, existing: a.existing};
-    }
-
-    _compareFn(a, b) {
-        return a.levelId == b.levelId;
     }
 
     calcDiffDueToProjectionChange(currentLevelId, newLevelId, oldRange, newRange) {

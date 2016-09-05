@@ -3,7 +3,7 @@ import PredictionEngine from "./PredictionEngine";
 import ViewState from "./ViewState";
 import DataUtil from "../data/DataUtil";
 import Range from 'explorejs-common/src/Range';
-
+import DiffCalculator from 'explorejs-common/src/DiffCalculator'
 /**
  * @typedef {{added:WrapperType[], removed:WrapperType[], resized:WrapperType[]}} WrapperDiffType
  */
@@ -65,7 +65,18 @@ export default class DataSource {
      * for new data - special data wrapper: which level, actual range (note that it may be different than aggregation range after projeciton compilation), and actual data point
      */
     calculateWrappersDiffToPrevious() {
-        throw new Error('Not yet implemented');
+        console.time('calculateWrappersDiffToPrevious');
+        try {
+            return DiffCalculator.compute(this._oldWrappers || [], this._newWrappers, {
+                copyFn: a=>({
+                    levelId: a.levelId,
+                    data: a.data
+                })
+            });
+        }
+        finally {
+            console.timeEnd('calculateWrappersDiffToPrevious');
+        }
     }
 
     /**
