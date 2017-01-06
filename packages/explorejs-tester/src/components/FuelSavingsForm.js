@@ -1,24 +1,25 @@
 import React, {PropTypes} from 'react';
 import FuelSavingsResults from './FuelSavingsResults';
 import FuelSavingsTextInput from './FuelSavingsTextInput';
+import autobind from 'autobind-decorator'
 
 class FuelSavingsForm extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    this.save = this.save.bind(this);
-    this.onTimeframeChange = this.onTimeframeChange.bind(this);
-    this.fuelSavingsKeypress = this.fuelSavingsKeypress.bind(this);
   }
 
+  @autobind
   onTimeframeChange(e) {
     this.props.calculateFuelSavings(this.props.fuelSavings, 'milesDrivenTimeframe', e.target.value);
   }
 
+  @autobind
   fuelSavingsKeypress(name, value) {
     this.props.calculateFuelSavings(this.props.fuelSavings, name, value);
   }
 
+  @autobind
   save() {
     this.props.saveFuelSavings(this.props.fuelSavings);
   }
