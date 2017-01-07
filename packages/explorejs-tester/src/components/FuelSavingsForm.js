@@ -2,24 +2,29 @@ import React, {PropTypes} from 'react';
 import FuelSavingsResults from './FuelSavingsResults';
 import FuelSavingsTextInput from './FuelSavingsTextInput';
 import autobind from 'autobind-decorator'
+import {propTypes} from "react-props-decorators";
 
+@propTypes({
+  saveFuelSavings: PropTypes.func.isRequired,
+  calculateFuelSavings: PropTypes.func.isRequired,
+  fuelSavings: PropTypes.object.isRequired
+})
+@autobind
 class FuelSavingsForm extends React.Component {
+
   constructor(props, context) {
     super(props, context);
 
   }
 
-  @autobind
   onTimeframeChange(e) {
     this.props.calculateFuelSavings(this.props.fuelSavings, 'milesDrivenTimeframe', e.target.value);
   }
 
-  @autobind
   fuelSavingsKeypress(name, value) {
     this.props.calculateFuelSavings(this.props.fuelSavings, name, value);
   }
 
-  @autobind
   save() {
     this.props.saveFuelSavings(this.props.fuelSavings);
   }
@@ -80,16 +85,11 @@ class FuelSavingsForm extends React.Component {
         <hr/>
 
         {fuelSavings.necessaryDataIsProvidedToCalculateSavings && <FuelSavingsResults savings={fuelSavings.savings}/>}
-        <input type="submit" value="Save" onClick={this.save}/>
+        <input className="btn btn-default" type="submit" value="Save" onClick={this.save}/>
       </div>
     );
   }
 }
 
-FuelSavingsForm.propTypes = {
-  saveFuelSavings: PropTypes.func.isRequired,
-  calculateFuelSavings: PropTypes.func.isRequired,
-  fuelSavings: PropTypes.object.isRequired
-};
 
 export default FuelSavingsForm;

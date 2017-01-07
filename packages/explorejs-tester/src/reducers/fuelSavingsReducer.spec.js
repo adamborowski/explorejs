@@ -53,7 +53,7 @@ describe('Reducers::FuelSavings', () => {
 
   it('should handle SAVE_FUEL_SAVINGS', () => {
     const action = { type: ActionTypes.SAVE_FUEL_SAVINGS, dateModified, settings: getAppState() };
-    const expected = Object.assign(getAppState(), { dateModified });
+    const expected = {...getAppState(), dateModified};
 
     expect(reducer(getAppState(), action)).to.deep.equal(expected);
   });
