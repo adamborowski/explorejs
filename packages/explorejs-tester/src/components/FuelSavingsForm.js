@@ -9,7 +9,6 @@ import {propTypes} from "react-props-decorators";
   calculateFuelSavings: PropTypes.func.isRequired,
   fuelSavings: PropTypes.object.isRequired
 })
-@autobind
 class FuelSavingsForm extends React.Component {
 
   constructor(props, context) {
@@ -17,14 +16,17 @@ class FuelSavingsForm extends React.Component {
 
   }
 
+  @autobind
   onTimeframeChange(e) {
     this.props.calculateFuelSavings(this.props.fuelSavings, 'milesDrivenTimeframe', e.target.value);
   }
 
+  @autobind
   fuelSavingsKeypress(name, value) {
     this.props.calculateFuelSavings(this.props.fuelSavings, name, value);
   }
 
+  @autobind
   save() {
     this.props.saveFuelSavings(this.props.fuelSavings);
   }
