@@ -18,7 +18,7 @@ export default function () {
         </div>
         <div id="navbar" className="navbar-collapse collapse">
           <ul className="nav navbar-nav navbar-right">
-            <NavLink onlyActiveOnIndex="true" to="/" activeClassName="active">Home</NavLink>
+            <NavLink onlyActiveOnIndex={true} to="/" activeClassName="active">Home</NavLink>
             <NavLink to="/scenario" activeClassName="active">Scenarios</NavLink>
             <NavLink to="/fuel-savings" activeClassName="active">Demo</NavLink>
             <NavLink to="/about" activeClassName="active">About</NavLink>

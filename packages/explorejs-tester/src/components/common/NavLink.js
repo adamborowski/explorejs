@@ -10,12 +10,12 @@ const NavLink = React.createClass({
     router: React.PropTypes.object
   },
   render() {
-    const isActive = this.context.router.isActive(this.props.to, true);
+    const isActive = this.context.router.isActive(this.props.to, this.props.onlyActiveOnIndex);
     let className = isActive ? "active" : "";
 
     return (
       <li className={className}>
-        {this.props.onlyActiveOnIndex == null ? <Link {...this.props}/> : <IndexLink {...this.props}/>}
+        <Link {...this.props}/>
       </li>
     );
   }
