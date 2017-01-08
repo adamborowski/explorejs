@@ -17,20 +17,55 @@ export default {
   },
   testing: {
     totalScore: 10,
-    options: [ // variants of available explorejs optimization options
-      {cache: false, prediction: ['simple'], fallback: false, batching: 'simple'},
-      {cache: false, prediction: ['simple'], fallback: false, batching: 'merging'},
-      {cache: true, prediction: ['simple'], fallback: false, batching: 'simple'},
-      {cache: true, prediction: ['simple'], fallback: false, batching: 'merging'},
-      {cache: true, prediction: ['simple'], fallback: true, batching: 'simple'},
-      {cache: true, prediction: ['simple'], fallback: true, batching: 'merging'},
-      {cache: true, prediction: ['simple', 'widerContext'], fallback: false, batching: 'simple'},
-      {cache: true, prediction: ['simple', 'widerContext'], fallback: false, batching: 'merging'},
-      {cache: true, prediction: ['simple', 'widerContext'], fallback: true, batching: 'simple'},
-      {cache: true, prediction: ['simple', 'widerContext'], fallback: true, batching: 'merging'},
-    ],
-
     scenarios: [
+      {
+        name: 'conf0',
+        config: {cache: false, prediction: ['simple'], fallback: false, batching: 'simple'}
+      },
+      {
+        name: 'conf1',
+        config: {cache: false, prediction: ['simple'], fallback: false, batching: 'merging'}
+
+      },
+      {
+        name: 'conf2',
+        config: {cache: true, prediction: ['simple'], fallback: false, batching: 'simple'}
+
+      },
+      {
+        name: 'conf3',
+        config: {cache: true, prediction: ['simple'], fallback: false, batching: 'merging'}
+
+      },
+      {
+        name: 'conf4',
+        config: {cache: true, prediction: ['simple'], fallback: true, batching: 'simple'}
+
+      },
+      {
+        name: 'conf5',
+        config: {cache: true, prediction: ['simple'], fallback: true, batching: 'merging'}
+
+      },
+      {
+        name: 'conf6',
+        config: {cache: true, prediction: ['simple', 'widerContext'], fallback: false, batching: 'simple'}
+
+      },
+      {
+        name: 'conf7',
+        config: {cache: true, prediction: ['simple', 'widerContext'], fallback: false, batching: 'merging'}
+
+      },
+      {
+        name: 'conf8',
+        config: {cache: true, prediction: ['simple', 'widerContext'], fallback: true, batching: 'simple'}
+
+      },
+      {
+        name: 'conf9',
+        config: {cache: true, pediction: ['simple', 'widerContext'], fallback: true, batching: 'merging'}
+      },
       {
         name: 'fullOptimization',
         config: {

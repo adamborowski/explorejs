@@ -6,12 +6,18 @@ import HomePage from './components/HomePage';
 import FuelSavingsPage from './containers/FuelSavingsPage'; // eslint-disable-line import/no-named-as-default
 import AboutPage from './components/AboutPage.js';
 import NotFoundPage from './components/NotFoundPage.js';
+import ScenarioPage from "./components/pages/ScenarioPage";
+import ScenarioSidebar from "./components/pages/scenario/ScenarioSidebar";
 
 export default (
   <Route path="/" component={App} onEnter={() => console.log('root enter')} onLeave={()=>console.log('root exit')}>
     <IndexRoute component={HomePage} onEnter={() => console.log('index enter')} onLeave={()=>console.log('index exit')}/>
     <Route path="fuel-savings" component={FuelSavingsPage} onEnter={() => console.log('fuel enter')} onLeave={()=>console.log('fuel exit')}/>
     <Route path="about" component={AboutPage} onEnter={() => console.log('about enter')} onLeave={()=>console.log('about exit')}/>
+    <Route path="scenario" components={{children: ScenarioPage, sidebar: ScenarioSidebar}}>
+      <IndexRoute/>
+      <Route path=":scenarioId"/>
+    </Route>
     <Route path="*" component={NotFoundPage} onEnter={() => console.log('* enter')} onLeave={()=>console.log('* exit')}/>
   </Route>
 );

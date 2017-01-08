@@ -1,22 +1,24 @@
-import React, { PropTypes } from 'react';
-import { Link, IndexLink } from 'react-router';
-import {propTypes} from "react-props-decorators";
-
-// This is a class-based component because the current
-// version of hot reloading won't hot reload a stateless
-// component at the top-level.
-@propTypes({children: PropTypes.element})
+import React, {PropTypes} from 'react';
+import {propTypes} from 'react-props-decorators';
+import Header from './Header';
+@propTypes({
+  children: PropTypes.element,
+  sidebar: PropTypes.element
+})
 class App extends React.Component {
   render() {
     return (
       <div>
-        <IndexLink to="/">Home</IndexLink>
-        {' | '}
-        <Link to="/fuel-savings">Demo App</Link>
-        {' | '}
-        <Link to="/about">About</Link>
-        <br/>
-        {this.props.children}
+        <Header/>
+        <div className="container-fluid">
+          <div className="row">
+            {this.props.sidebar}
+            <div
+              className={`${this.props.sidebar != null && 'col-sm-offset-3 col-md-offset-2 col-sm-9 col-md-10 '} main`}>
+              {this.props.children}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
