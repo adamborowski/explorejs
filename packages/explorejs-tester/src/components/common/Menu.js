@@ -8,11 +8,10 @@ export default (props) => (
     <ul
       className="nav nav-sidebar">
       {props.items.map((item, index) =>
-        <NavLink key={item.name} to={`${props.basePath}${item.name}`} activeClassName="active">
+        <NavLink key={item.name} to={`${props.basePath}${item.link}`} activeClassName="active">
           Scenario {index + 1}
         </NavLink>
-      )
-      }
+      )}
     </ul>
   </div>
 );

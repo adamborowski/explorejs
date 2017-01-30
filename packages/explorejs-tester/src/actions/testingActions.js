@@ -13,11 +13,12 @@ export const initialize = (scenarios) => ({
  * Assign score for given testing session
  * @param sessionId {Number}
  * @param override {Boolean} if true, drop the score for an already existing session for the same scenario
- * @param score {Number} number of points
+ * @param score {number} number of points
  * otherwise, this action will be put into the queue of confirmation
  */
-export const scoreSession = (sessionId, override, score) => ({
+export const scoreSession = (scenarioId, sessionId, override, score) => ({
   type: types.SESSION_SCORE,
+  scenarioId,
   sessionId,
   override,
   score

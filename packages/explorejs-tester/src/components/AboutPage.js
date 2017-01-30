@@ -33,7 +33,7 @@ const AboutPage = () => {
           <span className="text-muted">Something else</span>
         </div>
       </div>
-      <h2 className="sub-header">Section title</h2>
+      <h2 className="sub-header">About</h2>
       <div className="table-responsive">
         <table className="table table-striped">
           <thead>

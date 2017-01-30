@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {scenarioSelector} from '../../../selectors/testingSelectors';
 import Menu from '../../common/Menu';
 import Sidebar from '../../layout/Sidebar';
 const sidebar = (props) => (
@@ -7,7 +8,7 @@ const sidebar = (props) => (
 );
 
 const mapStateToProps = (state) => ({
-  items: state.testing.scenarios.map(a => ({name: a.name})),
+  items: scenarioSelector(state).map(a => ({name: a.name, link: a.id})),
   basePath: '/scenario/',
   header: 'Test scenarios'
 });

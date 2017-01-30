@@ -1,0 +1,15 @@
+.a-stars {
+  font-size: 24pt;
+  &.a-small {
+    font-size: 10pt;
+  }
+  &.a-editable {
+    span {
+      transition-property: color;
+      transition-duration: 200ms;
+      &:hover {
+        color: #777777;
+      }
+    }
+  }
+}

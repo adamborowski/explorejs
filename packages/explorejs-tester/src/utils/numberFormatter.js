@@ -1,3 +1,4 @@
+
 import MathHelper from './mathHelper';
 
 class NumberFormatter {

@@ -15,6 +15,7 @@ class App extends React.Component {
             {this.props.sidebar}
             <div
               className={`${this.props.sidebar != null && 'col-sm-offset-3 col-md-offset-2 col-sm-9 col-md-10 '} main`}>
+              {this.props.pageHeader}
               {this.props.children}
             </div>
           </div>

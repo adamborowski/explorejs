@@ -16,10 +16,10 @@ const HomePage = () => {
         </p>
         <hr className="my-4"/>
         <p>
-          The purpose of this work is to gather your assesment of the solution proposed in the thesis which is
+          The purpose of this work is to gather your assesment of the solution proposed in the thesis.
         </p>
         <p>
-          The solution itself is the library which allow your charts to explore infinite time series data.
+          The solution itself is the library which allows your charts to explore infinite time series data.
         </p>
         <p>
           This interactive survey will ask you to explore some data using time series charts.
