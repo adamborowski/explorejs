@@ -1,17 +1,27 @@
-import {availableScoreSelector, sessionByIdSelector} from '../selectors/testingSelectors.js';
+import {availableScoreSelector, createSession} from "../selectors/testingSelectors.js";
 import {SESSION_SCORE} from "../constants/actionTypes";
 
 export default  store => next => action => {
   const state = store.getState();
   switch (action.type) {
     case SESSION_SCORE:
+      const session = createSession(state);
       const maxAvailable = availableScoreSelector(state);
-      const currentSessionScore = sessionByIdSelector(state, action.sessionId).score;
+      const currentSession = session.Session.withId(action.sessionId);
+      const currentSessionScore = currentSession.score;
+      const currentScenario = currentSession.scenario;
+      const otherScoredSessions = currentScenario.sessions.all().toModelArray().filter(a => a.id !== currentSession.id && a.score > 0);
 
-      if (action.score - currentSessionScore > maxAvailable) {
-        action.score = maxAvailable + currentSessionScore;
+      if (otherScoredSessions.length === 0) {
+        if (action.score - currentSessionScore > maxAvailable) {
+          action.score = maxAvailable + currentSessionScore;
+        }
       }
-      //todo refuse if another session of this scenario is present - maybe put to some generic confirmation queue
+      else {
+        //todo next(dialogAction('There is already scored session, only one can be scored at a time', {cancel, override:overrideAction()}));
+        console.log('There is already scored session, only one can be scored at a time');
+        return;
+      }
       break;
   }
 

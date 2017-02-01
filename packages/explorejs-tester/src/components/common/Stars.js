@@ -12,7 +12,7 @@ export const Star = (props) => {
         <span key={i}
               className={`glyphicon glyphicon-star${i >= props.value ? '-empty' : ''}`}
               aria-hidden="true"
-              onClick={() => props.onChange && props.onChange(i + 1)}/>
+              onClick={() => props.onChange && props.onChange(props.value === i + 1 ? 0 : i + 1)}/>
       )}
     </div>
   )
