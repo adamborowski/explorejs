@@ -13,6 +13,9 @@ export default function ormReducer(dbState = initialState(schema), action) {
     case types.SESSION_SCORE:
       Session.withId(action.sessionId).update({score: action.score});
       break;
+    case types.SESSION_CREATE:
+      Session.create({...action.payload});
+      break;
     // case 'CREATE_BOOK':
     //   Book.create(action.payload);
     //   break;

@@ -1,5 +1,6 @@
 import {availableScoreSelector, createSession} from "../selectors/testingSelectors.js";
-import {SESSION_SCORE} from "../constants/actionTypes";
+import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
+import {push} from 'react-router-redux';
 
 export default  store => next => action => {
   const state = store.getState();
@@ -26,5 +27,15 @@ export default  store => next => action => {
   }
 
   next(action);
+
+  switch (action.type) {
+    case SESSION_CREATE:
+      const newItem = state.orm.Session.meta.maxId;
+      const session = createSession(state);
+
+      let action2 = push(`/scenario/${action.payload.scenario}/session/${newItem}`);
+      store.dispatch(action2);
+      break;
+  }
 
 };

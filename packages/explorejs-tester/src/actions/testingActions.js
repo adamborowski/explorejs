@@ -23,6 +23,20 @@ export const scoreSession = (scenarioId, sessionId, override, score) => ({
   override,
   score
 });
+/**
+ *
+ * @param scenario {number} id of owning scenario
+ * @param score {number} the initial score for session
+ * @param start {Date} the time of session start
+ */
+export const createSession = (scenario, navigate = true, score = 0, start = new Date()) => ({
+  type: types.SESSION_CREATE,
+  payload: {
+    scenario: scenario,
+    score,
+    start
+  }
+});
 
 /**
  * Record a snapshot of explorejs interaction state (ie. when he zooms-in or resizes the browser,

@@ -33,6 +33,9 @@ const ScenarioPage = (props) => {
 
       </div>
 
+      <a onClick={() => props.actions.createSession(scenario.id)} className="btn btn-default" type="submit">New
+        session</a>
+
 
       {props.children}
 
