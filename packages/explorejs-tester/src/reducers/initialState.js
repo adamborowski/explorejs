@@ -17,7 +17,8 @@ export default {
   },
   testing: {
     totalScore: 10
-  }
+  },
+  notifications: [],
   // testing: {
   //   totalScore: 10,
   //   scenarios: [

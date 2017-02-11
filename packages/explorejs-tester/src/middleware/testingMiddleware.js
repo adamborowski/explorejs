@@ -1,4 +1,5 @@
 import {availableScoreSelector, createSession} from "../selectors/testingSelectors.js";
+import {pushNotification} from '../actions/notificationActions.js';
 import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
 import {push} from 'react-router-redux';
 
@@ -15,12 +16,14 @@ export default  store => next => action => {
 
       if (otherScoredSessions.length === 0) {
         if (action.score - currentSessionScore > maxAvailable) {
+
           action.score = maxAvailable + currentSessionScore;
+
+          store.dispatch(pushNotification(`You don't have enough stars to assign. Scored with ${action.score} points.`));
         }
       }
       else {
-        //todo next(dialogAction('There is already scored session, only one can be scored at a time', {cancel, override:overrideAction()}));
-        console.log('There is already scored session, only one can be scored at a time');
+        next(pushNotification('There is already scored session, only one can be scored at a time'));
         return;
       }
       break;
