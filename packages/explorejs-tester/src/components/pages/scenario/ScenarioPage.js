@@ -16,7 +16,7 @@ const ScenarioPage = (props) => {
   return (
     <div>
       <h1 className="page-header">
-        Scenario
+        Scenario&nbsp;
         <small>{scenario.name}</small>
 
       </h1>
