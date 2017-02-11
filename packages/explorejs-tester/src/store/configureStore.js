@@ -5,6 +5,7 @@ import rootReducer from '../reducers';
 import {routerMiddleware} from 'react-router-redux';
 import {browserHistory} from 'react-router';
 import testingMiddleware from "../middleware/testingMiddleware";
+import notificationsMiddleware from "../middleware/notificationsMiddleware";
 
 const routerHistoryMiddleware = routerMiddleware(browserHistory);
 
@@ -13,6 +14,7 @@ function configureStoreProd(initialState) {
     // Add other middleware on this line...
     routerHistoryMiddleware,
     testingMiddleware,
+    notificationsMiddleware,
 
     // thunk middleware can also accept an extra argument to be passed to each thunk action
     // https://github.com/gaearon/redux-thunk#injecting-a-custom-argument
@@ -30,6 +32,7 @@ function configureStoreDev(initialState) {
     // Add other middleware on this line...
     routerHistoryMiddleware,
     testingMiddleware,
+    notificationsMiddleware,
     // Redux middleware that spits an error on you when you try to mutate your state either inside a dispatch or between dispatches.
     reduxImmutableStateInvariant(),
 
