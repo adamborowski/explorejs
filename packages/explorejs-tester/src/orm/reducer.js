@@ -11,6 +11,9 @@ export default function ormReducer(dbState = initialState(schema), action) {
 
   switch (action.type) {
     case types.SESSION_SCORE:
+      if (action.override) {
+        Scenario.withId(action.scenarioId).sessions.all().toModelArray().forEach(a => a.update({score: 0}));
+      }
       Session.withId(action.sessionId).update({score: action.score});
       break;
     case types.SESSION_CREATE:

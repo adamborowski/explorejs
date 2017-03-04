@@ -8,29 +8,32 @@ export default  store => next => action => {
   const state = store.getState();
   switch (action.type) {
     case SESSION_SCORE:
-      const session = createSession(state);
-      const maxAvailable = availableScoreSelector(state);
-      const currentSession = session.Session.withId(action.sessionId);
-      const currentSessionScore = currentSession.score;
-      const currentScenario = currentSession.scenario;
-      const otherScoredSessions = currentScenario.sessions.all().toModelArray().filter(a => a.id !== currentSession.id && a.score > 0);
+      if (action.override == false) {
 
-      if (otherScoredSessions.length === 0) {
-        if (action.score - currentSessionScore > maxAvailable) {
+        const session = createSession(state);
+        const maxAvailable = availableScoreSelector(state);
+        const currentSession = session.Session.withId(action.sessionId);
+        const currentSessionScore = currentSession.score;
+        const currentScenario = currentSession.scenario;
+        const otherScoredSessions = currentScenario.sessions.all().toModelArray().filter(a => a.id !== currentSession.id && a.score > 0);
 
-          action.score = maxAvailable + currentSessionScore;
+        if (otherScoredSessions.length === 0) {
+          if (action.score - currentSessionScore > maxAvailable) {
 
-          store.dispatch(pushNotification(`You don't have enough stars to assign. Scored with ${action.score} points.`));
+            action.score = maxAvailable + currentSessionScore;
+
+            store.dispatch(pushNotification(`You don't have enough stars to assign. Scored with ${action.score} points.`));
+          }
         }
+        else {
+          next(operations.showDialog('There is already scored session, only one can be scored at a time', [
+            {key: 'overwrite', message: 'Overwrite', action: {...action, override: true}, primary: true},
+            {key: 'discard', message: 'Discard', action: pushNotification(`You didn't score this session.`, 'info')},
+          ]));
+          return;
+        }
+        break;
       }
-      else {
-        next(operations.showDialog('There is already scored session, only one can be scored at a time', [
-          {key: 'overwrite', message: 'Overwrite', action: () => alert('call overwrite action'), primary: true},//TODO replace alert with currenet action with override:true
-          {key: 'discard', message: 'Discard', action: () => alert('discard action')},
-        ]));
-        return;
-      }
-      break;
   }
 
   next(action);
