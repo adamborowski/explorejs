@@ -1,5 +1,6 @@
 import {availableScoreSelector, createSession} from "../selectors/testingSelectors.js";
 import {pushNotification} from '../actions/notificationActions.js';
+import {operations} from '../redux/dialog/index';
 import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
 import {push} from 'react-router-redux';
 
@@ -23,7 +24,10 @@ export default  store => next => action => {
         }
       }
       else {
-        next(pushNotification('There is already scored session, only one can be scored at a time'));
+        next(operations.showDialog('There is already scored session, only one can be scored at a time', [
+          {key: 'overwrite', message: 'Overwrite', action: () => alert('call overwrite action'), primary: true},//TODO replace alert with currenet action with override:true
+          {key: 'discard', message: 'Discard', action: () => alert('discard action')},
+        ]));
         return;
       }
       break;

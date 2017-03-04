@@ -1,4 +1,4 @@
-import React from 'react';
+import  React from 'react';
 import {connect} from 'react-redux';
 import {scenarioSelector} from '../../../selectors/testingSelectors.js';
 import Stars from '../../common/Stars.js';

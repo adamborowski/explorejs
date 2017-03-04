@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import {propTypes} from 'react-props-decorators';
 import Header from './Header';
 import Notifications from './common/NotificationContainer';
+import Dialog from '../view/dialog/dialog';
 @propTypes({
   children: PropTypes.element,
   sidebar: PropTypes.element
@@ -22,6 +23,7 @@ class App extends React.Component {
           </div>
         </div>
         <Notifications notifications={[{type: 'danger', message: 'dupa'}]}/>
+        <Dialog/>
       </div>
     );
   }
