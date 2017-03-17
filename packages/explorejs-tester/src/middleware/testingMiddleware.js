@@ -40,7 +40,7 @@ export default  store => next => action => {
 
   switch (action.type) {
     case SESSION_CREATE:
-      const newItem = state.orm.Session.meta.maxId;
+      const newItem = state.orm.Session.meta.maxId + 1;
       const session = createSession(state);
 
       let action2 = push(`/scenario/${action.payload.scenario}/session/${newItem}`);
