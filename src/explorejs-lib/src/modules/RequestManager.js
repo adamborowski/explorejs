@@ -7,11 +7,16 @@ import MergingBatch from "./batch/MergingBatch";
  */
 export default class RequestManager {
 
-    constructor(apiManifestUrl = "/api/manifest", apiBatchUrl = "/api/batch") {
+    constructor(apiManifestUrl = "/api/manifest", apiBatchUrl = "/api/batch", forceDelay = 0) {
         this.apiManifestUrl = apiManifestUrl;
         this.apiBatchUrl = apiBatchUrl;
         // this.batch = new SimpleBatch(this._performBatchRequest.bind(this));
         this.batch = new MergingBatch(this._performBatchRequest.bind(this));
+        this.forceDelay = forceDelay;
+    }
+
+    setForceDelay(delay) {
+        this.forceDelay = delay;
     }
 
     /**
@@ -59,14 +64,16 @@ export default class RequestManager {
         xhr.open("POST", this.apiBatchUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = ()=> {
-            if (xhr.status === 200) {
-                var resp = JSON.parse(xhr.responseText);
-                this._processBatchResponse(resp);
-            }
-            else {
-                console.error('error');
-            }
-            this.batch.requestsLoaded(requests);
+            setTimeout(() => {
+                if (xhr.status === 200) {
+                    var resp = JSON.parse(xhr.responseText);
+                    this._processBatchResponse(resp);
+                }
+                else {
+                    console.error('error');
+                }
+                this.batch.requestsLoaded(requests);
+            }, this.forceDelay || 0);
         };
         xhr.send(JSON.stringify(data));
     }

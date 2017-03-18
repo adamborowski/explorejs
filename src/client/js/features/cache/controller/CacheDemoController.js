@@ -3,7 +3,7 @@ import DataRequest from 'explorejs/src/data/DataRequest';
 import CacheManager from "explorejs/src/modules/CacheManager";
 import DygraphsAdapter from "explorejs/src/adapter/DygraphsAdapter";
 import Dygraphs from "dygraphs";
-const vizWidth = 920;
+const vizWidth = window.innerWidth-90;
 import $ from 'jquery';
 import BasicViewportModel from "explorejs/src/prediction/BasicViewportModel";
 import WiderContextModel from "explorejs/src/prediction/WiderContextModel";
@@ -55,9 +55,9 @@ export default class CacheDemoController {
                 });
                 $scope.selectedAggregation = $scope.availableAggregations[3]
                 $scope.selectedSerie = $scope.availableSeries[0];
-                $scope.rangeFrom = '2016-01-01';//rm.getManifestForSerie('s001').$start;
+                $scope.rangeFrom = '2012-01-01';//rm.getManifestForSerie('s001').$start;
                 $scope.mouse = '2016-01-03';//rm.getManifestForSerie('s001').$start;
-                $scope.rangeTo = '2016-01-02';//rm.getManifestForSerie('s001').$end;
+                $scope.rangeTo = '2017-10-02';//rm.getManifestForSerie('s001').$end;
                 $scope.rm = rm;
                 this.startTime = rm.getManifestForSerie('s001').start;
                 this.endTime = rm.getManifestForSerie('s001').end;
@@ -95,7 +95,7 @@ export default class CacheDemoController {
             }
         });
         this.addPredictionModels();
-        this.adapter.setDisplayedRange(new Date('2015-01-01').getTime(), new Date('2015-02-01').getTime());
+        this.adapter.setDisplayedRange(new Date(this.$scope.rangeFrom).getTime(), new Date(this.$scope.rangeTo).getTime());
         window.addEventListener('keydown', e=> {
             if (e.keyCode == 'D'.charCodeAt(0)) {
                 var $s = this.$scope;
