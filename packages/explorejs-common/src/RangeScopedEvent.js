@@ -1,5 +1,5 @@
-var FactoryDictionary = require('./FactoryDictionary');
-var Range = require('./Range');
+const FactoryDictionary = require('./FactoryDictionary');
+
 /**
  * TODO replace non-sorted listeners list with sth like segment tree or interval tree
  * TODO - like two ordered arrays - one for each bound: startBounds:ordered, endBounds:ordered
@@ -8,7 +8,7 @@ var Range = require('./Range');
  */
 class RangeScopedEvent {
     constructor() {
-      this.listeners = new FactoryDictionary(()=>[]);
+        this.listeners = new FactoryDictionary(() => []);
     }
 
     /**
@@ -18,7 +18,7 @@ class RangeScopedEvent {
      * @param callback {function}
      */
     addListener(type, range, callback) {
-      this.listeners.get(type).push({range, callback});
+        this.listeners.get(type).push({range, callback});
     }
 
     /**
@@ -29,26 +29,28 @@ class RangeScopedEvent {
      */
     changeListener(type, callback, newRange) {
 
-      var listeners = this.listeners.get(type);
-      for (var listener of listeners) {
+        const listeners = this.listeners.get(type);
+
+        for (let listener of listeners) {
             /**
              * @var {Range} listener.range
              */
-        if (listener.callback === callback) {
-          listener.range = newRange;
-          return listener;
+            if (listener.callback === callback) {
+                listener.range = newRange;
+                return listener;
+            }
         }
-      }
     }
 
     removeListener(type, callback) {
-      var listeners = this.listeners.get(type);
-      for (var listener of listeners) {
-        if (listener.callback === callback) {
-          listeners.splice(listeners.indexOf(listener), 1);
-          return listener;
+        const listeners = this.listeners.get(type);
+
+        for (let listener of listeners) {
+            if (listener.callback === callback) {
+                listeners.splice(listeners.indexOf(listener), 1);
+                return listener;
+            }
         }
-      }
     }
 
     /**
@@ -59,12 +61,13 @@ class RangeScopedEvent {
      * @param eventData {*}
      */
     fireEvent(name, range, eventData) {
-      var listeners = this.listeners.get(name);
-      for (var listener of listeners) {
-        if (listener.range.hasCommon(range)) {
-          listener.callback(name, range, listener.range, eventData);
+        const listeners = this.listeners.get(name);
+
+        for (let listener of listeners) {
+            if (listener.range.hasCommon(range)) {
+                listener.callback(name, range, listener.range, eventData);
+            }
         }
-      }
     }
 }
 

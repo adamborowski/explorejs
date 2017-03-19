@@ -4,21 +4,21 @@ var FactoryDictionary = require('./FactoryDictionary');
  */
 class Event {
     constructor() {
-      this.listeners = new FactoryDictionary(()=>[]);
+        this.listeners = new FactoryDictionary(()=>[]);
     }
 
     addListener(type, callback) {
-      this.listeners.get(type).push(callback);
+        this.listeners.get(type).push(callback);
     }
 
     removeListener(type, callback) {
-      var listeners = this.listeners.get(type);
-      for (var listener of listeners) {
-        if (listener === callback) {
-          listeners.splice(listeners.indexOf(listener), 1);
-          return listener;
+        var listeners = this.listeners.get(type);
+        for (var listener of listeners) {
+            if (listener === callback) {
+                listeners.splice(listeners.indexOf(listener), 1);
+                return listener;
+            }
         }
-      }
     }
 
     /**
@@ -27,10 +27,10 @@ class Event {
      * @param eventData {*}
      */
     fireEvent(name, eventData) {
-      var listeners = this.listeners.get(name);
-      for (var listener of listeners) {
-        listener(eventData);
-      }
+        var listeners = this.listeners.get(name);
+        for (var listener of listeners) {
+            listener(eventData);
+        }
     }
 }
 
