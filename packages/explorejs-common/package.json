@@ -39,8 +39,10 @@
   "license": "ISC",
   "dependencies": {
     "binarysearch": "^1.0.0",
-    "moment": "^2.17.1",
-    "underscore": "^1.8.3",
     "xspans": "^1.0.0"
+  },
+  "peerDependencies": {
+    "moment": "^2.17.1",
+    "underscore": "^1.8.3"
   }
 }

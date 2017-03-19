@@ -19,6 +19,10 @@ if (env === 'build') {
 const config = {
     entry: __dirname + '/src/index.js',
     devtool: 'source-map',
+    externals: {
+        moment: 'moment',
+        underscore: 'underscore'
+    },
     output: {
         path: __dirname + '/lib',
         filename: outputFile,
