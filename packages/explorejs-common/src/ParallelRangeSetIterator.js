@@ -1,5 +1,5 @@
-const _ = require('underscore');
-const Range = require('./Range');
+import _ from 'underscore';
+import Range from './Range';
 const defaultOptions = {
     startLeft: 0, startRight: 0, endLeft: null, endRight: null,
     pairMode: false // assure pairs are changing (starting with both left and right set + edge cases)
