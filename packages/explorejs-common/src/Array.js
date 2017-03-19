@@ -14,21 +14,18 @@ class Array {
         const bLength = b.length;
         var result = [];
         var i1 = 0, i2 = 0;
+
         while (i1 < aLength || i2 < bLength) {
             if (i1 === aLength) {
                 result.push(b[i2++]);
-            }
-            else if (i2 === bLength) {
+            } else if (i2 === bLength) {
                 result.push(a[i1++]);
-            }
-            else if (comparator(a[i1], b[i2]) === 0) {
+            } else if (comparator(a[i1], b[i2]) === 0) {
                 result.push(b[i2++]);
                 i1++;
-            }
-            else if (comparator(a[i1], b[i2]) < 0) {
+            } else if (comparator(a[i1], b[i2]) < 0) {
                 result.push(a[i1++]);
-            }
-            else {
+            } else {
                 result.push(b[i2++]);
             }
         }

@@ -2,6 +2,7 @@ var FactoryDictionary = require('./FactoryDictionary');
 /**
  * @property {FactoryDictionary} listeners
  */
+
 class Event {
     constructor() {
         this.listeners = new FactoryDictionary(()=>[]);
@@ -13,6 +14,7 @@ class Event {
 
     removeListener(type, callback) {
         var listeners = this.listeners.get(type);
+
         for (var listener of listeners) {
             if (listener === callback) {
                 listeners.splice(listeners.indexOf(listener), 1);
@@ -28,6 +30,7 @@ class Event {
      */
     fireEvent(name, eventData) {
         var listeners = this.listeners.get(name);
+
         for (var listener of listeners) {
             listener(eventData);
         }
