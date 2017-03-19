@@ -11,8 +11,9 @@ class IndexedList {
      * @return {IndexedList}
      */
     static fromArray(array, key) {
-        var l = new IndexedList();
-        for (var item of array) {
+        const l = new IndexedList();
+
+        for (let item of array) {
             l.add(item[key], item);
         }
         return l;
@@ -21,8 +22,7 @@ class IndexedList {
     add(key, item) {
         if (!this.contains(key)) {
             this.set(key, item);
-        }
-        else {
+        } else {
             throw new Error('Cannot duplicate key when adding');
         }
     }
@@ -37,7 +37,8 @@ class IndexedList {
     }
 
     remove(key) {
-        var value = this._dict[key];
+        const value = this._dict[key];
+
         delete this._dict[key];
         this._values.splice(this._values.indexOf(value), 1);
         this._keys.splice(this._keys.indexOf(key), 1);
@@ -59,14 +60,12 @@ class IndexedList {
         return this._dict;
     }
 
-
     get(key) {
         return this._dict[key];
     }
 
-
     each(callback) {
-        for (var i = 0; i < this._values.length; i++) {
+        for (let i = 0; i < this._values.length; i++) {
             callback(this._keys[i], this._values[i], i);
         }
     }
