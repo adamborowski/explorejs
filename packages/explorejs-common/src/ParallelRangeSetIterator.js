@@ -77,17 +77,17 @@ class ParallelRangeSetIterator {
       if (nextLeft && nextRight && leftPoint === rightPoint) {
         if (left || right) {
           if (left) {
-              leftPoint = left.end;
-            }
+            leftPoint = left.end;
+          }
                 else {
-              leftPoint = -Infinity;
-            }
+            leftPoint = -Infinity;
+          }
           if (right) {
-              rightPoint = right.end;
-            }
+            rightPoint = right.end;
+          }
                 else {
-              rightPoint = -Infinity;
-            }
+            rightPoint = -Infinity;
+          }
         }
       }
 

@@ -120,12 +120,12 @@ class DiffCalculator {
         var maxSourceCandidate = null;
         for (var source of sources) {
           if (source.index < source.length) {
-              const candidate = source.array[source.index];
-              if (maxSource == null || cmpFn(candidate, maxSourceCandidate) < 0) {
-                  maxSource = source;
-                  maxSourceCandidate = candidate;
-                }
+            const candidate = source.array[source.index];
+            if (maxSource == null || cmpFn(candidate, maxSourceCandidate) < 0) {
+              maxSource = source;
+              maxSourceCandidate = candidate;
             }
+          }
         }
         if (maxSource == null) {
           return result; // there are no elements left
