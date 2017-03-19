@@ -8,10 +8,12 @@
     "babel-loader": "6.2.10",
     "babel-preset-es2015": "6.22.0",
     "chai": "3.4.1",
+    "chai-things": "^0.2.0",
     "eslint": "^3.18.0",
     "eslint-loader": "1.6.1",
     "sinon": "^1.4.0",
     "sinon-chai": "^2.8.0",
-    "webpack": "2.2.1"
+    "webpack": "2.2.1",
+    "hamjest": "^2.13.0"
   }
 }

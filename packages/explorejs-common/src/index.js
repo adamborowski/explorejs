@@ -12,6 +12,7 @@ import OrderedSegmentArray from './OrderedSegmentArray';
 import ParallelRangeSetIterator from './ParallelRangeSetIterator';
 import Range from './Range';
 import RangeScopedEvent from './RangeScopedEvent';
+import TestUtil from '../test/TestUtil';
 
 export {
     MergeOperation,
@@ -27,5 +28,6 @@ export {
     OrderedSegmentArray,
     ParallelRangeSetIterator,
     Range,
-    RangeScopedEvent
+    RangeScopedEvent,
+    TestUtil
 };

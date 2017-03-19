@@ -1,0 +1,35 @@
+{
+  "name": "explorejs-lib",
+  "version": "0.0.0",
+  "description": "library to enable big-data in ui time-series components",
+  "main": "lib/explorejs-lib.js",
+  "scripts": {
+    "build": "webpack --env build --display-error-details",
+    "dev": "webpack --display-modules --progress --colors --watch --env dev",
+    "test": "mocha --compilers js:babel-core/register --colors ./test/**/*.test.js",
+    "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.test.js"
+  },
+  "devDependencies": {
+    "random-seed": "^0.3.0",
+    "string-padding": "^1.0.2",
+    "yargs": "6.6.0",
+    "mocha": "2.3.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamborowski/explorejs.git"
+  },
+  "keywords": [
+    "explorejs",
+    "library"
+  ],
+  "author": "Adam Borowski",
+  "license": "ISC",
+  "dependencies": {
+    "binarysearch": "^1.0.0",
+    "explorejs-common": "^0.0.0",
+    "underscore": "^1.8.3",
+    "xspans": "^1.0.0",
+    "moment": "^2.17.1"
+  }
+}
