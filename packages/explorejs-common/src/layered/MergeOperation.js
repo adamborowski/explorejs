@@ -1,4 +1,7 @@
-var DiffRangeSet = require('../DiffRangeSet');
+/* eslint-disable camelcase */
+
+const DiffRangeSet = require('../DiffRangeSet');
+
 module.exports = class MergeOperation {
     /**
      *
@@ -11,11 +14,11 @@ module.exports = class MergeOperation {
      */
     static execute(B, T, F, R, copyFn) {
         // R - F1
-        var R_sub_F1 = DiffRangeSet.subtract(R, F, null, null, null, null, copyFn);
+        const R_sub_F1 = DiffRangeSet.subtract(R, F, null, null, null, null, copyFn);
         // T2 = (R-F1)+T1
-        var T2Diff = DiffRangeSet.add(T, R_sub_F1.result, null, null, null, null, copyFn);
+        const T2Diff = DiffRangeSet.add(T, R_sub_F1.result, null, null, null, null, copyFn);
         // B2 = B1 - R
-        var B2Diff = DiffRangeSet.subtract(B, R, null, null, null, null, copyFn);
+        const B2Diff = DiffRangeSet.subtract(B, R, null, null, null, null, copyFn);
 
         return {
             T: T2Diff,
