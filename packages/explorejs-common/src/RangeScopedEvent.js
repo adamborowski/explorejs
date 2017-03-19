@@ -40,6 +40,7 @@ class RangeScopedEvent {
                 return listener;
             }
         }
+        return null;
     }
 
     removeListener(type, callback) {
@@ -51,6 +52,7 @@ class RangeScopedEvent {
                 return listener;
             }
         }
+        return null;
     }
 
     /**

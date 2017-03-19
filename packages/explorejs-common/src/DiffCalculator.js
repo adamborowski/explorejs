@@ -18,21 +18,21 @@ class DiffCalculator {
      */
     static compute(leftSet, rightSet, {
         leftStart = 0, rightStart = 0, leftEnd = leftSet.length, rightEnd = rightSet.length,
-        groupFn = r=>r.levelId, copyFn = r=>({levelId: r.levelId})
+        groupFn = r => r.levelId, copyFn = r => ({levelId: r.levelId})
     } = {}) {
 
-        const groups = new FactoryDictionary(g=>({leftSet: [], rightSet: [], group: g}));
+        const groups = new FactoryDictionary(g => ({leftSet: [], rightSet: [], group: g}));
 
-        leftSet.slice(leftStart, leftEnd).forEach(r=>groups.get(groupFn(r)).leftSet.push(r));
-        rightSet.slice(rightStart, rightEnd).forEach(r=>groups.get(groupFn(r)).rightSet.push(r));
+        leftSet.slice(leftStart, leftEnd).forEach(r => groups.get(groupFn(r)).leftSet.push(r));
+        rightSet.slice(rightStart, rightEnd).forEach(r => groups.get(groupFn(r)).rightSet.push(r));
 
-        const diffs = groups.getValues().map(g=>this.diffSameRanges(g.leftSet, g.rightSet, copyFn));
+        const diffs = groups.getValues().map(g => this.diffSameRanges(g.leftSet, g.rightSet, copyFn));
 
-        var cmpFn = (a, b)=>a.start - b.start;
-        var mergedDiff = {
-            added: this.mergeSortedArrays(diffs.map(a=>a.added), cmpFn),
-            removed: this.mergeSortedArrays(diffs.map(a=>a.removed), cmpFn),
-            resized: this.mergeSortedArrays(diffs.map(a=>a.resized), cmpFn)
+        const cmpFn = (a, b) => a.start - b.start;
+        const mergedDiff = {
+            added: this.mergeSortedArrays(diffs.map(a => a.added), cmpFn),
+            removed: this.mergeSortedArrays(diffs.map(a => a.removed), cmpFn),
+            resized: this.mergeSortedArrays(diffs.map(a => a.resized), cmpFn)
         };
 
         return mergedDiff;
@@ -41,22 +41,22 @@ class DiffCalculator {
 
     static relations() {
         return {
-            isBefore: (subject, other)=>subject.end <= other.start,
-            isAfter: (subject, other)=>subject.start >= other.end,
-            hasCommon: (subject, other)=>subject.end > other.start && subject.start < other.end,
-            isEqual: (subject, other)=>subject.start === other.start && subject.end === other.end
+            isBefore: (subject, other) => subject.end <= other.start,
+            isAfter: (subject, other) => subject.start >= other.end,
+            hasCommon: (subject, other) => subject.end > other.start && subject.start < other.end,
+            isEqual: (subject, other) => subject.start === other.start && subject.end === other.end
         };
     }
 
-    static diffSameRanges(leftSet, rightSet, copyFn = r=>({levelId: r.levelId})) {
-        var leftIndex = 0;
-        var rightIndex = 0;
-        var leftLength = leftSet.length;
-        var rightLength = rightSet.length;
-        var added = [];
-        var resized = [];
-        var removed = [];
-        var relations = this.relations();
+    static diffSameRanges(leftSet, rightSet, copyFn = r => ({levelId: r.levelId})) {
+        let leftIndex = 0;
+        let rightIndex = 0;
+        const leftLength = leftSet.length;
+        const rightLength = rightSet.length;
+        const added = [];
+        const resized = [];
+        const removed = [];
+        const relations = this.relations();
 
         while (true) {
             const rightIsPresent = rightIndex < rightLength;
@@ -87,7 +87,7 @@ class DiffCalculator {
                     leftIndex++;
                 } else {
                     // it has common part
-                    var resizedRange = copyFn(left);
+                    const resizedRange = copyFn(left);
 
                     resizedRange.existing = left;
                     resizedRange.start = right.start;
@@ -106,18 +106,18 @@ class DiffCalculator {
      * @param cmpFn
      * @return Object[]
      */
-    static mergeSortedArrays(sortedArrays, cmpFn = (a, b)=>a - b) {
+    static mergeSortedArrays(sortedArrays, cmpFn = (a, b) => a - b) {
 
-        var result = [];
+        const result = [];
 
-        var sources = sortedArrays.map(a=>({index: 0, length: a.length, array: a}));
+        const sources = sortedArrays.map(a => ({index: 0, length: a.length, array: a}));
 
         while (true) {
             // increase
-            var maxSource = null;
-            var maxSourceCandidate = null;
+            let maxSource = null;
+            let maxSourceCandidate = null;
 
-            for (var source of sources) {
+            for (let source of sources) {
                 if (source.index < source.length) {
                     const candidate = source.array[source.index];
 
