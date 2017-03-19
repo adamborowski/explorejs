@@ -6,7 +6,7 @@ export default class DataRequest {
         this.serieId = serieId;
         this.level = level;
         if (openTime > closeTime) {
-            var tmp = openTime;
+            const tmp = openTime;
 
             openTime = closeTime;
             closeTime = tmp;

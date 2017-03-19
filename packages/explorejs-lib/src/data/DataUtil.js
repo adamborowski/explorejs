@@ -1,6 +1,6 @@
 export default class DataUtil {
     static boundGetter(levelId) {
-        if (levelId == 'raw') {
+        if (levelId === 'raw') {
             return DataUtil.rawBoundGetter;
         }
         return DataUtil.aggregatedBoundGetter;

@@ -17,17 +17,17 @@ export default class SerieCache {
     }
 
     setup() {
-        var manifest = this._serieManifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
-        var levels = manifest.levels;
+        const manifest = this._serieManifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
+        const levels = manifest.levels;
 
         this._levelCacheSet = new IndexedList();
         this._levelProjectionEventSet = new IndexedList();
 
-        var allLevels = [{id: 'raw', step: 0}].concat(levels).sort((a, b)=>a.step - b.step);
+        const allLevels = [{id: 'raw', step: 0}].concat(levels).sort((a, b) => a.step - b.step);
 
         this._disposer = new Builder().withLevelIds(allLevels.map(a=>a.id)).build();
-        for (var level of allLevels) {
-            var levelCache = new LevelCache(level);
+        for (let level of allLevels) {
+            const levelCache = new LevelCache(level);
 
             levelCache.SerieCache = this;
             this._levelCacheSet.add(level.id, levelCache);
@@ -43,15 +43,15 @@ export default class SerieCache {
      * @param data
      */
     putDataAtLevel(levelId, data) {
-        if (data.length == 0) {
+        if (data.length === 0) {
             // console.info('SerieCache, no data put at level', levelId);
             return;
         }
         this._levelCacheSet.get(levelId).putData(data);
-        var projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(levelId, data)]);
+        const projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(levelId, data)]);
 
-        for (var diff of projectionDiffs) {
-            var rangeOfDiff = this._getRangeOfDiff(diff.diff);
+        for (let diff of projectionDiffs) {
+            const rangeOfDiff = this._getRangeOfDiff(diff.diff);
 
             if (rangeOfDiff != null) {
                 this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', Range.leftClosed(rangeOfDiff.left, rangeOfDiff.right), diff.diff);
@@ -81,7 +81,7 @@ export default class SerieCache {
             return null;
         }
 
-        var range = {left: Infinity, right: -Infinity};
+        const range = {left: Infinity, right: -Infinity};
 
         function updateRange(array) {
             if (array.length) {
@@ -93,12 +93,12 @@ export default class SerieCache {
         updateRange(diff.added);
         updateRange(diff.removed);
         updateRange(diff.resized);
-        return range.left == Infinity && range.right == -Infinity ? null : range;
+        return range.left === Infinity && range.right === -Infinity ? null : range;
     }
 
     getRangeOfData(levelId, data) {
         if (data.length) {
-            if (levelId == 'raw') {
+            if (levelId === 'raw') {
                 return {start: data[0].$t, end: data[data.length - 1].$t};
             }
             return {start: data[0].$s, end: data[data.length - 1].$e};

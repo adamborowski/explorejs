@@ -11,8 +11,8 @@ export default class LevelCache {
     }
 
     setup() {
-        this._leftBoundKey = this.level.id == 'raw' ? '$t' : '$s';
-        this._rightBoundKey = this.level.id == 'raw' ? '$t' : '$e';
+        this._leftBoundKey = this.level.id === 'raw' ? '$t' : '$s';
+        this._rightBoundKey = this.level.id === 'raw' ? '$t' : '$e';
         this._segmentArray = new OrderedSegmentArray({
             leftBoundClosed: true,
             rightBoundClosed: false,
@@ -33,7 +33,7 @@ export default class LevelCache {
     putData(data) {
         // this.events.fireEvent('data', this._segmentArray._)
         // todo fire range-scoped events
-        if (data.length == 0) {
+        if (data.length === 0) {
             // console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
         } else {
             this._segmentArray.mergeRange(data);
@@ -42,10 +42,12 @@ export default class LevelCache {
                 end: data[data.length - 1][this._rightBoundKey]
             }]);
             // <debug>
+            /* eslint-disable */
             this._debug_data_index = this._dataIndex.toObjects('start', 'end');
             // </debug>
             // if (data[0].$ss != null) {
-            //     console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
+            //     console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id}
+            // \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
             // }
         }
     }

@@ -16,7 +16,7 @@ export default class MerginbBatch {
     }
 
     createRangeQueue() {
-        return new FactoryDictionary((serieId)=>new FactoryDictionary((levelId)=>({
+        return new FactoryDictionary((serieId) => new FactoryDictionary((levelId) => ({
             serieId,
             levelId,
             ranges: []
@@ -29,9 +29,9 @@ export default class MerginbBatch {
     addRequest(request) {
         const pendingRanges = this.pendingRanges.get(request.serieId).get(request.level);
         const queuedRanges = this.queuedRanges.get(request.serieId).get(request.level);
-        var requestedRange = {start: request.openTime, end: request.closeTime};
+        const requestedRange = {start: request.openTime, end: request.closeTime};
 
-        var requestedButNotPendingRanges = DiffRangeSet.subtract([requestedRange], pendingRanges.ranges).result;
+        const requestedButNotPendingRanges = DiffRangeSet.subtract([requestedRange], pendingRanges.ranges).result;
 
         queuedRanges.ranges = DiffRangeSet.add(queuedRanges.ranges, requestedButNotPendingRanges).result;
         this.deferredAction.invoke();
@@ -40,11 +40,11 @@ export default class MerginbBatch {
     _delayedPerformRequest() {
         console.time('delayed perform');
         const queuedRangeSets = this.getRangeSet(this.queuedRanges);
-        var requests = _.flatten(queuedRangeSets.map(set=>set.ranges.map(r =>new DataRequest(set.serieId, set.levelId, r.start, r.end))));
+        const requests = _.flatten(queuedRangeSets.map(set => set.ranges.map(r => new DataRequest(set.serieId, set.levelId, r.start, r.end))));
 
         // add all queued ranges to pending ranges, clear queued ranges
-        for (var queuedRangeSet of queuedRangeSets) {
-            var pendingSet = this.pendingRanges.get(queuedRangeSet.serieId).get(queuedRangeSet.levelId);
+        for (let queuedRangeSet of queuedRangeSets) {
+            const pendingSet = this.pendingRanges.get(queuedRangeSet.serieId).get(queuedRangeSet.levelId);
 
             pendingSet.ranges = DiffRangeSet.add(pendingSet.ranges, queuedRangeSet.ranges).result;
         }
@@ -56,10 +56,10 @@ export default class MerginbBatch {
     }
 
     getRangeSet(queue) {
-        var arr = [];
+        const arr = [];
 
-        for (var a of queue.getValues()) {
-            for (var b of a.getValues()) {
+        for (let a of queue.getValues()) {
+            for (let b of a.getValues()) {
                 arr.push(b);
             }
         }
@@ -73,8 +73,8 @@ export default class MerginbBatch {
     requestsLoaded(requests) {
         console.time('requests loaded');
         // remove ranges from given requests from pending requests
-        for (var request of requests) {
-            var pendingRangeSet = this.pendingRanges.get(request.serieId).get(request.level);
+        for (let request of requests) {
+            const pendingRangeSet = this.pendingRanges.get(request.serieId).get(request.level);
 
             pendingRangeSet.ranges = DiffRangeSet.subtract(pendingRangeSet.ranges, [{
                 start: request.openTime,

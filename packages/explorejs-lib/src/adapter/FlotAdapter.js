@@ -41,11 +41,11 @@ export default class FlotAdapter {
             colors: ['#000000', '#000000', '#78a6a7']
         });
 
-        var throttledUpdate = _.debounce(range=> {
+        const throttledUpdate = _.debounce(range => {
             this.dataSource.updateViewState(range.start, range.end, this.plot.width());
         }, 100);
 
-        this.chart.on('plot_setupGrid', ()=> {
+        this.chart.on('plot_setupGrid', () => {
             throttledUpdate(this.getDisplayedRange());
         });
 
@@ -53,7 +53,7 @@ export default class FlotAdapter {
     }
 
     getDisplayedRange() {
-        var a = this.plot.getOptions().xaxes[0];
+        const a = this.plot.getOptions().xaxes[0];
 
         return {start: a.min, end: a.max};
     }
@@ -61,7 +61,7 @@ export default class FlotAdapter {
     setDisplayedRange(start, end) {
         start = new Date(start).getTime();
         end = new Date(end).getTime();
-        var a = this.plot.getOptions().xaxes[0];
+        const a = this.plot.getOptions().xaxes[0];
 
         a.min = start;
         a.max = end;
@@ -70,10 +70,10 @@ export default class FlotAdapter {
     }
 
     _makeValueIndex() {
-        var map = {};
+        const map = {};
         const array = this.chart.series[0].data;
 
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             map[array[i][0]] = i;
         }
         return map;
@@ -82,22 +82,23 @@ export default class FlotAdapter {
     onProjectionRecompile(diff) {
         const f = 'YYYY-MM-DD HH:mm:ss';
 
+        /* eslint-disable */
         function id(p) {
-            var start = p.start;
-            var end = p.end;
+            const start = p.start;
+            const end = p.end;
 
             return moment(start).format(f) + '~' + moment(end).format(f) + '@' + p.levelId;
         }
 
         console.time('wrapper diff');
-        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
+        const dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
 
         console.timeEnd('wrapper diff');
 
-        const values = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.a]);
-        const tValues = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.t]);
-        const bValues = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.b]);
-        const times = dataDiff.result.map(a=>a.start);
+        const values = dataDiff.result.map(a => [a.start, a.levelId == 'raw' ? a.data.v : a.data.a]);
+        const tValues = dataDiff.result.map(a => [a.start, a.levelId == 'raw' ? a.data.v : a.data.t]);
+        const bValues = dataDiff.result.map(a => [a.start, a.levelId == 'raw' ? a.data.v : a.data.b]);
+        const times = dataDiff.result.map(a => a.start);
 
         this.plot.setData([
             {id: 'top', data: tValues, shadowSize: 0, lines: false},

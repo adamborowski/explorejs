@@ -41,7 +41,7 @@ export default class ViewState {
         this._scale = (this._end - this._start) / this._viewportWidth;
         this._currentLevelId = this._calculateLevelId();
         //
-        var newState = this.getState();
+        const newState = this.getState();
 
         if (!_.isEqual(newState, this._lastState)) {
             this._event.fireEvent(EVENT_NAME, this);
@@ -63,17 +63,19 @@ export default class ViewState {
      * @private
      */
     _calculateLevelId() {
-        var levels = this._levels;
-        var expectedUnitWidth = this._preferredUnitWidth;
+        const levels = this._levels;
+        const expectedUnitWidth = this._preferredUnitWidth;
         // go from the bigger level (eg. 1y) and find first with unit displayed width not greater than WantedUnitWidth
 
-        for (var i = levels.length - 1; i >= 0; i--) {
-            var level = levels[i];
-            var unitWidth = level.step / this._scale;
+        for (let i = levels.length - 1; i >= 0; i--) {
+            const level = levels[i];
+            const unitWidth = level.step / this._scale;
             // console.log(`${level.id} will take ${unitWidth} ~ should be closely under ${expectedUnitWidth}`);
 
             if (unitWidth <= expectedUnitWidth) {
-                return level.id; // todo accept level if it not break new rule (minUnitWidth - np 0.8) if not return upper on - because this will require too many data points, for example 10k on 1k wide chart
+                return level.id;
+                /* todo accept level if it not break new rule (minUnitWidth - np 0.8) if not return upper on -
+                 because this will require too many data points, for example 10k on 1k wide chart*/
             }
         }
         return 'raw';

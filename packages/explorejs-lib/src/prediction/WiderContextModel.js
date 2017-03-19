@@ -9,15 +9,15 @@ export default class WiderContextModel extends PredictionModel {
     }
 
     update() {
-        var currentLevelId = this.viewState.getCurentLevelId();
-        var start = this.viewState.getStart();
-        var end = this.viewState.getEnd();
-        var widerLevel = this.getWiderLevel(currentLevelId);
+        const currentLevelId = this.viewState.getCurentLevelId();
+        const start = this.viewState.getStart();
+        const end = this.viewState.getEnd();
+        const widerLevel = this.getWiderLevel(currentLevelId);
 
         if (widerLevel) {
-            var padWiderStart = start - (end - start) * this.contextPaddingRatio;
-            var padWiderEnd = end + (end - start) * this.contextPaddingRatio;
-            var paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
+            const padWiderStart = start - (end - start) * this.contextPaddingRatio;
+            const padWiderEnd = end + (end - start) * this.contextPaddingRatio;
+            const paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
 
             this.SerieCache.getLevelCache(widerLevel).requestDataForRange(
                 paddedWiderRange.expandToFitPrecision(this.viewState.pixelsToTime(this.roundPrecision * this.viewState.getViewportWidth())
@@ -26,7 +26,7 @@ export default class WiderContextModel extends PredictionModel {
     }
 
     getWiderLevel(levelId) {
-        var ids = this.viewState.getLevels().map(a=>a.id);
+        const ids = this.viewState.getLevels().map(a => a.id);
 
         return ids[ids.indexOf(levelId) + 1];
     }
