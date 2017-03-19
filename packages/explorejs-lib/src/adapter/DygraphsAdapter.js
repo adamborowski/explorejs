@@ -1,6 +1,4 @@
 import DataSource from '../modules/DataSource';
-import moment from 'moment';
-import _ from 'underscore';
 export default class DygraphsAdapter {
     /**
      *
@@ -24,7 +22,7 @@ export default class DygraphsAdapter {
 
         const updateViewStateBasedOnDisplayedRange = ()=> {
             if (this.plot) { // ignore first time callback
-                var range = this.getDisplayedRange();
+                const range = this.getDisplayedRange();
 
                 this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
             }
@@ -46,7 +44,7 @@ export default class DygraphsAdapter {
     }
 
     getDisplayedRange() {
-        var a = this.plot.xAxisRange();
+        const a = this.plot.xAxisRange();
 
         return {start: a[0], end: a[1]};
     }
@@ -59,10 +57,10 @@ export default class DygraphsAdapter {
 
     onProjectionRecompile() {
 
-        var result = this.dataSource.getWrappers();
+        const result = this.dataSource.getWrappers();
 
         console.time('adapter update');
-        const bars = result.map(a=>[new Date(a.start), a.levelId == 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
+        const bars = result.map(a=>[new Date(a.start), a.levelId === 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
 
         this.plot.updateOptions({
             file: bars

@@ -46,7 +46,10 @@ const config = {
     },
     resolve: {
         modules: [path.resolve('./src'), path.resolve('./node_modules')],
-        extensions: ['.json', '.js']
+        extensions: ['.json', '.js'],
+        alias: {
+            explorejs$: path.resolve('.')
+        }
     },
     plugins: plugins
 };

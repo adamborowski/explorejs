@@ -71,32 +71,32 @@ export default class JQPlotAdapter {
 
         });
 
-        var throttledUpdate = _.debounce(range=> {
+        const throttledUpdate = _.debounce(range => {
             this.dataSource.updateViewState(range.start, range.end, this.plot._width);
         }, 100);
 
-        this.chart.on('jqplotPostReplot', ()=> {
+        this.chart.on('jqplotPostReplot', () => {
             throttledUpdate(this.getDisplayedRange());
         });
-        this.chart.on('jqplotZoom', ()=> {
+        this.chart.on('jqplotZoom', () => {
             const range = this.getDisplayedRange();
 
             this.setDisplayedRange(range.start, range.end);
             throttledUpdate(range);
         });
 
-        var replot = this.plot.replot;
+        const replot = this.plot.replot;
 
-        this.plot.replot = (opts = {})=> {
-            var data = opts.data || this.plot.data;
-            var range = this.getDisplayedRange();
-            const boundFilter = data=>data[1] != null && !isNaN(data[1]) && data[0] >= range.start && data[0] <= range.end;
-            const maxRed = (acc, val)=>Math.max(acc, val[1]);
-            const minRed = (acc, val)=>Math.min(acc, val[1]);
+        this.plot.replot = (opts = {}) => {
+            const data = opts.data || this.plot.data;
+            const range = this.getDisplayedRange();
+            const boundFilter = data => data[1] != null && !isNaN(data[1]) && data[0] >= range.start && data[0] <= range.end;
+            const maxRed = (acc, val) => Math.max(acc, val[1]);
+            const minRed = (acc, val) => Math.min(acc, val[1]);
 
-            if (data.length == 3) {
-                var max = data[0].filter(boundFilter).reduce(maxRed, Number.NEGATIVE_INFINITY);
-                var min = data[2].filter(boundFilter).reduce(minRed, Number.POSITIVE_INFINITY);
+            if (data.length === 3) {
+                const max = data[0].filter(boundFilter).reduce(maxRed, Number.NEGATIVE_INFINITY);
+                const min = data[2].filter(boundFilter).reduce(minRed, Number.POSITIVE_INFINITY);
 
                 if (!opts.axes) {
                     opts.axes = {};
@@ -111,39 +111,41 @@ export default class JQPlotAdapter {
         };
 
         this.plot.doFillBetweenLines = function () {
-            var fb = this.fillBetween;
-            var sid1 = fb.series1;
-            var sid2 = fb.series2;
+            let gd;
+            let tempgd;
+            const fb = this.fillBetween;
+            const sid1 = fb.series1;
+            const sid2 = fb.series2;
             // first series should always be lowest index
-            var id1 = (sid1 < sid2) ? sid1 : sid2;
-            var id2 = (sid2 > sid1) ? sid2 : sid1;
+            const id1 = (sid1 < sid2) ? sid1 : sid2;
+            const id2 = (sid2 > sid1) ? sid2 : sid1;
 
-            var series1 = this.series[id1];
-            var series2 = this.series[id2];
+            const series1 = this.series[id1];
+            const series2 = this.series[id2];
 
             if (series2.renderer.smooth) {
-                var tempgd = series2.renderer._smoothedData.slice(0).reverse();
+                tempgd = series2.renderer._smoothedData.slice(0).reverse();
             } else {
-                var tempgd = series2.gridData.slice(0).reverse();
+                tempgd = series2.gridData.slice(0).reverse();
             }
 
             if (series1.renderer.smooth) {
-                var gd = series1.renderer._smoothedData.concat(tempgd);
+                gd = series1.renderer._smoothedData.concat(tempgd);
             } else {
-                var gd = series1.gridData.concat(tempgd);
+                gd = series1.gridData.concat(tempgd);
             }
 
             gd = gd.filter(function (a) {
                 return a[1] != null;
             });
 
-            var color = (fb.color !== null) ? fb.color : this.series[sid1].fillColor;
-            var baseSeries = (fb.baseSeries !== null) ? fb.baseSeries : id1;
+            const color = (fb.color !== null) ? fb.color : this.series[sid1].fillColor;
+            const baseSeries = (fb.baseSeries !== null) ? fb.baseSeries : id1;
 
             // now apply a fill to the shape on the lower series shadow canvas,
             // so it is behind both series.
-            var sr = this.series[baseSeries].renderer.shapeRenderer;
-            var opts = {fillStyle: color, fill: true, closePath: true};
+            const sr = this.series[baseSeries].renderer.shapeRenderer;
+            const opts = {fillStyle: color, fill: true, closePath: true};
 
             sr.draw(series1.shadowCanvas._ctx, gd, opts);
         };
@@ -152,7 +154,7 @@ export default class JQPlotAdapter {
     }
 
     getDisplayedRange() {
-        var a = this.plot.axes.xaxis;
+        const a = this.plot.axes.xaxis;
 
         return {start: a.min, end: a.max};
     }
@@ -171,10 +173,10 @@ export default class JQPlotAdapter {
     }
 
     _makeValueIndex() {
-        var map = {};
+        const map = {};
         const array = this.chart.series[0].data;
 
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             map[array[i][0]] = i;
         }
         return map;
@@ -183,21 +185,22 @@ export default class JQPlotAdapter {
     onProjectionRecompile(diff) {
         const f = 'YYYY-MM-DD HH:mm:ss';
 
+        /* eslint-disable */
         function id(p) {
-            var start = p.start;
-            var end = p.end;
+            const start = p.start;
+            const end = p.end;
 
             return moment(start).format(f) + '~' + moment(end).format(f) + '@' + p.levelId;
         }
 
         console.time('wrapper diff');
-        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
+        const dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
 
         console.timeEnd('wrapper diff');
 
-        const values = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.a]);
-        const tValues = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.t]);
-        const bValues = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.b]);
+        const values = dataDiff.result.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.a]);
+        const tValues = dataDiff.result.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.t]);
+        const bValues = dataDiff.result.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.b]);
 
         this.plot.replot({
             data: [

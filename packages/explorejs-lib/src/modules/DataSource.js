@@ -31,9 +31,11 @@ export default class DataSource {
      * @return {RangeType[]}
      */
     _wrapRange(range, oneMore = false) {
-        var dataPoints = this.serieCache.getLevelCache(range.levelId).getRange(Range[range.levelId == 'raw' ? 'leftClosed' : 'opened'](range.start, range.end), oneMore);
-        var boundGetter = DataUtil.boundGetter(range.levelId);
-        var wrappers = dataPoints.map(d=>({
+        const dataPoints = this.serieCache
+            .getLevelCache(range.levelId)
+            .getRange(Range[range.levelId === 'raw' ? 'leftClosed' : 'opened'](range.start, range.end), oneMore);
+        const boundGetter = DataUtil.boundGetter(range.levelId);
+        const wrappers = dataPoints.map(d => ({
             data: d,
             start: boundGetter.start(d),
             end: boundGetter.end(d),
@@ -56,7 +58,7 @@ export default class DataSource {
     _wrapRanges(ranges, lastOneMore = true) {
         const lastRangeIndex = ranges.length - 1;
 
-        return ranges.map((r, i)=>this._wrapRange(r, lastOneMore && i == lastRangeIndex)).reduce((a, b)=>a.concat(b), []);
+        return ranges.map((r, i) => this._wrapRange(r, lastOneMore && i === lastRangeIndex)).reduce((a, b) => a.concat(b), []);
     }
 
     /**
@@ -64,13 +66,14 @@ export default class DataSource {
      * Get data sufficient to update a chart
      * @param diff
      * @return {WrapperDiffType}
-     * for new data - special data wrapper: which level, actual range (note that it may be different than aggregation range after projeciton compilation), and actual data point
+     * for new data - special data wrapper: which level, actual range (note that it may be
+     * different than aggregation range after projeciton compilation), and actual data point
      */
     calculateWrappersDiffToPrevious() {
         console.time('calculateWrappersDiffToPrevious');
         try {
             return DiffCalculator.compute(this._oldWrappers || [], this._newWrappers, {
-                copyFn: a=>({
+                copyFn: a => ({
                     levelId: a.levelId,
                     data: a.data
                 })

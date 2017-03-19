@@ -12,7 +12,7 @@ export default class WrapperIdFactory {
     }
 
     static globalDebug(levelId, data) {
-        if (levelId == 'raw') {
+        if (levelId === 'raw') {
             return `${levelId} [${moment(data.$t).format(FORMAT)}]`;
         }
         return `${levelId} [${moment(data.$s).format(FORMAT)}] [${moment(data.$e).format(FORMAT)}]`;

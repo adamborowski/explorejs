@@ -23,7 +23,7 @@ export default class DynamicProjection {
     }
 
     cacheUpdateHandler(name, range, listenerRange, diff) {
-        var projectionTruncated = this.getProjectionTruncated(listenerRange.left, listenerRange.right);
+        const projectionTruncated = this.getProjectionTruncated(listenerRange.left, listenerRange.right);
 
         this._callback(projectionTruncated);
     }
@@ -39,9 +39,11 @@ export default class DynamicProjection {
      * @param viewState {ViewState}
      */
     onViewStateUpdate(viewState) {
-        var oldRange = this.currentRange;
-        var newLevelId = viewState.getCurentLevelId();
-        var newRange = Range.opened(viewState.getStart(), viewState.getEnd()).expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
+        const oldRange = this.currentRange;
+        const newLevelId = viewState.getCurentLevelId();
+        const newRange = Range
+            .opened(viewState.getStart(), viewState.getEnd())
+            .expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
 
         if (this.currentEvent != null) {
             this.currentEvent.removeListener('recompile', this.cacheUpdateHandler);
@@ -62,18 +64,18 @@ export default class DynamicProjection {
     }
 
     calcDiffDueToProjectionChange(currentLevelId, newLevelId, oldRange, newRange) {
-        var oldProjection = this.SerieCache.getProjectionDisposer().getProjection(currentLevelId);
-        var newProjection = this.SerieCache.getProjectionDisposer().getProjection(newLevelId);
+        const oldProjection = this.SerieCache.getProjectionDisposer().getProjection(currentLevelId);
+        const newProjection = this.SerieCache.getProjectionDisposer().getProjection(newLevelId);
         const oldCut = OrderedSegmentArray.cutRangeSet(oldProjection.projection, oldRange.left, oldRange.right, this._copyFn);
         const newCut = OrderedSegmentArray.cutRangeSet(newProjection.projection, newRange.left, newRange.right, this._copyFn);
-        var oldProjectionRanges = oldCut.overlap;
-        var newProjectionRanges = newCut.overlap;
+        const oldProjectionRanges = oldCut.overlap;
+        const newProjectionRanges = newCut.overlap;
 
         return DiffCalculator.compute(oldProjectionRanges, newProjectionRanges);
     }
 
     getProjectionTruncated(start, end, levelId = this.currentLevelId) {
-        var oldProjection = this.SerieCache.getProjectionDisposer().getProjection(levelId);
+        const oldProjection = this.SerieCache.getProjectionDisposer().getProjection(levelId);
         const oldCut = OrderedSegmentArray.cutRangeSet(oldProjection.projection, start, end, this._copyFn);
 
         return oldCut.overlap;

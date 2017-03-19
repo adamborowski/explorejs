@@ -19,7 +19,7 @@ export default class CacheProjection {
         this.levelId = levelId;
         this.levelIds = levelIds;
         this.levelNumbers = {};
-        for (var i = 0; i < levelIds.length; i++) {
+        for (let i = 0; i < levelIds.length; i++) {
             this.levelNumbers[levelIds[i]] = i;
         }
         /**
@@ -48,7 +48,7 @@ export default class CacheProjection {
      * @return {*} difference: added, removed, resized (all ranges contain levelId)
      */
     recompile(levelId, rangeSet) {
-        if (rangeSet.length == 0) {
+        if (rangeSet.length === 0) {
             console.log('CacheProjection::recompileProjection(): got empty array, no recompile is needed.');
             return null; // no recompile is needed
         }
@@ -58,7 +58,7 @@ export default class CacheProjection {
         if (this.levelNumbers[levelId] < this.levelNumbers[this.levelId]) {
             throw new RangeError('CacheProjecton::recomplieProjection: level outside projection'); // no recompile is needed
         }
-        var mapFn = a=>({
+        const mapFn = a => ({
             start: a.start,
             end: a.end,
             levelId: levelId
@@ -68,13 +68,13 @@ export default class CacheProjection {
         /**
          * @type {{before, overlap, after, start, end}|*}
          */
-        var split = OrderedSegmentArray.splitRangeSetOverlapping(this.projection, rangeSet[0].start, rangeSet[rangeSet.length - 1].end);
+        const split = OrderedSegmentArray.splitRangeSetOverlapping(this.projection, rangeSet[0].start, rangeSet[rangeSet.length - 1].end);
 
-        var layers = this._distributeRangesToLayers(split.overlap, levelId);
+        const layers = this._distributeRangesToLayers(split.overlap, levelId);
 
-        var operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet, (r)=>({levelId: r.levelId}));
+        const operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet, (r) => ({levelId: r.levelId}));
 
-        var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort(this._sortFn).map(a=>({
+        const overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort(this._sortFn).map(a => ({
             start: a.start,
             end: a.end,
             levelId: a.levelId
@@ -82,9 +82,9 @@ export default class CacheProjection {
 
         this.projection = [].concat(split.before, overlappedResult, split.after);
 
-        var added = [].concat(operation.T.added, operation.B.added).sort(this._sortFn);
-        var resized = [].concat(operation.T.resized, operation.B.resized).sort(this._sortFn);
-        var removed = [].concat(operation.T.removed, operation.B.removed).sort(this._sortFn);
+        const added = [].concat(operation.T.added, operation.B.added).sort(this._sortFn);
+        const resized = [].concat(operation.T.resized, operation.B.resized).sort(this._sortFn);
+        const removed = [].concat(operation.T.removed, operation.B.removed).sort(this._sortFn);
 
         return {
             added, removed, resized
@@ -100,16 +100,16 @@ export default class CacheProjection {
             throw new RangeError(`Level of id ${levelId} is not supported.`);
         }
 
-        var B = []; // projection ranges behind the layer
-        var F = []; // projection ranges in front of the layer
-        var T = []; // projection ragnes on the merging layer
+        const B = []; // projection ranges behind the layer
+        const F = []; // projection ranges in front of the layer
+        const T = []; // projection ragnes on the merging layer
 
-        for (var range of rangeSet) {
-            var cmp = this.levelComparator(range, levelId);
+        for (let range of rangeSet) {
+            const cmp = this.levelComparator(range, levelId);
 
             if (cmp > 0) {
                 B.push(range);
-            } else if (cmp == 0) {
+            } else if (cmp === 0) {
                 T.push(range);
             } else {
                 F.push(range);
