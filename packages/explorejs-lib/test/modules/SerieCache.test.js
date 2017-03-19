@@ -1,13 +1,13 @@
-//todo _getRangeOfDiff
-//putDataAtLevel
+// todo _getRangeOfDiff
+// putDataAtLevel
 import * as chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {expect} from 'chai';
 chai.use(sinonChai);
 
-import SerieCache from "../../src/modules/SerieCache";
-import TestUtil from "explorejs-common/test/TestUtil";
+import SerieCache from '../../src/modules/SerieCache';
+import TestUtil from 'explorejs-common/test/TestUtil';
 import Range from 'explorejs-common/src/Range';
 const sma = sinon.match.any;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
@@ -19,9 +19,10 @@ describe('SerieCache', () => {
      * @var {SerieCache}
      */
     var serieCache;
+
     beforeEach(()=> {
-        serieCache = new SerieCache({serieId: "serie01"});
-        //noinspection JSValidateTypes - mock
+        serieCache = new SerieCache({serieId: 'serie01'});
+        // noinspection JSValidateTypes - mock
         serieCache.CacheManager = {
             RequestManager: {
                 getManifestForSerie: function () {
@@ -32,7 +33,7 @@ describe('SerieCache', () => {
                             {id: '10m', step: 600000},
                             {id: '1h', step: 3600000}
                         ]
-                    }
+                    };
                 }
             }
         };
@@ -140,6 +141,7 @@ describe('SerieCache', () => {
          */
         it('different levels', ()=> {
             var scale10m = 10 * 60 * 1000;
+
             setupTest(scale10m);
 
             serieCache.putDataAtLevel('10m', stream('10 11 0.4; 11 12 0.5; 12 13 0.5; 13 14 0.4', scale10m));
@@ -162,7 +164,6 @@ describe('SerieCache', () => {
 
             serieCache.putDataAtLevel('1m', stream('12.1 12.2 0.8; 12.2 12.3 0.5; 12.3 12.4 0.7; 12.4 12.5 0.2', scale10m));
 
-
             expectedDiff = {
                 added: ll('1m 12.1 12.5; 10m 12.5 14', scale10m),
                 removed: ll(''),
@@ -181,17 +182,18 @@ describe('SerieCache', () => {
 
             serieCache.putDataAtLevel('1h', stream('12 18 0.1', scale10m));
 
-
             var expectedDiffForFineLevels = {added: ll('1h 14 18', scale10m), removed: [], resized: []};
+
             expect(listeners.$raw_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
-            expect(listeners.$raw_4_to_14).calledTwice;//listener not overlap
+            expect(listeners.$raw_4_to_14).calledTwice;// listener not overlap
             expect(listeners.$10s_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
-            expect(listeners.$10s_4_to_14).calledTwice;//listener not overlap
+            expect(listeners.$10s_4_to_14).calledTwice;// listener not overlap
             expect(listeners.$1m_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
-            expect(listeners.$1m_4_to_14).calledTwice;//listener not overlap
+            expect(listeners.$1m_4_to_14).calledTwice;// listener not overlap
             expect(listeners.$10m_unbounded).calledWith(sma, sma, sma, expectedDiffForFineLevels);
-            expect(listeners.$10m_4_to_14).calledOnce;//listener not overlap
+            expect(listeners.$10m_4_to_14).calledOnce;// listener not overlap
             var expectedDiffForCoarseLevels = {added: ll('1h 12 18', scale10m), removed: [], resized: []};
+
             expect(listeners.$1h_unbounded).calledWith(sma, sma, sma, expectedDiffForCoarseLevels);
             expect(listeners.$1h_4_to_14).calledWith(sma, sma, sma, expectedDiffForCoarseLevels);
         });

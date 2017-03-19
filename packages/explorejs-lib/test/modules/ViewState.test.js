@@ -1,20 +1,23 @@
-//todo _getRangeOfDiff
-//putDataAtLevel
+// todo _getRangeOfDiff
+// putDataAtLevel
 import * as chai from 'chai';
 var expect = chai.expect;
-import DynamicProjection from "../../src/modules/DynamicProjection";
-import CacheProjection from "../../src/modules/CacheProjection";
-import TestUtil from "explorejs-common/test/TestUtil";
-import Range from "explorejs-common/src/Range";
-import ViewState from "../../src/modules/ViewState";
+
+import DynamicProjection from '../../src/modules/DynamicProjection';
+import CacheProjection from '../../src/modules/CacheProjection';
+import TestUtil from 'explorejs-common/test/TestUtil';
+import Range from 'explorejs-common/src/Range';
+import ViewState from '../../src/modules/ViewState';
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
+
 describe('DynamicProjection', () => {
     /**
      * @var {ViewState}
      */
     var viewState;
+
     beforeEach(()=> {
         viewState = new ViewState([
             {id: '10s', step: 10 * 1000},
@@ -33,6 +36,7 @@ describe('DynamicProjection', () => {
             viewState._scale = scale;
             expect(viewState._calculateLevelId()).to.equal(expectedLevelId);
         };
+
         it('should use raw for low scale', ()=> {
             test(0, 'raw');
         });

@@ -28,9 +28,9 @@ function performDiffTest(config) {
             drawingData.push(levelRanges.map(a => ({start: a.start, end: a.end, levelId})));
             drawingNames.push(levelId);
             levelCaches[levelId].putData(levelRanges.map(x => levelId == 'raw' ? {$t: x.start} : {
-                    $s: x.start,
-                    $e: x.end
-                }).map(a => {
+                $s: x.start,
+                $e: x.end
+            }).map(a => {
                 a.id = WrapperIdFactory.globalDebug(levelId, a);
                 return a;
             }));

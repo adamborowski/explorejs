@@ -1,18 +1,19 @@
-//todo _getRangeOfDiff
-//putDataAtLevel
+// todo _getRangeOfDiff
+// putDataAtLevel
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {expect} from 'chai';
-import Range from "explorejs-common/src/Range";
+import Range from 'explorejs-common/src/Range';
 chai.use(sinonChai);
 
-import LevelCache from "../../src/modules/LevelCache";
-import TestUtil from "explorejs-common/test/TestUtil";
-import DataRequest from "../../src/data/DataRequest";
+import LevelCache from '../../src/modules/LevelCache';
+import TestUtil from 'explorejs-common/test/TestUtil';
+import DataRequest from '../../src/data/DataRequest';
 var rng = TestUtil.rng;
 var l = TestUtil.rangeOnLevel;
 var ll = TestUtil.rangesOnLevel.bind(TestUtil);
+
 describe('LevelCache', () => {
     /**
      * @var {LevelCache}
@@ -24,7 +25,7 @@ describe('LevelCache', () => {
         levelCache = new LevelCache(level);
         scale = level.span;
         addRequestSpy = sinon.spy();
-        //noinspection JSValidateTypes - mock
+        // noinspection JSValidateTypes - mock
         levelCache.SerieCache = {
             options: {serieId: 'foo123'},
             CacheManager: {RequestManager: {addRequest: addRequestSpy}}
@@ -35,11 +36,12 @@ describe('LevelCache', () => {
     function sdata(dataStr) {
         return dataStr.split(';').map(p=> {
             var d = p.trim().split(' ');
+
             if (d.length == 3) {
-                return {$s: Number(d[0]) * scale, $e: Number(d[1]) * scale, v: Number(d[2])}
+                return {$s: Number(d[0]) * scale, $e: Number(d[1]) * scale, v: Number(d[2])};
             }
             if (d.length == 2) {
-                return {$t: Number(d[0]) * scale, v: Number(d[1])}
+                return {$t: Number(d[0]) * scale, v: Number(d[1])};
             }
             throw new RangeError('bad format');
         });
@@ -48,8 +50,9 @@ describe('LevelCache', () => {
     function srng(dataStr) {
         return dataStr.split(';').map(p=> {
             var d = p.trim().split(' ');
+
             if (d.length == 2) {
-                return {start: Number(d[0]) * scale, end: Number(d[1]) * scale}
+                return {start: Number(d[0]) * scale, end: Number(d[1]) * scale};
             }
         });
     }

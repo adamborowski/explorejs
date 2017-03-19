@@ -1,4 +1,4 @@
-import DataSource from "../../src/modules/DataSource";
+import DataSource from '../../src/modules/DataSource';
 const assert = (msg, bool) => {
     if (!bool) {
         throw new Error(msg);
@@ -7,6 +7,7 @@ const assert = (msg, bool) => {
 /**
  * @property {SerieCache} SerieCache
  */
+
 export default class DummyAdapter {
     /**
      * Creates dummy adapter for testing purposes
@@ -44,7 +45,7 @@ export default class DummyAdapter {
     }
 
     zoomOut(step) {
-        this._zoom(1/(step || this.defaultZoomStep));
+        this._zoom(1 / (step || this.defaultZoomStep));
     }
 
     _pan(step) {
@@ -52,6 +53,7 @@ export default class DummyAdapter {
         var end = this.currentEnd;
         var length = end - start;
         var addition = length * step;
+
         this._setView(start + addition, end + addition);
     }
 
@@ -61,6 +63,7 @@ export default class DummyAdapter {
         var middle = (end + start) / 2;
         var length = end - start;
         var addition = length * step;
+
         this._setView(middle - addition / 2, middle + addition / 2);
     }
 
@@ -70,9 +73,9 @@ export default class DummyAdapter {
         this.dataSource.updateViewState(start, end, this.chartWidth);
     }
 
-
     onProjectionRecompile(diff) {
         var wrapperDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
+
         for (const wrapper of wrapperDiff.removed) {
             assert(`wrapper ${wrapper.id} should exist`, this.currentWrappers[wrapper.id] != null);
             delete this.currentWrappers[wrapper.id];
