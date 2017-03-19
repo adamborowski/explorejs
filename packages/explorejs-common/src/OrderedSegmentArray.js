@@ -1,12 +1,13 @@
-var bs = require('binarysearch');
-var _ = require('underscore');
-var Range = require('./Range');
-var options = {
-  leftBoundKey: 'left',
-  rightBoundKey: 'right',
-  leftBoundClosed: true,
-  rightBoundClosed: false
+const bs = require('binarysearch');
+const _ = require('underscore');
+const Range = require('./Range');
+const options = {
+    leftBoundKey: 'left',
+    rightBoundKey: 'right',
+    leftBoundClosed: true,
+    rightBoundClosed: false
 };
+
 /**
  * Implementation of segment array where each segment doesn't overlap each other.
  * All segments all disjoint or touch others
@@ -20,15 +21,15 @@ class OrderedSegmentArray {
      * @param [options.rightBoundClosed]
      */
     constructor(options) {
-      this.options = _.defaults(options, OrderedSegmentArray);
-      this._leftBoundComparator = new Function('e', 'find',
+        this.options = _.defaults(options, OrderedSegmentArray);
+        this._leftBoundComparator = new Function('e', 'find',
             `return e['${this.options.leftBoundKey}'] - find;`
         );
-      this._rightBoundComparator = new Function('e', 'find',
+        this._rightBoundComparator = new Function('e', 'find',
             `return e['${this.options.rightBoundKey}'] - find;`
         );
-      this._data = [];
-      this._log = _.noop;
+        this._data = [];
+        this._log = _.noop;
     }
 
     /**
@@ -36,20 +37,20 @@ class OrderedSegmentArray {
      * @param range must be ordered and not overlap with existing segment
      */
     insertRange(range) {
-      var leftBoundKey = this.options.leftBoundKey;
-      var rightBoundKey = this.options.rightBoundKey;
-      var rangeLeft = range[0][leftBoundKey];
-      var rangeRight = range[range.length - 1][rightBoundKey];
-      var leftNeighborIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeLeft, this._rightBoundComparator);
-      var rightNeighborIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeRight, this._leftBoundComparator);
-      var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
+        const leftBoundKey = this.options.leftBoundKey;
+        const rightBoundKey = this.options.rightBoundKey;
+        const rangeLeft = range[0][leftBoundKey];
+        const rangeRight = range[range.length - 1][rightBoundKey];
+        const leftNeighborIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeLeft, this._rightBoundComparator);
+        const rightNeighborIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeRight, this._leftBoundComparator);
+        const numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
 
-      if (numberSegmentsInside === 0) {
+        if (numberSegmentsInside === 0) {
             //segments are not overlapping
-        this._data.splice(leftNeighborIndex + 1, 0, ...range);
-      } else {
-        throw new Error('You can insert only into a gap. There are items in your range, so you should use mergeRange method');
-      }
+            this._data.splice(leftNeighborIndex + 1, 0, ...range);
+        } else {
+            throw new Error('You can insert only into a gap. There are items in your range, so you should use mergeRange method');
+        }
 
 
     }
@@ -59,41 +60,41 @@ class OrderedSegmentArray {
      * @param range array of segments, can overlap existing segments
      */
     mergeRange(range) {
-      if (range.length === 0) {
-        return;
-      }
-      if (this._data.length === 0) {
-        this._data = range;
-        return;
-      }
-      var leftBoundKey = this.options.leftBoundKey;
-      var rightBoundKey = this.options.rightBoundKey;
-      var rangeLeft = range[0][leftBoundKey];
-      var rangeRight = range[range.length - 1][rightBoundKey];
-      var leftNeighborIndex = OrderedSegmentArray._findBoundBefore(this._data, rangeLeft, this._rightBoundComparator);
-      var rightNeighborIndex = OrderedSegmentArray._findBoundAfter(this._data, rangeRight, this._leftBoundComparator);
+        if (range.length === 0) {
+            return;
+        }
+        if (this._data.length === 0) {
+            this._data = range;
+            return;
+        }
+        const leftBoundKey = this.options.leftBoundKey;
+        const rightBoundKey = this.options.rightBoundKey;
+        const rangeLeft = range[0][leftBoundKey];
+        const rangeRight = range[range.length - 1][rightBoundKey];
+        const leftNeighborIndex = OrderedSegmentArray._findBoundBefore(this._data, rangeLeft, this._rightBoundComparator);
+        const rightNeighborIndex = OrderedSegmentArray._findBoundAfter(this._data, rangeRight, this._leftBoundComparator);
 
-      var numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
-      var overlappedSegments = this._data.slice(leftNeighborIndex + 1, rightNeighborIndex);
-      this._log('data', this._data);
-      this._log('range', range);
-      this._log('overlapping segments', overlappedSegments);
-      this._log('merging inside', numberSegmentsInside, overlappedSegments);
+        const numberSegmentsInside = rightNeighborIndex - leftNeighborIndex - 1;
+        const overlappedSegments = this._data.slice(leftNeighborIndex + 1, rightNeighborIndex);
 
-      if (numberSegmentsInside === 0) {
+        this._log('data', this._data);
+        this._log('range', range);
+        this._log('overlapping segments', overlappedSegments);
+        this._log('merging inside', numberSegmentsInside, overlappedSegments);
+
+        if (numberSegmentsInside === 0) {
             //segments are not overlapping
-        this._data.splice(leftNeighborIndex + 1, 0, ...range);
-      }
+            this._data.splice(leftNeighborIndex + 1, 0, ...range);
+        }
         else if (numberSegmentsInside < 0 && range.length > 1) {
-          throw new Error('This should not happened');
+            throw new Error('This should not happened');
         }
         else {
             // we have to merge
             // todo prevent unnecessary slice range1
-          var merged = this._mergeRanges(overlappedSegments, range);
-          this._data.splice(leftNeighborIndex + 1, numberSegmentsInside, ...merged);//todo unuse splice to avoid browser limit errors with too many arguments ...merged
+            const merged = this._mergeRanges(overlappedSegments, range);
+            this._data.splice(leftNeighborIndex + 1, numberSegmentsInside, ...merged);//todo unuse splice to avoid browser limit errors with too many arguments ...merged
         }
-
 
     };
 
@@ -108,30 +109,30 @@ class OrderedSegmentArray {
      * @private
      */
     _mergeRanges(range1, range2) {
-      var leftBoundKey = this.options.leftBoundKey;
-      var result = [];
-      var i1 = 0, i2 = 0;
-      while (i1 < range1.length || i2 < range2.length) {
-        if (i1 === range1.length) {
-          result.push(range2[i2++]);
-        }
+        const leftBoundKey = this.options.leftBoundKey;
+        const result = [];
+        let i1 = 0, i2 = 0;
+
+        while (i1 < range1.length || i2 < range2.length) {
+            if (i1 === range1.length) {
+                result.push(range2[i2++]);
+            }
             else if (i2 === range2.length) {
-              result.push(range1[i1++]);
+                result.push(range1[i1++]);
             }
             else if (range1[i1][leftBoundKey] === range2[i2][leftBoundKey]) {
-              result.push(range2[i2++]);
-              i1++;
+                result.push(range2[i2++]);
+                i1++;
             }
             else if (range1[i1][leftBoundKey] < range2[i2][leftBoundKey]) {
-              result.push(range1[i1++]);
+                result.push(range1[i1++]);
             }
             else {
-              result.push(range2[i2++]);
+                result.push(range2[i2++]);
             }
-      }
-      return result;
+        }
+        return result;
     }
-
 
     /**
      * @param openKey first segment open key
@@ -157,14 +158,15 @@ class OrderedSegmentArray {
      * @returns {Array}
      */
     getRange(rangeLeftBound, rangeRightBound, options = {}) {
-      if (arguments.length === 0) {
-        return this._data;
-      }
-      var indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound, options);
-      if (options.oneMore) {
-        indexes.right++;
-      }
-      return this._data.slice(indexes.left, indexes.right + 1);
+        if (arguments.length === 0) {
+            return this._data;
+        }
+        const indexes = this.findRangeIndexes(rangeLeftBound, rangeRightBound, options);
+
+        if (options.oneMore) {
+            indexes.right++;
+        }
+        return this._data.slice(indexes.left, indexes.right + 1);
     }
 
     /**
@@ -172,14 +174,15 @@ class OrderedSegmentArray {
      * @param {Range} range
      */
     getRange2(range, oneMore = false) {
-      var left = range.left;
-      var right = range.right;
-      var options = {
-        leftBoundClosed: range.leftClosed,
-        rightBoundClosed: range.rightClosed,
-        oneMore: oneMore
-      };
-      return this.getRange(left, right, options);
+        const left = range.left;
+        const right = range.right;
+        const options = {
+            leftBoundClosed: range.leftClosed,
+            rightBoundClosed: range.rightClosed,
+            oneMore: oneMore
+        };
+
+        return this.getRange(left, right, options);
     }
 
     /**
@@ -190,116 +193,121 @@ class OrderedSegmentArray {
      * @returns {{left: *, right: *}}
      */
     findRangeIndexes(rangeLeftBound, rangeRightBound, options) {
-      if (this._data.length === 0) {
-        return {left: -1, right: -1};
-      }
-      options = _.defaults(options || {}, {
-        leftBoundClosed: this.options.leftBoundClosed,
-        rightBoundClosed: this.options.rightBoundClosed
-      });
-      var firstSegmentIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeLeftBound, this._rightBoundComparator);
-      var lastSegmentIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeRightBound, this._leftBoundComparator);
+        if (this._data.length === 0) {
+            return {left: -1, right: -1};
+        }
+        options = _.defaults(options || {}, {
+            leftBoundClosed: this.options.leftBoundClosed,
+            rightBoundClosed: this.options.rightBoundClosed
+        });
+        let firstSegmentIndex = OrderedSegmentArray._findBoundNotBefore(this._data, rangeLeftBound, this._rightBoundComparator);
+        let lastSegmentIndex = OrderedSegmentArray._findBoundNotAfter(this._data, rangeRightBound, this._leftBoundComparator);
 
         // exclude touching segments for open bounds
 
-      if (firstSegmentIndex >= this._data.length || lastSegmentIndex < 0) {
-        return {left:-1, right:-1};
-      }
+        if (firstSegmentIndex >= this._data.length || lastSegmentIndex < 0) {
+            return {left:-1, right:-1};
+        }
 
-      var firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(this._data[firstSegmentIndex], rangeLeftBound);
-      var lastSegmentLeft_vs_rangeRight = this._leftBoundComparator(this._data[lastSegmentIndex], rangeRightBound);
-      if (firstSegmentRight_vs_rangeLeft === 0 && options.leftBoundClosed === false) {
-        firstSegmentIndex++;
-      }
-      if (lastSegmentLeft_vs_rangeRight === 0 && options.rightBoundClosed === false) {
-        lastSegmentIndex--;
-      }
+        const firstSegmentRight_vs_rangeLeft = this._rightBoundComparator(this._data[firstSegmentIndex], rangeLeftBound);
+        const lastSegmentLeft_vs_rangeRight = this._leftBoundComparator(this._data[lastSegmentIndex], rangeRightBound);
 
-      return {left: firstSegmentIndex, right: lastSegmentIndex};
+        if (firstSegmentRight_vs_rangeLeft === 0 && options.leftBoundClosed === false) {
+            firstSegmentIndex++;
+        }
+        if (lastSegmentLeft_vs_rangeRight === 0 && options.rightBoundClosed === false) {
+            lastSegmentIndex--;
+        }
+
+        return {left: firstSegmentIndex, right: lastSegmentIndex};
     }
 
     static _findBoundNotAfter(data, boundValue, boundComparator) {
-      if (data.length === 0) {
-        return 0;
-      }
-      var index = bs.closest(data, boundValue, boundComparator);
-      if (boundComparator(data[index], boundValue) > 0) {
+        if (data.length === 0) {
+            return 0;
+        }
+        const index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) > 0) {
             // found bound is greater
-        return index - 1;
-      }
-      return index;
+            return index - 1;
+        }
+        return index;
     }
     static _findBoundBefore(data, boundValue, boundComparator) {
-      if (data.length === 0) {
-        return 0;
-      }
-      var index = bs.closest(data, boundValue, boundComparator);
-      if (boundComparator(data[index], boundValue) >= 0) {
+        if (data.length === 0) {
+            return 0;
+        }
+        const index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) >= 0) {
             // found bound is greater
-        return index - 1;
-      }
-      return index;
+            return index - 1;
+        }
+        return index;
     }
 
     static _findBoundNotBefore(data, boundValue, boundComparator) {
-      if (data.length === 0) {
-        return 0;
-      }
-      var index = bs.closest(data, boundValue, boundComparator);
-      if (boundComparator(data[index], boundValue) < 0) {
+        if (data.length === 0) {
+            return 0;
+        }
+        const index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) < 0) {
             // found bound is lower
-        return index + 1;
-      }
-      return index;
+            return index + 1;
+        }
+        return index;
     }
     static _findBoundAfter(data, boundValue, boundComparator) {
-      if (data.length === 0) {
-        return 0;
-      }
-      var index = bs.closest(data, boundValue, boundComparator);
-      if (boundComparator(data[index], boundValue) <= 0) {
+        if (data.length === 0) {
+            return 0;
+        }
+        const index = bs.closest(data, boundValue, boundComparator);
+        if (boundComparator(data[index], boundValue) <= 0) {
             // found bound is lower
-        return index + 1;
-      }
-      return index;
+            return index + 1;
+        }
+        return index;
     }
 
     static splitRangeSetOverlapping(rangeSet, start, end, {leftClosed = true, rightClosed = true} = {}) {
-      var indices = this.getOverlapBoundIndices(rangeSet, start, end, {leftClosed, rightClosed});
-      var before = rangeSet.slice(0, indices.start);
-      var overlap = rangeSet.slice(indices.start, indices.end);
-      var after = rangeSet.slice(indices.end);
-      return {before, overlap, after, start: indices.start, end: indices.end};
+        const indices = this.getOverlapBoundIndices(rangeSet, start, end, {leftClosed, rightClosed});
+        const before = rangeSet.slice(0, indices.start);
+        const overlap = rangeSet.slice(indices.start, indices.end);
+        const after = rangeSet.slice(indices.end);
+
+        return {before, overlap, after, start: indices.start, end: indices.end};
     }
 
-    //TODO should be moved somewhere else
     static cutRangeSet(rangeSet, start, end, copyFn) {
-      var split = this.splitRangeSetOverlapping(rangeSet, start, end, {leftClosed: false, rightClosed: false});
+        const split = this.splitRangeSetOverlapping(rangeSet, start, end, {leftClosed: false, rightClosed: false});
+        const leftBound = split.overlap[0];
 
-      const leftBound = split.overlap[0];
-      if (leftBound && leftBound.start < start) {
-        var leftBoundLeftClone = copyFn ? copyFn(leftBound) : {};
-        leftBoundLeftClone.start = leftBound.start;
-        leftBoundLeftClone.end = start;
-        var leftBoundRightClone = copyFn ? copyFn(leftBound) : {};
-        leftBoundRightClone.start = start;
-        leftBoundRightClone.end = leftBound.end;
-        split.before.push(leftBoundLeftClone);
-        split.overlap[0] = leftBoundRightClone;
-      }
+        if (leftBound && leftBound.start < start) {
+            const leftBoundLeftClone = copyFn ? copyFn(leftBound) : {};
+            leftBoundLeftClone.start = leftBound.start;
+            leftBoundLeftClone.end = start;
+            const leftBoundRightClone = copyFn ? copyFn(leftBound) : {};
+            leftBoundRightClone.start = start;
+            leftBoundRightClone.end = leftBound.end;
+            split.before.push(leftBoundLeftClone);
+            split.overlap[0] = leftBoundRightClone;
+        }
 
-      const rightBound = split.overlap[split.overlap.length - 1];
-      if (rightBound && rightBound.end > end) {
-        var rightBoundLeftClone = copyFn ? copyFn(rightBound) : {};
-        rightBoundLeftClone.start = rightBound.start;
-        rightBoundLeftClone.end = end;
-        var rightBoundRightClone = copyFn ? copyFn(rightBound) : {};
-        rightBoundRightClone.start = end;
-        rightBoundRightClone.end = rightBound.end;
-        split.after.push(rightBoundRightClone);
-        split.overlap[split.overlap.length - 1] = rightBoundLeftClone;
-      }
-      return split;
+        const rightBound = split.overlap[split.overlap.length - 1];
+
+        if (rightBound && rightBound.end > end) {
+            const rightBoundLeftClone = copyFn ? copyFn(rightBound) : {};
+
+            rightBoundLeftClone.start = rightBound.start;
+            rightBoundLeftClone.end = end;
+
+            const rightBoundRightClone = copyFn ? copyFn(rightBound) : {};
+
+            rightBoundRightClone.start = end;
+            rightBoundRightClone.end = rightBound.end;
+            split.after.push(rightBoundRightClone);
+            split.overlap[split.overlap.length - 1] = rightBoundLeftClone;
+        }
+        return split;
     }
 
     /**
@@ -311,28 +319,29 @@ class OrderedSegmentArray {
      * @return {Array.<*>}
      */
     static joinTouchingRangeArrays(leftRange, rightRange, copyFn = (a)=>({levelId: a.levelId}), cmpFn = (a, b)=>a.levelId === b.levelId) {
-      if (leftRange.length === 0) {
-        return [].concat(rightRange);
-      }
-      if (rightRange.length === 0) {
-        return [].concat(leftRange);
-      }
+        if (leftRange.length === 0) {
+            return [].concat(rightRange);
+        }
+        if (rightRange.length === 0) {
+            return [].concat(leftRange);
+        }
         // now we have both ranges with at least one element
-      const leftBoundRange = leftRange[leftRange.length - 1];
-      const rightBoundRange = rightRange[0];
-      if (cmpFn(leftBoundRange, rightBoundRange)) {
+        const leftBoundRange = leftRange[leftRange.length - 1];
+        const rightBoundRange = rightRange[0];
+
+        if (cmpFn(leftBoundRange, rightBoundRange)) {
             // we have to join ranges if touches, throw error if overlaps
-        if (leftBoundRange.end > rightBoundRange.start) {
-          throw new Error('cannot join range arrays: boundary ranges overlap');
+            if (leftBoundRange.end > rightBoundRange.start) {
+                throw new Error('cannot join range arrays: boundary ranges overlap');
+            }
+            if (leftBoundRange.end === rightBoundRange.start) {
+                const extended = copyFn(leftBoundRange);
+                extended.start = leftBoundRange.start;
+                extended.end = rightBoundRange.end;
+                return leftRange.slice(0, -1).concat([extended], rightRange.slice(1));
+            }
         }
-        if (leftBoundRange.end === rightBoundRange.start) {
-          var extended = copyFn(leftBoundRange);
-          extended.start = leftBoundRange.start;
-          extended.end = rightBoundRange.end;
-          return leftRange.slice(0, -1).concat([extended], rightRange.slice(1));
-        }
-      }
-      return [].concat(leftRange, rightRange);
+        return [].concat(leftRange, rightRange);
     }
 
     /**
@@ -346,39 +355,39 @@ class OrderedSegmentArray {
      * if start == end, then no ranges overlapping, although you can insert given range at start position
      */
     static getOverlapBoundIndices(rangeSet, start, end, {leftClosed = true, rightClosed = true} = {}) {
-      if (rangeSet.length === 0) {
+        if (rangeSet.length === 0) {
+            return {
+                start: 0,
+                end: 0
+            };
+        }
+
+        const range = new Range(start, end, leftClosed, rightClosed);
+
+        let leftIndex = bs.closest(rangeSet, start, this._rangeEndComparator);
+        let rightIndex = bs.closest(rangeSet, end, this._rangeStartComparator);
+        const leftRange = rangeSet[leftIndex];
+        const rightRange = rangeSet[rightIndex];
+
+
+        if (leftRange != null && Range.closed(leftRange.start, leftRange.end).isBefore(range)) {
+            leftIndex++;
+        }
+        if (rightRange != null && !Range.closed(rightRange.start, rightRange.end).isAfter(range)) {
+            rightIndex++;
+        }
         return {
-          start: 0,
-          end: 0
+            start: leftIndex,
+            end: rightIndex
         };
-      }
-
-      var range = new Range(start, end, leftClosed, rightClosed);
-
-      var leftIndex = bs.closest(rangeSet, start, this._rangeEndComparator);
-      var rightIndex = bs.closest(rangeSet, end, this._rangeStartComparator);
-      const leftRange = rangeSet[leftIndex];
-      const rightRange = rangeSet[rightIndex];
-
-
-      if (leftRange != null && Range.closed(leftRange.start, leftRange.end).isBefore(range)) {
-        leftIndex++;
-      }
-      if (rightRange != null && !Range.closed(rightRange.start, rightRange.end).isAfter(range)) {
-        rightIndex++;
-      }
-      return {
-        start: leftIndex,
-        end: rightIndex
-      };
     }
 
     static _rangeStartComparator(range, start) {
-      return range.start - start;
+        return range.start - start;
     }
 
     static _rangeEndComparator(range, end) {
-      return range.end - end;
+        return range.end - end;
     }
 
 }

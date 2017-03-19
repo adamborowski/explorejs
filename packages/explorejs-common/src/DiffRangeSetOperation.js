@@ -14,9 +14,9 @@ class DiffRangeSetOperation {
      * @param compareFn {Function} function to compare two ranges
      */
     static add(subject, argument, copyFn, compareFn) {
-      var split = OrderedSegmentArray.splitRangeSetOverlapping(subject, argument[0].start, argument[argument.length - 1].end);
-      var diff = DiffRangeSet.add(split.overlap, argument, null, null, null, null, copyFn, compareFn);
-      return DiffRangeSetOperation._result(diff, split);
+        var split = OrderedSegmentArray.splitRangeSetOverlapping(subject, argument[0].start, argument[argument.length - 1].end);
+        var diff = DiffRangeSet.add(split.overlap, argument, null, null, null, null, copyFn, compareFn);
+        return DiffRangeSetOperation._result(diff, split);
     }
 
     /**
@@ -26,9 +26,9 @@ class DiffRangeSetOperation {
      * @param copyFn {Function} function to copy values from other range
      */
     static subtract(subject, argument, copyFn) {
-      var split = OrderedSegmentArray.splitRangeSetOverlapping(subject, argument[0].start, argument[argument.length - 1].end);
-      var diff = DiffRangeSet.subtract(split.overlap, argument, null, null, null, null, copyFn);
-      DiffRangeSetOperation._result(diff, split);
+        var split = OrderedSegmentArray.splitRangeSetOverlapping(subject, argument[0].start, argument[argument.length - 1].end);
+        var diff = DiffRangeSet.subtract(split.overlap, argument, null, null, null, null, copyFn);
+        DiffRangeSetOperation._result(diff, split);
     }
 
     /**
@@ -43,17 +43,17 @@ class DiffRangeSetOperation {
          z added i removed trzeba zrobić rozłączne zbiory, żeby result diffy nie kolidowały ze sobą
          z removed usuń to co jest added
          */
-      var toRemove = DiffRangeSet.subtract(diff.removed, diff.added, null, null, null, null, compareFn);
+        var toRemove = DiffRangeSet.subtract(diff.removed, diff.added, null, null, null, null, compareFn);
 
     }
 
     static _result(diff, split) {
-      return {
-        added: diff.added,
-        removed: diff.removed,
-        resized: diff.resized,
-        result: [].concat(split.before, diff.result, split.after)
-      };
+        return {
+            added: diff.added,
+            removed: diff.removed,
+            resized: diff.resized,
+            result: [].concat(split.before, diff.result, split.after)
+        };
     }
 }
 module.exports = DiffRangeSetOperation;
