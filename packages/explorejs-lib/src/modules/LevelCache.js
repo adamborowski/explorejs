@@ -1,5 +1,5 @@
 import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
-import DataRequest from "../data/DataRequest";
+import DataRequest from '../data/DataRequest';
 import xspans from 'xspans';
 /**
  * @property {SerieCache} SerieCache
@@ -7,7 +7,7 @@ import xspans from 'xspans';
 export default class LevelCache {
     constructor(level) {
         this.level = level;
-        this._dataIndex
+        this._dataIndex;
     }
 
     setup() {
@@ -26,7 +26,7 @@ export default class LevelCache {
      *
      * @param {Range} range
      */
-    getRange(range, oneMore=false) {
+    getRange(range, oneMore = false) {
         return this._segmentArray.getRange2(range, oneMore);
     }
 
@@ -35,16 +35,15 @@ export default class LevelCache {
         // todo fire range-scoped events
         if (data.length == 0) {
             // console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
-        }
-        else {
+        } else {
             this._segmentArray.mergeRange(data);
             this._dataIndex.union([{
                 start: data[0][this._leftBoundKey],
                 end: data[data.length - 1][this._rightBoundKey]
             }]);
-            //<debug>
+            // <debug>
             this._debug_data_index = this._dataIndex.toObjects('start', 'end');
-            //</debug>
+            // </debug>
             // if (data[0].$ss != null) {
             //     console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(${data[0].$ss},${data[data.length - 1].$ee}) = ${data.length}`);
             // }
@@ -68,7 +67,8 @@ export default class LevelCache {
             start: range.left,
             end: range.right
         }], this._dataIndex).toObjects('start', 'end');
-        //todo upewnic sie ze jak wraca data z serwera, nalezy sprawdzic, czy nie zmergowac cacheprojection
+        // todo upewnic sie ze jak wraca data z serwera, nalezy sprawdzic, czy nie zmergowac cacheprojection
+
         for (var range of neededRanges) {
             requestManager.addRequest(new DataRequest(serieId, this.level.id, range.start, range.end, priority));
         }

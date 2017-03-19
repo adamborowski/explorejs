@@ -1,4 +1,4 @@
-import DataSource from "../modules/DataSource";
+import DataSource from '../modules/DataSource';
 import moment from 'moment';
 import _ from 'underscore';
 export default class FlotAdapter {
@@ -20,9 +20,7 @@ export default class FlotAdapter {
         this.init();
     }
 
-
     init() {
-
 
         this.plot = this.$.plot(this.chart, [], {
 
@@ -34,11 +32,11 @@ export default class FlotAdapter {
             },
             pan: {
                 interactive: true,
-                cursor: "move"
+                cursor: 'move'
             },
             zoom: {
                 interactive: true,
-                mode: "x"
+                mode: 'x'
             },
             colors: ['#000000', '#000000', '#78a6a7']
         });
@@ -51,13 +49,12 @@ export default class FlotAdapter {
             throttledUpdate(this.getDisplayedRange());
         });
 
-
         this.plot.setupGrid();
     }
 
-
     getDisplayedRange() {
         var a = this.plot.getOptions().xaxes[0];
+
         return {start: a.min, end: a.max};
     }
 
@@ -65,6 +62,7 @@ export default class FlotAdapter {
         start = new Date(start).getTime();
         end = new Date(end).getTime();
         var a = this.plot.getOptions().xaxes[0];
+
         a.min = start;
         a.max = end;
         this.plot.setupGrid();
@@ -74,6 +72,7 @@ export default class FlotAdapter {
     _makeValueIndex() {
         var map = {};
         const array = this.chart.series[0].data;
+
         for (var i = 0; i < array.length; i++) {
             map[array[i][0]] = i;
         }
@@ -86,36 +85,37 @@ export default class FlotAdapter {
         function id(p) {
             var start = p.start;
             var end = p.end;
-            return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
-        }
 
+            return moment(start).format(f) + '~' + moment(end).format(f) + '@' + p.levelId;
+        }
 
         console.time('wrapper diff');
         var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
+
         console.timeEnd('wrapper diff');
 
         const values = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.a]);
         const tValues = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.t]);
         const bValues = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.b]);
         const times = dataDiff.result.map(a=>a.start);
+
         this.plot.setData([
             {id: 'top', data: tValues, shadowSize: 0, lines: false},
             {
                 id: 'bottom',
                 data: bValues,
-                lines: {show: true, lineWidth: 0, fill: .5, fillColor: '#8DD1DB'},
+                lines: {show: true, lineWidth: 0, fill: 0.5, fillColor: '#8DD1DB'},
                 fillBetween: 'top',
                 shadowSize: 0
             },
             {
                 id: 'values', data: values, shadowSize: 0, lines: {
-                lineWidth: 1
-            }
+                    lineWidth: 1
+                }
             }
         ]);
         this.plot.setupGrid();
         this.plot.draw();
-
 
         this.debugCallback(values.length);
 

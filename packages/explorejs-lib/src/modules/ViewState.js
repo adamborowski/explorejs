@@ -1,7 +1,8 @@
-//for DynamicProjection and PredictionEngine
+// for DynamicProjection and PredictionEngine
 import Event from 'explorejs-common/src/Event';
 import _ from 'underscore';
-const EVENT_NAME = "update";
+const EVENT_NAME = 'update';
+
 export default class ViewState {
     constructor(levels) {
         this._levels = levels;
@@ -41,6 +42,7 @@ export default class ViewState {
         this._currentLevelId = this._calculateLevelId();
         //
         var newState = this.getState();
+
         if (!_.isEqual(newState, this._lastState)) {
             this._event.fireEvent(EVENT_NAME, this);
         }
@@ -64,10 +66,12 @@ export default class ViewState {
         var levels = this._levels;
         var expectedUnitWidth = this._preferredUnitWidth;
         // go from the bigger level (eg. 1y) and find first with unit displayed width not greater than WantedUnitWidth
+
         for (var i = levels.length - 1; i >= 0; i--) {
             var level = levels[i];
             var unitWidth = level.step / this._scale;
             // console.log(`${level.id} will take ${unitWidth} ~ should be closely under ${expectedUnitWidth}`);
+
             if (unitWidth <= expectedUnitWidth) {
                 return level.id; // todo accept level if it not break new rule (minUnitWidth - np 0.8) if not return upper on - because this will require too many data points, for example 10k on 1k wide chart
             }
@@ -122,7 +126,7 @@ export default class ViewState {
             viewportWidth: this.getViewportWidth(),
             preferredUnitWidth: this.getPreferredUnitWidth(),
             scale: this.getScale()
-        }
+        };
     }
 
     getLevels() {

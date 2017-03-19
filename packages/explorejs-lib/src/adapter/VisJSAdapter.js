@@ -1,4 +1,4 @@
-import DataSource from "../modules/DataSource";
+import DataSource from '../modules/DataSource';
 import moment from 'moment';
 export default class VisJSAdapter {
     /**
@@ -11,11 +11,11 @@ export default class VisJSAdapter {
     constructor(serieCache, graph2d, dataset, groups) {
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
-        //todo init vis js configuration
+        // todo init vis js configuration
         graph2d.on('rangechanged', (e)=> {
-            this.dataSource.updateViewState(e.start.getTime(), e.end.getTime(), graph2d.body.dom.center.clientWidth)
+            this.dataSource.updateViewState(e.start.getTime(), e.end.getTime(), graph2d.body.dom.center.clientWidth);
         });
-        this.dataSource.updateViewState(graph2d.range.start, graph2d.range.end, graph2d.body.dom.center.clientWidth)
+        this.dataSource.updateViewState(graph2d.range.start, graph2d.range.end, graph2d.body.dom.center.clientWidth);
         this.dataset = dataset;
         this.groups = groups;
     }
@@ -26,11 +26,13 @@ export default class VisJSAdapter {
         function id(p) {
             var start = p.start;
             var end = p.end;
-            return moment(start).format(f) + "~" + moment(end).format(f) + '@' + p.levelId;
+
+            return moment(start).format(f) + '~' + moment(end).format(f) + '@' + p.levelId;
         }
 
         console.time('wrapper diff');
         var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
+
         console.timeEnd('wrapper diff');
         if (dataDiff.added.length == 0 && dataDiff.removed.length == 0 && dataDiff.resized.length == 0) {
             console.info('no change after recompile');

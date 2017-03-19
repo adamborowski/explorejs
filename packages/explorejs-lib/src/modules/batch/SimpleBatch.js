@@ -1,4 +1,4 @@
-import DeferredAction from "../../utils/DeferredAction";
+import DeferredAction from '../../utils/DeferredAction';
 
 /**
  * Simply adds request to the time buffer, fires at once. No merge of requests, possible redundancy&overlapping of ranges
@@ -16,6 +16,6 @@ export default class SimpleBatch {
     }
 
     requestsLoaded(requests) {
-        //noop, this is very simple batch, no reusing ranges being loaded at the moment
+        // noop, this is very simple batch, no reusing ranges being loaded at the moment
     }
 }

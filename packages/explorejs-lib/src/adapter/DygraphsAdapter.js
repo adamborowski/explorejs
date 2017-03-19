@@ -1,4 +1,4 @@
-import DataSource from "../modules/DataSource";
+import DataSource from '../modules/DataSource';
 import moment from 'moment';
 import _ from 'underscore';
 export default class DygraphsAdapter {
@@ -20,15 +20,16 @@ export default class DygraphsAdapter {
         this.init();
     }
 
-
     init() {
 
         const updateViewStateBasedOnDisplayedRange = ()=> {
-            if (this.plot) { //ignore first time callback
+            if (this.plot) { // ignore first time callback
                 var range = this.getDisplayedRange();
+
                 this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
             }
         };
+
         this.plot = new this.Dygraphs(this.chart.attr('id'), [[new Date(), [0, 250, 300]]], {
             customBars: true,
             strokeWidth: 1,
@@ -42,12 +43,11 @@ export default class DygraphsAdapter {
             }
         });
 
-
     }
-
 
     getDisplayedRange() {
         var a = this.plot.xAxisRange();
+
         return {start: a[0], end: a[1]};
     }
 
@@ -56,7 +56,6 @@ export default class DygraphsAdapter {
         end = new Date(end).getTime();
         this.plot.updateOptions({dateWindow: [start, end]});
     }
-
 
     onProjectionRecompile() {
 

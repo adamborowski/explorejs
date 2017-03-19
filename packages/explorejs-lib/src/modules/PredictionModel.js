@@ -27,6 +27,6 @@ export default class PredictionModel {
     }
 
     update() {
-        throw new Error("Prediciton model not yet implemented");
+        throw new Error('Prediciton model not yet implemented');
     }
 }

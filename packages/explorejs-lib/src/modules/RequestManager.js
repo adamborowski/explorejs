@@ -1,13 +1,13 @@
 import DataRequest from '../data/DataRequest';
 import IndexedList from 'explorejs-common/src/IndexedList';
-import SimpleBatch from "./batch/SimpleBatch";
-import MergingBatch from "./batch/MergingBatch";
+import SimpleBatch from './batch/SimpleBatch';
+import MergingBatch from './batch/MergingBatch';
 /**
  * @property {CacheManager} CacheManager
  */
 export default class RequestManager {
 
-    constructor(apiManifestUrl = "/api/manifest", apiBatchUrl = "/api/batch", forceDelay = 0) {
+    constructor(apiManifestUrl = '/api/manifest', apiBatchUrl = '/api/batch', forceDelay = 0) {
         this.apiManifestUrl = apiManifestUrl;
         this.apiBatchUrl = apiBatchUrl;
         // this.batch = new SimpleBatch(this._performBatchRequest.bind(this));
@@ -36,15 +36,16 @@ export default class RequestManager {
      */
     init(callback) {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", this.apiManifestUrl, true);
+
+        xhr.open('GET', this.apiManifestUrl, true);
         xhr.onload = ()=> {
             if (xhr.status === 200) {
                 var manifest = JSON.parse(xhr.responseText);
+
                 this._serverManifest = IndexedList.fromArray(manifest.series, 'serieId');
                 callback();
-            }
-            else {
-                console.error(`RequestManager error during getting manifest`);
+            } else {
+                console.error('RequestManager error during getting manifest');
             }
         };
         xhr.send();
@@ -61,15 +62,16 @@ export default class RequestManager {
         }
         var data = {series: requests.map((request)=>request.toServerFormat())};
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", this.apiBatchUrl, true);
+
+        xhr.open('POST', this.apiBatchUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = ()=> {
             setTimeout(() => {
                 if (xhr.status === 200) {
                     var resp = JSON.parse(xhr.responseText);
+
                     this._processBatchResponse(resp);
-                }
-                else {
+                } else {
                     console.error('error');
                 }
                 this.batch.requestsLoaded(requests);
@@ -93,6 +95,7 @@ export default class RequestManager {
             })
             .map((serie)=> {
                 var serieConfig = DataRequest.fromServerFormat(serie);
+
                 serieConfig.data = serie.data;
                 return serieConfig;
             });
@@ -102,7 +105,7 @@ export default class RequestManager {
 
     getManifestForSerie(serieId) {
         if (this._serverManifest == null) {
-            throw new Error(`RequestManager error: server manifest not initialized`);
+            throw new Error('RequestManager error: server manifest not initialized');
         }
         if (this._serverManifest.contains(serieId)) {
             return this._serverManifest.get(serieId);
@@ -112,7 +115,7 @@ export default class RequestManager {
 
     getServerManifest() {
         if (this._serverManifest == null) {
-            throw new Error(`RequestManager error: server manifest not initialized`);
+            throw new Error('RequestManager error: server manifest not initialized');
         }
         return this._serverManifest;
     }
