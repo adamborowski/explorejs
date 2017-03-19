@@ -19,13 +19,16 @@ export default class SerieCache {
     setup() {
         var manifest = this._serieManifest = this.CacheManager.RequestManager.getManifestForSerie(this.options.serieId);
         var levels = manifest.levels;
+
         this._levelCacheSet = new IndexedList();
         this._levelProjectionEventSet = new IndexedList();
 
         var allLevels = [{id: 'raw', step: 0}].concat(levels).sort((a, b)=>a.step - b.step);
+
         this._disposer = new Builder().withLevelIds(allLevels.map(a=>a.id)).build();
         for (var level of allLevels) {
             var levelCache = new LevelCache(level);
+
             levelCache.SerieCache = this;
             this._levelCacheSet.add(level.id, levelCache);
             this._levelProjectionEventSet.add(level.id, new RangeScopedEvent());
@@ -46,8 +49,10 @@ export default class SerieCache {
         }
         this._levelCacheSet.get(levelId).putData(data);
         var projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(levelId, data)]);
+
         for (var diff of projectionDiffs) {
             var rangeOfDiff = this._getRangeOfDiff(diff.diff);
+
             if (rangeOfDiff != null) {
                 this._levelProjectionEventSet.get(diff.levelId).fireEvent('recompile', Range.leftClosed(rangeOfDiff.left, rangeOfDiff.right), diff.diff);
             }

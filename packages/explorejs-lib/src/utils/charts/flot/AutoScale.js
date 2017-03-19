@@ -7,10 +7,12 @@ export default class AutoScale {
     constructor($) {
         function init(plot) {
             var setupGrid = plot.setupGrid;
+
             plot.setupGrid = ()=> {
                 plot.autoScale();
                 var r = setupGrid.apply(plot, arguments);
-                plot.getPlaceholder().trigger('plot_setupGrid')
+
+                plot.getPlaceholder().trigger('plot_setupGrid');
                 return r;
             };
             plot.autoScale = function () {
@@ -20,6 +22,7 @@ export default class AutoScale {
                 var xaxis = plot.getAxes().xaxis;
                 const maxRed = (acc, val)=>Math.max(acc, val[1]);
                 const minRed = (acc, val)=>Math.min(acc, val[1]);
+
                 if (data.length == 3) {
                     const boundFilter = data=>data[1] != null && !isNaN(data[1]) && data[0] >= xaxis.options.min && data[0] <= xaxis.options.max;
                     var max = data[0].data.filter(boundFilter).reduce(maxRed, Number.NEGATIVE_INFINITY);
@@ -31,7 +34,6 @@ export default class AutoScale {
                     opts.max = max + margin;
                 }
 
-
                 // plot.setupGrid();
                 // plot.draw();
 
@@ -39,13 +41,13 @@ export default class AutoScale {
                     min: opts.min,
                     max: opts.max
                 };
-            }
+            };
         }
 
         $.plot.plugins.push({
             init: init,
-            name: "autoscalemode",
-            version: "0.6"
+            name: 'autoscalemode',
+            version: '0.6'
         });
     }
 }

@@ -26,14 +26,15 @@ export default class PredictionEngine {
         model.initialize(this.SerieCache, this.viewState);
     }
 
-    addModels(models){
+    addModels(models) {
         models.forEach(a=>this.addModel(a));
     }
 
     removeModel(model) {
         const indexOf = this._models.indexOf(model);
+
         if (indexOf == 1) {
-            throw new Error("Given model is not present in the engine.");
+            throw new Error('Given model is not present in the engine.');
         }
         this._models.splice(indexOf, 1);
     }
@@ -48,6 +49,5 @@ export default class PredictionEngine {
             }
         }
     }
-
 
 }

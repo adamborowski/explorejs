@@ -1,5 +1,5 @@
-import OrderedSegmentArray from "explorejs-common/src/OrderedSegmentArray"
-import MergeOperation from "explorejs-common/src/layered/MergeOperation";
+import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
+import MergeOperation from 'explorejs-common/src/layered/MergeOperation';
 /**
  * Cache projection
  * Calculates diffs in meaning of rendering effect (how user sees that)
@@ -39,7 +39,6 @@ export default class CacheProjection {
         return this.levelNumbers[range.levelId] - this.levelNumbers[levelId];
     }
 
-
     /**
      * Update projection range indices by inserting ranges at specific level.
      * ??Fire proper events to be handled by DataStore
@@ -50,20 +49,21 @@ export default class CacheProjection {
      */
     recompile(levelId, rangeSet) {
         if (rangeSet.length == 0) {
-            console.log("CacheProjection::recompileProjection(): got empty array, no recompile is needed.")
+            console.log('CacheProjection::recompileProjection(): got empty array, no recompile is needed.');
             return null; // no recompile is needed
         }
         if (!this.levelNumbers.hasOwnProperty(levelId)) {
             throw new RangeError(`Level of id ${levelId} is not supported.`);
         }
         if (this.levelNumbers[levelId] < this.levelNumbers[this.levelId]) {
-            throw new RangeError("CacheProjecton::recomplieProjection: level outside projection"); // no recompile is needed
+            throw new RangeError('CacheProjecton::recomplieProjection: level outside projection'); // no recompile is needed
         }
         var mapFn = a=>({
             start: a.start,
             end: a.end,
             levelId: levelId
         });
+
         rangeSet = rangeSet.map(mapFn);
         /**
          * @type {{before, overlap, after, start, end}|*}
@@ -74,20 +74,17 @@ export default class CacheProjection {
 
         var operation = MergeOperation.execute(layers.B, layers.T, layers.F, rangeSet, (r)=>({levelId: r.levelId}));
 
-
         var overlappedResult = [].concat(operation.B.result, layers.F, operation.T.result).sort(this._sortFn).map(a=>({
             start: a.start,
             end: a.end,
             levelId: a.levelId
         }));
 
-
         this.projection = [].concat(split.before, overlappedResult, split.after);
 
         var added = [].concat(operation.T.added, operation.B.added).sort(this._sortFn);
         var resized = [].concat(operation.T.resized, operation.B.resized).sort(this._sortFn);
         var removed = [].concat(operation.T.removed, operation.B.removed).sort(this._sortFn);
-
 
         return {
             added, removed, resized
@@ -109,18 +106,16 @@ export default class CacheProjection {
 
         for (var range of rangeSet) {
             var cmp = this.levelComparator(range, levelId);
+
             if (cmp > 0) {
                 B.push(range);
-            }
-            else if (cmp == 0) {
+            } else if (cmp == 0) {
                 T.push(range);
-            }
-            else {
+            } else {
                 F.push(range);
             }
         }
         return {B, F, T};
     }
-
 
 }

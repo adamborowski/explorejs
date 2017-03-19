@@ -1,9 +1,9 @@
 import DynamicProjection from './DynamicProjection';
-import PredictionEngine from "./PredictionEngine";
-import ViewState from "./ViewState";
-import DataUtil from "../data/DataUtil";
+import PredictionEngine from './PredictionEngine';
+import ViewState from './ViewState';
+import DataUtil from '../data/DataUtil';
 import Range from 'explorejs-common/src/Range';
-import DiffCalculator from 'explorejs-common/src/DiffCalculator'
+import DiffCalculator from 'explorejs-common/src/DiffCalculator';
 /**
  * @typedef {{added:WrapperType[], removed:WrapperType[], resized:WrapperType[]}} WrapperDiffType
  */
@@ -39,6 +39,7 @@ export default class DataSource {
             end: boundGetter.end(d),
             levelId: range.levelId
         }));
+
         if (wrappers.length) {
             wrappers[0].start = Math.max(wrappers[0].start, range.start);
             wrappers[wrappers.length - 1].end = Math.min(wrappers[wrappers.length - 1].end, range.end);
@@ -54,6 +55,7 @@ export default class DataSource {
      */
     _wrapRanges(ranges, lastOneMore = true) {
         const lastRangeIndex = ranges.length - 1;
+
         return ranges.map((r, i)=>this._wrapRange(r, lastOneMore && i == lastRangeIndex)).reduce((a, b)=>a.concat(b), []);
     }
 
@@ -73,8 +75,7 @@ export default class DataSource {
                     data: a.data
                 })
             });
-        }
-        finally {
+        } finally {
             console.timeEnd('calculateWrappersDiffToPrevious');
         }
     }

@@ -20,6 +20,7 @@ export default class DeferredAction {
 
     _timeoutCallback() {
         var accumulatedArguments = this._arguments;
+
         this._arguments = [];
         delete this._currentTimeout;
         this._callback(accumulatedArguments);

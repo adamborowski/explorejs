@@ -1,6 +1,6 @@
-import OrderedSegmentArray from "explorejs-common/src/OrderedSegmentArray"
-import IndexedList from "explorejs-common/src/IndexedList";
-import DiffCalculator from "explorejs-common/src/DiffCalculator";
+import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
+import IndexedList from 'explorejs-common/src/IndexedList';
+import DiffCalculator from 'explorejs-common/src/DiffCalculator';
 import Range from 'explorejs-common/src/Range';
 /**
  * Class to dynamically choose right ProjectionEvent, depending on current viewport settings (start, end, scale)
@@ -24,6 +24,7 @@ export default class DynamicProjection {
 
     cacheUpdateHandler(name, range, listenerRange, diff) {
         var projectionTruncated = this.getProjectionTruncated(listenerRange.left, listenerRange.right);
+
         this._callback(projectionTruncated);
     }
 
@@ -43,7 +44,7 @@ export default class DynamicProjection {
         var newRange = Range.opened(viewState.getStart(), viewState.getEnd()).expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
 
         if (this.currentEvent != null) {
-            this.currentEvent.removeListener('recompile', this.cacheUpdateHandler)
+            this.currentEvent.removeListener('recompile', this.cacheUpdateHandler);
         }
 
         this.currentLevelId = newLevelId;
@@ -55,7 +56,6 @@ export default class DynamicProjection {
             this._callback(this.getProjectionTruncated(newRange.left, newRange.right, newLevelId));
         }
     }
-
 
     _copyFn(a) {
         return {levelId: a.levelId};
@@ -75,6 +75,7 @@ export default class DynamicProjection {
     getProjectionTruncated(start, end, levelId = this.currentLevelId) {
         var oldProjection = this.SerieCache.getProjectionDisposer().getProjection(levelId);
         const oldCut = OrderedSegmentArray.cutRangeSet(oldProjection.projection, start, end, this._copyFn);
+
         return oldCut.overlap;
     }
 

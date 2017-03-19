@@ -1,5 +1,5 @@
 import FactoryDictionary from 'explorejs-common/src/FactoryDictionary';
-import DeferredAction from "../../utils/DeferredAction";
+import DeferredAction from '../../utils/DeferredAction';
 import DiffRangeSet from 'explorejs-common/src/DiffRangeSet';
 import DataRequest from '../../data/DataRequest';
 import _ from 'underscore';
@@ -38,24 +38,26 @@ export default class MerginbBatch {
     }
 
     _delayedPerformRequest() {
-        console.time('delayed perform')
+        console.time('delayed perform');
         const queuedRangeSets = this.getRangeSet(this.queuedRanges);
         var requests = _.flatten(queuedRangeSets.map(set=>set.ranges.map(r =>new DataRequest(set.serieId, set.levelId, r.start, r.end))));
 
         // add all queued ranges to pending ranges, clear queued ranges
         for (var queuedRangeSet of queuedRangeSets) {
             var pendingSet = this.pendingRanges.get(queuedRangeSet.serieId).get(queuedRangeSet.levelId);
+
             pendingSet.ranges = DiffRangeSet.add(pendingSet.ranges, queuedRangeSet.ranges).result;
         }
         this.queuedRanges.clear();
 
-        console.timeEnd('delayed perform')
+        console.timeEnd('delayed perform');
 
         this.callback(requests);
     }
 
     getRangeSet(queue) {
         var arr = [];
+
         for (var a of queue.getValues()) {
             for (var b of a.getValues()) {
                 arr.push(b);
@@ -64,21 +66,21 @@ export default class MerginbBatch {
         return arr;
     }
 
-
     /**
      *
      * @param requests {DataRequest[]}
      */
     requestsLoaded(requests) {
-        console.time('requests loaded')
+        console.time('requests loaded');
         // remove ranges from given requests from pending requests
         for (var request of requests) {
             var pendingRangeSet = this.pendingRanges.get(request.serieId).get(request.level);
+
             pendingRangeSet.ranges = DiffRangeSet.subtract(pendingRangeSet.ranges, [{
                 start: request.openTime,
                 end: request.closeTime
             }]).result;
         }
-        console.timeEnd('requests loaded')
+        console.timeEnd('requests loaded');
     }
 }
