@@ -1,10 +1,11 @@
 import * as chai from 'chai';
-var sinon = require("sinon");
-var sinonChai = require("sinon-chai");
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
 var expect = chai.expect;
-import {Builder as DisposerBuilder} from "../../src/modules/SerieCacheProjectionDisposer";
-import Disposer from "../../src/modules/SerieCacheProjectionDisposer";
-import TestUtil from "explorejs-common/test/TestUtil";
+
+import {Builder as DisposerBuilder} from '../../src/modules/SerieCacheProjectionDisposer';
+import Disposer from '../../src/modules/SerieCacheProjectionDisposer';
+import TestUtil from 'explorejs-common/test/TestUtil';
 chai.use(require('chai-things'));
 chai.use(sinonChai);
 var rng = TestUtil.rng;
@@ -15,8 +16,9 @@ function containsWithProperties(...objects) {
     return m.contains.apply(m, objects.map(o=>m.hasProperties(o)));
 }
 
-describe("SerieCacheProjectionDisposer", ()=> {
+describe('SerieCacheProjectionDisposer', ()=> {
     var disposer;
+
     describe('recompile at different levels', ()=> {
         beforeEach(()=> {
             disposer = new Disposer(['raw', '10s', '30s', '1m', '30m', '1h', '1d', '30d', '1y'].map(a=>({
@@ -159,15 +161,15 @@ describe("SerieCacheProjectionDisposer", ()=> {
         expect(disposer.getProjection('10s').projection).to.deep.equal(ll('30s 0 8; 1y 9 11; 10s 11 14; 30d 14 15; 1y 15 17; 30m 17 19; 1y 19 20'));
         expect(disposer.getProjection('raw').projection).to.deep.equal(ll('raw 0 4; 30s 4 8; raw 9 11; 10s 11 14; 30d 14 15; 1y 15 17; 30m 17 18; raw 18 20'));
 
-        console.log(TestUtil.getRangeDrawing(disposer.projections.map(a=>a.projection), disposer.cacheLevelIds, 8))
-
+        console.log(TestUtil.getRangeDrawing(disposer.projections.map(a=>a.projection), disposer.cacheLevelIds, 8));
 
     });
 });
 
-describe("SerieCacheProjectionDisposer.Builder", () => {
+describe('SerieCacheProjectionDisposer.Builder', () => {
     it('base example', ()=> {
         var disposer = new DisposerBuilder().withLevelIds(['raw', '10s', '30s', '1m', '30m', '1h', '1d', '30d', '1y']).build();
+
         m.assertThat(disposer.projections, containsWithProperties(
             {
                 levelId: m.equalTo('raw'),
