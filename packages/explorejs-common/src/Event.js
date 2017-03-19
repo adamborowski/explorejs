@@ -1,4 +1,4 @@
-var FactoryDictionary = require('./FactoryDictionary');
+const FactoryDictionary = require('./FactoryDictionary');
 /**
  * @property {FactoryDictionary} listeners
  */
@@ -13,14 +13,15 @@ class Event {
     }
 
     removeListener(type, callback) {
-        var listeners = this.listeners.get(type);
+        const listeners = this.listeners.get(type);
 
-        for (var listener of listeners) {
+        for (const listener of listeners) {
             if (listener === callback) {
                 listeners.splice(listeners.indexOf(listener), 1);
                 return listener;
             }
         }
+        return null;
     }
 
     /**
@@ -29,9 +30,9 @@ class Event {
      * @param eventData {*}
      */
     fireEvent(name, eventData) {
-        var listeners = this.listeners.get(name);
+        const listeners = this.listeners.get(name);
 
-        for (var listener of listeners) {
+        for (const listener of listeners) {
             listener(eventData);
         }
     }
