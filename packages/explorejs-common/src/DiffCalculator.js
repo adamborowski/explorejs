@@ -1,4 +1,5 @@
 const FactoryDictionary = require('./FactoryDictionary');
+
 class DiffCalculator {
 
     /**
@@ -25,15 +26,15 @@ class DiffCalculator {
         leftSet.slice(leftStart, leftEnd).forEach(r=>groups.get(groupFn(r)).leftSet.push(r));
         rightSet.slice(rightStart, rightEnd).forEach(r=>groups.get(groupFn(r)).rightSet.push(r));
 
-
         const diffs = groups.getValues().map(g=>this.diffSameRanges(g.leftSet, g.rightSet, copyFn));
 
-        var cmpFn = (a,b)=>a.start - b.start;
+        var cmpFn = (a, b)=>a.start - b.start;
         var mergedDiff = {
             added: this.mergeSortedArrays(diffs.map(a=>a.added), cmpFn),
             removed: this.mergeSortedArrays(diffs.map(a=>a.removed), cmpFn),
             resized: this.mergeSortedArrays(diffs.map(a=>a.resized), cmpFn)
         };
+
         return mergedDiff;
 
     }
@@ -62,36 +63,32 @@ class DiffCalculator {
             const leftIsPresent = leftIndex < leftLength;
             const left = leftSet[leftIndex];
             const right = rightSet[rightIndex];
+
             if (!leftIsPresent && !rightIsPresent) {
                 return {added, removed, resized};
             }
             if (!leftIsPresent) {
                 added.push(right);
                 rightIndex++;
-            }
-            else if (!rightIsPresent) {
+            } else if (!rightIsPresent) {
                 removed.push(left);
                 leftIndex++;
-            }
-
-            else {
+            } else {
                 // here we have both ranges to comapre
                 if (relations.isEqual(left, right)) {
                     // nothing changed, ignoring
                     rightIndex++;
                     leftIndex++;
-                }
-                else if (relations.isAfter(left, right)) {
+                } else if (relations.isAfter(left, right)) {
                     added.push(right);
                     rightIndex++;
-                }
-                else if (relations.isBefore(left, right)) {
+                } else if (relations.isBefore(left, right)) {
                     removed.push(left);
                     leftIndex++;
-                }
-                else {
+                } else {
                     // it has common part
                     var resizedRange = copyFn(left);
+
                     resizedRange.existing = left;
                     resizedRange.start = right.start;
                     resizedRange.end = right.end;
@@ -114,13 +111,16 @@ class DiffCalculator {
         var result = [];
 
         var sources = sortedArrays.map(a=>({index: 0, length: a.length, array: a}));
+
         while (true) {
             // increase
             var maxSource = null;
             var maxSourceCandidate = null;
+
             for (var source of sources) {
                 if (source.index < source.length) {
                     const candidate = source.array[source.index];
+
                     if (maxSource == null || cmpFn(candidate, maxSourceCandidate) < 0) {
                         maxSource = source;
                         maxSourceCandidate = candidate;

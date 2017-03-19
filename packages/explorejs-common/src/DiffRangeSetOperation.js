@@ -5,6 +5,7 @@ const DiffRangeSet = require('./DiffRangeSet');
  *  This means that diff operations will be performed in narrower boundaries, based on common boundaries binary search
  *  @typedef {{start, end}} RangeType
  */
+
 class DiffRangeSetOperation {
     /**
      * Adds argument to subject
@@ -16,6 +17,7 @@ class DiffRangeSetOperation {
     static add(subject, argument, copyFn, compareFn) {
         var split = OrderedSegmentArray.splitRangeSetOverlapping(subject, argument[0].start, argument[argument.length - 1].end);
         var diff = DiffRangeSet.add(split.overlap, argument, null, null, null, null, copyFn, compareFn);
+
         return DiffRangeSetOperation._result(diff, split);
     }
 
@@ -28,6 +30,7 @@ class DiffRangeSetOperation {
     static subtract(subject, argument, copyFn) {
         var split = OrderedSegmentArray.splitRangeSetOverlapping(subject, argument[0].start, argument[argument.length - 1].end);
         var diff = DiffRangeSet.subtract(split.overlap, argument, null, null, null, null, copyFn);
+
         DiffRangeSetOperation._result(diff, split);
     }
 

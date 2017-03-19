@@ -38,6 +38,7 @@ class Accumulator {
      */
     static splitArray(array, cmp, ret = []) {
         var acc = new Accumulator(cmp, a=>ret.push(a));
+
         acc.processArray(array);
         return ret;
     }

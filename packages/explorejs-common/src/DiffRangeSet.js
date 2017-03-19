@@ -8,15 +8,15 @@ class DiffRangeSet {
 
     static pretty(obj) {
         const fields = [];
+
         for (let i in obj) {
             let val = obj[i];
+
             if (typeof val === 'boolean') {
                 fields.push(i ? i : '! ' + i);
-            }
-            else if (typeof val === 'object') {
+            } else if (typeof val === 'object') {
                 fields.push(`${i} = ${this.pretty(val)}`);
-            }
-            else {
+            } else {
                 fields.push(`${i} = ${val}`);
             }
         }
@@ -26,6 +26,7 @@ class DiffRangeSet {
 
     static _createGroup(range, fromExistingRange, copyFn) {
         const group = copyFn(range);
+
         group.start = range.start;
         group.end = range.end;
         if (fromExistingRange) {
@@ -46,6 +47,7 @@ class DiffRangeSet {
      */
     static add(leftSet, rightSet, iLeft, iRight, maxILeft, maxIRight, copyFn, compareFn) {
         const result = [], added = [], removed = [], resized = [];
+
         if (copyFn == null) {
             copyFn = (x) => ({});
         }
@@ -57,6 +59,7 @@ class DiffRangeSet {
             endLeft: maxILeft,
             endRight: maxIRight
         });
+
         while (iterator.next()) {
             if (currentGroup == null) {
                 // this is only for first group
@@ -76,13 +79,11 @@ class DiffRangeSet {
                     if (currentGroup.existing == null) {
                         // we have a group containing only items from right set, now we join left item and assign ownership range
                         currentGroup.existing = iterator.Current;
-                    }
-                    else if (currentGroup.existing !== iterator.Current) {
+                    } else if (currentGroup.existing !== iterator.Current) {
                         // we have group with ownership and new left item belongs to the group so it is no longer needed
                         removed.push(iterator.Current);
                     }
-                }
-                else {
+                } else {
                     // do nothing, no effect
                 }
             }
@@ -94,8 +95,7 @@ class DiffRangeSet {
                 if (relation.isEndChanged) {
                     currentGroup.end = relation.end;
                 }
-            }
-            else if (relation.isAfter) {
+            } else if (relation.isAfter) {
                 // first, delete current group
                 this._finishGroup(currentGroup, added, resized, result);
                 currentGroup = this._createGroup(iterator.Current, iterator.LeftMoved, copyFn);
@@ -117,8 +117,7 @@ class DiffRangeSet {
             // there were no existing ranges to resize
             added.push(currentGroup);
 
-        }
-        else if (this._isGroupChanged(currentGroup)) {
+        } else if (this._isGroupChanged(currentGroup)) {
             // there is a existing group which can be resized
             resized.push(currentGroup);
         }
@@ -134,7 +133,6 @@ class DiffRangeSet {
         }
         return group.start !== group.existing.start || group.end !== group.existing.end;
     }
-
 
     static _computeOverlapRelation(cmp, subject, compareFn) {
         if (subject == null) {
@@ -163,6 +161,7 @@ class DiffRangeSet {
             return {isIncluded: true}; // or are equal
         }
         const ret = {isResizing: true, start: Math.min(subject.start, cmp.start), end: Math.max(subject.end, cmp.end)};
+
         if (subject.start < cmp.start) {
             ret.isStartChanged = true;
         }
@@ -210,6 +209,7 @@ class DiffRangeSet {
             iteration.requestMoveLeft();
             leftSubject = null;
         };
+
         while (iteration.next()) {
             if (leftSubject == null && iteration.Left) {
                 leftSubject = this._createGroup(iteration.Left, !iteration.LeftIsFromBuffer/* indicate if this group is existing one */, copyFn);
@@ -233,8 +233,7 @@ class DiffRangeSet {
                     // right will completely remove current subject
                     if (leftSubject.existing) {
                         removed.push(leftSubject.existing);
-                    }
-                    else {
+                    } else {
                         // ignore - this groups was created temporarily as a consequence of earlier iteration
                     }
                     iteration.requestMoveLeft();
@@ -245,6 +244,7 @@ class DiffRangeSet {
                     const nextLeft = copyFn(leftSubject);
                     const newStart = iteration.Right.end;
                     const newEnd = leftSubject.end;
+
                     leftSubject.end = iteration.Right.start;
                     addResult(leftSubject);
 
@@ -268,6 +268,7 @@ class DiffRangeSet {
                 case 'above':
                     const nextItem = iteration._peekNextRight();
                     const cutInfo = CutOperation.getCutInfo(leftSubject, nextItem);
+
                     if (cutInfo === 'below' || cutInfo == null) {
                         addResult(leftSubject);
                     }
@@ -312,7 +313,6 @@ class DiffRangeSet {
             resized: resized
         };
     }
-
 
 }
 module.exports = DiffRangeSet;
