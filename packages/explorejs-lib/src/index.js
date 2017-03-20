@@ -1,7 +1,7 @@
-import RequestManager from 'explorejs/modules/RequestManager';
-import DataRequest from 'explorejs/data/DataRequest';
-import CacheManager from 'explorejs/modules/CacheManager';
-import DygraphsAdapter from 'explorejs/adapter/DygraphsAdapter';
+import RequestManager from './modules/RequestManager';
+import DataRequest from './data/DataRequest';
+import CacheManager from './modules/CacheManager';
+import DygraphsAdapter from './adapter/DygraphsAdapter';
 
 export {
     RequestManager,
