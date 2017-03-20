@@ -1,5 +1,5 @@
 import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
-import IndexedList from 'explorejs-common/src/IndexedList';
+import {IndexedList} from 'explorejs-common';
 import DiffCalculator from 'explorejs-common/src/DiffCalculator';
 import Range from 'explorejs-common/src/Range';
 /**

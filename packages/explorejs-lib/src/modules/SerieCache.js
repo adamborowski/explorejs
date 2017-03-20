@@ -1,5 +1,5 @@
 import LevelCache from './LevelCache';
-import IndexedList from 'explorejs-common/src/IndexedList';
+import {IndexedList} from 'explorejs-common';
 import {Builder} from './SerieCacheProjectionDisposer';
 import RangeScopedEvent from 'explorejs-common/src/RangeScopedEvent';
 import Range from 'explorejs-common/src/Range';
@@ -25,7 +25,7 @@ export default class SerieCache {
 
         const allLevels = [{id: 'raw', step: 0}].concat(levels).sort((a, b) => a.step - b.step);
 
-        this._disposer = new Builder().withLevelIds(allLevels.map(a=>a.id)).build();
+        this._disposer = new Builder().withLevelIds(allLevels.map(a => a.id)).build();
         for (let level of allLevels) {
             const levelCache = new LevelCache(level);
 
