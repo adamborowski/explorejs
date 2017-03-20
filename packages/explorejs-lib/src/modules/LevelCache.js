@@ -1,4 +1,4 @@
-import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
+import {OrderedSegmentArray} from 'explorejs-common';
 import DataRequest from '../data/DataRequest';
 import xspans from 'xspans';
 /**

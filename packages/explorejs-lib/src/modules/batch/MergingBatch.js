@@ -1,6 +1,5 @@
-import FactoryDictionary from 'explorejs-common/src/FactoryDictionary';
+import {FactoryDictionary, DiffRangeSet} from 'explorejs-common';
 import DeferredAction from '../../utils/DeferredAction';
-import DiffRangeSet from 'explorejs-common/src/DiffRangeSet';
 import DataRequest from '../../data/DataRequest';
 import _ from 'underscore';
 export default class MerginbBatch {

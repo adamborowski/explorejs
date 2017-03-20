@@ -1,5 +1,5 @@
 // for DynamicProjection and PredictionEngine
-import Event from 'explorejs-common/src/Event';
+import {Event} from 'explorejs-common';
 import _ from 'underscore';
 const EVENT_NAME = 'update';
 

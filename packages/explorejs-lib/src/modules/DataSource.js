@@ -2,8 +2,8 @@ import DynamicProjection from './DynamicProjection';
 import PredictionEngine from './PredictionEngine';
 import ViewState from './ViewState';
 import DataUtil from '../data/DataUtil';
-import Range from 'explorejs-common/src/Range';
-import DiffCalculator from 'explorejs-common/src/DiffCalculator';
+import {Range} from 'explorejs-common';
+import {DiffCalculator} from 'explorejs-common';
 /**
  * @typedef {{added:WrapperType[], removed:WrapperType[], resized:WrapperType[]}} WrapperDiffType
  */

@@ -1,5 +1,5 @@
-import OrderedSegmentArray from 'explorejs-common/src/OrderedSegmentArray';
-import MergeOperation from 'explorejs-common/src/layered/MergeOperation';
+import {OrderedSegmentArray} from 'explorejs-common';
+import {MergeOperation} from 'explorejs-common';
 /**
  * Cache projection
  * Calculates diffs in meaning of rendering effect (how user sees that)
