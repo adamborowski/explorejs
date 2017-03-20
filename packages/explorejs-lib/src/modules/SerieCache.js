@@ -1,8 +1,7 @@
 import LevelCache from './LevelCache';
 import {IndexedList} from 'explorejs-common';
 import {Builder} from './SerieCacheProjectionDisposer';
-import RangeScopedEvent from 'explorejs-common/src/RangeScopedEvent';
-import Range from 'explorejs-common/src/Range';
+import {RangeScopedEvent, Range} from 'explorejs-common';
 
 /**
  * @property {CacheManager} CacheManager

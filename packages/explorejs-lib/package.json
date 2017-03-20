@@ -7,7 +7,8 @@
     "build": "webpack --env build --display-error-details",
     "dev": "webpack --display-modules --progress --colors --watch --env dev",
     "test": "mocha --compilers js:babel-core/register --colors ./test/**/*.test.js",
-    "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.test.js"
+    "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.test.js",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "random-seed": "^0.3.0",

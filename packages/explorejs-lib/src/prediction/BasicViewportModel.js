@@ -1,5 +1,5 @@
 import PredictionModel from '../modules/PredictionModel';
-import Range from 'explorejs-common/src/Range';
+import {Range} from 'explorejs-common';
 export default class BasicViewportModel extends PredictionModel {
 
     constructor(contextPaddingRatio = 0.5, roundPrecision = 0.3) {
