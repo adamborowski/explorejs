@@ -46,10 +46,13 @@ const config = {
     },
     resolve: {
         modules: [path.resolve('./src'), path.resolve('./node_modules')],
-        extensions: ['.json', '.js'],
-        alias: {
-            explorejs$: path.resolve('.')
-        }
+        extensions: ['.json', '.js']
+        // FIXME this is not working when mocha calls babel compiler directly
+        // FIXME we can't use it without compiling tests environment using webpack as well
+        // alias: {
+        //     'explorejs': path.resolve('src/'),
+        //     'explorejs-test': path.resolve('test/')
+        // }
     },
     plugins: plugins
 };
