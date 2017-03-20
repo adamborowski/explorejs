@@ -1,4 +1,4 @@
-import DataRequest from 'explorejs/data/DataRequest';
+import DataRequest from '../data/DataRequest';
 import {IndexedList} from 'explorejs-common';
 // import SimpleBatch from './batch/SimpleBatch';
 import MergingBatch from './batch/MergingBatch';

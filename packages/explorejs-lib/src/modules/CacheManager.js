@@ -1,4 +1,4 @@
-import IndexedList from 'explorejs-common/src/IndexedList';
+import {IndexedList} from 'explorejs-common';
 import SerieCache from './SerieCache';
 import WrapperIdFactory from './WrapperIdFactory';
 /**
