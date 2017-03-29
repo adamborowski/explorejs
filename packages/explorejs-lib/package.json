@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "library to enable big-data in ui time-series components",
   "main": "lib/explorejs-lib.js",
+  "jsnext:main": "es/explorejs-lib.js",
   "scripts": {
     "build": "webpack --env build --display-error-details",
     "dev": "webpack --display-modules --progress --colors --watch --env dev",
