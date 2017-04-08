@@ -5,6 +5,7 @@
   "main": "lib/explorejs-common.js",
   "scripts": {
     "build": "webpack --env build --display-error-details",
+    "build:dev": "webpack --env dev --display-error-details",
     "dev": "webpack --display-modules --progress --colors --watch --env dev",
     "test": "mocha --compilers js:babel-core/register --colors ./test/**/*.js",
     "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.js"
