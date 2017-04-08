@@ -35,12 +35,12 @@ const config = {
             {
                 test: /(\.jsx|\.js)$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|bower_components)/
+                include: path.join(__dirname, 'src')
             },
             {
                 test: /(\.jsx|\.js)$/,
                 loader: 'eslint-loader',
-                exclude: /node_modules/
+                include: path.join(__dirname, 'src')
             }
         ]
     },
