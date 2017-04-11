@@ -1,6 +1,6 @@
 var Aggregator = require('./Aggregator');
 var SerieService = require('./SerieService');
-var IndexedList = require('explorejs-common/src/IndexedList');
+const {IndexedList} = require('explorejs-common');
 var StatusError = require('../utils/StatusError');
 module.exports = class Service {
     constructor(series) {
