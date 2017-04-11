@@ -1,0 +1,33 @@
+{
+  "name": "explorejs-server",
+  "version": "0.0.0",
+  "description": "Data Source for exploration in visual analysis",
+  "main": "main.js",
+  "dependencies": {
+    "binarysearch": "^1.0.0",
+    "body-parser": "^1.15.0",
+    "compression": "^1.6.2",
+    "express": "^4.13.4",
+    "moment": "^2.13.0",
+    "n-readlines": "^0.2.5",
+    "optimist": "^0.6.1",
+    "proxy-middleware": "^0.15.0",
+    "request": "^2.69.0",
+    "explorejs-common": "^0.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec --harmony"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/aborowski/explorejs.git"
+  },
+  "keywords": [],
+  "author": "Adam Borowski",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/aborowski/explorejs#readme"
+}
