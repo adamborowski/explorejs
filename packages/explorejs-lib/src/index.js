@@ -1,15 +1,6 @@
-import RequestManager from './modules/RequestManager';
-import DataRequest from './data/DataRequest';
-import CacheManager from './modules/CacheManager';
-import DygraphsAdapter from './adapter/DygraphsAdapter';
+export {default as RequestManager} from './modules/RequestManager';
+export {default as DataRequest} from './data/DataRequest';
+export {default as CacheManager} from './modules/CacheManager';
+export {default as DygraphsAdapter} from './adapter/DygraphsAdapter';
 
-import {WiderContextModel, BasicViewportModel} from './prediction';
-
-export {
-    RequestManager,
-    DataRequest,
-    CacheManager,
-    DygraphsAdapter,
-    WiderContextModel,
-    BasicViewportModel
-};
+export {WiderContextModel, BasicViewportModel} from './prediction';

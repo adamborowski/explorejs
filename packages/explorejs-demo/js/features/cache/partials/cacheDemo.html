@@ -1,0 +1,167 @@
+<div class="cache-content">
+    <div class="floating-panel">
+        <form class="form-inline"
+              ng-submit="controller.loadRange(selectedSerie.name, rangeFrom, rangeTo , selectedAggregation.name)">
+            <div class="form-group form-group-sm">
+                <label>serie</label>
+                <button type="button" class="btn btn-default" bs-dropdown="availableSeries"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{selectedSerie.text}}
+                </button>
+            </div>
+            <div class="form-group form-group-sm">
+                <label>From</label>
+                <input type="text" class="form-control input-sm" ng-model="rangeFrom"
+                       placeholder="2015-12-01">
+            </div>
+            <div class="form-group form-group-sm">
+                <label>To</label>
+                <input type="text" class="form-control input-sm" ng-model="rangeTo"
+                       placeholder="2016-01-02">
+            </div>
+            <div class="form-group form-group-sm">
+                <label>level</label>
+                <button type="button" class="btn btn-default btn-xs" bs-dropdown="availableAggregations"
+                        aria-haspopup="true" aria-expanded="false">
+                    {{selectedAggregation.text}}
+                </button>
+            </div>
+
+
+            <button type="submit"
+                    class="btn btn-primary btn-xs">Add request
+            </button>
+            <button type="button" ng-click="controller.setViewportRange(rangeFrom, rangeTo )"
+                    class="btn btn-primary btn-xs">Set viewport
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.showProjectionCacheAtLevel(selectedAggregation.name)">Projection
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.showCacheAtLevel(selectedAggregation.name)">Cache
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.showWrappers()">Wrappers
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.loadLeft()">&lt;&lt;
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.loadRight()">&gt;&gt;
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.zoom(0.5)">+
+            </button>
+            <button type="button"
+                    class="btn btn-default btn-xs"
+                    ng-click="controller.zoom(2)">-
+            </button>
+            <!--<button type="button"-->
+            <!--class="btn btn-default" ng-click="controller.dump()">dump structure-->
+            <!--</button>-->
+            <span class="form-control-static">
+                        {{mouse|date:"yyyy-MM-dd HH:mm:ss"}}
+            </span>
+        </form>
+        <div class="chart-display">
+            Chart projection on level {{controller.adapter.dataSource.dynamicProjection.currentLevelId}} ({{numPoints}}
+            / {{controller.adapter.dataSource._newWrappers.length}}
+            points)
+            <div id="main-chart">
+
+            </div>
+        </div>
+    </div>
+
+
+    <div style="margin-top:450px" class="serie-display"
+         ng-repeat="serie in controller.rm.CacheManager.serieCacheSet.values">
+        <table class="table aggregation-display">
+            <thead>
+            <tr ng-repeat="projection in serie._disposer.projections"
+                ng-class="{projectionActive:controller.adapter.dataSource.dynamicProjection.currentLevelId==projection.levelId}">
+                <td class="aggregation-display" style="white-space: nowrap;">
+                    <span style="font-size:0.6em">↓</span> {{projection.levelId}}
+                </td>
+                <td class="projection-display">
+                    <svg
+                            ng-click="controller.applyMouse($event); controller.selectAggAndSerie(projection.levelId, serie)"
+                            ng-mousemove="controller.mouse($event)"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
+                              ng-attr-x="{{controller.getX(range)}}"
+                              ng-repeat="range in projection.projection"
+                              data-start="{{range.start}}"
+                              data-level-id="{{range.levelId}}"
+                        ></rect>
+                    </svg>
+                </td>
+            </tr>
+            <tr>
+                <td class="" style="white-space: nowrap;">
+                </td>
+                <td class="window-display"
+                >
+                    <svg
+                            ng-click="controller.applyMouse($event);"
+                            ng-mousemove="controller.mouse($event)"
+                            width="{{vizWidth}}" height="8" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(controller.getViewportRange())}}" height="20"
+                              ng-attr-x="{{controller.getX(controller.getViewportRange())}}"
+                              data-start="{{controller.getViewportRange().start}}"
+                              x="0" width="0"
+                        ></rect>
+                    </svg>
+                </td>
+            </tr>
+            <tr>
+                <td class="" style="white-space: nowrap;">&#10542;
+                </td>
+                <td class="projection-display">
+                    <svg
+                            ng-click="controller.applyMouse($event); controller.selectAggAndSerie(projection.levelId, serie)"
+                            ng-mousemove="controller.mouse($event)"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
+                              ng-attr-x="{{controller.getX(range)}}"
+                              ng-repeat="range in controller.adapter.dataSource._newProjectionRanges"
+                              data-start="{{range.start}}"
+                              data-level-id="{{range.levelId}}"
+                        ></rect>
+                    </svg>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="aggregation in serie._levelCacheSet.values">
+                <td class="aggregation-display" style="white-space: nowrap;">&#9716; {{aggregation.level.id}}</td>
+                <td class="aggregation-data-display">
+                    <svg
+                            ng-click="controller.applyMouse($event); controller.selectAggAndSerie(aggregation, serie)"
+                            ng-mousemove="controller.mouse($event)"
+                            width="{{vizWidth}}" height="15" class="level-svg">
+                        <rect ng-attr-width="{{controller.getWidth(range)}}" height="15"
+                              ng-attr-x="{{controller.getX(range)}}"
+                              ng-repeat="range in aggregation._debug_data_index"
+                              data-start="{{range.start}}"
+                              data-level-id="{{aggregation.level.id}}"
+                        ></rect>
+                    </svg>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <ul class="floating-bottom">
+        <li ng-repeat="argum in controller.rm._deferredAjaxCall._arguments">
+            {{argum}}
+        </li>
+    </ul>
+
+</div>

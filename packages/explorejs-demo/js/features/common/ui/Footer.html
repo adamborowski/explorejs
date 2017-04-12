@@ -1,0 +1,11 @@
+<footer ng-controller="FooterCtrl">
+  <div class="copyright">
+      <div class="container">
+          <p>
+              <span> <a href="https://bitbucket.org/aborowski/bashutils/src/master/log-analysis/" target="_blank">Open on BitBucket</a></span>
+              <span ng-if="config.appname">{{ config.appname }} {{ config.version }}</span>
+              <a href="{{ config.protocol }}" target="_blank" class="agreement">Protocol</a>
+          </p>
+      </div>
+  </div>
+</footer>

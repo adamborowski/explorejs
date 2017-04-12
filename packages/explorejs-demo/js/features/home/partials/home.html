@@ -1,0 +1,128 @@
+<!--suppress CheckEmptyScriptTag -->
+<div class="container" role="main" ng-controller="UserPlayController as controller"
+     ng-init="controller.init(0,1000, true); ">
+
+    <div class="jumbotron" style="padding: 10px;">
+        <div class="btn-toolbar">
+            <button class="btn btn-default" type="submit" ng-click="controller.gotoFirstFrame()"
+                    tooltip="Przewiń do początku">
+                <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default" type="submit" ng-click="controller.prevFrame()"
+                    tooltip="Przejdź do poprzedniej klatki">
+                <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-default" type="submit" ng-click="controller.togglePlay()"
+                    ng-class="{active: controller.playing}" tooltip="{{controller.playing?'Zatrzymaj':'Odtwórz'}}">
+            <span class="glyphicon"
+                  ng-class="{'glyphicon-play':!controller.playing, 'glyphicon-pause': controller.playing}"
+                  aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-default" type="submit" ng-click="controller.nextFrame()"
+                    tooltip="Przejdź do następnej klatki">
+                <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default" type="submit" ng-click="controller.gotoLastFrame()"
+                    tooltip="Przewiń do końca">
+                <span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-default" type="submit" ng-click="controller.toggleDirection()"
+                    ng-class="{active: controller.direction==-1}"
+                    tooltip="{{controller.direction!=1?'Przywróć normalny':'Odwróć' }} kierunek odwarzania"
+            >
+                <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default" type="submit" ng-click="controller.toggleLoop()"
+                    ng-class="{active: controller.loop}"
+                    tooltip="Odtwarzaj {{controller.loop?'jednokrotnie':'w pętli' }}"
+            >
+                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+            </button>
+            <div class="col-sm-3">
+                <slider min="{{controller.firstFrame}}" max="{{controller.lastFrame}}" value="controller.frame"
+                title="params.frame.formatter"/>
+            </div>
+            <div class="col-sm-3">
+                <slider min="{{params.timeScale.min}}" max="{{params.timeScale.max}}" step="{{params.timeScale.step}}"
+                        value="controller.timeScale" title="params.timeScale.formatter"/>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="jumbotron" style="padding:1px 10px 10px 10px">
+        <h5>Ustawienia parametrów symulacji</h5>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Nachylenie</label>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model="params.angle.value"
+                               min="0" max="90" required
+                        >
+                        <div class="input-group-addon">&deg;</div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <slider min="{{params.angle.min}}" max="{{params.angle.max}}" value="params.angle.value"
+                            title="params.angle.formatter"/>
+                </div>
+
+                <label class="col-sm-2 control-label">Promień kuli</label>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model="params.radius.value"
+                               min="{{params.radius.min}}" max="{{params.radius.max}}" required
+                        >
+                        <div class="input-group-addon">cm</div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <slider min="{{params.radius.min}}" max="{{params.radius.max}}" value="params.radius.value"
+                            title="params.radius.formatter"/>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Wysokość równi</label>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model="params.slopeHeight.value"
+                               min="{{params.slopeHeight.min}}" max="{{params.slopeHeight.max}}" required
+                        >
+                        <div class="input-group-addon">cm</div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <slider min="{{params.slopeHeight.min}}" max="{{params.slopeHeight.max}}"
+                            value="params.slopeHeight.value"
+                            title="params.slopeHeight.formatter"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="jumbotron" style="padding: 10px 10px;">
+        <simulation
+                time="{{controller.second}}"
+                angle="{{params.angle.value}}"
+                radius="{{params.radius.value}}"
+                slope-height="{{params.slopeHeight.value}}"
+                end-time="controller.endSecond"
+        ></simulation>
+    </div>
+    <div class="jumbotron" style="padding: 10px 60px;">
+        <p class="pull-right">Wizualizacja za pomocą <a href="http://paperjs.org/">http://paperjs.org/</a></p>
+        <h2>Kula i równia pochyła</h2>
+        <p style="font-size: 1.1em">
+            Symulowane zjawisko przedstawia kulę staczającą się po równi pochyłej.
+            Przyjęty model zakłada istnienie tarcia wyłącznie statycznego pomiędzy kulą a równią, zatem kula nie
+            ześlizguje się.
+        </p>
+    </div>
+
+
+</div> <!-- /container -->

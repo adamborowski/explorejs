@@ -1,0 +1,153 @@
+.cache-content {
+  margin: 120px auto 20px auto;
+  width: calc(100% - 3px);
+  .form-row {
+    margin: 20px 0;
+  }
+}
+//
+@colors: #001F3F,
+#0074D9,
+#7FDBFF,
+#39CCCC,
+#3D9970,
+#2ECC40,
+#01FF70,
+#FFDC00,
+#FF851B,
+#FF4136,
+#F012BE,
+#B10DC9,
+#85144B,
+#AAAAAA,
+#111111;
+.projectionActive td {
+  font-weight:bold;
+  background: #fefca4;
+  border-bottom: 2px solid #222222;
+}
+
+td.window-display svg rect {
+  fill: #333333 !important;
+}
+
+
+table thead td.projection-display svg.level-svg, .aggregation-data-display {
+  [data-level-id='raw'] {
+    fill: extract(@colors, 1);
+  }
+  [data-level-id='30s'] {
+    fill: extract(@colors, 2);
+  }
+  [data-level-id='1m'] {
+    fill: extract(@colors, 3);
+  }
+  [data-level-id='3m'] {
+    fill: extract(@colors, 4);
+  }
+  [data-level-id='10m'] {
+    fill: extract(@colors, 5);
+  }
+  [data-level-id='30m'] {
+    fill: extract(@colors, 6);
+  }
+  [data-level-id='1h'] {
+    fill: extract(@colors, 7);
+  }
+  [data-level-id='4h'] {
+    fill: extract(@colors, 8);
+  }
+  [data-level-id='8h'] {
+    fill: extract(@colors, 9);
+  }
+  [data-level-id='1d'] {
+    fill: extract(@colors, 10);
+  }
+  [data-level-id='3d'] {
+    fill: extract(@colors, 11);
+  }
+  [data-level-id='7d'] {
+    fill: extract(@colors, 12);
+  }
+  [ data-level-id = '30d' ] {
+    fill: extract(@colors, 13);
+  }
+  [ data-level-id = '90d' ] {
+    fill: extract(@colors, 14);
+  }
+  [ data-level-id = '1y' ] {
+    fill: extract(@colors, 15);
+  }
+}
+
+//.make-color-classes2(@i: length(@colors)) when (@i > 0) {
+//  .make-color-classes2(@i - 1);
+//  @color: extract(@colors, @i);
+//  svg:nth-of-type(@{i}) {
+//    rect {
+//      fill: @color;
+//    }
+//    z-index: 20 - @i;
+//  }
+//}
+
+svg.level-svg {
+  background: #efefef;
+
+  // mixin to iterate over colors and create CSS class for each one
+
+}
+
+table.aggregation-display tbody,table.aggregation-display thead {
+  //.make-color-classes();
+  td {
+    padding: 0px 0;
+  }
+}
+
+table.aggregation-display thead {
+  tr:last-of-type {
+    td {
+      border-bottom: 3px solid #ffcc33;
+    }
+  }
+  td.compile-view {
+    div {
+      position: relative;
+      svg {
+        &:last-of-type {
+          background: #efefef;
+        }
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    }
+  }
+  //.make-color-classes2();
+}
+
+.floating-panel {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  padding-top: 80px;
+  padding-left: 30px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #dddddd;
+  background: white;
+  z-index: 100;
+}
+
+.floating-bottom {
+  //position: fixed;
+  //bottom: 0;
+  //left: 0;
+  //right: 0;
+  padding: 6px;
+  font-family: Menlo;
+  font-size: 8pt;
+  z-index: 2000;
+  min-height: 100px;
+}
