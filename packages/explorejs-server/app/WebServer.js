@@ -22,7 +22,7 @@ module.exports = class WebServer {
             app.use('/', proxy(url.parse('http://localhost:' + this.config.devServerPort)));
         }
         else {
-            var staticPath = path.resolve(__dirname, '../../client/build/');
+            var staticPath = path.resolve(__dirname, '../../explorejs-demo/build/');
             console.log('\n static path: ' + staticPath);
             app.use(express.static(staticPath));
             app.all('*', function (req, res) {

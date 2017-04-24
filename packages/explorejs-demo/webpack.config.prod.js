@@ -26,7 +26,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel',
-                exclude: /(node_modules|bower_components)/,
+                include: [path.resolve(__dirname, 'js'), path.resolve(__dirname, 'etc')],
                 query: {
                     presets: [
                         'es2015'
@@ -34,7 +34,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(eot|svg|ttf|woff|woff2)\w*/,
+                test: /\.(eot|png|svg|ttf|woff|woff2)\w*/,
                 loader: 'file'
             },
             {
@@ -43,7 +43,7 @@ module.exports = {
             }
         ]
     },
-    postcss: function() {
+    postcss: function () {
         return [
             autoprefixer({browsers: ['last 5 versions']})
         ];
@@ -57,9 +57,9 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.UglifyJsPlugin({
+            mangle:false,
             compress: {
-                warnings: false,
-                mangle: false
+                warnings: false
             }
         }),
         new webpack.optimize.CommonsChunkPlugin('[hash].common.bundle.js')
