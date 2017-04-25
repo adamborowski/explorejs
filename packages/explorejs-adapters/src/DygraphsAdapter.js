@@ -1,4 +1,4 @@
-import DataSource from '../modules/DataSource';
+import {DataSource} from 'explorejs-lib';
 export default class DygraphsAdapter {
     /**
      *

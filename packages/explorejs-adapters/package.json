@@ -1,0 +1,30 @@
+{
+  "name": "explorejs-adapters",
+  "version": "0.0.0",
+  "description": "Various adapters for ExploreJS library",
+  "main": "lib/explorejs-adapters.js",
+  "scripts": {
+    "build": "webpack --env build --display-error-details",
+    "build:dev": "webpack --env dev --display-error-details",
+    "dev": "webpack --display-modules --progress --colors --watch --env dev",
+    "test": "mocha --compilers js:babel-core/register --colors ./test/**/*.js",
+    "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.js"
+  },
+  "devDependencies": {
+    "mocha": "2.3.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamborowski/explorejs.git"
+  },
+  "keywords": [
+    "explorejs",
+    "adapters"
+  ],
+  "author": "Adam Borowski",
+  "license": "ISC",
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "explorejs-lib": "^0.0.0"
+  }
+}
