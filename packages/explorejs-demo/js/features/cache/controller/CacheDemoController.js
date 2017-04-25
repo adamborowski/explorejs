@@ -1,4 +1,6 @@
-import {RequestManager, DataRequest, CacheManager, DygraphsAdapter, BasicViewportModel, WiderContextModel} from 'explorejs-lib';
+import {RequestManager, DataRequest, CacheManager, BasicViewportModel, WiderContextModel} from 'explorejs-lib';
+
+import {DygraphsAdapter} from 'explorejs-adapters';
 
 import Dygraphs from "dygraphs";
 const vizWidth = window.innerWidth-90;

@@ -1,0 +1,24 @@
+{
+  "presets": [
+    "latest",
+    "react",
+    "stage-1"
+  ],
+  "plugins":[
+    "transform-decorators-legacy",
+    "transform-class-properties"
+  ],
+  "env": {
+    "development": {
+      "presets": [
+        "react-hmre"
+      ]
+    },
+    "production": {
+      "plugins": [
+        "transform-react-constant-elements",
+        "transform-react-remove-prop-types"
+      ]
+    }
+  }
+}
