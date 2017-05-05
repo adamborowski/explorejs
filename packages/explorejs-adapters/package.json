@@ -24,7 +24,8 @@
   "author": "Adam Borowski",
   "license": "ISC",
   "dependencies": {
-    "underscore": "^1.8.3",
-    "explorejs-lib": "^0.0.0"
+    "explorejs-lib": "^0.0.0",
+    "moment": "^2.18.1",
+    "underscore": "^1.8.3"
   }
 }
