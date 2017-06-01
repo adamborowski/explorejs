@@ -7,7 +7,7 @@ import NavButtons from './NavButtons';
 import {scenarioByIdSelector, sessionByIdSelector} from "../../../selectors/testingSelectors";
 import dateformat from "dateformat";
 import {push} from "react-router-redux";
-import {VisJSChart} from "../../../view/chart/display/VisJSChart";
+import {Chart} from "../../../view/chart/display/VisJSChart";
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -24,7 +24,7 @@ export const ScenarioSessionPage = (props) => {
 
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
-      <VisJSChart someData="cos"/>
+      <Chart someData="cos"/>
     </div>
   )
 };

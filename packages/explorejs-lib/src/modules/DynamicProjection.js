@@ -86,7 +86,13 @@ export default class DynamicProjection {
      * @private
      */
     _getUnsupportedRanges(rangeSet, newLevel) {
-        return rangeSet.filter((r)=>this._levels.get(r.levelId).step < newLevel.step);
+        return rangeSet.filter((r) => this._levels.get(r.levelId).step < newLevel.step);
+    }
+
+    destroy() {
+        if (this.currentEvent) {
+            this.currentEvent.removeListener('recompile', this.cacheUpdateHandler);
+        }
     }
 
 }

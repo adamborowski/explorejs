@@ -111,4 +111,8 @@ export default class DataSource {
         return this._viewState;
     }
 
+    destroy() {
+        this.dynamicProjection.destroy();
+        this.predictionEngine.destroy();
+    }
 }

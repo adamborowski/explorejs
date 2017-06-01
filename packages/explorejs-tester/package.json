@@ -98,6 +98,7 @@
     "webpack-bundle-analyzer": "2.1.1",
     "webpack-dev-middleware": "1.9.0",
     "webpack-hot-middleware": "2.13.2",
-    "webpack-md5-hash": "0.0.5"
+    "webpack-md5-hash": "0.0.5",
+    "jquery": "3.2.1"
   }
 }

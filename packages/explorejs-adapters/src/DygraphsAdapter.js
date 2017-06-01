@@ -7,20 +7,19 @@ export default class DygraphsAdapter {
      * @param dataset
      * @param groups
      */
-    constructor(serieCache, chart, $, Dygraphs, debugCallback) {
+    constructor(serieCache, chart, $, Dygraphs) {
 
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
         this.chart = chart;
         this.Dygraphs = Dygraphs;
         this.$ = $;
-        this.debugCallback = debugCallback;
         this.init();
     }
 
     init() {
 
-        const updateViewStateBasedOnDisplayedRange = ()=> {
+        const updateViewStateBasedOnDisplayedRange = () => {
             if (this.plot) { // ignore first time callback
                 const range = this.getDisplayedRange();
 
@@ -60,13 +59,27 @@ export default class DygraphsAdapter {
         const result = this.dataSource.getWrappers();
 
         console.time('adapter update');
-        const bars = result.map(a=>[new Date(a.start), a.levelId === 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
+        const bars = result.map(a => [new Date(a.start), a.levelId === 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
 
         this.plot.updateOptions({
             file: bars
         });
         console.timeEnd('adapter update');
-        this.debugCallback(bars.length);
 
     }
+
+    /**
+     * Called when there is no more chart to display, this should unsubscribe from explorejs
+     */
+    destroy() {
+        this.dataSource.destroy();
+    }
+
+    /**
+     * TODO
+     * FIXME
+     * Support for gracefully cleanup of objects created for one view (DataSource, ViewState, DynamicProjection, etc), unsubscribe events
+     * 
+     *
+     */
 }
