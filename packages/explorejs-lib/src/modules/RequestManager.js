@@ -119,4 +119,9 @@ export default class RequestManager {
         }
         return this._serverManifest;
     }
+
+    destroy() {
+        console.warn('Request manager->destroy');
+        // TODO unmount everything, cancel pending requests, remove event listeners from dom or not owning emitters
+    }
 }
