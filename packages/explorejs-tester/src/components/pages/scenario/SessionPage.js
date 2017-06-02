@@ -7,7 +7,7 @@ import NavButtons from './NavButtons';
 import {scenarioByIdSelector, sessionByIdSelector} from "../../../selectors/testingSelectors";
 import dateformat from "dateformat";
 import {push} from "react-router-redux";
-import {Chart} from "../../../view/chart/display/VisJSChart";
+import {LocalBinding, Chart} from "explorejs-react";
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -24,9 +24,11 @@ export const ScenarioSessionPage = (props) => {
 
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
-      <Chart someData="cos"/>
+      <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['s001']}>
+        <Chart adapterType="dygraphs"/>
+      </LocalBinding>
     </div>
-  )
+  );
 };
 ScenarioSessionPage.propTypes = {
   scenario: PropTypes.object.isRequired
