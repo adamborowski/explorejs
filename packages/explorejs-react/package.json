@@ -1,0 +1,39 @@
+{
+  "name": "explorejs-react",
+  "version": "0.0.0",
+  "description": "Explorejs React bindings - configuration exposed as React components",
+  "main": "lib/explorejs-react.js",
+  "scripts": {
+    "build": "webpack --env build --display-error-details",
+    "build:dev": "webpack --env dev --display-error-details",
+    "dev": "webpack --display-modules --progress --colors --watch --env dev",
+    "test": "mocha --compilers js:babel-core/register --colors ./test/**/*.js",
+    "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.js"
+  },
+  "devDependencies": {
+    "mocha": "2.3.4",
+    "explorejs-adapters": "^0.0.0",
+    "jquery": "3.2.1",
+    "dygraphs": "1.1.1",
+    "explorejs-lib": "^0.0.0",
+    "prop-types": "^15.5.10",
+    "react": "15.4.1",
+    "babel-preset-react": "6.16.0",
+    "babel-plugin-transform-class-properties": "^6.22.0",
+    "babel-preset-es2015": "6.16.0",
+    "babel-preset-stage-1": "6.16.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamborowski/explorejs.git"
+  },
+  "keywords": [
+    "explorejs",
+    "react"
+  ],
+  "author": "Adam Borowski",
+  "license": "ISC",
+  "dependencies": {
+
+  }
+}
