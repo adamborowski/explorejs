@@ -10,6 +10,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import config from '../webpack.config.dev';
+import proxyMiddleware from 'http-proxy-middleware';
 
 const bundler = webpack(config);
 
@@ -23,8 +24,8 @@ browserSync({
     baseDir: 'src',
 
     middleware: [
+      proxyMiddleware('/api/**', {target:'http://localhost:8080', logLevel: 'debug'}),
       historyApiFallback(),
-
       webpackDevMiddleware(bundler, {
         // Dev middleware can't access config, so we provide publicPath
         publicPath: config.output.publicPath,
