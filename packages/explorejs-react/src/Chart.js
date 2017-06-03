@@ -10,10 +10,16 @@ export default class Chart extends React.Component {
 
     constructor() {
         super();
-        this.state = {adapter: null};
+        this.state = {adapter: null, errorMessage: null};
     }
 
     render() {
+
+        const {errorMessage} = this.state;
+
+        if (errorMessage) {
+            return <p>Explorejs error: {errorMessage}</p>;
+        }
 
         return <div className="a-chart" ref={chart => {
             this.chart = chart;
@@ -56,11 +62,17 @@ export default class Chart extends React.Component {
             return;
         }
 
-        const requestManager = await this.context.explorejsRequestManager.ready();
+        let serieCache;
 
-        const serieCache = requestManager.getSerieCache(this.props.serieId);
+        try {
+            const requestManager = await this.context.explorejsRequestManager;
 
-        this.setState({adapter: adapterFactory(adapter, serieCache, this.chart)});
+            serieCache = requestManager.CacheManager.getSerieCache(this.props.serieId);
+        } catch (e) {
+            this.setState({errorMessage: e.message});
+        }
+
+        serieCache && this.setState({adapter: adapterFactory(adapter, serieCache, this.chart)});
     }
 
     static propTypes = {
@@ -70,7 +82,7 @@ export default class Chart extends React.Component {
     };
 
     static contextTypes = {
-        explorejsRequestManager: PropTypes.instanceOf(RequestManager)
+        explorejsRequestManager: PropTypes.instanceOf(Promise)
     };
 }
 

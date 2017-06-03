@@ -5,18 +5,27 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {CacheManager, RequestManager} from 'explorejs-lib';
 
+class Deferred {
+    constructor() {
+        this.promise = new Promise((fulfill, reject) => {
+            this.fulfill = fulfill;
+            this.reject = reject;
+        });
+    }
+}
+
 export default class LocalBinding extends Component {
 
     constructor(props) {
         super(props);
 
-        const requestManager = new RequestManager();
+        const requestManager = new RequestManager(props.manifest, props.batch);
         const cacheManager = new CacheManager();
 
         requestManager.CacheManager = cacheManager;
         cacheManager.RequestManager = requestManager;
 
-        this.state = {requestManager};
+        this.state = {requestManager, deferred: new Deferred()};
 
     }
 
@@ -24,6 +33,8 @@ export default class LocalBinding extends Component {
         const requestManager = await this.state.requestManager.ready();
 
         this.props.series.forEach(s => requestManager.CacheManager.createSerieCache({serieId: s}));
+
+        this.state.deferred.fulfill(requestManager);
     }
 
     componentWillReceiveProps(newProps) {
@@ -36,7 +47,7 @@ export default class LocalBinding extends Component {
 
     getChildContext() {
         return {
-            explorejsRequestManager: this.state && this.state.requestManager
+            explorejsRequestManager: this.state && this.state.deferred.promise
         };
     }
 
@@ -51,6 +62,6 @@ export default class LocalBinding extends Component {
     };
 
     static childContextTypes = {
-        explorejsRequestManager: PropTypes.instanceOf(RequestManager)
+        explorejsRequestManager: PropTypes.instanceOf(Promise)
     };
 }

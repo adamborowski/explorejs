@@ -45,14 +45,21 @@ export default class RequestManager {
 
             xhr.open('GET', this.apiManifestUrl, true);
             xhr.onload = () => {
-                if (xhr.status === 200) {
-                    const manifest = JSON.parse(xhr.responseText);
+                if (xhr.statusText === 'OK') {
+                    let manifest;
+
+                    try {
+                        manifest = JSON.parse(xhr.responseText);
+                    } catch (e) {
+                        reject({success: false, errorMessage: e.message, error: e});
+                        return;
+                    }
 
                     this._serverManifest = IndexedList.fromArray(manifest.series, 'serieId');
                     fulfill(this);
                 } else {
-                    reject(xhr.responseText);
                     console.error('RequestManager error during getting manifest');
+                    reject({success: false, errorMessage: xhr.responseText});
                 }
             };
             xhr.send();

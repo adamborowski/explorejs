@@ -18,7 +18,7 @@ if (env === 'build') {
 
 const config = {
     entry: __dirname + '/src/index.js',
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     externals: {
         react: 'react',
         'react-dom': 'react-dom',
