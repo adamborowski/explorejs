@@ -34,21 +34,30 @@ export default class RequestManager {
     /**
      * calls server for manifest
      */
-    init(callback) {
-        const xhr = new XMLHttpRequest();
+    ready() {
 
-        xhr.open('GET', this.apiManifestUrl, true);
-        xhr.onload = ()=> {
-            if (xhr.status === 200) {
-                const manifest = JSON.parse(xhr.responseText);
+        if (this.initPromise) {
+            return this.initPromise;
+        }
 
-                this._serverManifest = IndexedList.fromArray(manifest.series, 'serieId');
-                callback();
-            } else {
-                console.error('RequestManager error during getting manifest');
-            }
-        };
-        xhr.send();
+        this.initPromise = new Promise((fulfill, reject) => {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('GET', this.apiManifestUrl, true);
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const manifest = JSON.parse(xhr.responseText);
+
+                    this._serverManifest = IndexedList.fromArray(manifest.series, 'serieId');
+                    fulfill(this);
+                } else {
+                    reject(xhr.responseText);
+                    console.error('RequestManager error during getting manifest');
+                }
+            };
+            xhr.send();
+        });
+        return this.initPromise;
     }
 
     /**
@@ -65,7 +74,7 @@ export default class RequestManager {
 
         xhr.open('POST', this.apiBatchUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onload = ()=> {
+        xhr.onload = () => {
             setTimeout(() => {
                 if (xhr.status === 200) {
                     const resp = JSON.parse(xhr.responseText);

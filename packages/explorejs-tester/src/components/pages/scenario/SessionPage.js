@@ -7,13 +7,14 @@ import NavButtons from './NavButtons';
 import {scenarioByIdSelector, sessionByIdSelector} from "../../../selectors/testingSelectors";
 import dateformat from "dateformat";
 import {push} from "react-router-redux";
-import {LocalBinding, Chart} from "explorejs-react";
+import {Chart, LocalBinding} from "explorejs-react";
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 
 export const ScenarioSessionPage = (props) => {
   const {scenario, session} = props;
+
   return (
     <div>
       <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
@@ -25,7 +26,7 @@ export const ScenarioSessionPage = (props) => {
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['s001']}>
-        <Chart adapterType="dygraphs"/>
+        <Chart serieId="s001" adapter="dygraphs" prediction={['basic', 'wider-context']}/>
       </LocalBinding>
     </div>
   );

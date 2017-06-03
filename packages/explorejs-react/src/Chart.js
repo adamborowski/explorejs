@@ -4,8 +4,15 @@
  */
 import React, {PropTypes} from 'react';
 import adapterFactory, {types} from './AdapterFactory';
+import {RequestManager} from 'explorejs-lib';
 
-export class Chart extends React.Component {
+export default class Chart extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {adapter: null};
+    }
+
     render() {
 
         return <div className="a-chart" ref={chart => {
@@ -14,6 +21,11 @@ export class Chart extends React.Component {
     }
 
     componentDidMount() {
+
+        if (!this.context.explorejsRequestManager) {
+            throw new Error('Chart has to be placed in context of ExploreJS context binding component from explorejs-react');
+        }
+
         this._createAdapter();
     }
 
@@ -21,31 +33,44 @@ export class Chart extends React.Component {
      * If adapterType or serieCache will change - destroy previous adapter and create new
      */
     componentWillReceiveProps(nextProps) {
-        if (this.props.adapterType !== nextProps.adapterType || this.props.serieCache !== nextProps.serieCache) {
+        if (this.props.adapter !== nextProps.adapter || this.props.serieId !== nextProps.serieId) {
+
             this._createAdapter();
         }
     }
 
     componentWillUnmount() {
-        this.adapter.destroy();
+        if (this.state.adapter) {
+            this.state.adapter.destroy();
+        }
     }
 
-    _createAdapter() {
-        if (this.adapter) {
-            this.adapter.destroy();
-        }
-        const {serieCache, adapterType} = this.props;
+    async _createAdapter() {
 
-        if (!serieCache || !adapterType) {
+        if (this.state.adapter) {
+            this.state.adapter.destroy();
+        }
+        const {adapter, prediction, serieId} = this.props;
+
+        if (!adapter || !prediction || !serieId) {
             return;
         }
-        this.adapter = adapterFactory(adapterType, serieCache, this.chart);
+
+        const requestManager = await this.context.explorejsRequestManager.ready();
+
+        const serieCache = requestManager.getSerieCache(this.props.serieId);
+
+        this.setState({adapter: adapterFactory(adapter, serieCache, this.chart)});
     }
+
+    static propTypes = {
+        serieId: PropTypes.string,
+        adapter: PropTypes.oneOf(types),
+        prediction: PropTypes.arrayOf(PropTypes.string)
+    };
+
+    static contextTypes = {
+        explorejsRequestManager: PropTypes.instanceOf(RequestManager)
+    };
 }
 
-Chart.propTypes = {
-    someData: PropTypes.string,
-    serieCache: PropTypes.object,
-    adapterType: PropTypes.oneOf(types),
-    prediction: PropTypes.arrayOf(PropTypes.string)
-};
