@@ -38,6 +38,7 @@ export default class DygraphsAdapter {
                 }
             }
         });
+        setTimeout(() => this.plot.resize(), 500); // todo the hac of deferred css Todo solve the deferred css load problem - page jumping
 
         this.wheelHelper = new MouseWheelHelper(
             this.chart,
