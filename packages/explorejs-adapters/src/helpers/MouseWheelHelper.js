@@ -12,7 +12,7 @@ export default class MouseWheelHelper {
      * @param getScreenRange {function} supplier for actual screen position of displayed range
      * it should return object with start and width keys
      */
-    constructor(dom, callback, getDisplayedRange, getScreenRange, zoomFactor = 0.3, panFactor = 0.2) {
+    constructor(dom, callback, getDisplayedRange, getScreenRange, zoomFactor = 0.45, panFactor = 0.1) {
         this.dom = dom;
         this.callback = callback;
         this.getDisplayedRange = getDisplayedRange;

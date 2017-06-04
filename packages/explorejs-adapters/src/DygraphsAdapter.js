@@ -1,18 +1,17 @@
 import {DataSource} from 'explorejs-lib';
-import MouseWheelHelper from "./helpers/MouseWheelHelper";
+import MouseWheelHelper from './helpers/MouseWheelHelper';
 export default class DygraphsAdapter {
     /**
      *
      * @param {SerieCache} serieCache
-     * @param graph2d
-     * @param dataset
-     * @param groups
+     * @param chart {HTMLElement} element where put the chart
+     * @param Dygraphs {Dygraphs} library reference
      */
     constructor(serieCache, chart, Dygraphs) {
 
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
-        this.chart = chart
+        this.chart = chart;
         this.Dygraphs = Dygraphs;
         this.init();
     }
@@ -39,7 +38,6 @@ export default class DygraphsAdapter {
                 }
             }
         });
-
 
         this.wheelHelper = new MouseWheelHelper(
             this.chart,
