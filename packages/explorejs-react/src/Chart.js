@@ -21,7 +21,7 @@ export default class Chart extends React.Component {
             return <p>Explorejs error: {errorMessage}</p>;
         }
 
-        return <div className="a-chart" ref={chart => {
+        return <div className="a-chart" style={{width: '100%'}} ref={chart => {
             this.chart = chart;
         }}/>;
     }
