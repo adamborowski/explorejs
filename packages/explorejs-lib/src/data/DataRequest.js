@@ -3,6 +3,11 @@
  */
 export default class DataRequest {
     constructor(serieId, level, openTime, closeTime, priority) {
+
+        if (openTime === closeTime) {
+            console.warn('Requested for range where start===end');
+        }
+
         this.serieId = serieId;
         this.level = level;
         if (openTime > closeTime) {

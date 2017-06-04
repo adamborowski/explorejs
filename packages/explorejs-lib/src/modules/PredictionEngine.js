@@ -27,7 +27,7 @@ export default class PredictionEngine {
     }
 
     addModels(models) {
-        models.forEach(a=>this.addModel(a));
+        models.forEach(a => this.addModel(a));
     }
 
     removeModel(model) {
@@ -48,6 +48,10 @@ export default class PredictionEngine {
                 model.update();
             }
         }
+    }
+
+    destroy() {
+        console.log('TODO: destroy predition engine');
     }
 
 }

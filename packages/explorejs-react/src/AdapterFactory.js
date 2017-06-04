@@ -1,9 +1,8 @@
 import {DygraphsAdapter, VisJsAdapter} from 'explorejs-adapters';
 import Dygraph from 'dygraphs';
-import $ from 'jquery';
 const factoryMap = {
     dygraphs(serieCache, dom) {
-        return new DygraphsAdapter(serieCache, dom, $, Dygraph);
+        return new DygraphsAdapter(serieCache, dom, Dygraph);
     },
     visjs(sereCache, dom) {
         const dataset = 1;

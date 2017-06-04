@@ -1,4 +1,5 @@
 import {DataSource} from 'explorejs-lib';
+import MouseWheelHelper from "./helpers/MouseWheelHelper";
 export default class DygraphsAdapter {
     /**
      *
@@ -7,13 +8,12 @@ export default class DygraphsAdapter {
      * @param dataset
      * @param groups
      */
-    constructor(serieCache, chart, $, Dygraphs) {
+    constructor(serieCache, chart, Dygraphs) {
 
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
-        this.chart = chart;
+        this.chart = chart
         this.Dygraphs = Dygraphs;
-        this.$ = $;
         this.init();
     }
 
@@ -27,7 +27,7 @@ export default class DygraphsAdapter {
             }
         };
 
-        this.plot = new this.Dygraphs(this.chart.attr('id'), [[new Date(), [0, 250, 300]]], {
+        this.plot = new this.Dygraphs(this.chart, [[new Date(), [0, 250, 300]]], {
             customBars: true,
             strokeWidth: 1,
             drawCallback: updateViewStateBasedOnDisplayedRange,
@@ -39,6 +39,18 @@ export default class DygraphsAdapter {
                 }
             }
         });
+
+
+        this.wheelHelper = new MouseWheelHelper(
+            this.chart,
+            this.setDisplayedRange.bind(this),
+            this.getDisplayedRange.bind(this),
+            () => {
+                const rect = this.chart.getBoundingClientRect();
+                const pad = this.plot.plotter_.area.x;
+
+                return ({start: rect.left + pad, width: rect.width - pad});
+            });
 
     }
 
@@ -73,13 +85,12 @@ export default class DygraphsAdapter {
      */
     destroy() {
         this.dataSource.destroy();
+        this.wheelHelper.destroy();
     }
 
     /**
      * TODO
      * FIXME
      * Support for gracefully cleanup of objects created for one view (DataSource, ViewState, DynamicProjection, etc), unsubscribe events
-     * 
-     *
      */
 }

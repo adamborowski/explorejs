@@ -4,7 +4,7 @@
  */
 import React, {PropTypes} from 'react';
 import adapterFactory, {types} from './AdapterFactory';
-import {RequestManager} from 'explorejs-lib';
+import {BasicViewportModel, RequestManager, WiderContextModel} from 'explorejs-lib';
 
 export default class Chart extends React.Component {
 
@@ -72,7 +72,20 @@ export default class Chart extends React.Component {
             this.setState({errorMessage: e.message});
         }
 
-        serieCache && this.setState({adapter: adapterFactory(adapter, serieCache, this.chart)});
+        if (serieCache) {
+            const newAdapter = adapterFactory(adapter, serieCache, this.chart);
+
+            newAdapter.dataSource.predictionEngine.addModels([ // todo get this from props!!
+                new BasicViewportModel(),
+                new WiderContextModel()
+            ]);
+
+            newAdapter.setDisplayedRange(new Date('2012-05-01').getTime(), new Date('2014-01-01').getTime());
+
+            this.setState({adapter: newAdapter});
+
+        }
+
     }
 
     static propTypes = {
