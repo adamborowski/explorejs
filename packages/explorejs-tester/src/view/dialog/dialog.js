@@ -40,7 +40,7 @@ export const Dialog = (props) => {
 };
 
 Dialog.propTypes = {
-  messages: React.PropTypes.string
+  messages: React.PropTypes.array
 };
 
 const mapStateToProps = (state) => ({
