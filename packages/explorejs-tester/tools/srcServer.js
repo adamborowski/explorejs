@@ -24,7 +24,7 @@ browserSync({
     baseDir: 'src',
 
     middleware: [
-      proxyMiddleware('/api/**', {target:'http://localhost:8080', logLevel: 'debug'}),
+      proxyMiddleware('/api/**', {target:'http://localhost:8080'}),
       historyApiFallback(),
       webpackDevMiddleware(bundler, {
         // Dev middleware can't access config, so we provide publicPath

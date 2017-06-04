@@ -14,7 +14,8 @@ var webserver = new WebServer({
     files,
     sourcePath: sourcePath,
     devServer: argv['webpack-dev-server'],
-    devServerPort: argv['webpack-dev-port']
+    devServerPort: argv['webpack-dev-port'],
+    clientAppPath: argv['client-app-path'],
 });
 webserver.start();
 
