@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Link, IndexLink} from 'react-router';
+import React from 'react';
+import {Link} from 'react-router';
 import {ContextSubscriber} from 'react-router/lib/ContextUtils';
 
 

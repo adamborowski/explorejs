@@ -4,11 +4,11 @@ import {hideDialog} from "../../redux/dialog/actions";
 
 export const Dialog = (props) => {
 
-  if (props.messages.length == 0) {
+  if (props.messages.length === 0) {
     return null;
   }
   const lastMessage = props.messages[0];
-  return <div>
+  return (<div>
     <div key={lastMessage.id} className="modal" tabIndex="-1" role="dialog" style={{display: 'block'}}>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
@@ -23,20 +23,24 @@ export const Dialog = (props) => {
           <div className="modal-footer">
             {
               lastMessage.resolutions.map(resolution =>
-                <button key={resolution.key}
+                (<button key={resolution.key}
                         type="button"
                         onClick={() => props.callAction(lastMessage, resolution)}
                         className={`btn btn-default ${resolution.primary ? 'btn-primary' : ''}`}
                         data-dismiss="modal">{resolution.message}
-                </button>
+                </button>)
               )
             }
           </div>
         </div>
       </div>
     </div>
-    <div className="modal-backdrop fade in"></div>
-  </div>
+    <div className="modal-backdrop fade in" />
+  </div>);
+};
+
+Dialog.propTypes = {
+  messages: React.PropTypes.string
 };
 
 const mapStateToProps = (state) => ({

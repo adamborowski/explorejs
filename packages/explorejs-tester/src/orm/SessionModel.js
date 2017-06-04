@@ -1,4 +1,4 @@
-import {Model, many, fk, attr, Schema} from 'redux-orm';
+import {Model, fk, attr} from 'redux-orm';
 
 export default class SessionModel extends Model {
   static fields = {
@@ -10,6 +10,7 @@ export default class SessionModel extends Model {
   };
   static modelName = 'Session';
 
+  // eslint-disable-next-line
   static reducer(state, action) {
     //todo move here
   }

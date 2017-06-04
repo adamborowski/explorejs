@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import {APP_TITLE} from '../constants/labels';
 import NavLink from './common/NavLink';
 

@@ -4,10 +4,10 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions/testingActions';
 import Stars from '../../common/Stars';
 import NavButtons from './NavButtons';
-import {scenarioByIdSelector, sessionByIdSelector} from "../../../selectors/testingSelectors";
-import dateformat from "dateformat";
-import {push} from "react-router-redux";
-import {Chart, LocalBinding} from "explorejs-react";
+import {scenarioByIdSelector, sessionByIdSelector} from '../../../selectors/testingSelectors';
+import dateformat from 'dateformat';
+import {push} from 'react-router-redux';
+import {Chart, LocalBinding} from 'explorejs-react';
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -32,7 +32,10 @@ export const ScenarioSessionPage = (props) => {
   );
 };
 ScenarioSessionPage.propTypes = {
-  scenario: PropTypes.object.isRequired
+  scenario: PropTypes.object.isRequired,
+  session: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
+  actions: PropTypes.object
 };
 
 

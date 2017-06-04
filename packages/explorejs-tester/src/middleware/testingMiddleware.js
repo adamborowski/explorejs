@@ -1,5 +1,5 @@
-import {availableScoreSelector, createSession} from "../selectors/testingSelectors.js";
-import {pushNotification} from '../actions/notificationActions.js';
+import {availableScoreSelector, createSession} from '../selectors/testingSelectors';
+import {pushNotification} from '../actions/notificationActions';
 import {operations} from '../redux/dialog/index';
 import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
 import {push} from 'react-router-redux';
@@ -16,13 +16,13 @@ export default  store => next => action => {
 
 
   switch (newAction.type) {
-    case SESSION_SCORE:
+    case SESSION_SCORE: {
       const session = createSession(state);
       const maxAvailable = availableScoreSelector(state);
       const currentSession = session.Session.withId(newAction.sessionId);
       const currentSessionScore = currentSession.score;
       const currentScenario = currentSession.scenario;
-      if (newAction.override == false) {
+      if (newAction.override === false) {
 
         const otherScoredSessions = currentScenario.sessions.all().toModelArray().filter(a => a.id !== currentSession.id && a.score > 0);
 
@@ -48,18 +48,21 @@ export default  store => next => action => {
           fixAction(maxAvailable + scenarioTotalScore);
         }
       }
+    }
   }
 
   next(newAction);
 
   switch (newAction.type) {
-    case SESSION_CREATE:
+    case SESSION_CREATE: {
       const newItem = state.orm.Session.meta.maxId + 1;
+      // eslint-disable-next-line
       const session = createSession(state);
 
       let action2 = push(`/scenario/${newAction.payload.scenario}/session/${newItem}`);
       store.dispatch(action2);
       break;
+    }
   }
 
 };

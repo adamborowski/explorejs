@@ -1,5 +1,5 @@
-import {closeNotification} from "../actions/notificationActions.js";
-import {PUSH_NOTIFICATION} from "../constants/actionTypes";
+import {closeNotification} from '../actions/notificationActions';
+import {PUSH_NOTIFICATION} from '../constants/actionTypes';
 
 export default  store => next => action => {
   switch (action.type) {

@@ -10,7 +10,7 @@ import dateformat from "dateformat";
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = (props) => {
 
-  const {scenario, remainingScore} = props;
+  const {scenario} = props;
   const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
   return (
@@ -22,12 +22,12 @@ const ScenarioPage = (props) => {
       </h1>
       <div className="list-group">
         {
-          scenario.sessions.toRefArray().map((session, index) =>
-            <Link key={session.id} href="#" className="list-group-item" to={`/scenario/${scenario.id}/session/${session.id}`}>
+          scenario.sessions.toRefArray().map((session) =>
+            (<Link key={session.id} href="#" className="list-group-item" to={`/scenario/${scenario.id}/session/${session.id}`}>
               <h4 className="list-group-item-heading">{`${dateformat(session.start,DATE_FORMAT)}`}</h4>
               <Stars small={true} maxValue={10}
                      value={session.score}/>
-            </Link>
+            </Link>)
           )
         }
 
@@ -41,6 +41,10 @@ const ScenarioPage = (props) => {
 
     </div>
   );
+};
+
+ScenarioPage.propTypes = {
+  actions: React.PropTypes.object
 };
 
 const mapStateToProps = (state, ownProps) => ({

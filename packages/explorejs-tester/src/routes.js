@@ -1,17 +1,20 @@
-import React from "react";
-import {Route, IndexRoute} from "react-router";
-import App from "./components/App";
-import HomePage from "./components/HomePage";
-import FuelSavingsPage from "./containers/FuelSavingsPage"; // eslint-disable-line import/no-named-as-default
-import AboutPage from "./components/AboutPage.js";
-import NotFoundPage from "./components/NotFoundPage.js";
-import ScenarioPage from "./components/pages/scenario/ScenarioPage";
-import ScenarioSidebar from "./components/pages/scenario/ScenarioSidebar";
-import ScenariosIndexPage from "./components/pages/scenario/ScenariosIndexPage";
-import Header from './components/pages/scenario/Header.js';
-import SessionPage from "./components/pages/scenario/SessionPage";
+/* eslint-disable no-console */
+import React from 'react';
+import {IndexRoute, Route} from 'react-router';
+import App from './components/App';
+import HomePage from './components/HomePage';
+import FuelSavingsPage from './containers/FuelSavingsPage'; // eslint-disable-line import/no-named-as-default
+import AboutPage from './components/AboutPage';
+import NotFoundPage from './components/NotFoundPage';
+import ScenarioPage from './components/pages/scenario/ScenarioPage';
+import ScenarioSidebar from './components/pages/scenario/ScenarioSidebar';
+import ScenariosIndexPage from './components/pages/scenario/ScenariosIndexPage';
+import ConnectedHeader from './components/pages/scenario/Header';
+import SessionPage from './components/pages/scenario/SessionPage';
 
-const typicalAppPage = children => ({children, pageHeader: Header, sidebar: ScenarioSidebar});
+const typicalAppPage = children => ({children, pageHeader: ConnectedHeader, sidebar: ScenarioSidebar});
+
+
 
 export default (
   <Route path="/" name="mainRoute" component={App} onEnter={() => console.log('root enter')}

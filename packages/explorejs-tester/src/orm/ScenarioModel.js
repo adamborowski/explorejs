@@ -1,4 +1,4 @@
-import {Model, many, fk, attr, Schema} from 'redux-orm';
+import {Model, attr} from 'redux-orm';
 
 export default class ScenarioModel extends Model {
   static fields = {
@@ -7,6 +7,7 @@ export default class ScenarioModel extends Model {
   };
   static modelName = 'Scenario';
 
+  // eslint-disable-next-line
   static reducer(state, action) {
 
   }
