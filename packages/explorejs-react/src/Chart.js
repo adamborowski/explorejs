@@ -3,8 +3,8 @@
  * We can set different type and serie cache at any time - it should reinitialize whole chart and adapter
  */
 import React, {PropTypes} from 'react';
-import adapterFactory, {types} from './AdapterFactory';
-import {BasicViewportModel, RequestManager, WiderContextModel} from 'explorejs-lib';
+import adapterFactory, {types as chartTypes} from './AdapterFactory';
+import predictionModelFactory, {types as predictionModelTypes} from './PredictionModelFactory';
 
 export default class Chart extends React.Component {
 
@@ -75,10 +75,7 @@ export default class Chart extends React.Component {
         if (serieCache) {
             const newAdapter = adapterFactory(adapter, serieCache, this.chart);
 
-            newAdapter.dataSource.predictionEngine.addModels([ // todo get this from props!!
-                new BasicViewportModel(),
-                new WiderContextModel()
-            ]);
+            newAdapter.dataSource.predictionEngine.addModels(prediction.map(type => predictionModelFactory(type)));
 
             newAdapter.setDisplayedRange(new Date('2012-05-01').getTime(), new Date('2014-01-01').getTime());
 
@@ -90,8 +87,8 @@ export default class Chart extends React.Component {
 
     static propTypes = {
         serieId: PropTypes.string,
-        adapter: PropTypes.oneOf(types),
-        prediction: PropTypes.arrayOf(PropTypes.string)
+        adapter: PropTypes.oneOf(chartTypes),
+        prediction: PropTypes.arrayOf(PropTypes.oneOf(predictionModelTypes)),
     };
 
     static contextTypes = {
