@@ -1,6 +1,46 @@
 import {DataSource} from 'explorejs-lib';
-import moment from 'moment';
 import _ from 'underscore';
+import MouseWheelHelper from "./helpers/MouseWheelHelper";
+
+function init(plot) {
+    var setupGrid = plot.setupGrid;
+
+    plot.setupGrid = () => {
+        plot.autoScale();
+        var r = setupGrid.apply(plot, arguments);
+
+        plot.getPlaceholder().trigger('plot_setupGrid');
+        return r;
+    };
+    plot.autoScale = function () {
+        var opts = plot.getYAxes()[0].options;
+        var data = plot.getData();
+
+        var xaxis = plot.getAxes().xaxis;
+        const maxRed = (acc, val) => Math.max(acc, val[1]);
+        const minRed = (acc, val) => Math.min(acc, val[1]);
+
+        if (data.length == 3) {
+            const boundFilter = data => data[1] != null && !isNaN(data[1]) && data[0] >= xaxis.options.min && data[0] <= xaxis.options.max;
+            var max = data[0].data.filter(boundFilter).reduce(maxRed, Number.NEGATIVE_INFINITY);
+            var min = data[1].data.filter(boundFilter).reduce(minRed, Number.POSITIVE_INFINITY);
+
+            var margin = Math.abs(max - min) * opts.autoscaleMargin;
+
+            opts.min = min - margin;
+            opts.max = max + margin;
+        }
+
+        // plot.setupGrid();
+        // plot.draw();
+
+        return {
+            min: opts.min,
+            max: opts.max
+        };
+    };
+}
+
 export default class FlotAdapter {
     /**
      *
@@ -9,47 +49,55 @@ export default class FlotAdapter {
      * @param dataset
      * @param groups
      */
-    constructor(serieCache, chart, Flot, $, debugCallback) {
+    constructor(serieCache, chart, Flot, $) {
+
+        $.plot.plugins.push({
+            init: init,
+            name: 'autoscalemode',
+            version: '0.6'
+        });
 
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
         this.chart = chart;
+        this.$chart = $(chart);
         this.Flot = Flot;
         this.$ = $;
-        this.debugCallback = debugCallback;
         this.init();
     }
 
     init() {
 
-        this.plot = this.$.plot(this.chart, [], {
+        this.$chart.css('height', '300px');
 
+        this.plot = this.$.plot(this.chart, [], {
             xaxis: {mode: 'time'},
             yaxis: {
                 zoomRange: false,
                 panRange: false,
                 autoscaleMargin: 0.1
             },
-            pan: {
-                interactive: true,
-                cursor: 'move'
-            },
-            zoom: {
-                interactive: true,
-                mode: 'x'
-            },
             colors: ['#000000', '#000000', '#78a6a7']
         });
 
-        var throttledUpdate = _.debounce(range => {
-            this.dataSource.updateViewState(range.start, range.end, this.plot.width());
-        }, 100);
+        const throttledUpdate = _.throttle(() => {
+            console.log('34')
+            this.dataSource.getViewState().updateRangeAndViewportWidth(this.getDisplayedRange(), this.plot.width());
+        }, 100, {leading: true, trailing: true});
 
-        this.chart.on('plot_setupGrid', () => {
+        this.$chart.on('plot_setupGrid', () => {
             throttledUpdate(this.getDisplayedRange());
         });
 
-        this.plot.setupGrid();
+        setTimeout(() => this.plot.setupGrid(), 0);
+
+        this.wheelHelper = new MouseWheelHelper(
+            this.chart,
+            this.setDisplayedRange.bind(this),
+            this.getDisplayedRange.bind(this),
+            () => this.chart.getBoundingClientRect());
+
+        window.addEventListener('resize', this.onResize);
     }
 
     getDisplayedRange() {
@@ -61,7 +109,7 @@ export default class FlotAdapter {
     setDisplayedRange(start, end) {
         start = new Date(start).getTime();
         end = new Date(end).getTime();
-        var a = this.plot.getOptions().xaxes[0];
+        const a = this.plot.getOptions().xaxes[0];
 
         a.min = start;
         a.max = end;
@@ -69,35 +117,13 @@ export default class FlotAdapter {
         this.plot.draw();
     }
 
-    _makeValueIndex() {
-        var map = {};
-        const array = this.chart.series[0].data;
+    onProjectionRecompile() {
 
-        for (var i = 0; i < array.length; i++) {
-            map[array[i][0]] = i;
-        }
-        return map;
-    }
+        const wrappers = this.dataSource.getWrappers();
 
-    onProjectionRecompile(diff) {
-        const f = 'YYYY-MM-DD HH:mm:ss';
-
-        function id(p) {
-            var start = p.start;
-            var end = p.end;
-
-            return moment(start).format(f) + '~' + moment(end).format(f) + '@' + p.levelId;
-        }
-
-        console.time('wrapper diff');
-        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
-
-        console.timeEnd('wrapper diff');
-
-        const values = dataDiff.result.map(a => [a.start, a.levelId == 'raw' ? a.data.v : a.data.a]);
-        const tValues = dataDiff.result.map(a => [a.start, a.levelId == 'raw' ? a.data.v : a.data.t]);
-        const bValues = dataDiff.result.map(a => [a.start, a.levelId == 'raw' ? a.data.v : a.data.b]);
-        const times = dataDiff.result.map(a => a.start);
+        const values = wrappers.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.a]);
+        const tValues = wrappers.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.t]);
+        const bValues = wrappers.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.b]);
 
         this.plot.setData([
             {id: 'top', data: tValues, shadowSize: 0, lines: false},
@@ -109,15 +135,24 @@ export default class FlotAdapter {
                 shadowSize: 0
             },
             {
-                id: 'values', data: values, shadowSize: 0, lines: {
-                    lineWidth: 1
-                }
+                id: 'values', data: values, shadowSize: 0, lines: {lineWidth: 1}
             }
         ]);
         this.plot.setupGrid();
         this.plot.draw();
 
-        this.debugCallback(values.length);
+    }
 
+    destroy() {
+        this.wheelHelper.destroy();
+        this.plot.shutdown();
+        window.removeEventListener('resize', this.onResize);
+    }
+
+    onResize = () => {
+        this.plot.resize();
+        this.plot.resize();
+        this.plot.setupGrid();
+        this.plot.draw();
     }
 }

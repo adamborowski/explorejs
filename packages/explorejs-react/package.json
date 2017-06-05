@@ -16,6 +16,7 @@
     "explorejs-adapters": "^0.0.0",
     "explorejs-lib": "^0.0.0",
     "jquery": "3.2.1",
+    "Flot": "git+https://github.com/flot/flot.git#v0.8.3",
     "mocha": "2.3.4",
     "plotly.js": "^1.27.1",
     "prop-types": "^15.5.10",

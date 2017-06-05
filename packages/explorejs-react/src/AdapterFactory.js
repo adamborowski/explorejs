@@ -1,18 +1,25 @@
-import {DygraphsAdapter, VisJsAdapter, PlotlyAdapter} from 'explorejs-adapters';
+import {DygraphsAdapter, VisJsAdapter, PlotlyAdapter, FlotAdapter} from 'explorejs-adapters';
 import Dygraph from 'dygraphs';
+import $ from 'jquery';
 const Plotly = require('plotly.js/dist/plotly');
+
 const factoryMap = {
     dygraphs(serieCache, dom) {
         return new DygraphsAdapter(serieCache, dom, Dygraph);
     },
-    visjs(sereCache, dom) {
+    visjs(serieCache, dom) {
         const dataset = 1;
         const groups = 1;
 
-        return new VisJsAdapter(sereCache, dom, dataset, groups); // todo visjs adapter should create everthing needed
+        return new VisJsAdapter(serieCache, dom, dataset, groups); // todo visjs adapter should create everthing needed
     },
-    flot(serieCace, dom) {
+    flot(serieCache, dom) {
+        const Flot = require('Flot');
 
+        require('Flot/jquery.flot.time');
+        require('Flot/jquery.flot.fillbetween');
+
+        return new FlotAdapter(serieCache, dom, Flot, $);
     },
     highcharts(serieCace, dom) {
 

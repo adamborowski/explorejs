@@ -57,7 +57,7 @@ export default class PlotlyAdapter {
             ],
             {
                 margin: {t: 0},
-                height: 300,
+                height: 380,
                 yaxis: {
                     autorange: true
                     // fixedrange: true,

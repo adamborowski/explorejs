@@ -19,7 +19,7 @@ export default {
     totalScore: 10
   },
   notifications: [],
-  adapter: 'dygraphs'
+  adapter: 'flot'
   // testing: {
   //   totalScore: 10,
   //   scenarios: [

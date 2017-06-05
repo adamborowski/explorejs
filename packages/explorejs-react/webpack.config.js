@@ -28,6 +28,7 @@ const config = {
         'dygraphs': 'dygraphs',
         'plotly.js': 'plotly.js',
         'jquery': 'jquery',
+        'Flot': 'Flot',
         'prop-types': 'prop-types',
         'explorejs-adapters': 'explorejs-adapters',
     },
