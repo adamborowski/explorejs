@@ -50,7 +50,7 @@ export default class DynamicProjection {
         this.currentRange = newRange;
         this.currentEvent = this.SerieCache.getProjectionEventAtLevel(this.currentLevelId);
         this.currentEvent.addListener('recompile', this.currentRange, this.cacheUpdateHandler);
-        if (oldRange != null && !oldRange.equals(newRange)) {
+        if (oldRange == null || !oldRange.equals(newRange)) {
             // check if currentRange and newRange differ
             this._callback(this.getProjectionTruncated(newRange.left, newRange.right, newLevelId));
         }
