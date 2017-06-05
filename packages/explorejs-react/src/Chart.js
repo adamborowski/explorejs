@@ -32,7 +32,7 @@ export default class Chart extends React.Component {
             throw new Error('Chart has to be placed in context of ExploreJS context binding component from explorejs-react');
         }
 
-        this._createAdapter();
+        this._createAdapter(this.props);
     }
 
     /**
@@ -41,7 +41,7 @@ export default class Chart extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.props.adapter !== nextProps.adapter || this.props.serieId !== nextProps.serieId) {
 
-            this._createAdapter();
+            this._createAdapter(nextProps);
         }
     }
 
@@ -51,12 +51,12 @@ export default class Chart extends React.Component {
         }
     }
 
-    async _createAdapter() {
+    async _createAdapter(props) {
 
         if (this.state.adapter) {
             this.state.adapter.destroy();
         }
-        const {adapter, prediction, serieId} = this.props;
+        const {adapter, prediction, serieId} = props;
 
         if (!adapter || !prediction || !serieId) {
             return;
@@ -67,7 +67,7 @@ export default class Chart extends React.Component {
         try {
             const requestManager = await this.context.explorejsRequestManager;
 
-            serieCache = requestManager.CacheManager.getSerieCache(this.props.serieId);
+            serieCache = requestManager.CacheManager.getSerieCache(props.serieId);
         } catch (e) {
             this.setState({errorMessage: e.message});
         }

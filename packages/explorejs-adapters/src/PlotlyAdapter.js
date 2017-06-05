@@ -147,8 +147,9 @@ export default class PlotlyAdapter {
      * Called when there is no more chart to display, this should unsubscribe from explorejs
      */
     destroy() {
-        this.dataSource.destroy();
+        this.Plotly.purge(this.chart);
         this.wheelHelper.destroy();
+        this.dataSource.destroy();
         window.removeEventListener('resize', this.onResize);
     }
 }

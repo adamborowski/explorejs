@@ -83,6 +83,7 @@ export default class DygraphsAdapter {
      * Called when there is no more chart to display, this should unsubscribe from explorejs
      */
     destroy() {
+        this.plot.destroy();
         this.dataSource.destroy();
         this.wheelHelper.destroy();
     }

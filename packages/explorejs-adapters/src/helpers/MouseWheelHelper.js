@@ -23,7 +23,7 @@ export default class MouseWheelHelper {
     }
 
     init() {
-        this.dom.addEventListener('wheel', this.onWheel, true);
+        this.dom.addEventListener('wheel', this.onWheel);
     }
 
     onWheel = (e) => {
