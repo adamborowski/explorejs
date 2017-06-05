@@ -53,7 +53,10 @@ export default class Chart extends React.Component {
 
     async _createAdapter(props) {
 
+        let lastDisplayedRange = {start: new Date('2012-05-01').getTime(), end: new Date('2014-01-01').getTime()};
+
         if (this.state.adapter) {
+            lastDisplayedRange = this.state.adapter.getDisplayedRange();
             this.state.adapter.destroy();
         }
         const {adapter, prediction, serieId} = props;
@@ -77,7 +80,7 @@ export default class Chart extends React.Component {
 
             newAdapter.dataSource.predictionEngine.addModels(prediction.map(type => predictionModelFactory(type)));
 
-            newAdapter.setDisplayedRange(new Date('2012-05-01').getTime(), new Date('2014-01-01').getTime());
+            newAdapter.setDisplayedRange(lastDisplayedRange.start, lastDisplayedRange.end);
 
             this.setState({adapter: newAdapter});
 
