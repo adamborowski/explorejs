@@ -23,7 +23,7 @@ export default class MouseWheelHelper {
     }
 
     init() {
-        this.dom.addEventListener('wheel', this.onWheel);
+        this.dom.addEventListener('wheel', this.onWheel, true);
     }
 
     onWheel = (e) => {
@@ -34,8 +34,8 @@ export default class MouseWheelHelper {
             this.pan(step);
         } else {
 
-            const {start, width} = this.getScreenRange();
-            const centerOffset = ((e.screenX - start) / width);
+            const {left, width} = this.getScreenRange();
+            const centerOffset = ((e.screenX - left) / width);
             const step = e.deltaY / Math.abs(e.deltaY) * this.zoomFactor + 1;
 
             this.zoom(step, centerOffset);

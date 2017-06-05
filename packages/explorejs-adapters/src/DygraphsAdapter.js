@@ -48,7 +48,7 @@ export default class DygraphsAdapter {
                 const rect = this.chart.getBoundingClientRect();
                 const pad = this.plot.plotter_.area.x;
 
-                return ({start: rect.left + pad, width: rect.width - pad});
+                return ({left: rect.left + pad, width: rect.width - pad});
             });
 
     }

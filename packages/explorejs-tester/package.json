@@ -100,9 +100,7 @@
     "webpack-hot-middleware": "2.13.2",
     "webpack-md5-hash": "0.0.5",
     "explorejs-react": "^0.0.0",
-    "explorejs-adapters": "^0.0.0"
-  },
-  "devDependencies": {
+    "explorejs-adapters": "^0.0.0",
     "babel-polyfill": "6.23.0",
     "http-proxy-middleware": "0.17.4"
   }

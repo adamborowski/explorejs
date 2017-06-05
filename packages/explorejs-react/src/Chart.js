@@ -88,7 +88,7 @@ export default class Chart extends React.Component {
     static propTypes = {
         serieId: PropTypes.string,
         adapter: PropTypes.oneOf(chartTypes),
-        prediction: PropTypes.arrayOf(PropTypes.oneOf(predictionModelTypes)),
+        prediction: PropTypes.arrayOf(PropTypes.oneOf(predictionModelTypes))
     };
 
     static contextTypes = {

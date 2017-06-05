@@ -11,14 +11,15 @@
     "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.js"
   },
   "devDependencies": {
-    "mocha": "2.3.4",
-    "explorejs-adapters": "^0.0.0",
-    "jquery": "3.2.1",
+    "babel-preset-react": "6.16.0",
     "dygraphs": "1.1.1",
+    "explorejs-adapters": "^0.0.0",
     "explorejs-lib": "^0.0.0",
+    "jquery": "3.2.1",
+    "mocha": "2.3.4",
+    "plotly.js": "^1.27.1",
     "prop-types": "^15.5.10",
-    "react": "15.4.1",
-    "babel-preset-react": "6.16.0"
+    "react": "15.4.1"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,5 @@
   ],
   "author": "Adam Borowski",
   "license": "ISC",
-  "dependencies": {
-
-  }
+  "dependencies": {}
 }

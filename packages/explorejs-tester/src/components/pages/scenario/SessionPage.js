@@ -25,8 +25,18 @@ export const ScenarioSessionPage = (props) => {
 
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
+
+      <select className="form-control">
+        <option>Dygraphs</option>
+        <option>VisJS</option>
+        <option>HighCharts</option>
+        <option>JqPlot</option>
+        <option>flot</option>
+        <option>plotly</option>
+        {/*TODO on change - change chart type and reinitialize, then fix all adapters, then think about optimizations flags in explorejs*/}
+      </select>
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['s001']}>
-        <Chart serieId="s001" adapter="dygraphs" prediction={['basic', 'wider-context']}/>
+        <Chart serieId="s001" adapter="plotly" prediction={['basic', 'wider-context']}/>
       </LocalBinding>
     </div>
   );

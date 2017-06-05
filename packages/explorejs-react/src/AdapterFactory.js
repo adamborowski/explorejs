@@ -1,5 +1,6 @@
-import {DygraphsAdapter, VisJsAdapter} from 'explorejs-adapters';
+import {DygraphsAdapter, VisJsAdapter, PlotlyAdapter} from 'explorejs-adapters';
 import Dygraph from 'dygraphs';
+const Plotly = require('plotly.js/dist/plotly');
 const factoryMap = {
     dygraphs(serieCache, dom) {
         return new DygraphsAdapter(serieCache, dom, Dygraph);
@@ -20,7 +21,7 @@ const factoryMap = {
 
     },
     plotly(serieCace, dom) {
-
+        return new PlotlyAdapter(serieCace, dom, Plotly);
     }
 };
 

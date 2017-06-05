@@ -26,6 +26,7 @@ const config = {
         moment: 'moment',
         underscore: 'underscore',
         'dygraphs': 'dygraphs',
+        'plotly.js': 'plotly.js',
         'jquery': 'jquery',
         'prop-types': 'prop-types',
         'explorejs-adapters': 'explorejs-adapters',
