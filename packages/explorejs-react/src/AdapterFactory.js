@@ -14,6 +14,7 @@ const factoryMap = {
         return new VisJsAdapter(serieCache, dom, dataset, groups); // todo visjs adapter should create everthing needed
     },
     flot(serieCache, dom) {
+        window.jQuery = $; // hack for flot
         const Flot = require('Flot');
 
         require('Flot/jquery.flot.time');
