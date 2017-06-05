@@ -19,6 +19,7 @@ export default {
     totalScore: 10
   },
   notifications: [],
+  adapter: 'dygraphs'
   // testing: {
   //   totalScore: 10,
   //   scenarios: [

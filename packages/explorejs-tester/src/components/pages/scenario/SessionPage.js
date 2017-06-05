@@ -7,7 +7,7 @@ import NavButtons from './NavButtons';
 import {scenarioByIdSelector, sessionByIdSelector} from '../../../selectors/testingSelectors';
 import dateformat from 'dateformat';
 import {push} from 'react-router-redux';
-import {Chart, LocalBinding} from 'explorejs-react';
+import {Chart, LocalBinding, adapterTypes} from 'explorejs-react';
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -26,17 +26,19 @@ export const ScenarioSessionPage = (props) => {
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
 
-      <select className="form-control">
-        <option>Dygraphs</option>
-        <option>VisJS</option>
-        <option>HighCharts</option>
-        <option>JqPlot</option>
-        <option>flot</option>
-        <option>plotly</option>
+      <select value={props.adapter}
+              className="form-control"
+              onChange={event => props.actions.changeAdapter(event.target.options[event.target.selectedIndex].value)}>
+        <option value="dygraphs">Dygraphs</option>
+        <option value="visjs">VisJS</option>
+        <option value="highcharts">HighCharts</option>
+        <option value="jqplot">JqPlot</option>
+        <option value="flot">flot</option>
+        <option value="plotly">plotly</option>
         {/*TODO on change - change chart type and reinitialize, then fix all adapters, then think about optimizations flags in explorejs*/}
       </select>
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['s001']}>
-        <Chart serieId="s001" adapter="plotly" prediction={['basic', 'wider-context']}/>
+        <Chart serieId="s001" adapter={props.adapter} prediction={['basic', 'wider-context']}/>
       </LocalBinding>
     </div>
   );
@@ -45,13 +47,15 @@ ScenarioSessionPage.propTypes = {
   scenario: PropTypes.object.isRequired,
   session: PropTypes.object.isRequired,
   navigate: PropTypes.func.isRequired,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  adapter: PropTypes.oneOf(adapterTypes)
 };
 
 
 const mapStateToProps = (state, ownProps) => ({
   scenario: scenarioByIdSelector(state, ownProps.params.scenarioId),
   session: sessionByIdSelector(state, ownProps.params.sessionId),
+  adapter: state.adapter
 });
 
 const mapActionsToProps = (dispatch) => ({

@@ -51,3 +51,4 @@ export const recordSnapshot = (sessionId, snapshot) => ({
 });
 
 
+export const changeAdapter = adapterType => ({type: types.CHANGE_ADAPTER, adapterType});
