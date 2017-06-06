@@ -1,40 +1,93 @@
 import {DataSource} from 'explorejs-lib';
-import moment from 'moment';
+import throttle from 'helpers/Throttle.js';
+import MouseWheelHelper from './helpers/MouseWheelHelper';
 export default class HighChartsAdapter {
     /**
      *
      * @param {SerieCache} serieCache
-     * @param graph2d
-     * @param dataset
-     * @param groups
+     * @param chart
+     * @param HighCharts
      */
-    constructor(serieCache, chart, HighCharts, debugCallback) {
+    constructor(serieCache, chart, HighCharts) {
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
         this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
         this.chart = chart;
-        this.debugCallback = debugCallback;
-        HighCharts.addEvent(chart.xAxis[0], 'setExtremes', (e)=> {
-            if (e.max === undefined) {
-                setTimeout(()=> {
-                    const range = this.getDisplayedRange();
 
-                    this.dataSource.updateViewState(range.start, range.end, chart.plotWidth);
-                }, 0);
-            } else {
-                this.dataSource.updateViewState(e.min, e.max, chart.plotWidth);
+        this.plot = HighCharts.chart(chart, {
+            chart: {
+                height: 300,
+                zoomType: 'x',
+                panning: true,
+                panKey: 'shift',
+                animation: false
+            },
+            tooltip: {
+                valueDecimals: 3
+            },
+            series: [
+                {
+                    data: [],
+                    name: 'range',
+                    type: 'areasplinerange',
+                    step: true
+
+                },
+                {
+                    name: 'average',
+                    type: 'spline',
+                    marker: {
+                        enabled: false
+                    },
+                    data: [],
+                    step: true
+                }
+            ],
+            xAxis: {
+                type: 'datetime'
+            },
+            title: {
+                text: 'HighCharts + ExploreJS integration'
             }
         });
-        // this.chart.exec('setseriesvalues', []);
-        // var data = this.chart.exec('getseriesvalues');
-        // todo init vis js configuration
-        // graph2d.on('rangechanged', (e)=> {
-        //     this.dataSource.updateViewState(e.start.getTime(), e.end.getTime(), graph2d.body.dom.center.clientWidth)
-        // });
-        // this.dataSource.updateViewState(graph2d.range.start, graph2d.range.end, graph2d.body.dom.center.clientWidth)
+
+        HighCharts.addEvent(this.plot.xAxis[0], 'setExtremes', throttle((e) => {
+            // toto highcharts seem to update better with diffs
+            if (e.max === undefined) {
+                setTimeout(() => {
+                    const range = this.getDisplayedRange();
+
+                    this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.plotWidth);
+                }, 0);
+            } else {
+                this.dataSource.getViewState().updateRangeAndViewportWidth({
+                    start: e.min,
+                    end: e.max
+                }, this.plot.plotWidth);
+            }
+        }), 1000);
+
+
+        this.wheelHelper = new MouseWheelHelper(
+            this.chart,
+            this.setDisplayedRange.bind(this),
+            this.getDisplayedRange.bind(this),
+            () => {
+                const rect = this.chart.getBoundingClientRect();
+                const pad = this.plot.plotLeft;
+                const width = this.plot.plotWidth;
+
+                return {left: rect.left + pad, width};
+            });
+
+        this.onResize = () => {
+            this.plot.redraw();
+        }
+
+        window.addEventListener('resize', this.onResize);
     }
 
     getDisplayedRange() {
-        var a = this.chart.xAxis[0].getExtremes(0);
+        var a = this.plot.xAxis[0].getExtremes(0);
 
         return {start: a.min, end: a.max};
     }
@@ -42,44 +95,25 @@ export default class HighChartsAdapter {
     setDisplayedRange(start, end) {
         start = new Date(start).getTime();
         end = new Date(end).getTime();
-        this.chart.xAxis[0].setExtremes(start, end);
+        this.plot.xAxis[0].setExtremes(start, end);
     }
 
-    _makeValueIndex() {
-        var map = {};
-        const array = this.chart.series[0].data;
+    onProjectionRecompile() {
 
-        for (var i = 0; i < array.length; i++) {
-            map[array[i][0]] = i;
-        }
-        return map;
+        const result = this.dataSource.getWrappers();
+
+        const aggregations = result.map(a => [a.start, a.levelId === 'raw' ? null : a.data.b, a.levelId === 'raw' ? null : a.data.t]);
+        const values = result.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.a]);
+
+        this.plot.series[0].setData(aggregations);
+        this.plot.series[1].setData(values);
+
     }
 
-    onProjectionRecompile(diff) {
-        const f = 'YYYY-MM-DD HH:mm:ss';
-
-        function id(p) {
-            var start = p.start;
-            var end = p.end;
-
-            return moment(start).format(f) + '~' + moment(end).format(f) + '@' + p.levelId;
-        }
-
-        // var map = this._makeValueIndex();
-
-        console.time('wrapper diff');
-        var dataDiff = this.dataSource.getWrapperDiffForProjectionDiff(diff);
-
-        console.timeEnd('wrapper diff');
-
-        const aggregations = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? null : a.data.b, a.levelId == 'raw' ? null : a.data.t]);
-        const values = dataDiff.result.map(a=>[a.start, a.levelId == 'raw' ? a.data.v : a.data.a]);
-
-        console.log(values);
-        this.chart.series[0].setData(aggregations);
-        this.chart.series[1].setData(values);
-
-        this.debugCallback(values.length);
-
+    destroy() {
+        this.wheelHelper.destroy();
+        this.plot.destroy();
+        this.dataSource.destroy();
+        window.removeEventListener('resize', this.onResize);
     }
 }

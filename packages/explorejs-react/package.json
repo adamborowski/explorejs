@@ -20,6 +20,7 @@
     "mocha": "2.3.4",
     "plotly.js": "^1.27.1",
     "as-jqplot": "^1.0.8",
+    "highcharts": "^4.2.6",
     "prop-types": "^15.5.10",
     "react": "15.4.1"
   },

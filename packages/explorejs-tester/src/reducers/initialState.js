@@ -19,7 +19,7 @@ export default {
     totalScore: 10
   },
   notifications: [],
-  adapter: 'jqplot'
+  adapter: 'highcharts'
   // testing: {
   //   totalScore: 10,
   //   scenarios: [

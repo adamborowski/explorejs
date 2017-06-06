@@ -1,4 +1,7 @@
-import {DygraphsAdapter, VisJsAdapter, PlotlyAdapter, FlotAdapter, JqPlotAdapter} from 'explorejs-adapters';
+import {
+    DygraphsAdapter, VisJsAdapter, PlotlyAdapter, FlotAdapter, JqPlotAdapter,
+    HighChartsAdapter
+} from 'explorejs-adapters';
 import Dygraph from 'dygraphs';
 import $ from 'jquery';
 const Plotly = require('plotly.js/dist/plotly');
@@ -22,8 +25,12 @@ const factoryMap = {
 
         return new FlotAdapter(serieCache, dom, Flot, $);
     },
-    highcharts(serieCace, dom) {
+    highcharts(serieCache, dom) {
+        const HighCharts = require('highcharts');
+        const HighChartsMore = require('highcharts/highcharts-more');
 
+        HighChartsMore(HighCharts);
+        return new HighChartsAdapter(serieCache, dom, HighCharts);
     },
     jqplot(serieCace, dom) {
         window.jQuery = $; // hack for flot
