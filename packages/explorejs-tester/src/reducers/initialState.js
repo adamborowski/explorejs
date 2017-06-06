@@ -19,7 +19,7 @@ export default {
     totalScore: 10
   },
   notifications: [],
-  adapter: 'flot'
+  adapter: 'jqplot'
   // testing: {
   //   totalScore: 10,
   //   scenarios: [

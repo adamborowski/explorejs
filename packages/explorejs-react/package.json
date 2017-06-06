@@ -19,6 +19,7 @@
     "Flot": "git+https://github.com/flot/flot.git#v0.8.3",
     "mocha": "2.3.4",
     "plotly.js": "^1.27.1",
+    "as-jqplot": "^1.0.8",
     "prop-types": "^15.5.10",
     "react": "15.4.1"
   },

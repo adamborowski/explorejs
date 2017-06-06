@@ -11,6 +11,7 @@
     "test:watch": "mocha --compilers js:babel-core/register --colors -w ./test/**/*.js"
   },
   "devDependencies": {
+    "lodash": "^4.17.4",
     "mocha": "2.3.4"
   },
   "repository": {

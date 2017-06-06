@@ -1,4 +1,4 @@
-import {DygraphsAdapter, VisJsAdapter, PlotlyAdapter, FlotAdapter} from 'explorejs-adapters';
+import {DygraphsAdapter, VisJsAdapter, PlotlyAdapter, FlotAdapter, JqPlotAdapter} from 'explorejs-adapters';
 import Dygraph from 'dygraphs';
 import $ from 'jquery';
 const Plotly = require('plotly.js/dist/plotly');
@@ -26,7 +26,11 @@ const factoryMap = {
 
     },
     jqplot(serieCace, dom) {
-
+        window.jQuery = $; // hack for flot
+        require('as-jqplot/dist/jquery.jqplot.js');
+        require('as-jqplot/dist/plugins/jqplot.dateAxisRenderer');
+        require('as-jqplot/dist/plugins/jqplot.cursor');
+        return new JqPlotAdapter(serieCace, dom, $);
     },
     plotly(serieCace, dom) {
         return new PlotlyAdapter(serieCace, dom, Plotly);
