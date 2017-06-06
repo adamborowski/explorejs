@@ -16,7 +16,8 @@ export default class DynamicProjection {
         this.currentRange = null;
         this.roundPrecision = roundPrecision;
         this.cacheUpdateHandler = this.cacheUpdateHandler.bind(this);
-        viewState.addListener(this.onViewStateUpdate.bind(this));
+        this.onViewStateUpdate = this.onViewStateUpdate.bind(this);
+        viewState.addListener(this.onViewStateUpdate);
     }
 
     cacheUpdateHandler(name, range, listenerRange, diff) {
@@ -93,6 +94,7 @@ export default class DynamicProjection {
         if (this.currentEvent) {
             this.currentEvent.removeListener('recompile', this.cacheUpdateHandler);
         }
+        this.viewState.removeListener(this.onViewStateUpdate);
     }
 
 }
