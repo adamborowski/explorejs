@@ -146,7 +146,7 @@ export default class FlotAdapter {
 
     destroy() {
         this.wheelHelper.destroy();
-        this.plot.shutdown();
+        this.plot.destroy();
         window.removeEventListener('resize', this.onResize);
         this.$chart.off('plot_setupGrid', this.throttledUpdate);
     }
