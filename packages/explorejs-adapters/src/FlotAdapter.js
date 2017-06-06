@@ -87,6 +87,11 @@ export default class FlotAdapter {
         this.$chart.on('plot_setupGrid', this.throttledUpdate);
 
         setTimeout(() => this.plot.setupGrid(), 0);
+        setTimeout(() => {
+            this.plot.resize();
+            this.plot.setupGrid();
+            this.plot.draw();
+        }, 1000); // todo the hac of deferred css Todo solve the deferred css load problem - page jumping
 
         this.wheelHelper = new MouseWheelHelper(
             this.chart,
