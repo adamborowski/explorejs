@@ -1,6 +1,6 @@
 import {DataSource} from 'explorejs-lib';
-import _ from 'underscore';
-import MouseWheelHelper from "./helpers/MouseWheelHelper";
+import MouseWheelHelper from './helpers/MouseWheelHelper';
+import throttle from './helpers/Throttle';
 
 function init(plot) {
     var setupGrid = plot.setupGrid;
@@ -80,14 +80,11 @@ export default class FlotAdapter {
             colors: ['#000000', '#000000', '#78a6a7']
         });
 
-        const throttledUpdate = _.throttle(() => {
-            console.log('34')
+        this.throttledUpdate = throttle(() => {
             this.dataSource.getViewState().updateRangeAndViewportWidth(this.getDisplayedRange(), this.plot.width());
-        }, 100, {leading: true, trailing: true});
+        }, 100);
 
-        this.$chart.on('plot_setupGrid', () => {
-            throttledUpdate(this.getDisplayedRange());
-        });
+        this.$chart.on('plot_setupGrid', this.throttledUpdate);
 
         setTimeout(() => this.plot.setupGrid(), 0);
 
@@ -125,6 +122,8 @@ export default class FlotAdapter {
         const tValues = wrappers.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.t]);
         const bValues = wrappers.map(a => [a.start, a.levelId === 'raw' ? a.data.v : a.data.b]);
 
+        console.time('flot update')
+
         this.plot.setData([
             {id: 'top', data: tValues, shadowSize: 0, lines: false},
             {
@@ -141,16 +140,18 @@ export default class FlotAdapter {
         this.plot.setupGrid();
         this.plot.draw();
 
+        console.timeEnd('flot update');
+
     }
 
     destroy() {
         this.wheelHelper.destroy();
         this.plot.shutdown();
         window.removeEventListener('resize', this.onResize);
+        this.$chart.off('plot_setupGrid', this.throttledUpdate);
     }
 
     onResize = () => {
-        this.plot.resize();
         this.plot.resize();
         this.plot.setupGrid();
         this.plot.draw();

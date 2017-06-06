@@ -86,21 +86,15 @@ export default class DataSource {
     /**
      * Called by dynamic projection
      * @private
-     * @param diff
+     * @param newProjectionRanges
      */
     _onProjectionChange(newProjectionRanges) {
         this._oldProjectionRanges = this._newProjectionRanges;
         this._newProjectionRanges = newProjectionRanges;
         this._oldWrappers = this._newWrappers;
         this._newWrappers = this._wrapRanges(newProjectionRanges);
+        console.log('DataSource -> received new data');
         this._callback();
-
-        /**
-         * TODO zrezygnować z WrapperCache
-         * niech DataSource będzie stanowy - przy onProjectionChange niech wylicza nowe wrappers
-         * source.getWrappers() - getter
-         * UWAGA! nie ma tutaj sensu obliczać diffa a priori przez DynamicProjection - niech to będzie metoda na zawołanie
-         */
     }
 
     getWrappers() {

@@ -1,6 +1,7 @@
 export default class DeferredAction {
 
     /**
+     * TODO make deferred action to call action for first invocation, then accumulate arguments for the rest, like in Throttle.js
      * @param callback {Function}
      */
     constructor(callback, delay) {

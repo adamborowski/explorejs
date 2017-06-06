@@ -27,6 +27,7 @@ export default class ViewState {
     }
 
     updateRangeAndViewportWidth(range, viewportWidth, update = true) {
+        console.log('update view state', range, viewportWidth);
         this._start = range.start;
         this._end = range.end;
         this._viewportWidth = viewportWidth;
