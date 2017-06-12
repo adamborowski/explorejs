@@ -4,6 +4,8 @@ import {
 } from 'explorejs-adapters';
 import Dygraph from 'dygraphs';
 import $ from 'jquery';
+import vis from 'vis/dist/vis.js';
+import 'vis/dist/vis.css';
 const Plotly = require('plotly.js/dist/plotly');
 
 const factoryMap = {
@@ -11,10 +13,7 @@ const factoryMap = {
         return new DygraphsAdapter(serieCache, dom, Dygraph);
     },
     visjs(serieCache, dom) {
-        const dataset = 1;
-        const groups = 1;
-
-        return new VisJsAdapter(serieCache, dom, dataset, groups); // todo visjs adapter should create everthing needed
+        return new VisJsAdapter(serieCache, dom, vis); // todo visjs adapter should create everthing needed
     },
     flot(serieCache, dom) {
         window.jQuery = $; // hack for flot

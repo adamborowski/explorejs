@@ -50,7 +50,9 @@ const config = {
                 test: /(\.jsx|\.js)$/,
                 use: 'eslint-loader',
                 include: [path.resolve(__dirname, 'src')]
-            }
+            },
+            {test: /\.css$/, loaders: ['style-loader', 'css-loader?sourceMap']},
+            {test: /\.(jpe?g|png|gif)$/i, loader: 'file-loader?name=[name].[ext]'}
         ]
     },
     resolve: {

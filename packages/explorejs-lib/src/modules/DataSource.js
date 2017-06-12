@@ -70,7 +70,9 @@ export default class DataSource {
      * different than aggregation range after projeciton compilation), and actual data point
      */
     calculateWrappersDiffToPrevious() {
-        console.time('calculateWrappersDiffToPrevious');
+        const msg = `calculateWrappersDiffToPrevious #${this._oldWrappers && this._oldWrappers.length} -> #${this._newWrappers.length}`;
+
+        console.time(msg);
         try {
             return DiffCalculator.compute(this._oldWrappers || [], this._newWrappers, {
                 copyFn: a => ({
@@ -79,7 +81,7 @@ export default class DataSource {
                 })
             });
         } finally {
-            console.timeEnd('calculateWrappersDiffToPrevious');
+            console.timeEnd(msg);
         }
     }
 

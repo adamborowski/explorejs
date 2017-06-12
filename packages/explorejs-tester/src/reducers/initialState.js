@@ -19,7 +19,7 @@ export default {
     totalScore: 10
   },
   notifications: [],
-  adapter: 'highcharts'
+  adapter: 'visjs'
   // testing: {
   //   totalScore: 10,
   //   scenarios: [
