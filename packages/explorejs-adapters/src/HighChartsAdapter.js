@@ -15,7 +15,7 @@ export default class HighChartsAdapter {
 
         this.plot = HighCharts.chart(chart, {
             chart: {
-                height: 300,
+                height: 400,
                 zoomType: 'x',
                 panning: true,
                 panKey: 'shift',
