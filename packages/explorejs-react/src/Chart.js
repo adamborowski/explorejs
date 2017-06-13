@@ -53,7 +53,7 @@ export default class Chart extends React.Component {
 
     async _createAdapter(props) {
 
-        let lastDisplayedRange = {start: new Date('2012-05-01').getTime(), end: new Date('2014-01-01').getTime()};
+        let lastDisplayedRange = {start: props.initialStart, end: props.initialEnd};
 
         if (this.state.adapter) {
             lastDisplayedRange = this.state.adapter.getDisplayedRange();
@@ -91,7 +91,15 @@ export default class Chart extends React.Component {
     static propTypes = {
         serieId: PropTypes.string,
         adapter: PropTypes.oneOf(chartTypes),
-        prediction: PropTypes.arrayOf(PropTypes.oneOf(predictionModelTypes))
+        prediction: PropTypes.arrayOf(PropTypes.oneOf(predictionModelTypes)),
+        initialStart: PropTypes.instanceOf(Date),
+        initialEnd: PropTypes.instanceOf(Date)
+
+    };
+
+    static defaultProps = {
+        initialStart: new Date('2013-05-01 00:00').getTime(),
+        initialEnd: new Date('2013-05-01 01:00').getTime()
     };
 
     static contextTypes = {

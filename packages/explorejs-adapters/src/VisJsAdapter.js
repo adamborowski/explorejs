@@ -52,7 +52,7 @@ export default class VisJsAdapter {
 
         this.plot = plot;
 
-        plot.on('rangechange', throttle(e => {
+        plot.on('rangechanged', throttle(e => {
 
             console.time('range changed');
             console.timeEnd('range changed');
