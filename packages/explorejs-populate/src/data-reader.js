@@ -3,6 +3,13 @@
 const DateUtil = require('../utils/DateUtil');
 const LineByLine = require('n-readlines');
 
+/**
+ * Generates data for given range, interval and data from specified file
+ * @param from {number} start timestamp
+ * @param to {number} end timestamp
+ * @param interval {number} interval between subsequent points
+ * @param file {string} path to text file, when every value is placed in separate line
+ */
 module.exports = function * (from, to, interval, file = __dirname + '/../../data/data1.txt') {
 
     const liner = new LineByLine(file, {readChunk: 1024});
