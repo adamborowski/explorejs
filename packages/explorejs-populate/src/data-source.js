@@ -9,15 +9,17 @@ const Aggregator = require('../../explorejs-server/app/data/Aggregator');
  * @param interval {number} interval of generated data
  * @returns {{data: *, aggregations}}
  */
-function getData(levels, start, end, interval = 10000) {
+function getData(levels, start, end, interval = 10000, skip = 0) {
 
     const generator = new Generator();
+
+    generator.skip(skip);
     const data = generator.getData(start, end, interval);
     const aggregators = levels.filter(a => a.id !== 'raw').map(level => new Aggregator(level.id, level.step));
 
     for (const point of data) {
         for (const aggregator of aggregators) {
-            aggregator.Consume(point.t, point.v);
+            aggregator.Consume(point.$t, point.v);
         }
     }
 

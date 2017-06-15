@@ -10,9 +10,9 @@ async function init() {
         await db.initDb(levels[argv.levels]);
     }
 
-    const generatedData = getData(levels[argv.levels], new Date(argv.start), new Date(argv.end));
+    const generatedData = getData(levels[argv.levels], new Date(argv.start), new Date(argv.end), 10000, argv.skip);
 
-    await db.putData(generatedData);
+    await db.putData({...generatedData, measurementId: Number(argv['measurement_id'])});
     db.close();
 }
 
