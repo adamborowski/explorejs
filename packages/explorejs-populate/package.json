@@ -1,0 +1,15 @@
+{
+  "name": "explorejs-populate",
+  "version": "0.0.0",
+  "description": "Populate database with test data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Borowski",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^2.2.28",
+    "yargs": "^8.0.2"
+  }
+}
