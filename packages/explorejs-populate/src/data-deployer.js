@@ -1,4 +1,4 @@
-const pgp = require('pg-promise')({});
+const pgp = require('./utils/pgp');
 
 /**
  * connects to the database and returns data API
@@ -9,6 +9,9 @@ async function connect(url) {
     const db = pgp(url);
 
     return {
+
+        getConnection: () => db,
+
         async initDb(levels) {
 
             await db.query(`

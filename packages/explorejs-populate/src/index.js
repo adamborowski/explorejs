@@ -1,7 +1,8 @@
 const argv = require('./argv');
 const levels = require('./levels');
 const {connect} = require('./data-deployer');
-const {getData} = require('./data-source');
+// const {getData} = require('./data-source');
+const batchPopulator = require('./batch-populator');
 
 async function init() {
     const db = await connect(argv.url);
@@ -10,9 +11,16 @@ async function init() {
         await db.initDb(levels[argv.levels]);
     }
 
-    const generatedData = getData(levels[argv.levels], new Date(argv.start), new Date(argv.end), 10000, argv.skip);
+    batchPopulator(
+        db.getConnection(),
+        Number(argv['measurement-id']),
+        levels[argv['levels']],
+        new Date(argv['start']).getTime(),
+        new Date(argv['end']).getTime(),
+        Number(argv['interval']),
+        Number(argv['batch-size'])
+    );
 
-    await db.putData({...generatedData, measurementId: Number(argv['measurement_id'])});
     db.close();
 }
 

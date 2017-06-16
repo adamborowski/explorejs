@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.4",
+    "n-readlines": "^0.2.7",
     "pg-promise": "^5.9.3",
     "yargs": "^8.0.2"
   }

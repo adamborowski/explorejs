@@ -36,16 +36,23 @@ yargs.option('i', {
 });
 
 yargs.option('m', {
-    alias: 'measurement_id',
+    alias: 'measurement-id',
     'default': '0',
     describe: 'id of measurement',
     type: 'number'
 });
 
-yargs.option('k', {
-    alias: 'skip',
-    'default': '0',
-    describe: 'number of points ignored at the beginning data generation',
+yargs.option('c', {
+    alias: 'batch-size',
+    'default': '100000',
+    describe: 'size of sql insert batch query',
+    type: 'number'
+});
+
+yargs.option('b', {
+    alias: 'interval',
+    'default': '10000',
+    describe: 'interval of generated data',
     type: 'number'
 });
 

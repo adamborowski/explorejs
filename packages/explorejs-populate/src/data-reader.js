@@ -1,6 +1,6 @@
 /* global console */
 
-const DateUtil = require('../utils/DateUtil');
+const DateUtil = require('../../explorejs-server/app/utils/DateUtil');
 const LineByLine = require('n-readlines');
 
 /**
@@ -10,18 +10,18 @@ const LineByLine = require('n-readlines');
  * @param interval {number} interval between subsequent points
  * @param file {string} path to text file, when every value is placed in separate line
  */
-module.exports = function * (from, to, interval, file = __dirname + '/../../data/data1.txt') {
+module.exports = function * (from, to, interval, file = __dirname + '/../../explorejs-server/data/data1.txt') {
 
     const liner = new LineByLine(file, {readChunk: 1024});
 
     liner.next(); // drop header
 
-    for (let t = from, cnt = 0; t < to; t += interval, cnt++) {
+    for (let t = from, cnt = 1; t < to; t += interval, cnt++) {
 
-        yield {$t: t, $tt: DateUtil.format(t), v: liner.next()};
+        yield {$t: t, $tt: DateUtil.format(t), v: Number(liner.next().toString())};
 
         if (cnt % 100000 === 0) {
-            console.log(`Generated ${this.cnt} values`);
+            console.log(`Generated ${cnt} values`);
         }
     }
 
