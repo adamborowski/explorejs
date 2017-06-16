@@ -63,56 +63,6 @@ async function connect(url) {
 
         },
 
-        async putData({measurementId, data, aggregations}) {
-
-            // Concatenates an array of objects or arrays of values, according to the template,
-            // to use with insert queries. Can be used either as a class type or as a function.
-            //
-            // template = formatting template string
-            // data = array of either objects or arrays of values
-            function Inserts(template, data) {
-                if (!(this instanceof Inserts)) {
-                    return new Inserts(template, data);
-                }
-                this._rawDBType = true;
-                this.formatDBType = function () {
-                    return data.map(d => '(' + pgp.as.format(template, d) + ')').join();
-                };
-            }
-
-            const _ = require('lodash');
-
-            console.log('unique points: ' + data.length + '===' + _.uniq(data, a => new Date(a).toISOString()).length);
-
-            const result = await db.any('INSERT INTO raw VALUES $1', new Inserts('${m}, ${t}, ${v}', data.map(p => ({
-                m: measurementId,
-                t: new Date(p.$t).toISOString(),
-                v: p.v
-            }))));
-
-            const insertMany = async (levelId, data) => {
-                console.log(`Inserting ${data.length} items into level ${levelId}...`);
-                const result = await db.any('INSERT INTO agg VALUES $1', new Inserts('${m}, ${l}, ${s}, ${e}, ${a}, ${t}, ${b}, ${c}', data.map(p => ({
-                    m: measurementId,
-                    l: levelId,
-                    s: new Date(p.$s).toISOString(),
-                    e: new Date(p.$e).toISOString(),
-                    a: p.a,
-                    t: p.t,
-                    b: p.b,
-                    c: p.c
-                }))));
-
-                console.log(`Inserted ${data.length} items into level ${levelId}.`);
-            };
-
-            for (const {levelId, data} of aggregations) {
-                await insertMany(levelId, data);
-            }
-
-            console.log('Finished deployment of data.');
-        },
-
         close() {
             pgp.end();
         }

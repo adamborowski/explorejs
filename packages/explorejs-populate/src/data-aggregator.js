@@ -6,7 +6,7 @@ const Supplier = require('./utils/supplier');
  * @param interval
  * @param callback
  */
-module.exports = function *(levelId, interval, callback) {
+module.exports = function * (levelId, interval, callback) {
 
     const supplier = Supplier(callback);
     const step = {};
