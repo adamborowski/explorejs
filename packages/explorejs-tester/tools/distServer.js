@@ -4,6 +4,7 @@
 import browserSync from 'browser-sync';
 import historyApiFallback from 'connect-history-api-fallback';
 import {chalkProcessing} from './chalkConfig';
+import proxyMiddleware from 'http-proxy-middleware';
 
 /* eslint-disable no-console */
 
@@ -23,5 +24,5 @@ browserSync({
     'src/*.html'
   ],
 
-  middleware: [historyApiFallback()]
+  middleware: [proxyMiddleware('/api/**', {target:'http://localhost:8080'}),historyApiFallback()]
 });
