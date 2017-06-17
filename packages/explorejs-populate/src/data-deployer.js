@@ -57,6 +57,11 @@ async function connect(url) {
                 CONSTRAINT meta_pkey PRIMARY KEY (key)
             );
             
+            DROP VIEW IF EXISTS manifest;
+            CREATE MATERIALIZED VIEW public.manifest AS
+            select min("$t") as start, max("$t") as end, min(measurement_id) as measurement_id, min(meta."value")
+             as manifest from raw, meta where key='levels' group by measurement_id;
+            
             `);
 
             await db.query('insert into meta (key, value) values ($1, $2)', ['levels', JSON.stringify(levels)]);

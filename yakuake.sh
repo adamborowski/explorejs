@@ -18,7 +18,7 @@ x_adapters=$(y "/yakuake/sessions org.kde.yakuake.splitTerminalTopBottom $x_comm
 x_react=$(y "/yakuake/sessions org.kde.yakuake.splitTerminalTopBottom $x_lib")
 
 # tab names
-y "/yakuake/tabs setTabTitle $x_server explorejs-server"
+y "/yakuake/tabs setTabTitle $x_server explorejs-remote-server"
 y "/yakuake/tabs setTabTitle $x_compile explorejs-tester"
 y "/yakuake/tabs setTabTitle $x_lib explorejs-lib"
 
@@ -26,7 +26,7 @@ y "/yakuake/tabs setTabTitle $x_lib explorejs-lib"
 dir=`pwd`
 
 
-cmd $x_server_term "cd $dir/packages/explorejs-server && ./main.js -r 8080 -d"
+cmd $x_server_term "cd $dir/packages/explorejs-remote-server && n use 8.1.2  --trace-warnings --harmony src/index.js -p 8080"
 cmd $x_compile_term "cd $dir/packages/explorejs-tester && npm start"
 cmd $x_common "cd $dir/packages/explorejs-common && npm run build:dev -- --watch"
 cmd $x_lib "cd $dir/packages/explorejs-lib && npm run build:dev -- --watch"

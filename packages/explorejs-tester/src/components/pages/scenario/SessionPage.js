@@ -37,8 +37,8 @@ export const ScenarioSessionPage = (props) => {
         <option value="plotly">plotly</option>
         {/*TODO on change - change chart type and reinitialize, then fix all adapters, then think about optimizations flags in explorejs*/}
       </select>
-      <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['s001']}>
-        <Chart serieId="s001" adapter={props.adapter} prediction={['basic', 'wider-context']}/>
+      <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']}>
+        <Chart serieId="0" adapter={props.adapter} prediction={['basic', 'wider-context']}/>
       </LocalBinding>
     </div>
   );
