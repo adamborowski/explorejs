@@ -11,11 +11,12 @@ const LineByLine = require('n-readlines');
  */
 module.exports = function * (from, to, interval, file = __dirname + '/../../explorejs-server/data/data1.txt') {
 
-    const liner = new LineByLine(file, {readChunk: 1024});
-
-    liner.next(); // drop header
+    const createLiner = () => new LineByLine(file, {readChunk: 1024});
 
     let loop = 1;
+    let liner = createLiner();
+
+    liner.next(); // drop header
 
     for (let t = from, cnt = 1; t < to; t += interval, cnt++) {
 
@@ -23,7 +24,7 @@ module.exports = function * (from, to, interval, file = __dirname + '/../../expl
 
         if (line === false) {
             loop += 1;
-            liner.reset();
+            liner = createLiner();
             line = liner.next();
         }
 
