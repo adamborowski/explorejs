@@ -1,4 +1,7 @@
 const pgp = require('./utils/pgp');
+const dateFormat = require('dateformat');
+
+const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 // Concatenates an array of objects or arrays of values, according to the template,
 // to use with insert queries. Can be used either as a class type or as a function.
@@ -23,7 +26,7 @@ module.exports = {
         console.log(`Inserting ${items.length} raw values`);
         await db.any('INSERT INTO raw VALUES $1', new Inserts('${m}, ${t}, ${v}', items.map(p => ({
             m: measurementId,
-            t: new Date(p.$t).toISOString(),
+            t: dateFormat(p.$t, DATE_FORMAT),
             v: p.v
         }))));
         console.log('Done.');
@@ -31,11 +34,12 @@ module.exports = {
 
     aggregation: (measurementId, levelId, db) => async items => {
         console.log(`Inserting ${items.length} aggregated ${levelId} values`);
+
         await db.any('INSERT INTO agg VALUES $1', new Inserts('${m}, ${l}, ${s}, ${e}, ${a}, ${t}, ${b}, ${c}', items.map(p => ({
             m: measurementId,
             l: levelId,
-            s: new Date(p.$s).toISOString(),
-            e: new Date(p.$e).toISOString(),
+            s: dateFormat(p.$s, DATE_FORMAT),
+            e: dateFormat(p.$e, DATE_FORMAT),
             a: p.a,
             t: p.t,
             b: p.b,

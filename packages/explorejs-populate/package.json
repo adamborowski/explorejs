@@ -9,6 +9,7 @@
   "author": "Adam Borowski",
   "license": "ISC",
   "dependencies": {
+    "dateformat": "^2.0.0",
     "lodash": "^4.17.4",
     "n-readlines": "^0.2.7",
     "pg-promise": "^5.9.3",
