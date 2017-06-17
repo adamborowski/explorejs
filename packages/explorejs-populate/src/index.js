@@ -5,13 +5,14 @@ const {connect} = require('./data-deployer');
 const batchPopulator = require('./batch-populator');
 
 async function init() {
+
     const db = await connect(argv.url);
 
     if (argv['init-db']) {
         await db.initDb(levels[argv.levels]);
     }
 
-    batchPopulator(
+    await batchPopulator(
         db.getConnection(),
         Number(argv['measurement-id']),
         levels[argv['levels']],
@@ -23,5 +24,10 @@ async function init() {
 
     db.close();
 }
+
+process.on('unhandledRejection', error => {
+    console.warn('unhandled rejection', error);
+    process.exit(1);
+});
 
 init();

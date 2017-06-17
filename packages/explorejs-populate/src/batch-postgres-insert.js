@@ -26,7 +26,7 @@ module.exports = {
         console.log(`Inserting ${items.length} raw values`);
         await db.any('INSERT INTO raw VALUES $1', new Inserts('${m}, ${t}, ${v}', items.map(p => ({
             m: measurementId,
-            t: dateFormat(p.$t, DATE_FORMAT),
+            t: dateFormat(p.$t, DATE_FORMAT, true),
             v: p.v
         }))));
         console.log('Done.');
@@ -38,8 +38,8 @@ module.exports = {
         await db.any('INSERT INTO agg VALUES $1', new Inserts('${m}, ${l}, ${s}, ${e}, ${a}, ${t}, ${b}, ${c}', items.map(p => ({
             m: measurementId,
             l: levelId,
-            s: dateFormat(p.$s, DATE_FORMAT),
-            e: dateFormat(p.$e, DATE_FORMAT),
+            s: dateFormat(p.$s, DATE_FORMAT, true),
+            e: dateFormat(p.$e, DATE_FORMAT, true),
             a: p.a,
             t: p.t,
             b: p.b,

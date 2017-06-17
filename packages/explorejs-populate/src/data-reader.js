@@ -15,9 +15,19 @@ module.exports = function * (from, to, interval, file = __dirname + '/../../expl
 
     liner.next(); // drop header
 
+    let loop = 1;
+
     for (let t = from, cnt = 1; t < to; t += interval, cnt++) {
 
-        yield {$t: t, v: Number(liner.next().toString())};
+        let line = liner.next();
+
+        if (line === false) {
+            loop += 1;
+            liner.reset();
+            line = liner.next();
+        }
+
+        yield {$t: t, v: Number(line.toString()) * loop};
 
         if (cnt % 100000 === 0) {
             console.log(`Generated ${cnt} values`);
