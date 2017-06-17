@@ -1,6 +1,5 @@
 /* global console */
 
-const DateUtil = require('../../explorejs-server/app/utils/DateUtil');
 const LineByLine = require('n-readlines');
 
 /**
@@ -18,7 +17,7 @@ module.exports = function * (from, to, interval, file = __dirname + '/../../expl
 
     for (let t = from, cnt = 1; t < to; t += interval, cnt++) {
 
-        yield {$t: t, $tt: DateUtil.format(t), v: Number(liner.next().toString())};
+        yield {$t: t, v: Number(liner.next().toString())};
 
         if (cnt % 100000 === 0) {
             console.log(`Generated ${cnt} values`);

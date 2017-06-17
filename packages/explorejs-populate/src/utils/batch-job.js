@@ -8,6 +8,8 @@ module.exports = async (generator, batchers, lockFactory) => {
 
     let gen = generator.next();
 
+    batchers.forEach(b => b.next());
+
     while (!gen.done) {
         batchers.forEach(b => b.next(gen.value));
 
