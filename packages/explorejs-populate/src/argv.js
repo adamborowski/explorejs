@@ -44,7 +44,7 @@ yargs.option('m', {
 
 yargs.option('c', {
     alias: 'batch-size',
-    'default': '100000',
+    'default': '10000',
     describe: 'size of sql insert batch query',
     type: 'number'
 });
