@@ -14,15 +14,13 @@ module.exports = async (db, measurementId, levels, start, end, interval, batchSi
         console.log(`Processsed ${cnt} of ${totalValues} (${Math.round(cnt / totalValues * 100)}%)`);
     };
 
-
     const pipeline = Pipeline(10);
-
     const generator = dataReader(start, end, interval);
     const batchedProgressInfo = batcher(batchSize, percent);
     const rawBatchedUpload = batcher(batchSize, pipeline.wrapResultFunction(batchedInsert.raw(measurementId, db)));
     const aggregationsBatchedUpload = levels
         .filter(a => a.id !== 'raw')
-        .map(l => aggregator(l.id, l.step, batcher(batchSize, pipeline.wrapResultFunction(batchedInsert.aggregation(measurementId, l.id, db), l.id))));
+        .map(l => aggregator(l.id, l.step, batcher(batchSize, pipeline.wrapResultFunction(batchedInsert.aggregation(measurementId, l.id, db)))));
 
     await batchJob(generator, [batchedProgressInfo, rawBatchedUpload, ...aggregationsBatchedUpload], pipeline.canProduce);
 

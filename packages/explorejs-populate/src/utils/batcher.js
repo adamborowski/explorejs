@@ -6,7 +6,7 @@ const Supplier = require('./supplier');
  * @param callback {function(Object[])} function to be called with batched items
  * @returns {{supply: (function(Object)), finalize: (function())}}
  */
-module.exports = function *(batchSize, callback, levelId) {
+module.exports = function *(batchSize, callback) {
 
     const supplier = Supplier(callback);
     let items = [];
