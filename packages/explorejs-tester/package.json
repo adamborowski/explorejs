@@ -1,11 +1,11 @@
 {
   "name": "explorejs-tester",
-  "version": "0.0.0",
+  "version": "0.0.0-rc.1",
   "description": "Starter kit for creating apps with React and Redux",
   "engines": {
     "npm": ">=3"
   },
-  "files":["dist"],
+  "files":["dist", "tools"],
   "scripts": {
     "preinstall": "node tools/nodeVersionCheck.js",
     "setup": "node tools/setup/setupMessage.js && npm install && node tools/setup/setup.js",
