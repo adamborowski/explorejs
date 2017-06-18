@@ -5,6 +5,7 @@
   "engines": {
     "npm": ">=3"
   },
+  "files":["dist"],
   "scripts": {
     "preinstall": "node tools/nodeVersionCheck.js",
     "setup": "node tools/setup/setupMessage.js && npm install && node tools/setup/setup.js",
