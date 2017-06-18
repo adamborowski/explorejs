@@ -23,7 +23,7 @@ export const ScenarioSessionPage = (props) => {
 
       <div className="form-inline pull-right">
         <div className="form-group">
-          <label for="adapter-type" style={{padding:'0 10px '}}>Choose chart library:</label>
+          <label htmlFor="adapter-type" style={{padding:'0 10px '}}>Choose chart library:</label>
           <select value={props.adapter} id="adapter-type"
                   className="form-control"
                   onChange={event => props.actions.changeAdapter(event.target.options[event.target.selectedIndex].value)}>
