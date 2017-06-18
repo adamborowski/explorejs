@@ -15,7 +15,7 @@ async function connect(url) {
         async initDb(levels) {
 
             await db.query(`
-            DROP TABLE if exists raw;
+            DROP TABLE if exists raw CASCADE;
 
             CREATE TABLE raw
             (
@@ -29,7 +29,9 @@ async function connect(url) {
 
             await db.query(`
             
-            DROP TABLE if exists agg;
+            drop index if exists agg_search_a;
+            drop index if exists agg_search_b;
+            DROP TABLE if exists agg CASCADE;
             
             CREATE TABLE agg
             (
@@ -44,11 +46,11 @@ async function connect(url) {
                 PRIMARY KEY (measurement_id, l, "$s")
             );
             
-            drop index if exists agg_search_a;
+            
             CREATE INDEX agg_search_a
             ON agg (measurement_id, l, "$s");
             
-            drop index if exists agg_search_b;
+            
             CREATE INDEX agg_search_b
             ON agg (measurement_id, l, "$e");
             
@@ -57,6 +59,7 @@ async function connect(url) {
             await db.query(`
             
             DROP TABLE if exists meta;
+            DROP VIEW IF EXISTS manifest;
             
             CREATE TABLE meta
             (
@@ -65,7 +68,6 @@ async function connect(url) {
                 CONSTRAINT meta_pkey PRIMARY KEY (key)
             );
             
-            DROP VIEW IF EXISTS manifest;
             CREATE MATERIALIZED VIEW public.manifest AS
             select min("$t") as start, max("$t") as end, min(measurement_id) as measurement_id, min(meta."value")
              as manifest from raw, meta where key='levels' group by measurement_id;
