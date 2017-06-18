@@ -1,13 +1,15 @@
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const express = require('express');
+const history = require('connect-history-api-fallback');
 
 module.exports = (port, fetcher) => {
     const app = express();
 
     app.use(compression());
     app.use(bodyParser.json());
-    app.use(express.static('node_modules/explorejs-tester/dist/'))
+    app.use(history({ verbose: true}));
+    app.use(express.static('node_modules/explorejs-tester/dist/'));
 
     app.get('/api/manifest', async (req, res) => {
         const manifest = await fetcher.getManifest()

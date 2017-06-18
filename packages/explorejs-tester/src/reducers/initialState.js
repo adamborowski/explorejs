@@ -19,7 +19,7 @@ export default {
     totalScore: 10
   },
   notifications: [],
-  adapter: 'visjs'
+  adapter: 'dygraphs'
   // testing: {
   //   totalScore: 10,
   //   scenarios: [
