@@ -8,8 +8,7 @@ module.exports = (port, fetcher) => {
 
     app.use(compression());
     app.use(bodyParser.json());
-    app.use(history({ verbose: true}));
-    app.use(express.static('node_modules/explorejs-tester/dist/'));
+
 
     app.get('/api/manifest', async (req, res) => {
         const manifest = await fetcher.getManifest()
@@ -26,4 +25,7 @@ module.exports = (port, fetcher) => {
     app.listen(port, function () {
         console.log(`Server running on port ${port}...`);
     });
+
+    app.use(history({ verbose: true}));
+    app.use(express.static('node_modules/explorejs-tester/dist/'));
 };
