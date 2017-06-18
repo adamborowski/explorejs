@@ -7,7 +7,9 @@ export const Star = (props) => {
     numbers.push(i);
   }
   return (
-    <div className={`a-stars ${props.onChange ? 'a-editable' : ''} ${props.small && 'a-small'}`}>
+    <div
+      className={`a-stars ${props.onChange ? 'a-editable' : ''} ${props.small && 'a-small'} ${props.tiny && 'a-tiny'}`}
+      style={{color: props.color}}>
       {numbers.map((num, i) =>
         <span key={i}
               className={`glyphicon glyphicon-star${i >= props.value ? '-empty' : ''}`}
@@ -23,9 +25,12 @@ Star.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   small: PropTypes.bool,
+  tiny: PropTypes.bool,
+  color: PropTypes.string
 };
 Star.defaultProps = {
-  small: false
+  small: false,
+  tiny: false,
 };
 
 export default Star;

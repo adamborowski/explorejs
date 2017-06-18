@@ -35,7 +35,7 @@ export default class MouseWheelHelper {
         } else {
 
             const {left, width} = this.getScreenRange();
-            const centerOffset = ((e.screenX - left) / width);
+            const centerOffset = ((e.clientX - left) / width);
             const step = e.deltaY / Math.abs(e.deltaY) * this.zoomFactor + 1;
 
             this.zoom(step, centerOffset);

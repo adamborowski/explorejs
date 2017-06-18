@@ -3,6 +3,9 @@
   &.a-small {
     font-size: 10pt;
   }
+  &.a-tiny{
+    font-size: 9pt;
+  }
   &.a-editable {
     span {
       transition-property: color;

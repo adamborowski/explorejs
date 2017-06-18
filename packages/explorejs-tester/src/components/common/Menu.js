@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import NavLink from './NavLink';
+import Stars from "./Stars";
 
 export default (props) => (
   <div>
@@ -8,9 +9,10 @@ export default (props) => (
     <ul
       className="nav nav-sidebar">
       {props.items.map((item, index) =>
-        (<NavLink key={item.name} to={`${props.basePath}${item.link}`} activeClassName="active">
+        <NavLink key={item.name} to={`${props.basePath}${item.link}`} activeClassName="active">
           Scenario {index + 1}
-        </NavLink>)
+          <Stars maxValue={10} value={item.stars} tiny={true} color="#333"/>
+        </NavLink>
       )}
     </ul>
   </div>
