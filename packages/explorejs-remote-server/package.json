@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --trace-warnings --harmony src/index.js -p 8080"
+    "start": "node --trace-warnings --harmony src/index.js -p $PORT",
+    "heroku": "git subtree push --prefix packages/explorejs-remote-server heroku master"
   },
   "engines": {
     "node": ">=8.0.0",
