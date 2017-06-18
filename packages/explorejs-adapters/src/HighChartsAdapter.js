@@ -45,6 +45,16 @@ export default class HighChartsAdapter {
             xAxis: {
                 type: 'datetime'
             },
+            plotOptions: {
+                series: {
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    }
+                }
+            },
             title: {
                 text: 'HighCharts + ExploreJS integration'
             }

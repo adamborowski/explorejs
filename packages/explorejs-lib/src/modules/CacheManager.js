@@ -8,7 +8,7 @@ export default class CacheManager {
 
     constructor() {
         this.serieCacheSet = new IndexedList();
-        this.idFactory = WrapperIdFactory.globalDebug;
+        this.idFactory = WrapperIdFactory.optimized; // globalDebug;
     }
 
     /**

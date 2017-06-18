@@ -3,8 +3,11 @@ const FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 
 import moment from 'moment';
 export default class WrapperIdFactory {
-    static optimized(wrapper) {
-        return `${wrapper.start.toString(CONVERT_BASE)}:${wrapper.end.toString(CONVERT_BASE)}:${wrapper.levelId}`;
+    static optimized(levelId, data) {
+        if (levelId === 'raw') {
+            return `${levelId}-${data.$t}`;
+        }
+        return `${levelId}-${data.$s}-${data.$e}`;
     }
 
     static debug(wrapper) {
