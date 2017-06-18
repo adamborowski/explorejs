@@ -38,7 +38,7 @@ function connect(url) {
                 const data = await(r.level === 'raw' ?
                         db.any('select "$t", value as v from raw where measurement_id=$1 and "$t" >= $2 and "$t" <= $3 order by "$t" asc ', [r.id, from, to])
                         :
-                        db.any('select "$s", "$e", a, t, b, c from agg where measurement_id=$1 and l =  $2 and "$e" > $3 and "$s" < $4 order by "$s" asc', [r.id, r.level, from, to])
+                        db.any('select "$s", "$e", a, t, b, c from agg where measurement_id=$1 and l =  $2 and (("$s" >$3 and "$s"<$4) or ("$e" >$3 and "$e"<$4)) order by "$s" asc', [r.id, r.level, from, to])
                 );
 
                 if (r.level === 'raw') {

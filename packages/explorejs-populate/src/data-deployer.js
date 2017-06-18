@@ -44,6 +44,14 @@ async function connect(url) {
                 PRIMARY KEY (measurement_id, l, "$s")
             );
             
+            drop index if exists agg_search_a;
+            CREATE INDEX agg_search_a
+            ON agg (measurement_id, l, "$s");
+            
+            drop index if exists agg_search_b;
+            CREATE INDEX agg_search_b
+            ON agg (measurement_id, l, "$e");
+            
             `);
 
             await db.query(`
