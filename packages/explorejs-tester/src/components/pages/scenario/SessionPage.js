@@ -19,24 +19,30 @@ export const ScenarioSessionPage = (props) => {
     <div>
       <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
                   callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
+
+
+      <div className="form-inline pull-right">
+        <div className="form-group">
+          <label for="adapter-type" style={{padding:'0 10px '}}>Choose chart library:</label>
+          <select value={props.adapter} id="adapter-type"
+                  className="form-control"
+                  onChange={event => props.actions.changeAdapter(event.target.options[event.target.selectedIndex].value)}>
+            <option value="dygraphs">Dygraphs</option>
+            <option value="visjs">VisJS</option>
+            <option value="highcharts">HighCharts</option>
+            <option value="jqplot">JqPlot</option>
+            <option value="flot">flot</option>
+            <option value="plotly">plotly</option>
+            {/*TODO on change - change chart type and reinitialize, then fix all adapters, then think about optimizations flags in explorejs*/}
+          </select>
+        </div>
+      </div>
       <h1>{scenario.name}&nbsp;
         <small>Session started at {dateformat(session.start, DATE_FORMAT)}</small>
       </h1>
 
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
-
-      <select value={props.adapter}
-              className="form-control"
-              onChange={event => props.actions.changeAdapter(event.target.options[event.target.selectedIndex].value)}>
-        <option value="dygraphs">Dygraphs</option>
-        <option value="visjs">VisJS</option>
-        <option value="highcharts">HighCharts</option>
-        <option value="jqplot">JqPlot</option>
-        <option value="flot">flot</option>
-        <option value="plotly">plotly</option>
-        {/*TODO on change - change chart type and reinitialize, then fix all adapters, then think about optimizations flags in explorejs*/}
-      </select>
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']}>
         <Chart serieId="0" adapter={props.adapter} prediction={['basic', 'wider-context']}/>
       </LocalBinding>
