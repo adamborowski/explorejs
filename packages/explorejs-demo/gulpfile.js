@@ -40,8 +40,14 @@ gulp.task('dev', function(callback) {
 
     new WebpackDevServer(webpack(config), {
         historyApiFallback: true,
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                secure: false
+            }
+        },
         publicPath: '/js/'
-    }).listen(8080, 'localhost', function(err) {
+    }).listen(3002, 'localhost', function(err) {
         if (err) {
             throw new gutil.PluginError('webpack-dev-server', err);
         }

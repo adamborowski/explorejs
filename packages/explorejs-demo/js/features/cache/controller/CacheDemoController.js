@@ -22,16 +22,14 @@ export default class CacheDemoController {
         $scope.selectedAggregation = {text: '...'};
         $scope.vizWidth = vizWidth;
 
-        rm.init(()=> {
+        rm.ready().then(() => {
 
-
-            cacheManager.createSerieCache({serieId: 's001'});
+            cacheManager.createSerieCache({serieId: 0});
             // cacheManager.createSerieCache({serieId: 's002'});
             // cacheManager.createSerieCache({serieId: 's003'});
 
-
             $scope.$apply(()=> {
-                $scope.availableAggregations = [{id: 'raw'}].concat(rm.getManifestForSerie('s001').levels).map((level)=> {
+                $scope.availableAggregations = [{id: 'raw'}].concat(rm.getManifestForSerie(0).levels).map((level) => {
                     var item = {
                         text: level.id,
                         name: level.id,
@@ -53,22 +51,22 @@ export default class CacheDemoController {
                 });
                 $scope.selectedAggregation = $scope.availableAggregations[3]
                 $scope.selectedSerie = $scope.availableSeries[0];
-                $scope.rangeFrom = '2012-01-01';//rm.getManifestForSerie('s001').$start;
-                $scope.mouse = '2016-01-03';//rm.getManifestForSerie('s001').$start;
-                $scope.rangeTo = '2017-10-02';//rm.getManifestForSerie('s001').$end;
+                $scope.rangeFrom = '2012-01-01';//rm.getManifestForSerie(0).$start;
+                $scope.mouse = '2016-01-03';//rm.getManifestForSerie(0).$start;
+                $scope.rangeTo = '2017-10-02';//rm.getManifestForSerie(0).$end;
                 $scope.rm = rm;
-                this.startTime = rm.getManifestForSerie('s001').start;
-                this.endTime = rm.getManifestForSerie('s001').end;
+                this.startTime = rm.getManifestForSerie(0).start;
+                this.endTime = rm.getManifestForSerie(0).end;
                 this.maxDuration = this.endTime - this.startTime;
             });
 
             this.initChart();
 
-            // rm.addRequest(new DataRequest('s001', '1h', '2015-11-12', '2015-12-12', 0));
+            // rm.addRequest(new DataRequest(0, '1h', '2015-11-12', '2015-12-12', 0));
             // rm.addRequest(new DataRequest('s004', '30m', '2015-11-12', '2015-12-12', 0));
             // rm.addRequest(new DataRequest('s002', '10s', '2016-01-02 13:12', '2016-01-02 13:34', 0));
             // rm.addRequest(new DataRequest('s003', '1h', '2015-11-12', '2015-12-12', 0));
-            // rm.addRequest(new DataRequest('s001', '1d', '2015-11-12', '2016-12-12', 0));
+            // rm.addRequest(new DataRequest(0, '1d', '2015-11-12', '2016-12-12', 0));
         });
 
         window.addRequest = function (serie, level, from, to) {
@@ -82,7 +80,7 @@ export default class CacheDemoController {
     initChart() {
 
         const chart = $('#main-chart');
-        this.adapter = new DygraphsAdapter(this.rm.CacheManager.getSerieCache('s001'), chart, $, Dygraphs, (length) => {
+        this.adapter = new DygraphsAdapter(this.rm.CacheManager.getSerieCache(0), chart[0], Dygraphs, (length) => {
             const apl = ()=> {
                 this.$scope.numPoints = length;
             };
@@ -197,7 +195,7 @@ export default class CacheDemoController {
         console.log("projection at level", levelId);
         var format = require('date-format');
         var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
-        console.log(this.rm.CacheManager.getSerieCache('s001').getProjectionDisposer().getProjection(levelId).projection.map((a)=>`${fmt(a.start)} ${fmt(a.end)} ${a.levelId}`).join('\n'));
+        console.log(this.rm.CacheManager.getSerieCache(0).getProjectionDisposer().getProjection(levelId).projection.map((a) => `${fmt(a.start)} ${fmt(a.end)} ${a.levelId}`).join('\n'));
     }
 
     showCacheAtLevel(levelId) {
@@ -205,7 +203,7 @@ export default class CacheDemoController {
         var format = require('date-format');
         var fmt = (d)=>format.asString('yy-MM-dd hh:mm:ss', new Date(d));
         console.log('level cache')
-        console.table(this.rm.CacheManager.getSerieCache('s001').getLevelCache(levelId)._segmentArray._data);
+        console.table(this.rm.CacheManager.getSerieCache(0).getLevelCache(levelId)._segmentArray._data);
         console.log('wrappers')
         console.table(this.adapter.dataSource.wrapperCache.wrappers);
     }

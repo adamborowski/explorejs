@@ -40,6 +40,9 @@ export default class MouseWheelHelper {
 
             this.zoom(step, centerOffset);
         }
+
+        e.stopPropagation();
+        e.preventDefault();
     };
 
     zoom(step, centerOffset = 0.5) {

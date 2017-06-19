@@ -11,12 +11,13 @@ export default class DataSource {
     /**
      * @param {SerieCache} serieCache
      * @param callback
+     * @param projectionWindowRatio the windowing ratio of projected cache, to reduce calls when panning reft and right
      */
-    constructor(serieCache, callback) {
+    constructor(serieCache, callback, projectionWindowRatio = 1) {
         this.serieCache = serieCache;
         this._callback = callback;
         this._viewState = new ViewState(this.serieCache.getSerieManifest().levels);
-        this.dynamicProjection = new DynamicProjection(this._viewState);
+        this.dynamicProjection = new DynamicProjection(this._viewState, projectionWindowRatio);
         this.dynamicProjection.SerieCache = serieCache;
         this.dynamicProjection.setup(this._onProjectionChange.bind(this));
         this.predictionEngine = new PredictionEngine(serieCache, this._viewState);
