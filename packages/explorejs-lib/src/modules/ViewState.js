@@ -1,13 +1,15 @@
 // for DynamicProjection and PredictionEngine
 import {Event} from 'explorejs-common';
 import _ from 'underscore';
+import {fitPrecalculatedLevelsForScale, getScalesForLevels} from './LevelResolver';
 const EVENT_NAME = 'update';
 
 export default class ViewState {
-    constructor(levels) {
+    constructor(levels, preferredUnitWidth = 1) {
         this._levels = levels;
         this._event = new Event();
-        this._preferredUnitWidth = 1;
+        this._preferredUnitWidth = preferredUnitWidth;
+        this._precalculatedScales = getScalesForLevels(levels, this._preferredUnitWidth);
     }
 
     updateViewportWidth(value, update = true) {
@@ -41,6 +43,7 @@ export default class ViewState {
     update() {
         this._scale = (this._end - this._start) / this._viewportWidth;
         this._currentLevelId = this._calculateLevelId();
+        this._precalculatedScales = getScalesForLevels(this._levels, this._preferredUnitWidth);
         //
         const newState = this.getState();
 
@@ -64,22 +67,7 @@ export default class ViewState {
      * @private
      */
     _calculateLevelId() {
-        const levels = this._levels;
-        const expectedUnitWidth = this._preferredUnitWidth;
-        // go from the bigger level (eg. 1y) and find first with unit displayed width not greater than WantedUnitWidth
-
-        for (let i = levels.length - 1; i >= 0; i--) {
-            const level = levels[i];
-            const unitWidth = level.step / this._scale;
-            // console.log(`${level.id} will take ${unitWidth} ~ should be closely under ${expectedUnitWidth}`);
-
-            if (unitWidth <= expectedUnitWidth) {
-                return level.id;
-                /* todo accept level if it not break new rule (minUnitWidth - np 0.8) if not return upper on -
-                 because this will require too many data points, for example 10k on 1k wide chart*/
-            }
-        }
-        return 'raw';
+        return fitPrecalculatedLevelsForScale(this._scale, this._precalculatedScales);
     }
 
     getCurentLevelId() {

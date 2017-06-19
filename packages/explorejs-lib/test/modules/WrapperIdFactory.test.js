@@ -15,11 +15,10 @@ describe('WrapperIdFactory', () => {
         })).to.equal('1h [2015-01-29 12:22:20.789] [2016-07-01 01:01:01.000]');
     });
     it('optimized factory', ()=> {
-        expect(WrapperIdFactory.optimized({
-            start: new Date('2015-01-29 12:22:20').getTime(),
-            end: new Date('2016-07-01 01:01:01').getTime(),
-            levelId: '1h'
-        })).to.equal('i5i1ydi8:iq2x05ag:1h');
+        expect(WrapperIdFactory.optimized('1h', {
+            $s: new Date('2015-01-29 12:22:20').getTime(),
+            $e: new Date('2016-07-01 01:01:01').getTime()
+        })).to.equal('1h-1422530540000-1467327661000');
     });
 
 });
