@@ -1,4 +1,5 @@
 import PredictionModel from '../modules/PredictionModel';
+import {getScaleForLevel} from '../modules/LevelResolver';
 import {Range} from 'explorejs-common';
 export default class WiderContextModel extends PredictionModel {
 
@@ -12,22 +13,28 @@ export default class WiderContextModel extends PredictionModel {
         const currentLevelId = this.viewState.getCurentLevelId();
         const start = this.viewState.getStart();
         const end = this.viewState.getEnd();
-        const widerLevel = this.getWiderLevel(currentLevelId);
+        const widerLevels = this.getWiderLevels(currentLevelId);
 
-        if (widerLevel) {
-            const padWiderStart = start - (end - start) * this.contextPaddingRatio;
-            const padWiderEnd = end + (end - start) * this.contextPaddingRatio;
-            const paddedWiderRange = Range.leftClosed(padWiderStart, padWiderEnd);
 
-            this.SerieCache.getLevelCache(widerLevel).requestDataForRange(
-                paddedWiderRange.expandToFitPrecision(this.viewState.pixelsToTime(this.roundPrecision * this.viewState.getViewportWidth())
-                ));
+        for (let i = 0; i < widerLevels.length; i++) {
+            const level = widerLevels[i];
+            const higherLevel = widerLevels[i + 1];
+            const switchScale = getScaleForLevel(level, this.viewState.getPreferredUnitWidth());
+            const switchWidth = switchScale * this.viewState.getViewportWidth();
+            const tileWidth = Math.floor(1 * switchScale * this.viewState.getViewportWidth());
+
+            const range = Range
+                .closed(end - switchWidth, start + switchWidth)
+                .expandToFitPrecision(tileWidth);
+
+            this.SerieCache.getLevelCache(higherLevel && higherLevel.id || level.id)
+                .requestDataForRange(range);
         }
     }
 
-    getWiderLevel(levelId) {
-        const ids = this.viewState.getLevels().map(a => a.id);
+    getWiderLevels(levelId) {
+        const levels = this.viewState.getLevels();
 
-        return ids[ids.indexOf(levelId) + 1];
+        return levels.slice(levels.findIndex(s => s.id === levelId) + 1);
     }
 }
