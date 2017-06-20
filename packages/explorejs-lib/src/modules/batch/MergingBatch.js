@@ -37,7 +37,6 @@ export default class MerginbBatch {
     }
 
     _delayedPerformRequest() {
-        console.time('delayed perform');
         const queuedRangeSets = this.getRangeSet(this.queuedRanges);
         const requests = _.flatten(queuedRangeSets.map(set => set.ranges.map(r => new DataRequest(set.serieId, set.levelId, r.start, r.end))));
 
@@ -48,8 +47,6 @@ export default class MerginbBatch {
             pendingSet.ranges = DiffRangeSet.add(pendingSet.ranges, queuedRangeSet.ranges).result;
         }
         this.queuedRanges.clear();
-
-        console.timeEnd('delayed perform');
 
         this.callback(requests);
     }
@@ -70,7 +67,6 @@ export default class MerginbBatch {
      * @param requests {DataRequest[]}
      */
     requestsLoaded(requests) {
-        console.time('requests loaded');
         // remove ranges from given requests from pending requests
         for (let request of requests) {
             const pendingRangeSet = this.pendingRanges.get(request.serieId).get(request.level);
@@ -80,6 +76,5 @@ export default class MerginbBatch {
                 end: request.closeTime
             }]).result;
         }
-        console.timeEnd('requests loaded');
     }
 }

@@ -12,7 +12,8 @@ export default class DynamicProjection {
      * @param numTiles number of tiles to use in covering
      * @param paddingRatio the minimum padding of projection, added to viewport bounds
      */
-    constructor(viewState, tileWidthRatio = 0.6, numTiles = 4, paddingRatio = 0.1) {
+    constructor(viewState, tileWidthRatio = 1, numTiles = 3, paddingRatio = 0.1) {
+        // todo dlaczego mimo tiles, wykres tak czesto sie updateuje podczas panning
 
         this.viewState = viewState;
         this._paddingRatio = paddingRatio;
@@ -28,7 +29,7 @@ export default class DynamicProjection {
     cacheUpdateHandler(name, range, listenerRange, diff) {
         const projectionTruncated = this.getProjectionTruncated(listenerRange.left, listenerRange.right);
 
-        this._callback(projectionTruncated);
+        this._callback(projectionTruncated, 'cache update');
     }
 
     setup(callback) {
@@ -39,6 +40,8 @@ export default class DynamicProjection {
 
     /**
      * pick right levelId rebind
+     * Called only after view update - we can assume that cache is unchanged
+     * So we can say that something has changed only if range / level changed
      * @param viewState {ViewState}
      */
     onViewStateUpdate(viewState) {
@@ -54,7 +57,11 @@ export default class DynamicProjection {
 
         let newRange;
 
-        if (oldRange == null || start - oldRange.left < extension || oldRange.right - end < extension) {
+        const firstUpdate = oldRange == null;
+        const levelChanged = newLevelId !== this.currentLevelId;
+        const oldRangeIsNotSufficient = oldRange && (start - oldRange.left < extension || oldRange.right - end < extension);
+
+        if (firstUpdate || levelChanged || oldRangeIsNotSufficient) {
 
             newRange = Range
                 .opened(start, end)
@@ -66,8 +73,6 @@ export default class DynamicProjection {
             if (numTilesUsed > this._numTiles) {
                 console.warn(`DynamicProjection: used more tiles (${numTilesUsed}) to cover than initially set ${this._numTiles}`);
             }
-
-            console.log(numTilesUsed);
 
             for (let i = numTilesUsed; i < this._numTiles; i++) {
                 const leftDistance = start - newRange.left;
@@ -93,9 +98,9 @@ export default class DynamicProjection {
         this.currentRange = newRange;
         this.currentEvent = this.SerieCache.getProjectionEventAtLevel(this.currentLevelId);
         this.currentEvent.addListener('recompile', this.currentRange, this.cacheUpdateHandler);
-        if (oldRange == null || !oldRange.equals(newRange)) {
+        if (firstUpdate || !oldRange.equals(newRange)) {
             // check if currentRange and newRange differ
-            this._callback(this.getProjectionTruncated(newRange.left, newRange.right, newLevelId));
+            this._callback(this.getProjectionTruncated(newRange.left, newRange.right, newLevelId), 'view state update');
         }
     }
 

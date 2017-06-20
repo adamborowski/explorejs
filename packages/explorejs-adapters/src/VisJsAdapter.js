@@ -1,5 +1,4 @@
 import {DataSource} from 'explorejs-lib';
-import moment from 'moment';
 import MouseWheelHelper from './helpers/MouseWheelHelper';
 import throttle from './helpers/Throttle';
 export default class VisJsAdapter {
@@ -54,14 +53,10 @@ export default class VisJsAdapter {
 
         plot.on('rangechanged', throttle(e => {
 
-            console.time('range changed');
-            console.timeEnd('range changed');
-            console.time('handler');
             this.dataSource.getViewState().updateRangeAndViewportWidth({
                 start: e.start.getTime(),
                 end: e.end.getTime()
             }, plot.body.dom.center.clientWidth);
-            console.timeEnd('handler');
         }, 100));
         // this.dataSource.getViewState().updateRangeAndViewportWidth(plot.range, plot.body.dom.center.clientWidth);
         this.dataset = dataset;
@@ -75,8 +70,7 @@ export default class VisJsAdapter {
 
     }
 
-    onProjectionRecompile(diff) {
-        const f = 'YYYY-MM-DD HH:mm:ss';
+    onProjectionRecompile() {
 
         function id(p, group) { // todo id should contain group
             var start = p.start;
@@ -90,30 +84,24 @@ export default class VisJsAdapter {
         const midAndValue = 1;
         const bottom = 2;
 
-        console.time('wrapper diff');
         const dataDiff = this.dataSource.calculateWrappersDiffToPrevious();
 
-        console.timeEnd('wrapper diff');
         if (dataDiff.added.length === 0 && dataDiff.removed.length === 0 && dataDiff.resized.length === 0) {
             console.info('no change after recompile');
             return;
         }
-        console.time('chart data update');
-
 
         const toRemove = [];
 
         [...dataDiff.removed, ...dataDiff.resized.map(a => a.existing)].forEach(a => {
             if (a.levelId === 'raw') {
                 toRemove.push(id(a, midAndValue));
-            }
-            else {
+            } else {
                 toRemove.push(id(a, top));
                 toRemove.push(id(a, midAndValue));
                 toRemove.push(id(a, bottom));
             }
         });
-
 
         const toAdd = [];
 
@@ -138,12 +126,9 @@ export default class VisJsAdapter {
         this.dataset.remove(toRemove);
         this.dataset.add(toAdd);
 
-        console.log(`Removed ${toRemove.length}, added ${toAdd.length}`);
+        console.debug(`Removed ${toRemove.length}, added ${toAdd.length}`);
 
-        console.timeEnd('chart data update');
-        console.time('chart flush');
         this.dataset.flush();
-        console.timeEnd('chart flush');
     }
 
     getDisplayedRange() {

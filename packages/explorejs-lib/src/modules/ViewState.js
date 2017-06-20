@@ -5,6 +5,12 @@ import {fitPrecalculatedLevelsForScale, getScalesForLevels} from './LevelResolve
 const EVENT_NAME = 'update';
 
 export default class ViewState {
+    /**
+     * TODO preferredUnitWidth not linear - closer to raw - closer to 1, but far from raw - it may be 5 - almost no difference
+     * Or just configure unit width per level
+     * @param levels
+     * @param preferredUnitWidth
+     */
     constructor(levels, preferredUnitWidth = 1) {
         this._levels = levels;
         this._event = new Event();
@@ -29,7 +35,7 @@ export default class ViewState {
     }
 
     updateRangeAndViewportWidth(range, viewportWidth, update = true) {
-        console.log('update view state', range, viewportWidth);
+        console.debug('update view state', range, viewportWidth);
         this._start = range.start;
         this._end = range.end;
         this._viewportWidth = viewportWidth;
@@ -43,6 +49,8 @@ export default class ViewState {
     update() {
         this._scale = (this._end - this._start) / this._viewportWidth;
         this._currentLevelId = this._calculateLevelId();
+        console.debug('view state update, level', this._currentLevelId);
+
         this._precalculatedScales = getScalesForLevels(this._levels, this._preferredUnitWidth);
         //
         const newState = this.getState();

@@ -4,14 +4,14 @@ export default (func, span) => {
     let timeout = null; // tells if there is span phase
 
     return (...args) => {
-        console.log('throttle real call', args, timeout);
+        console.debug('throttle real call', args, timeout);
         lastArgs = args;
 
         if (timeout === null) {
             // first call
             func(...lastArgs);
             timeout = setTimeout(() => {
-                console.log('end of span, called during span: ', calledDuringSpan)
+                console.debug('end of span, called during span: ', calledDuringSpan)
                 if (calledDuringSpan) {
                     func(...lastArgs);
                 }

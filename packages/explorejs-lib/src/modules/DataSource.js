@@ -70,19 +70,12 @@ export default class DataSource {
      * different than aggregation range after projeciton compilation), and actual data point
      */
     calculateWrappersDiffToPrevious() {
-        const msg = `calculateWrappersDiffToPrevious #${this._oldWrappers && this._oldWrappers.length} -> #${this._newWrappers.length}`;
-
-        console.time(msg);
-        try {
-            return DiffCalculator.compute(this._oldWrappers || [], this._newWrappers, {
-                copyFn: a => ({
-                    levelId: a.levelId,
-                    data: a.data
-                })
-            });
-        } finally {
-            console.timeEnd(msg);
-        }
+        return DiffCalculator.compute(this._oldWrappers || [], this._newWrappers, {
+            copyFn: a => ({
+                levelId: a.levelId,
+                data: a.data
+            })
+        });
     }
 
     /**
@@ -90,12 +83,12 @@ export default class DataSource {
      * @private
      * @param newProjectionRanges
      */
-    _onProjectionChange(newProjectionRanges) {
+    _onProjectionChange(newProjectionRanges, reason) {
         this._oldProjectionRanges = this._newProjectionRanges;
         this._newProjectionRanges = newProjectionRanges;
         this._oldWrappers = this._newWrappers;
         this._newWrappers = this._wrapRanges(newProjectionRanges);
-        console.info('DataSource -> projection changed, will update charts');
+        console.info(`DataSource -> projection changed, will update charts with ${this._newWrappers.length} points. Reason: ${reason}. Level: ${this.dynamicProjection.currentLevelId}`);
         this._callback();
     }
 

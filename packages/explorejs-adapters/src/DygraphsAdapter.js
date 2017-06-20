@@ -22,7 +22,9 @@ export default class DygraphsAdapter {
             if (this.plot) { // ignore first time callback
                 const range = this.getDisplayedRange();
 
-                this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
+                if (!this.plotIsUnderDataChange) {
+                    this.dataSource.getViewState().updateRangeAndViewportWidth(range, this.plot.getArea().w);
+                }
             }
         };
 
@@ -69,13 +71,13 @@ export default class DygraphsAdapter {
 
         const result = this.dataSource.getWrappers();
 
-        console.time('adapter update');
         const bars = result.map(a => [new Date(a.start), a.levelId === 'raw' ? [a.data.v, a.data.v, a.data.v] : [a.data.b, a.data.a, a.data.t]]);
 
+        this.plotIsUnderDataChange = true;
         this.plot.updateOptions({
             file: bars
         });
-        console.timeEnd('adapter update');
+        delete this.plotIsUnderDataChange;
 
     }
 

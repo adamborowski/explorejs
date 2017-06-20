@@ -86,17 +86,15 @@ export default class RequestManager {
                 if (xhr.status === 200) {
                     const resp = JSON.parse(xhr.responseText);
 
-                    console.timeEnd('batch request');
                     this._processBatchResponse(resp);
                 } else {
-                    console.error('error');
+                    console.error('error', xhr);
                 }
                 this.batch.requestsLoaded(requests);
             }, this.forceDelay || 0);
         };
         xhr.send(JSON.stringify(data));
 
-        console.time('batch request');
     }
 
     _processBatchResponse(response) {
