@@ -7,14 +7,19 @@ import {OrderedSegmentArray, IndexedList, DiffCalculator, Range} from 'explorejs
  */
 export default class DynamicProjection {
     /**
-     * @param roundPrecision the resolution of range in relation to view state range
      * @param viewState {ViewState}
+     * @param tileWidthRatio projection tile width, the ratio of viewport width
+     * @param numTiles number of tiles to use in covering
+     * @param paddingRatio the minimum padding of projection, added to viewport bounds
      */
-    constructor(viewState, roundPrecision = 0.1) {
+    constructor(viewState, tileWidthRatio = 0.6, numTiles = 4, paddingRatio = 0.1) {
+
         this.viewState = viewState;
+        this._paddingRatio = paddingRatio;
+        this._tileWidthRatio = tileWidthRatio;
+        this._numTiles = numTiles;
         this.currentLevelId = null;
         this.currentRange = null;
-        this.roundPrecision = roundPrecision;
         this.cacheUpdateHandler = this.cacheUpdateHandler.bind(this);
         this.onViewStateUpdate = this.onViewStateUpdate.bind(this);
         viewState.addListener(this.onViewStateUpdate);
@@ -39,9 +44,46 @@ export default class DynamicProjection {
     onViewStateUpdate(viewState) {
         const oldRange = this.currentRange;
         const newLevelId = viewState.getCurentLevelId();
-        const newRange = Range
-            .opened(viewState.getStart(), viewState.getEnd())
-            .expandToFitPrecision(this.roundPrecision * viewState.getScale() * viewState.getViewportWidth());
+
+        const scale = Math.floor(viewState.getScale());
+
+        const tileWidth = Math.floor(this._tileWidthRatio * scale * viewState.getViewportWidth());
+        const extension = Math.floor(this._paddingRatio * scale * viewState.getViewportWidth());
+        const start = viewState.getStart();
+        const end = viewState.getEnd();
+
+        let newRange;
+
+        if (oldRange == null || start - oldRange.left < extension || oldRange.right - end < extension) {
+
+            newRange = Range
+                .opened(start, end)
+                .extend(extension)
+                .expandToFitPrecision(tileWidth);
+
+            const numTilesUsed = newRange.length() / tileWidth;
+
+            if (numTilesUsed > this._numTiles) {
+                console.warn(`DynamicProjection: used more tiles (${numTilesUsed}) to cover than initially set ${this._numTiles}`);
+            }
+
+            console.log(numTilesUsed);
+
+            for (let i = numTilesUsed; i < this._numTiles; i++) {
+                const leftDistance = start - newRange.left;
+                const rightDistance = newRange.right - end;
+
+
+                if (leftDistance < rightDistance) {
+                    newRange.left -= tileWidth;
+                } else {
+                    newRange.right += tileWidth;
+                }
+            }
+        } else {
+            // last range is still ok to show
+            newRange = oldRange.clone();
+        }
 
         if (this.currentEvent != null) {
             this.currentEvent.removeListener('recompile', this.cacheUpdateHandler);

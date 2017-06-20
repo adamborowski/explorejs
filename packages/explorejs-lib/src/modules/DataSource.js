@@ -11,13 +11,12 @@ export default class DataSource {
     /**
      * @param {SerieCache} serieCache
      * @param callback
-     * @param projectionWindowRatio the windowing ratio of projected cache, to reduce calls when panning reft and right
      */
-    constructor(serieCache, callback, projectionWindowRatio = 1) {
+    constructor(serieCache, callback) {
         this.serieCache = serieCache;
         this._callback = callback;
         this._viewState = new ViewState(this.serieCache.getSerieManifest().levels);
-        this.dynamicProjection = new DynamicProjection(this._viewState, projectionWindowRatio);
+        this.dynamicProjection = new DynamicProjection(this._viewState);
         this.dynamicProjection.SerieCache = serieCache;
         this.dynamicProjection.setup(this._onProjectionChange.bind(this));
         this.predictionEngine = new PredictionEngine(serieCache, this._viewState);
@@ -96,7 +95,7 @@ export default class DataSource {
         this._newProjectionRanges = newProjectionRanges;
         this._oldWrappers = this._newWrappers;
         this._newWrappers = this._wrapRanges(newProjectionRanges);
-        console.log('DataSource -> received new data');
+        console.info('DataSource -> projection changed, will update charts');
         this._callback();
     }
 

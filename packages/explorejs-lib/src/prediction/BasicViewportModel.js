@@ -15,7 +15,8 @@ export default class BasicViewportModel extends PredictionModel {
         const contextPadding = (end - start) * this.contextPaddingRatio;
 
         this.SerieCache.getLevelCache(currentLevelId).requestDataForRange(
-            Range.leftClosed(start - contextPadding, end + contextPadding)
+            Range.leftClosed(start, end)
+                .extend(contextPadding)
                 .expandToFitPrecision(this.viewState.pixelsToTime(this.roundPrecision * this.viewState.getViewportWidth()))
         );
     }

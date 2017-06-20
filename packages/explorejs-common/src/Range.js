@@ -96,9 +96,35 @@ class Range {
     }
 
     expandToFitPrecision(precision) {
-        this.left = Math.floor(this.left / precision) * precision;
-        this.right = Math.ceil(this.right / precision) * precision;
+        if (precision > 0) {
+            this.left -= this.left % precision;
+            const rightRemainder = this.right % precision;
+
+            if (rightRemainder > 0) {
+                this.right += precision - rightRemainder;
+            }
+        }
         return this;
+    }
+
+    round() {
+        this.left = Math.round(this.left);
+        this.right = Math.round(this.right);
+        return this;
+    }
+
+    /**
+     * Extends both bounds by given value
+     * @param value
+     */
+    extend(value) {
+        this.left -= value;
+        this.right += value;
+        return this;
+    }
+
+    length() {
+        return this.right - this.left;
     }
 
     /**
@@ -120,6 +146,10 @@ class Range {
         return `${this.leftClosed ? '<' : '('}${moment(this.left).format(f)}; ${moment(this.right).format(f)}${this.rightClosed ? '>' : ')'}`;
         /* eslint-enable max-len */
 
+    }
+
+    clone() {
+        return new Range(this.left, this.right, this.leftClosed, this.rightClosed);
     }
 
 }
