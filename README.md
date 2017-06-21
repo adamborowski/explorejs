@@ -21,7 +21,7 @@ Use case
 -----
 * you have 150.000.000 points in your database (50 years of data every 10s)
 * you have adequate aggregations (as in the example above)
-* you implement simple, but required, REST endpoint on the server
+* you implement simple, but required, REST endpoint on the server (see explorejs-remote-server package)
 * you have your charting library (flot, dygraphs, highcharts, jqplot, plotly, visjs, dygraphs, etc...)
 * you use *explore.js* to enable unbounded exploration of given time series
 * your chart displays few (ie 1000 points) at a time, explore.js just tells you what to display
