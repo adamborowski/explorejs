@@ -48,4 +48,4 @@ This library is under active development, so there is no official tutorial yet.
 
 Questions?
 ----------
-Contact me on twitter https://twitter.com/fl_borovsky or fl.borovsky(at)gmail 
+Contact me on twitter https://twitter.com/fl_borovsky or fl.borovsky(at)gmail or raise an issue.
