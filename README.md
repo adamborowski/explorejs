@@ -13,7 +13,7 @@ Features:
 * optimized communication with server
 * prefetching data to prevent user from waiting
 * data cache (every aggregation stored separately)
-* visual fallback to higher aggregation if wanted data is not yet loaded (you will see lowe resolution for for a while)
+* fallback to higher aggregation if wanted data is not yet loaded to provide best visual experience (you will see lowe resolution for for a while)
 * easy integration with any charting library (see explorejs-adapters package)
 * React bindings
 
