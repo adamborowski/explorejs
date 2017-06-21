@@ -24,7 +24,7 @@ Use case
 * you implement simple, but required, REST endpoint on the server (see explorejs-remote-server package)
 * you have your charting library (flot, dygraphs, highcharts, jqplot, plotly, visjs, dygraphs, etc...)
 * you use *explore.js* to enable unbounded exploration of given time series
-* your chart displays few (ie 1000 points) at a time, explore.js just tells you what to display
+* your chart displays few (ie 1000) points at a time, explore.js just tells you what to display
 * your browser loads chunks at appriopriate levels
 
 Working demo
