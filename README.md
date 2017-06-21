@@ -31,16 +31,15 @@ Working demo
 ---------
 _(use mouse wheel and shift key to zoom/pan)_
 
+_works best in Chrome_
+
+http://explorejs.adamborowski.pl/scenario/0/session/0
 
 Video demonstration (older)
 ---------
 * https://www.youtube.com/watch?v=l993l48-Njw
 * https://www.youtube.com/watch?v=b_VRyhak5Xg
 
-
-_works best in Chrome_
-
-http://explorejs.adamborowski.pl/scenario/0/session/0
 
 How to use it
 -------------
