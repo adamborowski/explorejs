@@ -51,9 +51,9 @@ export default class CacheDemoController {
                 });
                 $scope.selectedAggregation = $scope.availableAggregations[3]
                 $scope.selectedSerie = $scope.availableSeries[0];
-                $scope.rangeFrom = '2012-01-01';//rm.getManifestForSerie(0).$start;
-                $scope.mouse = '2016-01-03';//rm.getManifestForSerie(0).$start;
-                $scope.rangeTo = '2017-10-02';//rm.getManifestForSerie(0).$end;
+                $scope.rangeFrom = '1991-01-01 01:00';//rm.getManifestForSerie(0).$start;
+                $scope.mouse = '2016-01-01 05:00';//rm.getManifestForSerie(0).$start;
+                $scope.rangeTo = '1991-01-02 ';//rm.getManifestForSerie(0).$end;
                 $scope.rm = rm;
                 this.startTime = rm.getManifestForSerie(0).start;
                 this.endTime = rm.getManifestForSerie(0).end;

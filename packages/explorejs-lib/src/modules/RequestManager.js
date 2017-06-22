@@ -103,6 +103,8 @@ export default class RequestManager {
             console.error(`RequestManager error #${error.code} "${error.message}"`);
         }
 
+        let numPoints = 0;
+
         const data = response.series
             .filter((serie) => {
                 if (serie.error) {
@@ -114,8 +116,11 @@ export default class RequestManager {
                 const serieConfig = DataRequest.fromServerFormat(serie);
 
                 serieConfig.data = serie.data;
+                numPoints += serie.data.length;
                 return serieConfig;
             });
+
+        console.debug(`RequestManager._processBatchResponse() -> got ${numPoints} points.`);
 
         this.CacheManager.putData(data);
     }
