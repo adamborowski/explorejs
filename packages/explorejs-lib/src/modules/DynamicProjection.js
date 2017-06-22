@@ -13,7 +13,6 @@ export default class DynamicProjection {
      * @param paddingRatio the minimum padding of projection, added to viewport bounds
      */
     constructor(viewState, tileWidthRatio = 1, numTiles = 3, paddingRatio = 0.1) {
-        // todo dlaczego mimo tiles, wykres tak czesto sie updateuje podczas panning
 
         this.viewState = viewState;
         this._paddingRatio = paddingRatio;

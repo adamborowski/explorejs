@@ -32,7 +32,6 @@ export default class LevelCache {
 
     putData(data) {
         // this.events.fireEvent('data', this._segmentArray._)
-        // todo fire range-scoped events
         if (data.length === 0) {
             // console.log(`LevelCache: put data of serie ${this.SerieCache.options.serieId} ${this.level.id} \n\t(no data) = ${data.length}`);
         } else {
