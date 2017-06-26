@@ -8,6 +8,7 @@ export default class MerginbBatch {
      * @param delay of performing batch request
      */
     constructor(callback, delay = 100) {
+        console.debug('using MergingBatch');
         this.callback = callback;
         this.queuedRanges = this.createRangeQueue();
         this.pendingRanges = this.createRangeQueue();

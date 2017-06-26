@@ -10,7 +10,7 @@ export default (props) => (
       className="nav nav-sidebar">
       {props.items.map((item, index) =>
         <NavLink key={item.name} to={`${props.basePath}${item.link}`} activeClassName="active">
-          Scenario {index + 1}
+          {item.name}
           <Stars maxValue={10} value={item.stars} tiny={true} color="#333"/>
         </NavLink>
       )}

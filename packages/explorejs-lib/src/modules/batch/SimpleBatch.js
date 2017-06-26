@@ -8,6 +8,7 @@ export default class SimpleBatch {
      * @param {function(DataRequest[])} callback  parameter with
      */
     constructor(callback) {
+        console.debug('using SimpleBatch');
         this._deferredAjaxCall = new DeferredAction(callback, 100);
     }
 

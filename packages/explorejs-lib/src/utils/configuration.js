@@ -2,7 +2,7 @@
  * Preset representing set of options to configure explorejs library
  * @typedef {Object} ExplorejsPreset
  * @property {boolean} useCache if no, only simple mock is applied to data source and request manager
- * @property {boolean} usePrediction - if yes, uses additionally widercontextmodel, otherwise only basic
+ * @property {boolean} usePrediction - if yes, uses additionally widercontextmodel, otherwise only basic with padding = 0
  * @property {boolean} useFallback - if yes - uses merges of dynamic projection, otherwise merge does not occur
  * @property {boolean} useMergingBatch - sets the MergingBatch, otherwise SimpleBatch
  */
@@ -19,7 +19,7 @@ export default (props, preset) => {
     if (preset.useCache === false) {
         return noCache(props, preset);
     }
-    return full(props);
+    return full(props, preset);
 
     return {
         /**

@@ -15,11 +15,12 @@ const ScenarioPage = (props) => {
 
   return (
     <div>
-      <h1 className="page-header">
-        Scenario&nbsp;
+      <h2 className="page-header">
+        Configuration: &nbsp;
         <small>{scenario.name}</small>
 
-      </h1>
+      </h2>
+      { scenario.description && scenario.description() }
       <div className="list-group">
         {
           scenario.sessions.toRefArray().map((session) =>

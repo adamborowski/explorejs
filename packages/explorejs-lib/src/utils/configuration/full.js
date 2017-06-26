@@ -14,11 +14,12 @@ import WiderContextModel from '../../prediction/WiderContextModel';
  * @param props
  * @returns {*}
  */
-export default async (props) => {
+export default async (props, preset) => {
 
     const {manifest, batch} = props;
+    const {useMergingBatch} = preset;
 
-    const requestManager = new RequestManager(manifest, batch);
+    const requestManager = new RequestManager(manifest, batch, 0, useMergingBatch);
     const cacheManager = new CacheManager();
 
     requestManager.CacheManager = cacheManager;
