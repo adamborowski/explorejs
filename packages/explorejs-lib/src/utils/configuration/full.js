@@ -17,7 +17,7 @@ import WiderContextModel from '../../prediction/WiderContextModel';
 export default async (props, preset) => {
 
     const {manifest, batch} = props;
-    const {useMergingBatch} = preset;
+    const {useMergingBatch, useFallback, usePrediction} = preset;
 
     const requestManager = new RequestManager(manifest, batch, 0, useMergingBatch);
     const cacheManager = new CacheManager();
@@ -31,7 +31,20 @@ export default async (props, preset) => {
         createDataSource(serieId) {
             const dataSource = new DataSource(cacheManager.getSerieCache(serieId));
 
-            dataSource.predictionEngine.addModels([new BasicViewportModel(), new WiderContextModel()]);
+            if (!useFallback) {
+                const __onProjectionChange = dataSource._onProjectionChange.bind(dataSource);
+
+                dataSource.dynamicProjection._callback = (newProjectionRanges, reason) => {
+                    __onProjectionChange(newProjectionRanges.filter(r => r.levelId === dataSource._viewState._currentLevelId), reason);
+                };
+            }
+
+            if (usePrediction) {
+                dataSource.predictionEngine.addModels([new BasicViewportModel(), new WiderContextModel()]);
+            } else {
+                dataSource.predictionEngine.addModels([new BasicViewportModel(0, 0)]);
+            }
+
             return dataSource;
         },
         createSerieCache(serieId) {

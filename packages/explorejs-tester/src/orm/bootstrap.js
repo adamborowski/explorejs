@@ -64,8 +64,8 @@ export default function bootstrap(schema) {
     description: () => (
       <div>
         <p>
-          The same as <strong>caching</strong> configuration but it reuses data from any higher level of aggregation.
-          It works like showing low-level resolution fragments on a geo map as a fallback when actual map is being
+          The same as <strong>caching</strong> configuration but enables progressive display as it reuses data from any higher level of aggregation.
+          It works like p showing low-level resolution fragments on a geo map as a fallback when actual map is being
           loaded.
           For example, if you look at hours aggregations and you miss some part of data, it will fill the gap using data
           already fetched on higher level of aggregation, ie. day, month.
