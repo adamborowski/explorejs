@@ -79,7 +79,7 @@ class OrderedSegmentArray {
             // segments are not overlapping
             this._data.splice(leftNeighborIndex + 1, 0, ...range);
         } else if (numberSegmentsInside < 0 && range.length > 1) {
-            throw new Error('This should not happened');
+            throw new Error('This should not happen');
         } else {
             // we have to merge
             // todo prevent unnecessary slice range1
@@ -90,6 +90,10 @@ class OrderedSegmentArray {
         }
 
     };
+
+    clear() {
+        this._data = [];
+    }
 
     /**
      * Performs merging two sorted array of segments

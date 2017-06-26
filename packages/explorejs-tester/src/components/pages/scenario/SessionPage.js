@@ -43,8 +43,9 @@ export const ScenarioSessionPage = (props) => {
 
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
-      <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']}>
-        <Chart serieId="0" adapter={props.adapter} prediction={['basic', 'wider-context']}/>
+      <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
+        <Chart serieId="0" adapter={props.adapter}
+               prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
       </LocalBinding>
     </div>
   );

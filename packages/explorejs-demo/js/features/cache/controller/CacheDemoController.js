@@ -1,4 +1,7 @@
-import {RequestManager, DataRequest, CacheManager, BasicViewportModel, WiderContextModel} from 'explorejs-lib';
+import {
+    RequestManager, DataRequest, CacheManager, BasicViewportModel, WiderContextModel,
+    DataSource
+} from 'explorejs-lib';
 
 import {DygraphsAdapter} from 'explorejs-adapters';
 
@@ -80,7 +83,9 @@ export default class CacheDemoController {
     initChart() {
 
         const chart = $('#main-chart');
-        this.adapter = new DygraphsAdapter(this.rm.CacheManager.getSerieCache(0), chart[0], Dygraphs, (length) => {
+        const dataSource = new DataSource(this.rm.CacheManager.getSerieCache(0));
+
+        this.adapter = new DygraphsAdapter(dataSource, chart[0], Dygraphs, (length) => {
             const apl = ()=> {
                 this.$scope.numPoints = length;
             };
@@ -90,10 +95,13 @@ export default class CacheDemoController {
                 this.$scope.$apply(apl);
             }
         });
+
+        dataSource.setUpdateCallback(this.adapter.onProjectionRecompile);
+
         this.addPredictionModels();
         this.adapter.setDisplayedRange(new Date(this.$scope.rangeFrom).getTime(), new Date(this.$scope.rangeTo).getTime());
         window.addEventListener('keydown', e=> {
-            if (e.keyCode == 'D'.charCodeAt(0)) {
+            if (e.keyCode === 'D'.charCodeAt(0)) {
                 var $s = this.$scope;
                 this.loadRange($s.selectedSerie.name, $s.rangeFrom, $s.rangeTo, $s.selectedAggregation.name);
             }

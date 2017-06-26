@@ -16,10 +16,22 @@ export default function bootstrap(schema) {
   const scenarioA = Scenario.create({
     id: 0, // optional. If omitted, Redux-ORM uses a number sequence starting from 0.
     name: 'Scenario A',
+    preset: {useCache: false}
   });
   const scenarioB = Scenario.create({
     id: 1, // optional.
     name: 'Scenario B',
+    preset: {useCache: true}
+  });
+  const scenarioC = Scenario.create({
+    id: 2, // optional.
+    name: 'Scenario C',
+    preset: {useCache: true}
+  });
+  const scenarioD = Scenario.create({
+    id: 3, // optional.
+    name: 'Scenario D',
+    preset: {useCache: true}
   });
 
   Session.create({

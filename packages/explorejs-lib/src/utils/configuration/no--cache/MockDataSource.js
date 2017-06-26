@@ -1,13 +1,11 @@
-import DynamicProjection from './DynamicProjection';
-import PredictionEngine from './PredictionEngine';
-import ViewState from './ViewState';
-import DataUtil from '../data/DataUtil';
-import {Range} from 'explorejs-common';
-import {DiffCalculator} from 'explorejs-common';
+import PredictionEngine from '../../../modules/PredictionEngine.js';
+import ViewState from '../../../modules/ViewState.js';
+import DataUtil from '../../../data/DataUtil.js';
+import {DiffCalculator, Range} from 'explorejs-common';
 /**
  * @typedef {{added:WrapperType[], removed:WrapperType[], resized:WrapperType[]}} WrapperDiffType
  */
-export default class DataSource {
+export default class MockDataSource {
     /**
      * @param {SerieCache} serieCache
      * @param callback
@@ -15,9 +13,6 @@ export default class DataSource {
     constructor(serieCache) {
         this.serieCache = serieCache;
         this._viewState = new ViewState(this.serieCache.getSerieManifest().levels);
-        this.dynamicProjection = new DynamicProjection(this._viewState);
-        this.dynamicProjection.SerieCache = serieCache;
-        this.dynamicProjection.setup(this._onProjectionChange.bind(this));
         this.predictionEngine = new PredictionEngine(serieCache, this._viewState);
         this._oldProjectionRanges = [];
         this._newProjectionRanges = [];
@@ -36,22 +31,16 @@ export default class DataSource {
      * @private
      * @return {RangeType[]}
      */
-    _wrapRange(range, oneMore = false) {
-        const dataPoints = this.serieCache
-            .getLevelCache(range.levelId)
-            .getRange(Range[range.levelId === 'raw' ? 'leftClosed' : 'opened'](range.start, range.end), oneMore);
-        const boundGetter = DataUtil.boundGetter(range.levelId);
+    _wrapRange(levelId, mockData) {
+        const dataPoints = mockData;
+        const boundGetter = DataUtil.boundGetter(levelId);
         const wrappers = dataPoints.map(d => ({
             data: d,
             start: boundGetter.start(d),
             end: boundGetter.end(d),
-            levelId: range.levelId
+            levelId: levelId
         }));
 
-        if (wrappers.length) {
-            wrappers[0].start = Math.max(wrappers[0].start, range.start);
-            wrappers[wrappers.length - 1].end = Math.min(wrappers[wrappers.length - 1].end, range.end);
-        }
         return wrappers;
     }
 
@@ -84,17 +73,9 @@ export default class DataSource {
         });
     }
 
-    /**
-     * Called by dynamic projection
-     * @private
-     * @param newProjectionRanges
-     */
-    _onProjectionChange(newProjectionRanges, reason) {
-        this._oldProjectionRanges = this._newProjectionRanges;
-        this._newProjectionRanges = newProjectionRanges;
+    mockNewData(response) {
         this._oldWrappers = this._newWrappers;
-        this._newWrappers = this._wrapRanges(newProjectionRanges);
-        console.info(`DataSource -> projection changed, will update charts with ${this._newWrappers.length} points. Reason: ${reason}. Level: ${this.dynamicProjection.currentLevelId}`);
+        this._newWrappers = this._wrapRange(response.level, response.data);
         this._callback();
     }
 
@@ -107,7 +88,6 @@ export default class DataSource {
     }
 
     destroy() {
-        this.dynamicProjection.destroy();
         this.predictionEngine.destroy();
     }
 }

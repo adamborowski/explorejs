@@ -9,40 +9,40 @@ import 'vis/dist/vis.css';
 const Plotly = require('plotly.js/dist/plotly');
 
 const factoryMap = {
-    dygraphs(serieCache, dom) {
-        return new DygraphsAdapter(serieCache, dom, Dygraph);
+    dygraphs(dataSource, dom) {
+        return new DygraphsAdapter(dataSource, dom, Dygraph);
     },
-    visjs(serieCache, dom) {
-        return new VisJsAdapter(serieCache, dom, vis); // todo visjs adapter should create everthing needed
+    visjs(dataSource, dom) {
+        return new VisJsAdapter(dataSource, dom, vis); // todo visjs adapter should create everthing needed
     },
-    flot(serieCache, dom) {
+    flot(dataSource, dom) {
         window.jQuery = $; // hack for flot
         const Flot = require('Flot');
 
         require('Flot/jquery.flot.time');
         require('Flot/jquery.flot.fillbetween');
 
-        return new FlotAdapter(serieCache, dom, Flot, $);
+        return new FlotAdapter(dataSource, dom, Flot, $);
     },
-    highcharts(serieCache, dom) {
+    highcharts(dataSource, dom) {
         const HighCharts = require('highcharts');
         const HighChartsMore = require('highcharts/highcharts-more');
 
         HighChartsMore(HighCharts);
-        return new HighChartsAdapter(serieCache, dom, HighCharts);
+        return new HighChartsAdapter(dataSource, dom, HighCharts);
     },
-    jqplot(serieCace, dom) {
+    jqplot(dataSource, dom) {
         window.jQuery = $; // hack for flot
         require('as-jqplot/dist/jquery.jqplot.js');
         require('as-jqplot/dist/plugins/jqplot.dateAxisRenderer');
         require('as-jqplot/dist/plugins/jqplot.cursor');
-        return new JqPlotAdapter(serieCace, dom, $);
+        return new JqPlotAdapter(dataSource, dom, $);
     },
-    plotly(serieCace, dom) {
-        return new PlotlyAdapter(serieCace, dom, Plotly);
+    plotly(dataSource, dom) {
+        return new PlotlyAdapter(dataSource, dom, Plotly);
     }
 };
 
-export default (type, serieCache, dom) => factoryMap[type](serieCache, dom);
+export default (type, dataSource, dom) => factoryMap[type](dataSource, dom);
 
 export const types = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];

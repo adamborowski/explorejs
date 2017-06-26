@@ -51,6 +51,14 @@ export default class LevelCache {
         }
     }
 
+    clear() {
+        this._segmentArray.clear();
+        this._dataIndex = xspans();
+        // <debug>
+        /* eslint-disable */
+        this._debug_data_index = this._dataIndex.toObjects('start', 'end');
+    }
+
     /**
      *
      * @param {Range} range

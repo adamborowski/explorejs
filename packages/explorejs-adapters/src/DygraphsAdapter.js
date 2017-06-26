@@ -1,16 +1,14 @@
-import {DataSource} from 'explorejs-lib';
 import MouseWheelHelper from './helpers/MouseWheelHelper';
 export default class DygraphsAdapter {
     /**
      *
-     * @param {SerieCache} serieCache
+     * @param dataSource {DataSource}
      * @param chart {HTMLElement} element where put the chart
      * @param Dygraphs {Dygraphs} library reference
      */
-    constructor(serieCache, chart, Dygraphs) {
+    constructor(dataSource, chart, Dygraphs) {
 
-        this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
-        this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
+        this.dataSource = dataSource;
         this.chart = chart;
         this.Dygraphs = Dygraphs;
         this.init();
@@ -67,7 +65,7 @@ export default class DygraphsAdapter {
         this.plot.updateOptions({dateWindow: [start, end]});
     }
 
-    onProjectionRecompile() {
+    onProjectionRecompile = () => {
 
         const result = this.dataSource.getWrappers();
 
@@ -79,7 +77,7 @@ export default class DygraphsAdapter {
         });
         delete this.plotIsUnderDataChange;
 
-    }
+    };
 
     /**
      * Called when there is no more chart to display, this should unsubscribe from explorejs

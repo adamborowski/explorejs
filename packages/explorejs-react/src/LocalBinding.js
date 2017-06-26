@@ -3,7 +3,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {CacheManager, RequestManager} from 'explorejs-lib';
+import {configuration} from 'explorejs-lib';
 
 class Deferred {
     constructor() {
@@ -19,22 +19,18 @@ export default class LocalBinding extends Component {
     constructor(props) {
         super(props);
 
-        const requestManager = new RequestManager(props.manifest, props.batch);
-        const cacheManager = new CacheManager();
+        const configPromise = configuration(props, props.preset);
 
-        requestManager.CacheManager = cacheManager;
-        cacheManager.RequestManager = requestManager;
-
-        this.state = {requestManager, deferred: new Deferred()};
+        this.state = {configPromise, deferred: new Deferred()};
 
     }
 
     async componentDidMount() {
-        const requestManager = await this.state.requestManager.ready();
+        const config = await this.state.configPromise;
 
-        this.props.series.forEach(s => requestManager.CacheManager.createSerieCache({serieId: s}));
+        this.props.series.forEach(s => config.createSerieCache(s));
 
-        this.state.deferred.fulfill(requestManager);
+        this.state.deferred.fulfill(config);
     }
 
     componentWillReceiveProps(newProps) {
@@ -42,12 +38,12 @@ export default class LocalBinding extends Component {
     }
 
     componentWillUnmount() {
-        this.state.requestManager.destroy();
+        this.state.configPromise.then(s => s.destroy());
     }
 
     getChildContext() {
         return {
-            explorejsRequestManager: this.state && this.state.deferred.promise
+            explorejsConfiguration: this.state && this.state.deferred.promise
         };
     }
 
@@ -58,10 +54,11 @@ export default class LocalBinding extends Component {
     static propTypes = {
         manifest: PropTypes.string,
         batch: PropTypes.string,
-        series: PropTypes.arrayOf(PropTypes.string)
+        series: PropTypes.arrayOf(PropTypes.string),
+        preset: PropTypes.object
     };
 
     static childContextTypes = {
-        explorejsRequestManager: PropTypes.instanceOf(Promise)
+        explorejsConfiguration: PropTypes.instanceOf(Promise)
     };
 }

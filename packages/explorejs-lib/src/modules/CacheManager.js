@@ -22,6 +22,7 @@ export default class CacheManager {
         serieCache.CacheManager = this;
         serieCache.setup();
         this.serieCacheSet.add(options.serieId, serieCache);
+        return serieCache;
     }
 
     /**

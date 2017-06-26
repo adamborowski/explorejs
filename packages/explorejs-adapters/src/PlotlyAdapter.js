@@ -4,13 +4,12 @@ import MouseWheelHelper from './helpers/MouseWheelHelper';
 export default class PlotlyAdapter {
     /**
      *
-     * @param {SerieCache} serieCache
+     * @param dataSource {DataSource}
      * @param chart {HTMLElement} the dom element where chart will be rendered
      * @param Plotly reference to plotly.js library
      */
-    constructor(serieCache, chart, Plotly) {
-        this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
-        this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
+    constructor(dataSource, chart, Plotly) {
+        this.dataSource = dataSource;
         this.chart = chart;
         this.Plotly = Plotly;
         this.init();
@@ -127,7 +126,7 @@ export default class PlotlyAdapter {
         return map;
     }
 
-    onProjectionRecompile() {
+    onProjectionRecompile = () => {
 
         const dataDiff = this.dataSource.getWrappers();
 
@@ -141,7 +140,7 @@ export default class PlotlyAdapter {
             y: [bValues, values, tValues]
         }, [0, 1, 2]);
 
-    }
+    };
 
     /**
      * Called when there is no more chart to display, this should unsubscribe from explorejs

@@ -1,24 +1,22 @@
-import {DataSource} from "explorejs-lib";
-import throttle from "helpers/Throttle.js";
-import _ from "lodash";
-import MouseWheelHelper from "./helpers/MouseWheelHelper";
+import {DataSource} from 'explorejs-lib';
+import throttle from 'helpers/Throttle.js';
+import _ from 'lodash';
+import MouseWheelHelper from './helpers/MouseWheelHelper';
 export default class JqPlotAdapter {
     /**
      *
-     * @param {SerieCache} serieCache
-     * @param chart
+     * @param dataSource {DataSource}
+     * @param chart {HTMLElement}
      * @param $
      */
-    constructor(serieCache, chart, $) {
+    constructor(dataSource, chart, $) {
 
         this.$chart = $(chart);
         if (this.$chart.attr('id') == null) {
             this.$chart.attr('id', _.uniqueId('jqplot-chart-'));
         }
 
-
-        this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
-        this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
+        this.dataSource = dataSource;
         this.chart = chart;
         this.$ = $;
         this.init();
@@ -182,7 +180,7 @@ export default class JqPlotAdapter {
         });
     }
 
-    onProjectionRecompile(diff) {
+    onProjectionRecompile = (diff) => {
         const f = 'YYYY-MM-DD HH:mm:ss';
 
 
@@ -201,7 +199,7 @@ export default class JqPlotAdapter {
             ]
         });
 
-    }
+    };
 
     destroy() {
         this.wheelHelper.destroy();

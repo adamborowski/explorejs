@@ -2,16 +2,17 @@ import DataRequest from '../data/DataRequest';
 import {IndexedList} from 'explorejs-common';
 // import SimpleBatch from './batch/SimpleBatch';
 import MergingBatch from './batch/MergingBatch';
+import SimpleBatch from './batch/SimpleBatch';
 /**
  * @property {CacheManager} CacheManager
  */
 export default class RequestManager {
 
-    constructor(apiManifestUrl = '/api/manifest', apiBatchUrl = '/api/batch', forceDelay = 0) {
+    constructor(apiManifestUrl = '/api/manifest', apiBatchUrl = '/api/batch', forceDelay = 0, useMerging = true) {
         this.apiManifestUrl = apiManifestUrl;
         this.apiBatchUrl = apiBatchUrl;
         // this.batch = new SimpleBatch(this._performBatchRequest.bind(this));
-        this.batch = new MergingBatch(this._performBatchRequest.bind(this));
+        this.batch = useMerging ? new MergingBatch(this._performBatchRequest.bind(this)) : new SimpleBatch(this._performBatchRequest.bind(this));
         this.forceDelay = forceDelay;
     }
 
@@ -28,6 +29,7 @@ export default class RequestManager {
      * queuedRanges +=request
      */
     addRequest(request) {
+
         this.batch.addRequest(request);
     }
 
@@ -94,6 +96,8 @@ export default class RequestManager {
             }, this.forceDelay || 0);
         };
         xhr.send(JSON.stringify(data));
+
+        return xhr;
 
     }
 

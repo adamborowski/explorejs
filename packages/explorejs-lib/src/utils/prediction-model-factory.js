@@ -1,4 +1,6 @@
-import {BasicViewportModel, WiderContextModel} from 'explorejs-lib';
+import BasicViewportModel from '../prediction/BasicViewportModel.js';
+import WiderContextModel from '../prediction/WiderContextModel.js';
+
 const factoryMap = {
     basic() {
         return new BasicViewportModel();

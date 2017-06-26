@@ -1,7 +1,6 @@
 import LevelCache from './LevelCache';
-import {IndexedList} from 'explorejs-common';
+import {IndexedList, Range, RangeScopedEvent} from 'explorejs-common';
 import {Builder} from './SerieCacheProjectionDisposer';
-import {RangeScopedEvent, Range} from 'explorejs-common';
 
 /**
  * @property {CacheManager} CacheManager
@@ -114,5 +113,12 @@ export default class SerieCache {
      */
     getProjectionDisposer() {
         return this._disposer;
+    }
+
+    clear() {
+        this._levelCacheSet.each((key, levelCache) => levelCache.clear());
+        this._disposer.projections.forEach(p => {
+            p.projection = [];
+        });
     }
 }

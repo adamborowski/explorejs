@@ -4,13 +4,12 @@ import MouseWheelHelper from './helpers/MouseWheelHelper';
 export default class HighChartsAdapter {
     /**
      *
-     * @param {SerieCache} serieCache
-     * @param chart
+     * @param dataSource {DataSource}
+     * @param chart {HTMLElement}
      * @param HighCharts
      */
-    constructor(serieCache, chart, HighCharts) {
-        this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
-        this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
+    constructor(dataSource, chart, HighCharts) {
+        this.dataSource = dataSource;
         this.chart = chart;
 
         this.plot = HighCharts.chart(chart, {
@@ -108,7 +107,7 @@ export default class HighChartsAdapter {
         this.plot.xAxis[0].setExtremes(start, end);
     }
 
-    onProjectionRecompile() {
+    onProjectionRecompile = () => {
 
         const result = this.dataSource.getWrappers();
 
@@ -118,7 +117,7 @@ export default class HighChartsAdapter {
         this.plot.series[0].setData(aggregations);
         this.plot.series[1].setData(values);
 
-    }
+    };
 
     destroy() {
         this.wheelHelper.destroy();

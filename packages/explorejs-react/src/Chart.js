@@ -4,7 +4,7 @@
  */
 import React, {PropTypes} from 'react';
 import adapterFactory, {types as chartTypes} from './AdapterFactory';
-import predictionModelFactory, {types as predictionModelTypes} from './PredictionModelFactory';
+import {predictionModelTypes} from 'explorejs-lib';
 
 export default class Chart extends React.Component {
 
@@ -28,7 +28,7 @@ export default class Chart extends React.Component {
 
     componentDidMount() {
 
-        if (!this.context.explorejsRequestManager) {
+        if (!this.context.explorejsConfiguration) {
             throw new Error('Chart has to be placed in context of ExploreJS context binding component from explorejs-react');
         }
 
@@ -65,21 +65,20 @@ export default class Chart extends React.Component {
             return;
         }
 
-        let serieCache;
+        let dataSource;
 
         try {
-            const requestManager = await this.context.explorejsRequestManager;
+            const config = await this.context.explorejsConfiguration;
 
-            serieCache = requestManager.CacheManager.getSerieCache(props.serieId);
+            dataSource = config.createDataSource(props.serieId);
         } catch (e) {
             this.setState({errorMessage: e.message});
         }
 
-        if (serieCache) {
-            const newAdapter = adapterFactory(adapter, serieCache, this.chart);
+        if (dataSource) {
+            const newAdapter = adapterFactory(adapter, dataSource, this.chart);
 
-            newAdapter.dataSource.predictionEngine.addModels(prediction.map(type => predictionModelFactory(type)));
-
+            dataSource.setUpdateCallback(newAdapter.onProjectionRecompile);
             newAdapter.setDisplayedRange(lastDisplayedRange.start, lastDisplayedRange.end);
 
             this.setState({adapter: newAdapter});
@@ -103,7 +102,7 @@ export default class Chart extends React.Component {
     };
 
     static contextTypes = {
-        explorejsRequestManager: PropTypes.instanceOf(Promise)
+        explorejsConfiguration: PropTypes.instanceOf(Promise)
     };
 }
 

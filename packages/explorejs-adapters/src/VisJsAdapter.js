@@ -1,16 +1,14 @@
-import {DataSource} from 'explorejs-lib';
 import MouseWheelHelper from './helpers/MouseWheelHelper';
 import throttle from './helpers/Throttle';
 export default class VisJsAdapter {
     /**
      *
-     * @param {SerieCache} serieCache
+     * @param dataSource {DataSource}
      * @param chart {HTMLElement} container for chart
      * @param vis reference to VisJS library
      */
-    constructor(serieCache, chart, vis) {
-        this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
-        this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
+    constructor(dataSource, chart, vis) {
+        this.dataSource = dataSource;
 
         this.chart = chart;
 
@@ -70,7 +68,7 @@ export default class VisJsAdapter {
 
     }
 
-    onProjectionRecompile() {
+    onProjectionRecompile = () => {
 
         function id(p, group) { // todo id should contain group
             var start = p.start;
@@ -129,7 +127,7 @@ export default class VisJsAdapter {
         console.debug(`Removed ${toRemove.length}, added ${toAdd.length}`);
 
         this.dataset.flush();
-    }
+    };
 
     getDisplayedRange() {
         const a = this.plot.getWindow();

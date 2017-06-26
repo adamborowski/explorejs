@@ -1,4 +1,3 @@
-import {DataSource} from 'explorejs-lib';
 import MouseWheelHelper from './helpers/MouseWheelHelper';
 import throttle from './helpers/Throttle';
 
@@ -44,12 +43,12 @@ function init(plot) {
 export default class FlotAdapter {
     /**
      *
-     * @param {SerieCache} serieCache
-     * @param graph2d
-     * @param dataset
-     * @param groups
+     * @param dataSource {DataSource}
+     * @param chart {HTMLElement}
+     * @param Flot {Flot}
+     * @param $ {jQuery}
      */
-    constructor(serieCache, chart, Flot, $) {
+    constructor(dataSource, chart, Flot, $) {
 
         $.plot.plugins.push({
             init: init,
@@ -58,7 +57,7 @@ export default class FlotAdapter {
         });
 
         this.onProjectionRecompile = this.onProjectionRecompile.bind(this);
-        this.dataSource = new DataSource(serieCache, this.onProjectionRecompile);
+        this.dataSource = dataSource;
         this.chart = chart;
         this.$chart = $(chart);
         this.Flot = Flot;
@@ -119,7 +118,7 @@ export default class FlotAdapter {
         this.plot.draw();
     }
 
-    onProjectionRecompile() {
+    onProjectionRecompile = () => {
 
         const wrappers = this.dataSource.getWrappers();
 
@@ -147,7 +146,7 @@ export default class FlotAdapter {
 
         console.timeEnd('flot update');
 
-    }
+    };
 
     destroy() {
         this.wheelHelper.destroy();
