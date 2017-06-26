@@ -33,7 +33,7 @@ export default function bootstrap(schema) {
   // on others.
   const scenarioA = Scenario.create({
     id: 0, // optional. If omitted, Redux-ORM uses a number sequence starting from 0.
-    name: 'No cache',
+    name: 'Basic',
     description: () => (
       <p>
         Very simple solution.
@@ -47,7 +47,7 @@ export default function bootstrap(schema) {
   });
   const scenarioB = Scenario.create({
     id: 1, // optional.
-    name: 'Cache',
+    name: '+ Cache',
     description: () => (
       <p>
         More advanced solution.
