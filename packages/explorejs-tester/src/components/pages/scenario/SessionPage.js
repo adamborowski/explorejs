@@ -8,12 +8,21 @@ import {scenarioByIdSelector, sessionByIdSelector} from '../../../selectors/test
 import dateformat from 'dateformat';
 import {push} from 'react-router-redux';
 import {Chart, LocalBinding, adapterTypes} from 'explorejs-react';
+import Slider from '../../common/Slider';
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 
 export const ScenarioSessionPage = (props) => {
   const {scenario, session} = props;
+
+  const ticks = [
+    {key: '-2', label: 'much worse'},//todo add color prop
+    {key: '-1', label: 'a little worse'},
+    {key: '0', label: 'no difference / hard to say'},
+    {key: '1', label: 'slightly better'},
+    {key: '2', label: 'incomparably better'},
+  ];
 
   return (
     <div>
@@ -43,6 +52,10 @@ export const ScenarioSessionPage = (props) => {
 
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
+
+
+      <Slider ticks={ticks} value={session.score.toString() || '0'}/>
+
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
         <Chart serieId="0" adapter={props.adapter}
                prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>

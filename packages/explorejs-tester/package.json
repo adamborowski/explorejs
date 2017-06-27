@@ -5,7 +5,10 @@
   "engines": {
     "npm": ">=3"
   },
-  "files":["dist", "tools"],
+  "files": [
+    "dist",
+    "tools"
+  ],
   "scripts": {
     "preinstall": "node tools/nodeVersionCheck.js",
     "setup": "node tools/setup/setupMessage.js && npm install && node tools/setup/setup.js",
@@ -103,6 +106,7 @@
     "explorejs-react": "^0.0.0",
     "explorejs-adapters": "^0.0.0",
     "babel-polyfill": "6.23.0",
-    "http-proxy-middleware": "0.17.4"
+    "http-proxy-middleware": "0.17.4",
+    "prop-types": "15.5.10"
   }
 }
