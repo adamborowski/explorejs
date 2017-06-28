@@ -24,7 +24,7 @@ export default class extends Component {
     width: 350,
     tickOuterRadius: 16,
     tickInnerRadius: 12,
-    height: 34,
+    height: 36,
     barHeight: 6
   };
 
@@ -126,9 +126,6 @@ export default class extends Component {
           style={{
             color: focusTick.color,
             left: focusTickIndex * (tickSpread) - width / 2 + tickOuterRadius,
-            width: width,
-            textAlign: 'center',
-            position: 'relative'
           }}>{focusTick.label}</div>
       </div>
     );

@@ -9,6 +9,8 @@ import dateformat from 'dateformat';
 import {push} from 'react-router-redux';
 import {Chart, LocalBinding, adapterTypes} from 'explorejs-react';
 import Slider from '../../common/Slider';
+import './SessionPage.scss';
+
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -18,21 +20,21 @@ export const ScenarioSessionPage = (props) => {
 
   const ticks = [
     {color: '#980400', key: '-2', label: 'much worse'},//todo add color prop
-    {color: '#94681a', key: '-1', label: 'a little worse'},
+    {color: '#aa891f', key: '-1', label: 'a little worse'},
     {color: '#6e6d67', key: '0', label: 'no difference / hard to say'},
-    {color: '#83cc3a', key: '1', label: 'slightly better'},
-    {color: '#2bb352', key: '2', label: 'incomparably better'},
+    {color: '#4fcc21', key: '1', label: 'slightly better'},
+    {color: '#00a13b', key: '2', label: 'incomparably better'},
   ];
 
   return (
-    <div>
+    <div className="session-page">
       <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
                   callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
 
 
       <div className="form-inline pull-right">
         <div className="form-group">
-          <label htmlFor="adapter-type" style={{padding:'0 10px '}}>Choose chart library:</label>
+          <label htmlFor="adapter-type" style={{padding: '0 10px '}}>Choose chart library:</label>
           <select value={props.adapter} id="adapter-type"
                   className="form-control"
                   onChange={event => props.actions.changeAdapter(event.target.options[event.target.selectedIndex].value)}>
@@ -57,7 +59,7 @@ export const ScenarioSessionPage = (props) => {
         How you compare this configuration to previous?
       </p>
 
-      <Slider ticks={ticks} value={session.score.toString() || '0'}
+      <Slider width="400" ticks={ticks} value={session.score.toString() || '0'}
               onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, Number(numStars))}
       />
 
