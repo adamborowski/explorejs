@@ -17,11 +17,11 @@ export const ScenarioSessionPage = (props) => {
   const {scenario, session} = props;
 
   const ticks = [
-    {key: '-2', label: 'much worse'},//todo add color prop
-    {key: '-1', label: 'a little worse'},
-    {key: '0', label: 'no difference / hard to say'},
-    {key: '1', label: 'slightly better'},
-    {key: '2', label: 'incomparably better'},
+    {color: '#980400', key: '-2', label: 'much worse'},//todo add color prop
+    {color: '#94681a', key: '-1', label: 'a little worse'},
+    {color: '#6e6d67', key: '0', label: 'no difference / hard to say'},
+    {color: '#83cc3a', key: '1', label: 'slightly better'},
+    {color: '#2bb352', key: '2', label: 'incomparably better'},
   ];
 
   return (
@@ -53,8 +53,13 @@ export const ScenarioSessionPage = (props) => {
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
 
+      <p>
+        How you compare this configuration to previous?
+      </p>
 
-      <Slider ticks={ticks} value={session.score.toString() || '0'}/>
+      <Slider ticks={ticks} value={session.score.toString() || '0'}
+              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, Number(numStars))}
+      />
 
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
         <Chart serieId="0" adapter={props.adapter}

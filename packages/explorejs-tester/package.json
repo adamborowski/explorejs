@@ -107,6 +107,7 @@
     "explorejs-adapters": "^0.0.0",
     "babel-polyfill": "6.23.0",
     "http-proxy-middleware": "0.17.4",
-    "prop-types": "15.5.10"
+    "prop-types": "15.5.10",
+    "react-keydown": "1.7.4"
   }
 }

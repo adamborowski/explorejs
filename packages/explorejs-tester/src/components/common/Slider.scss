@@ -1,6 +1,49 @@
-.score-slider {
-  filter: drop-shadow( 0 0  1px #333 );
-  .bg {
-    fill: #dddddd;
+.score-slider-outer {
+  .score-slider {
+
+    transition-property: filter;
+    transition-duration: 499ms;
+    &:focus {
+      outline: none;
+      filter: drop-shadow(0 0 1.7px #235e82);
+      .bg{
+        fill: #ffffff;
+      }
+    }
+
+    filter: drop-shadow(0 0 1.7px #333);
+    .bg {
+      transition-property: fill;
+      transition-duration: 300ms;
+      fill: #eeeeee;
+    }
+    .hover-area {
+      fill: transparent;
+
+    }
+    .value-area {
+      pointer-events: none;
+      opacity: 0;
+      transition-property: fill, opacity, stroke-width, stroke, r;
+      transition-duration: 200ms;
+      stroke-width: 0;
+      stroke: rgba(#ffffff, 0.8);
+
+      &.hovered-area {
+        opacity: 0.7;
+      }
+      &.selected-area {
+        opacity: 1;
+        stroke-width: 1.4px;
+      }
+    }
+  }
+  .slider-caption {
+    font-weight: bold;
+    transition-property: left, opacity;
+    transition-duration: 300ms;
+    &.slider-caption__hovered {
+      opacity: 0.7;
+    }
   }
 }
