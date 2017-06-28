@@ -1,6 +1,6 @@
 import React from 'react';
 export default (props) => (
-  <div className="col-sm-3 col-md-2 sidebar">
+  <div className="sidebar">
     {props.children}
   </div>
 );

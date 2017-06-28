@@ -15,7 +15,8 @@ const stars = (scenario) => {
 const mapStateToProps = (state) => ({
   items: scenarioSelector(state).map(a => ({name: a.name, link: a.id, stars: stars(a)})),
   basePath: '/scenario/',
-  header: 'Test configurations'
+  header: 'Test configurations',
+  answers: state.testing.answers
 });
 export default connect(mapStateToProps)(sidebar);
 

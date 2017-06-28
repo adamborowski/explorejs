@@ -7,7 +7,7 @@ import NavButtons from './NavButtons';
 import {scenarioByIdSelector, sessionByIdSelector} from '../../../selectors/testingSelectors';
 import dateformat from 'dateformat';
 import {push} from 'react-router-redux';
-import {Chart, LocalBinding, adapterTypes} from 'explorejs-react';
+import {adapterTypes, Chart, LocalBinding} from 'explorejs-react';
 import Slider from '../../common/Slider';
 import './SessionPage.scss';
 
@@ -47,11 +47,11 @@ export const ScenarioSessionPage = (props) => {
       <Stars maxValue={10} value={session.score || 0}
              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
 
-      <p>
+      <p style={{textAlign:'center'}}>
         How you compare this configuration to previous?
       </p>
 
-      <Slider width="400" ticks={answers} value={session.score.toString() || '0'}
+      <Slider width={400} ticks={answers} value={session.score.toString() || '0'}
               onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, Number(numStars))}
       />
 

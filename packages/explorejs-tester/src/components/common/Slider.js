@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import keydown from 'react-keydown';
 import './Slider.scss';
 
+let maskId = 0;
+
 export default class extends Component {
 
   static displayName = 'ScoreSlider';
@@ -18,20 +20,25 @@ export default class extends Component {
     barHeight: PropTypes.number,
     tickOuterRadius: PropTypes.number,
     tickInnerRadius: PropTypes.number,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    showLabels: PropTypes.bool,
+    interactive: PropTypes.bool
   };
   static defaultProps = {
     width: 350,
     tickOuterRadius: 16,
     tickInnerRadius: 12,
     height: 36,
-    barHeight: 6
+    barHeight: 6,
+    showLabels: true,
+    interactive: true
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      hoveredValue: null
+      hoveredValue: null,
+      _mask_id: maskId++
     };
   }
 
@@ -59,7 +66,7 @@ export default class extends Component {
 
 
   render() {
-    const {ticks, value, width, tickOuterRadius, tickInnerRadius, onChange, height, barHeight} = this.props;
+    const {ticks, value, width, tickOuterRadius, tickInnerRadius, onChange, height, barHeight, showLabels, interactive} = this.props;
     const {hoveredValue} = this.state;
 
     const numTicks = ticks.length;
@@ -68,15 +75,12 @@ export default class extends Component {
     const tickInnerMargin = tickOuterRadius - tickInnerRadius;
     const q = tickOuterRadius / 2;
 
-
-    console.log('hovered value', hoveredValue);
-
-
     const valueTickIndex = ticks.findIndex(s => s.key === value);
     const valueTick = ticks[valueTickIndex];
     const focusTickIndex = hoveredValue == null ? valueTickIndex : ticks.findIndex(s => s.key === hoveredValue);
     const focusTick = ticks[focusTickIndex];
 
+    const maskId = `cp-bg${this.state._mask_id}`;
 
     return (
       <div className="score-slider-outer">
@@ -84,7 +88,7 @@ export default class extends Component {
              onMouseLeave={() => this.onHover(null)}
              tabIndex={0}
         >
-          <clipPath id="cp-bg">
+          <clipPath id={maskId}>
             <rect x={q} y={(height - barHeight) / 2} width={width - 2 * q} height={barHeight}/>
             { ticks.map((t, index) => <circle key={index}
                                               r={tickOuterRadius}
@@ -94,7 +98,7 @@ export default class extends Component {
           </clipPath>
           <rect x="0" y="0"
                 width={width} height={height}
-                className="bg" clipPath="url(#cp-bg)"
+                className="bg" clipPath={`url(#${maskId})`}
           />
           {ticks.map((t, index) => (
               <circle
@@ -103,8 +107,8 @@ export default class extends Component {
                 r={tickOuterRadius}
                 cx={index * tickSpread + tickOuterRadius}
                 cy={height / 2}
-                onMouseOver={() => this.onHover(t.key)}
-                onClick={() => onChange(t.key)}
+                onMouseOver={interactive && (() => this.onHover(t.key))}
+                onClick={interactive && (() => onChange(t.key))}
               />
             )
           )}
@@ -121,7 +125,7 @@ export default class extends Component {
             )
           )}
         </svg>
-        { focusTick && <div
+        { showLabels && focusTick && <div
           className={`slider-caption ${hoveredValue != value && hoveredValue != null ? 'slider-caption__hovered' : ''}`}
           style={{
             color: focusTick.color,

@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import NavLink from './NavLink';
 import Stars from "./Stars";
+import Slider from './Slider';
 
 export default (props) => (
   <div>
@@ -11,7 +12,17 @@ export default (props) => (
       {props.items.map((item, index) =>
         <NavLink key={item.name} to={`${props.basePath}${item.link}`} activeClassName="active">
           {item.name}
-          <Stars maxValue={10} value={item.stars} tiny={true} color="#333"/>
+          <Slider
+            showLabels={false}
+            interactive={false}
+            width={120}
+            height={16}
+            tickInnerRadius={5}
+            tickOuterRadius={7}
+            barHeight={5}
+            ticks={props.answers}
+            value={item.stars.toString() || '0'}
+          />
         </NavLink>
       )}
     </ul>
