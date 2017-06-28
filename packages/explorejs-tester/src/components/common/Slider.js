@@ -121,12 +121,13 @@ export default class extends Component {
             )
           )}
         </svg>
-        <div
+        { focusTick && <div
           className={`slider-caption ${hoveredValue != value && hoveredValue != null ? 'slider-caption__hovered' : ''}`}
           style={{
             color: focusTick.color,
             left: focusTickIndex * (tickSpread) - width / 2 + tickOuterRadius,
           }}>{focusTick.label}</div>
+        }
       </div>
     );
   }

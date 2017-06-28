@@ -16,15 +16,7 @@ const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 
 export const ScenarioSessionPage = (props) => {
-  const {scenario, session} = props;
-
-  const ticks = [
-    {color: '#980400', key: '-2', label: 'much worse'},//todo add color prop
-    {color: '#aa891f', key: '-1', label: 'a little worse'},
-    {color: '#6e6d67', key: '0', label: 'no difference / hard to say'},
-    {color: '#4fcc21', key: '1', label: 'slightly better'},
-    {color: '#00a13b', key: '2', label: 'incomparably better'},
-  ];
+  const {scenario, session, answers} = props;
 
   return (
     <div className="session-page">
@@ -59,7 +51,7 @@ export const ScenarioSessionPage = (props) => {
         How you compare this configuration to previous?
       </p>
 
-      <Slider width="400" ticks={ticks} value={session.score.toString() || '0'}
+      <Slider width="400" ticks={answers} value={session.score.toString() || '0'}
               onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, Number(numStars))}
       />
 
@@ -75,14 +67,16 @@ ScenarioSessionPage.propTypes = {
   session: PropTypes.object.isRequired,
   navigate: PropTypes.func.isRequired,
   actions: PropTypes.object,
-  adapter: PropTypes.oneOf(adapterTypes)
+  adapter: PropTypes.oneOf(adapterTypes),
+  answers: PropTypes.array
 };
 
 
 const mapStateToProps = (state, ownProps) => ({
   scenario: scenarioByIdSelector(state, ownProps.params.scenarioId),
   session: sessionByIdSelector(state, ownProps.params.sessionId),
-  adapter: state.adapter
+  adapter: state.adapter,
+  answers: state.testing.answers
 });
 
 const mapActionsToProps = (dispatch) => ({

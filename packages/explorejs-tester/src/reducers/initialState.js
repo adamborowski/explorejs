@@ -16,7 +16,14 @@ export default {
     }
   },
   testing: {
-    totalScore: 10
+    totalScore: 10,
+    answers:[
+      {color: '#980400', key: '-2', label: 'much worse'},//todo add color prop
+      {color: '#aa891f', key: '-1', label: 'a little worse'},
+      {color: '#6e6d67', key: '0', label: 'no difference / hard to say'},
+      {color: '#4fcc21', key: '1', label: 'slightly better'},
+      {color: '#00a13b', key: '2', label: 'incomparably better'},
+    ]
   },
   notifications: [],
   adapter: 'flot'
