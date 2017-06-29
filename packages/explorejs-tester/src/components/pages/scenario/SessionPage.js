@@ -17,7 +17,7 @@ export const ScenarioSessionPage = (props) => {
   const {scenario, session, answers, adminMode} = props;
 
   return (
-    <div className="session-page">
+    <div className="session-page text-center">
       { adminMode && <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
                                  callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
       }
@@ -41,14 +41,16 @@ export const ScenarioSessionPage = (props) => {
         </div>
       </div>
       }
-      <h1>Configuration&nbsp;
+      <h1>Configuration &raquo;&nbsp;
         <small>{scenario.name}</small>
       </h1>
 
-      <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
-        <Chart serieId="0" adapter={props.adapter}
-               prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
-      </LocalBinding>
+      <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
+        <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
+          <Chart serieId="0" adapter={props.adapter}
+                 prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
+        </LocalBinding>
+      </div>
 
       <div className="text-center">
         <a onClick={() => props.navigate(`/scenario/${scenario.id}`)} className="btn btn-primary btn-lg"
