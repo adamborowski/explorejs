@@ -4,28 +4,112 @@ import {bindActionCreators} from 'redux';
 import {Link} from 'react-router';
 import * as actions from '../../../actions/testingActions';
 import Stars from '../../common/Stars';
-import {availableScoreSelector, scenarioByIdSelector} from '../../../selectors/testingSelectors';
-import dateformat from "dateformat";
+import {getFirstWhichHasToBeScored, scenarioByIdSelector, scenarioSelector} from '../../../selectors/testingSelectors';
+import dateformat from 'dateformat';
+import {push} from 'react-router-redux';
+import Slider from '../../common/Slider';
+import './ScenarioPage.scss';
+import nextPrevHelper from '../../../utils/next-prev-helper.js';
 
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = (props) => {
 
-  const {scenario} = props;
+  const {scenario, scenarios, scenarioToScore} = props;
+
+  const sessions = scenario.sessions.toRefArray();
+
+  const answers = scenario.answers;
+  const question = scenario.question;
+
+  const session = sessions[sessions.length - 1];
+  const score = sessions.length ? session.score : null;
+
   const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
-  return (
-    <div>
-      <h2 className="page-header">
-        Configuration: &nbsp;
-        <small>{scenario.name}</small>
+  const iconStyle = {marginLeft: '5px', fontSize: '0.9em'};
 
-      </h2>
-      { scenario.description && scenario.description() }
+  const navHandler = nextPrevHelper(scenarios, scenario, (sc) => props.navigate(`/scenario/${sc.id}`), s => s.id === scenario.ref.id);
+
+  return (
+    <div className="scenario-page">
+      <div className="jumbotron">
+        <h2 className="page-header">
+
+          Configuration &raquo; &nbsp;
+          <small>{scenario.name}</small>
+        </h2>
+        { scenario.description && scenario.description() }
+
+      </div>
+
+      {
+        sessions.length > 0 && <div>
+          <p style={{textAlign: 'center', fontSize: '1.5em'}}>
+            {question}
+          </p>
+          <Slider style={{minHeight: 140}} width={400} height={80} ticks={answers} value={score}
+                  onChange={(newScore) => props.actions.scoreSession(scenario.id, session.id, false, Number(newScore))}
+          />
+          <div className="text-center">
+
+            { score === null && <div className="alert alert-warning" role="alert" style={{display: 'inline-block'}}>
+              <p>
+                Please, put a score for this configuration.
+              </p>
+
+            </div>
+
+
+            }
+            <br/>
+            <div className="btn-group" role="group" ariaLabel="...">
+              <a onClick={navHandler.handlePrev} disabled={!navHandler.canPrev()} className="btn btn-default"
+                 type="submit">
+                <span className="glyphicon glyphicon-menu-left" aria-hidden="true" style={{fontSize: '0.9em'}}/>
+                Back
+              </a>
+              <a onClick={() => props.actions.createSession(scenario.id)} className="btn btn-default"
+                 type="submit">
+                Test it again!
+                <span className="glyphicon glyphicon-repeat" aria-hidden="true" style={iconStyle}/>
+              </a>
+              <a onClick={navHandler.handleNext} disabled={!navHandler.canNext()} className="btn btn-primary"
+                 type="submit">
+                Next
+                <span className="glyphicon glyphicon-menu-right" aria-hidden="true" style={iconStyle}/>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      }
+      {
+        sessions.length === 0 ? (
+          <div className="text-center">
+            {scenarioToScore && scenarioToScore.id !== scenario.id ? (
+              <div className="alert alert-danger text-center" role="alert" style={{display: 'inline-block'}}>
+                <strong>Oh snap! </strong>
+                You should look at <em>{scenarioToScore.name}</em> configuration first.
+              </div>
+            ) :
+              (<p>Click button below to experience visual exploration of large dataset with this configuration, then
+                score
+                it.</p>)
+            }
+            <br/>
+            <a onClick={() => props.actions.createSession(scenario.id)} className="btn btn-success btn-lg"
+               type="submit">Start!</a>
+          </div>
+        ) : null
+
+      }
+
       <div className="list-group">
         {
-          scenario.sessions.toRefArray().map((session) =>
-            (<Link key={session.id} href="#" className="list-group-item" to={`/scenario/${scenario.id}/session/${session.id}`}>
-              <h4 className="list-group-item-heading">{`${dateformat(session.start,DATE_FORMAT)}`}</h4>
+          props.adminMode && scenario.sessions.toRefArray().map((session) =>
+            (<Link key={session.id} href="#" className="list-group-item"
+                   to={`/scenario/${scenario.id}/session/${session.id}`}>
+              <h4 className="list-group-item-heading">{`${dateformat(session.start, DATE_FORMAT)}`}</h4>
               <Stars small={true} maxValue={10}
                      value={session.score}/>
             </Link>)
@@ -33,9 +117,6 @@ const ScenarioPage = (props) => {
         }
 
       </div>
-
-      <a onClick={() => props.actions.createSession(scenario.id)} className="btn btn-default" type="submit">New
-        session</a>
 
 
       {props.children}
@@ -45,14 +126,20 @@ const ScenarioPage = (props) => {
 };
 
 ScenarioPage.propTypes = {
-  actions: React.PropTypes.object
+  actions: React.PropTypes.object,
+  adminMode: React.PropTypes.bool
 };
 
 const mapStateToProps = (state, ownProps) => ({
   scenario: ownProps.params.scenarioId == null ? null : scenarioByIdSelector(state, ownProps.params.scenarioId),
-  remainingScore: availableScoreSelector(state)
+  scenarios: scenarioSelector(state),
+  adminMode: state.testing.adminMode,
+  scenarioToScore: getFirstWhichHasToBeScored(state)
 });
 
-const mapActionsToProps = (dispatch) => ({actions: bindActionCreators(actions, dispatch)});
+const mapActionsToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  navigate: (route) => dispatch(push(route))
+});
 
 export default connect(mapStateToProps, mapActionsToProps)(ScenarioPage);

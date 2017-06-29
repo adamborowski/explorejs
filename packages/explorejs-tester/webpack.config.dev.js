@@ -3,6 +3,18 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import path from 'path';
 
+function isExternal(module) {
+  var userRequest = module.userRequest;
+
+  if (typeof userRequest !== 'string') {
+    return false;
+  }
+
+  return userRequest.indexOf('bower_components') >= 0 ||
+    userRequest.indexOf('node_modules') >= 0 ||
+    userRequest.indexOf('libraries') >= 0;
+}
+
 export default {
   resolve: {
     extensions: ['', '.js', '.jsx', '.json']
@@ -31,6 +43,21 @@ export default {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "commons",
+      // (the commons chunk name)
+      minChunks: function(module) {
+        return isExternal(module);
+      },
+      filename: "commons.js",
+      // (the filename of the commons chunk)
+
+      // minChunks: 3,
+      // (Modules must be shared between 3 entries)
+
+      // chunks: ["pageA", "pageB"],
+      // (Only use these entries)
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),

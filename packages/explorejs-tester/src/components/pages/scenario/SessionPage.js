@@ -2,13 +2,11 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as actions from '../../../actions/testingActions';
-import Stars from '../../common/Stars';
 import NavButtons from './NavButtons';
 import {scenarioByIdSelector, sessionByIdSelector} from '../../../selectors/testingSelectors';
 import dateformat from 'dateformat';
 import {push} from 'react-router-redux';
 import {adapterTypes, Chart, LocalBinding} from 'explorejs-react';
-import Slider from '../../common/Slider';
 import './SessionPage.scss';
 
 
@@ -16,14 +14,16 @@ const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 
 export const ScenarioSessionPage = (props) => {
-  const {scenario, session, answers} = props;
+  const {scenario, session, answers, adminMode} = props;
 
   return (
     <div className="session-page">
-      <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
-                  callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
+      { adminMode && <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
+                                 callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
+      }
 
 
+      { adminMode &&
       <div className="form-inline pull-right">
         <div className="form-group">
           <label htmlFor="adapter-type" style={{padding: '0 10px '}}>Choose chart library:</label>
@@ -40,25 +40,21 @@ export const ScenarioSessionPage = (props) => {
           </select>
         </div>
       </div>
-      <h1>{scenario.name}&nbsp;
-        <small>Session started at {dateformat(session.start, DATE_FORMAT)}</small>
+      }
+      <h1>Configuration&nbsp;
+        <small>{scenario.name}</small>
       </h1>
-
-      <Stars maxValue={10} value={session.score || 0}
-             onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, numStars)}/>
-
-      <p style={{textAlign:'center'}}>
-        How you compare this configuration to previous?
-      </p>
-
-      <Slider width={400} ticks={answers} value={session.score.toString() || '0'}
-              onChange={(numStars) => props.actions.scoreSession(scenario.id, session.id, false, Number(numStars))}
-      />
 
       <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
         <Chart serieId="0" adapter={props.adapter}
                prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
       </LocalBinding>
+
+      <div className="text-center">
+        <a onClick={() => props.navigate(`/scenario/${scenario.id}`)} className="btn btn-primary btn-lg"
+           style={{marginTop: 70}}
+           type="submit">Finish and score</a>
+      </div>
     </div>
   );
 };
@@ -76,7 +72,8 @@ const mapStateToProps = (state, ownProps) => ({
   scenario: scenarioByIdSelector(state, ownProps.params.scenarioId),
   session: sessionByIdSelector(state, ownProps.params.sessionId),
   adapter: state.adapter,
-  answers: state.testing.answers
+  answers: state.testing.answers,
+  adminMode: state.testing.adminMode
 });
 
 const mapActionsToProps = (dispatch) => ({

@@ -10,11 +10,11 @@ export default class extends Component {
   static displayName = 'ScoreSlider';
   static propTypes = {
     ticks: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      key: PropTypes.string.isRequired,
+      label: PropTypes.string,
+      key: PropTypes.any.isRequired,
       color: PropTypes.string
     })).isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.any,
     width: PropTypes.number,
     height: PropTypes.number,
     barHeight: PropTypes.number,
@@ -22,7 +22,8 @@ export default class extends Component {
     tickInnerRadius: PropTypes.number,
     onChange: PropTypes.func,
     showLabels: PropTypes.bool,
-    interactive: PropTypes.bool
+    interactive: PropTypes.bool,
+    style: PropTypes.object
   };
   static defaultProps = {
     width: 350,
@@ -66,7 +67,7 @@ export default class extends Component {
 
 
   render() {
-    const {ticks, value, width, tickOuterRadius, tickInnerRadius, onChange, height, barHeight, showLabels, interactive} = this.props;
+    const {ticks, value, width, tickOuterRadius, tickInnerRadius, onChange, height, barHeight, showLabels, interactive, style} = this.props;
     const {hoveredValue} = this.state;
 
     const numTicks = ticks.length;
@@ -83,7 +84,7 @@ export default class extends Component {
     const maskId = `cp-bg${this.state._mask_id}`;
 
     return (
-      <div className="score-slider-outer">
+      <div className="score-slider-outer" style={style}>
         <svg width={width} className="score-slider" height={height}
              onMouseLeave={() => this.onHover(null)}
              tabIndex={0}

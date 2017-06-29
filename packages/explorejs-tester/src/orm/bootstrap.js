@@ -22,6 +22,25 @@ export default function bootstrap(schema) {
    * 5. cache - add merging batch (a lot of queries there)
    */
 
+  const meta = {
+    baseQuestion: 'Did you enjoy this visual exploration?',
+    baseAnswers: [
+      {color: '#980400', key: -2, label: 'It was a crap'},//todo add color prop
+      {color: '#aa891f', key: -1, label: 'I expected something better'},
+      {color: '#6e6d67', key: 0, label: 'I just works / hard to say'},
+      {color: '#4fcc21', key: 1, label: 'I like it'},
+      {color: '#00a13b', key: 2, label: 'I don\'t need anything else'},
+    ],
+    question: 'How do you compare this configuration to previous?',
+    answers:[
+      {color: '#980400', key: -2, label: 'much worse'},//todo add color prop
+      {color: '#aa891f', key: -1, label: 'a little worse'},
+      {color: '#6e6d67', key: 0, label: 'no difference / hard to say'},
+      {color: '#4fcc21', key: 1, label: 'slightly better'},
+      {color: '#00a13b', key: 2, label: 'incomparably better'},
+    ]
+  };
+
   const preset = (useCache = false, useFallback = false, usePrediction = false, useMergingBatch = false) => ({
     useCache,
     useFallback,
@@ -43,7 +62,9 @@ export default function bootstrap(schema) {
         see low resolution data during the fetch, because chart is not yet updated.
       </p>
     ),
-    preset: preset()
+    preset: preset(),
+    question: meta.baseQuestion,
+    answers:meta.baseAnswers
   });
   const scenarioB = Scenario.create({
     id: 1, // optional.
@@ -56,7 +77,9 @@ export default function bootstrap(schema) {
         It caches every aggregation level separately so it can reuse data only on same level of aggregation.
       </p>
     ),
-    preset: preset(true)
+    preset: preset(true),
+    question: meta.question,
+    answers:meta.answers
   });
   const scenarioC = Scenario.create({
     id: 2, // optional.
@@ -65,7 +88,7 @@ export default function bootstrap(schema) {
       <div>
         <p>
           The same as <strong>caching</strong> configuration but enables progressive display as it reuses data from any higher level of aggregation.
-          It works like p showing low-level resolution fragments on a geo map as a fallback when actual map is being
+          It works like showing low-level resolution fragments on a geo map as a fallback when actual map is being
           loaded.
           For example, if you look at hours aggregations and you miss some part of data, it will fill the gap using data
           already fetched on higher level of aggregation, ie. day, month.
@@ -80,7 +103,9 @@ export default function bootstrap(schema) {
         </p>
       </div>
     ),
-    preset: preset(true, true)
+    preset: preset(true, true),
+    question: meta.question,
+    answers:meta.answers
   });
   const scenarioD = Scenario.create({
     id: 3, // optional.
@@ -110,7 +135,9 @@ export default function bootstrap(schema) {
         </ol>
       </div>
     ),
-    preset: preset(true, true, true)
+    preset: preset(true, true, true),
+    question: meta.question,
+    answers:meta.answers
   });
   const scenarioE = Scenario.create({
     id: 4, // optional.
@@ -124,52 +151,54 @@ export default function bootstrap(schema) {
         It can help when a database is slow and we should query as few data as possible.
       </p>
     ),
-    preset: preset(true, true, true, true)
+    preset: preset(true, true, true, true),
+    question: meta.question,
+    answers:meta.answers
   });
 
-  Session.create({
-    scenario: scenarioA,
-    score: 4,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
-  Session.create({
-    scenario: scenarioA,
-    score: 0,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
-  Session.create({
-    scenario: scenarioA,
-    score: 0,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
-
-  Session.create({
-    scenario: scenarioB,
-    score: 2,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
-  Session.create({
-    scenario: scenarioC,
-    score: 0,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
-  Session.create({
-    scenario: scenarioD,
-    score: 0,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
-  Session.create({
-    scenario: scenarioE,
-    score: 0,
-    start: new Date('2017-01-02 13:45:24'),
-    end: new Date('2017-01-02 13:51:14'),
-  });
+  // Session.create({
+  //   scenario: scenarioA,
+  //   score: 4,
+  //   start: new Date('2017-01-02 13:45:24'),
+  //   end: new Date('2017-01-02 13:51:14'),
+  // });
+  // Session.create({
+  //   scenario: scenarioA,
+  //   score: 0,
+  //   start: new Date('2017-01-02 13:45:24'),
+  //   end: new Date('2017-01-02 13:51:14'),
+  // });
+  // Session.create({
+  //   scenario: scenarioA,
+  //   score: -2,
+  //   start: new Date('2017-01-02 13:45:24'),
+  //   end: new Date('2017-01-02 13:51:14'),
+  // });
+  //
+  // // Session.create({
+  // //   scenario: scenarioB,
+  // //   score: 2,
+  // //   start: new Date('2017-01-02 13:45:24'),
+  // //   end: new Date('2017-01-02 13:51:14'),
+  // // });
+  // Session.create({
+  //   scenario: scenarioC,
+  //   score: -1,
+  //   start: new Date('2017-01-02 13:45:24'),
+  //   end: new Date('2017-01-02 13:51:14'),
+  // });
+  // // Session.create({
+  // //   scenario: scenarioD,
+  // //   score: 0,
+  // //   start: new Date('2017-01-02 13:45:24'),
+  // //   end: new Date('2017-01-02 13:51:14'),
+  // // });
+  // Session.create({
+  //   scenario: scenarioE,
+  //   score: 2,
+  //   start: new Date('2017-01-02 13:45:24'),
+  //   end: new Date('2017-01-02 13:51:14'),
+  // });
 
   return state;
 }

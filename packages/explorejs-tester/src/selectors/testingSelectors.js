@@ -22,3 +22,12 @@ export const sessionSelector = createSessionSelector(session => session.Session.
 
 export const scenarioByIdSelector = (state, id) => schema.session(ormSelector(state)).Scenario.withId(id);
 export const sessionByIdSelector = (state, id) => schema.session(ormSelector(state)).Session.withId(id);
+
+
+export const getFirstWhichHasToBeScored = (state) => schema.session(ormSelector(state)).Scenario.all().toModelArray().find(scenario => {
+  const sessions = scenario.sessions.all().toRefArray();
+  if (sessions.length === 0) {
+    return true;
+  }
+  return sessions[sessions.length - 1].score === null;
+});

@@ -8,8 +8,9 @@ const sidebar = (props) => (
 );
 
 const stars = (scenario) => {
-  const score = scenario.sessions.filter(s => s.score > 0);
-  return score.length ? score[0].score : 0;
+  const sessions = scenario.sessions;
+  const lastSession = sessions[sessions.length - 1];
+  return lastSession ? lastSession.score : null;
 };
 
 const mapStateToProps = (state) => ({

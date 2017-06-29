@@ -29,7 +29,7 @@ export const scoreSession = (scenarioId, sessionId, override, score) => ({
  * @param score {number} the initial score for session
  * @param start {Date} the time of session start
  */
-export const createSession = (scenario, navigate = true, score = 0, start = new Date()) => ({
+export const createSession = (scenario, navigate = true, score = null, start = new Date()) => ({
   type: types.SESSION_CREATE,
   payload: {
     scenario: scenario,

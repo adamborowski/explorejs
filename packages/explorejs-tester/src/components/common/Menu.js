@@ -12,6 +12,8 @@ export default (props) => (
       {props.items.map((item, index) =>
         <NavLink key={item.name} to={`${props.basePath}${item.link}`} activeClassName="active">
           {item.name}
+          {item.stars !== null && <span className="glyphicon glyphicon-ok" aria-hidden="true"
+                                        style={{color: 'rgb(125, 185, 51)', marginLeft: '5px'}}/>}
           <Slider
             showLabels={false}
             interactive={false}
@@ -21,7 +23,7 @@ export default (props) => (
             tickOuterRadius={7}
             barHeight={5}
             ticks={props.answers}
-            value={item.stars.toString() || '0'}
+            value={item.stars}
           />
         </NavLink>
       )}
