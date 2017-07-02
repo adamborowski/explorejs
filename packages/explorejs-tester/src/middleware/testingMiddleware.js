@@ -1,4 +1,4 @@
-import {availableScoreSelector, createSession} from '../selectors/testingSelectors';
+import {availableScoreSelector, createSession, sessionByIdSelector} from '../selectors/testingSelectors';
 import {pushNotification} from '../actions/notificationActions';
 import {operations} from '../redux/dialog/index';
 import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
@@ -16,10 +16,24 @@ export default  store => next => action => {
 
   switch (newAction.type) {
     case LOCATION_CHANGE:
-      const {pathname} = newAction;
+      const {pathname} = newAction.payload;
+      const matches = pathname.match(/(^.*\d+)\/session\/(\d+)$/);
 
-      // debugger
-      break;
+      if (matches) {
+        try {
+          const sessionId = Number(matches[2]);
+
+          sessionByIdSelector(state, sessionId);
+        }
+        catch (e) {
+          console.warn(`Cannot get initial session`, e);
+          store.dispatch(pushNotification(`No such session, will navigate to configuration.`));
+          store.dispatch(push(matches[1]));
+          return;
+        }
+
+        break;
+      }
   }
   // switch (newAction.type) {
   //   case SESSION_SCORE: {
