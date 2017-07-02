@@ -80,6 +80,9 @@ export default async (props, preset) => {
         destroy() {
             requestManager.destroy();
             //todo investigate exceptions
+        },
+        setThrottle(kbps) {
+            requestManager.setThrottle(kbps);
         }
     };
 };

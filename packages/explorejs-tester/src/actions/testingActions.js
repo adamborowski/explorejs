@@ -52,3 +52,5 @@ export const recordSnapshot = (sessionId, snapshot) => ({
 
 
 export const changeAdapter = adapterType => ({type: types.CHANGE_ADAPTER, adapterType});
+export const changeThrottleNetwork = throttleNetwork => ({type: types.CHANGE_THROTTLE_NETWORK, throttleNetwork});
+export const changeNetworkSpeed = speed => ({type: types.CHANGE_NETWORK_SPEED, speed});

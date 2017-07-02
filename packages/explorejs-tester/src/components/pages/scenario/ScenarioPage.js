@@ -62,7 +62,7 @@ const ScenarioPage = (props) => {
 
             }
             <br/>
-            <div className="btn-group" role="group" ariaLabel="...">
+            <div className="btn-group" role="group" aria-label="...">
               <a onClick={navHandler.handlePrev} disabled={!navHandler.canPrev()} className="btn btn-default"
                  type="submit">
                 <span className="glyphicon glyphicon-menu-left" aria-hidden="true" style={{fontSize: '0.9em'}}/>

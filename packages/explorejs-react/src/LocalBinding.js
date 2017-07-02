@@ -30,11 +30,19 @@ export default class LocalBinding extends Component {
 
         this.props.series.forEach(s => config.createSerieCache(s));
 
+        config.setThrottle(this.props.throttleNetwork);
+
         this.state.deferred.fulfill(config);
     }
 
-    componentWillReceiveProps(newProps) {
-        // TODO do we handle change of api/batch/series? maybe...
+    async componentWillReceiveProps(newProps) {
+        if (newProps.throttleNetwork !== this.props.throttleNetwork) {
+            const conf = await this.state.configPromise;
+
+            conf.setThrottle(newProps.throttleNetwork);
+            // todo handle 404
+            // todo handle multisupprs
+        }
     }
 
     componentWillUnmount() {

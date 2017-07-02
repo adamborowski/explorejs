@@ -24,9 +24,12 @@ export default {
       {color: '#6e6d67', key: 0},
       {color: '#4fcc21', key: 1},
       {color: '#00a13b', key: 2},
-    ]
+    ],
+    availableNetworkSpeed: [0, 1, 20, 50, 200, 1000]
   },
   notifications: [],
+  throttleNetwork: true,
+  networkSpeed: 50,
   adapter: 'flot'
   // testing: {
   //   totalScore: 10,

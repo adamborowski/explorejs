@@ -2,7 +2,7 @@ import {availableScoreSelector, createSession} from '../selectors/testingSelecto
 import {pushNotification} from '../actions/notificationActions';
 import {operations} from '../redux/dialog/index';
 import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
-import {push} from 'react-router-redux';
+import {push, LOCATION_CHANGE} from 'react-router-redux';
 
 export default  store => next => action => {
   const newAction = {...action};
@@ -14,7 +14,13 @@ export default  store => next => action => {
     store.dispatch(pushNotification(`You don't have enough stars to assign. Scored with ${newAction.score} points.`));
   };
 
+  switch (newAction.type) {
+    case LOCATION_CHANGE:
+      const {pathname} = newAction;
 
+      // debugger
+      break;
+  }
   // switch (newAction.type) {
   //   case SESSION_SCORE: {
   //     const session = createSession(state);

@@ -17,7 +17,7 @@ export default class RequestManager {
     }
 
     setForceDelay(delay) {
-        this.forceDelay = delay;
+        console.warn('RequestManger.forceDelay is deprecated. Use throttle instead.');
     }
 
     /**
@@ -75,6 +75,8 @@ export default class RequestManager {
      * @private
      */
     _performBatchRequest(requests) {
+        const startTime = new Date().getTime();
+
         if (requests.length === 0) {
             return;
         }
@@ -84,7 +86,8 @@ export default class RequestManager {
         xhr.open('POST', this.apiBatchUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = () => {
-            setTimeout(() => {
+
+            const handleResponse = () => {
                 if (xhr.status === 200) {
                     const resp = JSON.parse(xhr.responseText);
 
@@ -93,7 +96,24 @@ export default class RequestManager {
                     console.error('error', xhr);
                 }
                 this.batch.requestsLoaded(requests);
-            }, this.forceDelay || 0);
+            };
+
+            if (this._throttle === null || this._throttle === undefined) {
+                handleResponse();
+            } else if (this._throttle > 0) {
+                const response = xhr.responseText;
+                const size = response.length / 1024; // in KB
+                const estTime = size / this._throttle * 1000; //  in msc
+                const loadTime = new Date().getTime() - startTime;
+                const remTime = estTime - loadTime;
+
+                console.info(`throttle: ${this._throttle}, size: ${size}, estTime: ${estTime}, loadTime: ${loadTime}, remTime: ${remTime}`);
+
+                setTimeout(handleResponse, remTime);
+            } else {
+                console.warn('RequestManger.throttle set to 0, response won\'t be processed.');
+            }
+
         };
         xhr.send(JSON.stringify(data));
 
@@ -149,5 +169,9 @@ export default class RequestManager {
     destroy() {
         console.warn('Request manager->destroy');
         // TODO unmount everything, cancel pending requests, remove event listeners from dom or not owning emitters
+    }
+
+    setThrottle(kbps) {
+        this._throttle = kbps;
     }
 }

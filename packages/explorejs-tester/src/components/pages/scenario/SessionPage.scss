@@ -13,3 +13,22 @@
   }
   border-bottom: 1px solid #cccccc;
 }
+
+$color: #9c2138;
+.custom-classname.react-toggle--checked {
+  .react-toggle-track {
+    background-color: $color;
+  }
+  .react-toggle-thumb {
+    border-color: $color;
+  }
+  &:not(.react-toggle--disabled):hover {
+    $c: lighten($color, 10%);
+    .react-toggle-track {
+      background-color: $c;
+    }
+    .react-toggle-thumb {
+      border-color: $c;
+    }
+  }
+}

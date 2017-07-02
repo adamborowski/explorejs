@@ -52,6 +52,9 @@ export default async (props, preset) => {
         },
         destroy() {
             requestManager.destroy();
+        },
+        setThrottle(kbps) {
+            requestManager.setThrottle(kbps);
         }
     };
 };

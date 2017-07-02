@@ -8,7 +8,9 @@ import dateformat from 'dateformat';
 import {push} from 'react-router-redux';
 import {adapterTypes, Chart, LocalBinding} from 'explorejs-react';
 import './SessionPage.scss';
-
+import Toggle from 'react-toggle';
+import 'react-toggle/style.css';
+import {DropdownButton, MenuItem, Fade} from 'react-bootstrap';
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -46,15 +48,45 @@ export const ScenarioSessionPage = (props) => {
       </h1>
 
       <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
-        <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}>
+        <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}
+                      throttleNetwork={props.throttleNetwork ? props.networkSpeed : null}
+        >
           <Chart serieId="0" adapter={props.adapter}
                  prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
         </LocalBinding>
       </div>
 
+      <label>
+        <span style={{
+          margin: '7px 15px',
+          display: 'inline-block',
+          verticalAlign: 'bottom'
+        }}>Simulate slow connection</span>
+        <Toggle
+          checked={props.throttleNetwork}
+          className="custom-classname"
+          onChange={v => props.actions.changeThrottleNetwork(v.target.checked)}/>
+      </label>
+      <Fade in={props.throttleNetwork}>
+        <div style={{marginTop: 5}}>
+          <label>
+            <span style={{
+              margin: '7px 15px',
+              display: 'inline-block',
+              verticalAlign: 'bottom'
+            }}>Connection speed</span>
+            <DropdownButton title={props.networkSpeed + ' kB/s'} key={props.networkSpeed}
+                            id={`dropdown-throttle`}
+                            onSelect={(key) => props.actions.changeNetworkSpeed(key)}
+            >
+              {props.availableNetworkSpeed.map(a => <MenuItem key={a} eventKey={a}>{a}kB/s</MenuItem>)}
+            </DropdownButton>
+          </label>
+        </div>
+      </Fade>
       <div className="text-center">
         <a onClick={() => props.navigate(`/scenario/${scenario.id}`)} className="btn btn-primary btn-lg"
-           style={{marginTop: 70}}
+           style={{marginTop: 40}}
            type="submit">Finish and score</a>
       </div>
     </div>
@@ -66,7 +98,10 @@ ScenarioSessionPage.propTypes = {
   navigate: PropTypes.func.isRequired,
   actions: PropTypes.object,
   adapter: PropTypes.oneOf(adapterTypes),
-  answers: PropTypes.array
+  answers: PropTypes.array,
+  throttleNetwork: PropTypes.bool,
+  networkSpeed: PropTypes.number,
+  availableNetworkSpeed: PropTypes.arrayOf(PropTypes.number)
 };
 
 
@@ -75,7 +110,10 @@ const mapStateToProps = (state, ownProps) => ({
   session: sessionByIdSelector(state, ownProps.params.sessionId),
   adapter: state.adapter,
   answers: state.testing.answers,
-  adminMode: state.testing.adminMode
+  adminMode: state.testing.adminMode,
+  throttleNetwork: state.throttleNetwork,
+  networkSpeed: state.networkSpeed,
+  availableNetworkSpeed: state.testing.availableNetworkSpeed
 });
 
 const mapActionsToProps = (dispatch) => ({

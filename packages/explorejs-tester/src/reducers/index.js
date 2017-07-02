@@ -3,6 +3,8 @@ import fuelSavings from './fuelSavingsReducer';
 import testing from './testingReducer';
 import notifications from './notificationReducer';
 import adapter from './adapterReducer';
+import throttleNetwork from './throttleNetworkReducer';
+import networkSpeed from './networkSpeedReducer';
 import orm from '../orm/reducer';
 import {routerReducer as routing} from 'react-router-redux';
 import dialogs from '../redux/dialog/index';
@@ -14,7 +16,9 @@ const rootReducer = combineReducers({
   routing,
   orm,
   testing,
-  adapter
+  adapter,
+  throttleNetwork,
+  networkSpeed
 });
 
 export default rootReducer;
