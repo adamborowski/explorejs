@@ -1,11 +1,11 @@
-import DataRequest from '../data/DataRequest';
-import {IndexedList} from 'explorejs-common';
-// import SimpleBatch from './batch/SimpleBatch';
-import MergingBatch from './batch/MergingBatch';
-import SimpleBatch from './batch/SimpleBatch';
 /**
  * @property {CacheManager} CacheManager
  */
+import DataRequest from '../data/DataRequest';
+import MergingBatch from './batch/MergingBatch';
+import SimpleBatch from './batch/SimpleBatch';
+import throttleScheduler from '../utils/throttle-scheduler';
+import {IndexedList} from 'explorejs-common';
 export default class RequestManager {
 
     constructor(apiManifestUrl = '/api/manifest', apiBatchUrl = '/api/batch', forceDelay = 0, useMerging = true) {
@@ -14,6 +14,7 @@ export default class RequestManager {
         // this.batch = new SimpleBatch(this._performBatchRequest.bind(this));
         this.batch = useMerging ? new MergingBatch(this._performBatchRequest.bind(this)) : new SimpleBatch(this._performBatchRequest.bind(this));
         this.forceDelay = forceDelay;
+        this.scheduler = throttleScheduler(null);
     }
 
     setForceDelay(delay) {
@@ -98,21 +99,11 @@ export default class RequestManager {
                 this.batch.requestsLoaded(requests);
             };
 
-            if (this._throttle === null || this._throttle === undefined) {
-                handleResponse();
-            } else if (this._throttle > 0) {
-                const response = xhr.responseText;
-                const size = response.length / 1024; // in KB
-                const estTime = size / this._throttle * 1000; //  in msc
-                const loadTime = new Date().getTime() - startTime;
-                const remTime = estTime - loadTime;
 
-                console.info(`throttle: ${this._throttle}, size: ${size}, estTime: ${estTime}, loadTime: ${loadTime}, remTime: ${remTime}`);
+            const response = xhr.responseText;
+            const loadTime = new Date().getTime() - startTime;
 
-                setTimeout(handleResponse, remTime);
-            } else {
-                console.warn('RequestManger.throttle set to 0, response won\'t be processed.');
-            }
+            this.scheduler.addTask(response.length, handleResponse,loadTime);
 
         };
         xhr.send(JSON.stringify(data));
@@ -171,7 +162,7 @@ export default class RequestManager {
         // TODO unmount everything, cancel pending requests, remove event listeners from dom or not owning emitters
     }
 
-    setThrottle(kbps) {
-        this._throttle = kbps;
+    setThrottle(bps) {
+        this.scheduler.setSpeed(bps);
     }
 }

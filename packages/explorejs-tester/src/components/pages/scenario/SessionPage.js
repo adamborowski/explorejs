@@ -49,7 +49,7 @@ export const ScenarioSessionPage = (props) => {
 
       <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
         <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}
-                      throttleNetwork={props.throttleNetwork ? props.networkSpeed : null}
+                      throttleNetwork={props.throttleNetwork ? props.networkSpeed * 1024 : null}
         >
           <Chart serieId="0" adapter={props.adapter}
                  prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
