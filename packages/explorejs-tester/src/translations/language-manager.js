@@ -34,7 +34,25 @@ export const createReducer = () => {
 
 export const syncLanguageWithStore = store => stores.push(store);
 
+/**
+ * Get a translated value which can be a final string or translating function
+ * @param path if object - it is a dynamic translation with keys as supported languages, it returns a proper value of object
+ * if string - it tries to get value from current locale otherwise it tries to get from fallback locale, if still not found - returns the path itself
+ * @returns {*}
+ */
 export const getTranslatable = (path) => {
+  if (typeof path === 'object') {
+    const translatable = path[language];
+    if (translatable === undefined) {
+      const fallbackTranslatable = path[fallbackLanguage];
+      if (fallbackTranslatable === undefined) {
+        console.warn(`dynamic translation does not support current and fallback languages`);
+        return path[Object.keys(path)[0]]; // returning first available translation
+      }
+      return fallbackTranslatable;
+    }
+    return translatable;
+  }
   const translatable = deep.getDeep(supportedLanguages[language], path);
   if (translatable === undefined) {
     const fallbackTranslatable = deep.getDeep(supportedLanguages[fallbackLanguage], path);

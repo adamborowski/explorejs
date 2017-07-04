@@ -3,9 +3,10 @@ import {connect} from 'react-redux';
 import {scenarioSelector} from '../../../selectors/testingSelectors';
 import Menu from '../../common/Menu';
 import Sidebar from '../../layout/Sidebar';
-const sidebar = (props) => (
-  <Sidebar><Menu {...props}/></Sidebar>
-);
+import trans from '../../../translations/trans';
+const sidebar = trans()((props, {trans}) => (
+  <Sidebar><Menu {...props} header={trans('general.testConfigurations')}/></Sidebar>
+));
 
 const stars = (scenario) => {
   const sessions = scenario.sessions;
@@ -16,7 +17,6 @@ const stars = (scenario) => {
 const mapStateToProps = (state) => ({
   items: scenarioSelector(state).map(a => ({name: a.name, link: a.id, stars: stars(a)})),
   basePath: '/scenario/',
-  header: 'Test configurations',
   answers: state.testing.answers
 });
 export default connect(mapStateToProps)(sidebar);

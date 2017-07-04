@@ -10,9 +10,10 @@ import {push} from 'react-router-redux';
 import Slider from '../../common/Slider';
 import './ScenarioPage.scss';
 import nextPrevHelper from '../../../utils/next-prev-helper.js';
+import trans from '../../../translations/trans';
 
 // Since this component is simple and static, there's no parent container for it.
-const ScenarioPage = (props) => {
+const ScenarioPage = trans()((props, {trans}) => {
 
   const {scenario, scenarios, scenarioToScore} = props;
 
@@ -35,7 +36,7 @@ const ScenarioPage = (props) => {
       <div className="jumbotron">
         <h2 className="page-header">
 
-          Configuration &raquo; &nbsp;
+          {trans('general.configuration')} &raquo; &nbsp;
           <small>{scenario.name}</small>
         </h2>
         { scenario.description && scenario.description() }
@@ -54,7 +55,7 @@ const ScenarioPage = (props) => {
 
             { score === null && <div className="alert alert-warning" role="alert" style={{display: 'inline-block'}}>
               <p>
-                Please, put a score for this configuration.
+                {trans('scenario.pleasePutScore')}
               </p>
 
             </div>
@@ -66,16 +67,16 @@ const ScenarioPage = (props) => {
               <a onClick={navHandler.handlePrev} disabled={!navHandler.canPrev()} className="btn btn-default"
                  type="submit">
                 <span className="glyphicon glyphicon-menu-left" aria-hidden="true" style={{fontSize: '0.9em'}}/>
-                Back
+                {trans('scenario.back')}
               </a>
               <a onClick={() => props.actions.createSession(scenario.id)} className="btn btn-default"
                  type="submit">
-                Test it again!
+                {trans('scenario.again')}
                 <span className="glyphicon glyphicon-repeat" aria-hidden="true" style={iconStyle}/>
               </a>
               <a onClick={navHandler.handleNext} disabled={!navHandler.canNext()} className="btn btn-primary"
                  type="submit">
-                Next
+                {trans('scenario.next')}
                 <span className="glyphicon glyphicon-menu-right" aria-hidden="true" style={iconStyle}/>
               </a>
             </div>
@@ -123,7 +124,7 @@ const ScenarioPage = (props) => {
 
     </div>
   );
-};
+});
 
 ScenarioPage.propTypes = {
   actions: React.PropTypes.object,

@@ -17,9 +17,9 @@ export default {
     speed: 'Prędkość połączenia'
   },
   scenario: {
-    back: 'Poprzednie',
+    back: 'Poprzednia',
     again: 'Jeszcze raz',
-    next: 'Następne',
+    next: 'Następna',
     pleasePutScore: 'Proszę ocenić tę konfigurację'
   }
 };
