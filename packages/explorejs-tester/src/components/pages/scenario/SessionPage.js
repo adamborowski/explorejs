@@ -11,11 +11,12 @@ import './SessionPage.scss';
 import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
 import {DropdownButton, MenuItem, Fade} from 'react-bootstrap';
+import trans from '../../../translations/trans';
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 
-export const ScenarioSessionPage = (props) => {
+export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
   const {scenario, session, answers, adminMode} = props;
 
   return (
@@ -43,8 +44,8 @@ export const ScenarioSessionPage = (props) => {
         </div>
       </div>
       }
-      <h1>Configuration &raquo;&nbsp;
-        <small>{scenario.name}</small>
+      <h1>{trans('general.configuration')} &raquo;&nbsp;
+        <small>{dynamicTrans(scenario.name)}</small>
       </h1>
 
       <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
@@ -61,7 +62,7 @@ export const ScenarioSessionPage = (props) => {
           margin: '7px 15px',
           display: 'inline-block',
           verticalAlign: 'bottom'
-        }}>Simulate slow connection</span>
+        }}>{trans('session.simulate')}</span>
         <Toggle
           checked={props.throttleNetwork}
           className="custom-classname"
@@ -74,7 +75,7 @@ export const ScenarioSessionPage = (props) => {
               margin: '7px 15px',
               display: 'inline-block',
               verticalAlign: 'bottom'
-            }}>Connection speed</span>
+            }}>{trans('session.speed')}</span>
             <DropdownButton title={props.networkSpeed + ' kB/s'} key={props.networkSpeed}
                             id={`dropdown-throttle`}
                             onSelect={(key) => props.actions.changeNetworkSpeed(key)}
@@ -87,11 +88,11 @@ export const ScenarioSessionPage = (props) => {
       <div className="text-center">
         <a onClick={() => props.navigate(`/scenario/${scenario.id}`)} className="btn btn-primary btn-lg"
            style={{marginTop: 40}}
-           type="submit">Finish and score</a>
+           type="submit">{trans('session.finish')}</a>
       </div>
     </div>
   );
-};
+});
 ScenarioSessionPage.propTypes = {
   scenario: PropTypes.object.isRequired,
   session: PropTypes.object.isRequired,

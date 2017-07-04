@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default {
   languages: {
     pl_PL: 'Polski',
@@ -14,7 +16,9 @@ export default {
   session: {
     finish: 'Zakończ i oceń',
     simulate: 'Symuluj wolne połączenie',
-    speed: 'Prędkość połączenia'
+    speed: 'Prędkość połączenia',
+    wrongOrderWarningHeader: 'Uwaga!',
+    wrongOrderWarning: conf => <div>Proszę najpierw uruchomić konfigurację <em>{conf}</em>.</div>
   },
   scenario: {
     back: 'Poprzednia',

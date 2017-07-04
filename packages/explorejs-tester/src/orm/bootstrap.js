@@ -22,22 +22,24 @@ export default function bootstrap(schema) {
    * 5. cache - add merging batch (a lot of queries there)
    */
 
+  const ml = (en_US, pl_PL) => ({en_US, pl_PL});
+
   const meta = {
-    baseQuestion: 'Did you enjoy this visual exploration?',
+    baseQuestion: ml('Did you enjoy this visual exploration?', 'Jak ocenisz rozwiązanie podstawowe?'),
     baseAnswers: [
-      {color: '#980400', key: -2, label: 'It was a crap'},//todo add color prop
-      {color: '#aa891f', key: -1, label: 'I expected something better'},
-      {color: '#6e6d67', key: 0, label: 'I just works / hard to say'},
-      {color: '#4fcc21', key: 1, label: 'I like it'},
-      {color: '#00a13b', key: 2, label: 'I don\'t need anything else'},
+      {color: '#980400', key: -2, label: ml('It was a crap', 'Totalna porażka')},
+      {color: '#aa891f', key: -1, label: ml('I expected something better', 'Spodziewałem się czegoś lepszego')},
+      {color: '#6e6d67', key: 0, label: ml('I just works / hard to say', 'Po prostu działa / ciężko powiedzieć')},
+      {color: '#4fcc21', key: 1, label: ml('I like it', 'Podoba mi się')},
+      {color: '#00a13b', key: 2, label: ml('I don\'t need anything else', 'Nie trzeba mi niczego więcej')},
     ],
-    question: 'How do you compare this configuration to previous?',
+    question: ml('How do you compare this configuration to previous?', 'Jak porównasz tę konfigurację z poprzednią'),
     answers:[
-      {color: '#980400', key: -2, label: 'much worse'},//todo add color prop
-      {color: '#aa891f', key: -1, label: 'a little worse'},
-      {color: '#6e6d67', key: 0, label: 'no difference / hard to say'},
-      {color: '#4fcc21', key: 1, label: 'slightly better'},
-      {color: '#00a13b', key: 2, label: 'incomparably better'},
+      {color: '#980400', key: -2, label: ml('much worse', 'dużo gorsza')},//todo add color prop
+      {color: '#aa891f', key: -1, label: ml('a little worse', 'nieznacznie gorsza')},
+      {color: '#6e6d67', key: 0, label: ml('no difference / hard to say', 'bez różnicy / ciężko stwiedzić')},
+      {color: '#4fcc21', key: 1, label: ml('slightly better', 'nieco lepsza')},
+      {color: '#00a13b', key: 2, label: ml('incomparably better', 'nieporywnówalnie lepsza')},
     ]
   };
 
@@ -52,7 +54,7 @@ export default function bootstrap(schema) {
   // on others.
   const scenarioA = Scenario.create({
     id: 0, // optional. If omitted, Redux-ORM uses a number sequence starting from 0.
-    name: 'Basic',
+    name: {en_US: 'Basic', pl_PL: 'Bazowa'},
     description: () => (
       <p>
         Very simple solution.
@@ -109,7 +111,7 @@ export default function bootstrap(schema) {
   });
   const scenarioD = Scenario.create({
     id: 3, // optional.
-    name: '+ Prediction',
+    name: {en_US: '+ Prediction', pl_PL: '+ Predykcja'},
     description: () => (
       <div>
         <p>
@@ -141,7 +143,7 @@ export default function bootstrap(schema) {
   });
   const scenarioE = Scenario.create({
     id: 4, // optional.
-    name: '+ Query Optimization',
+    name: {en_US: '+ Query Optimization', pl_PL: '+ Optymalizacja zapytań'},
     description: () => (
       <p>
         The same as <strong>cache+fallback+predicton</strong> but it optimizes

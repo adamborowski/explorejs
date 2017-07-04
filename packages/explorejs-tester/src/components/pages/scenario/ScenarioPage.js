@@ -13,7 +13,7 @@ import nextPrevHelper from '../../../utils/next-prev-helper.js';
 import trans from '../../../translations/trans';
 
 // Since this component is simple and static, there's no parent container for it.
-const ScenarioPage = trans()((props, {trans}) => {
+const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
 
   const {scenario, scenarios, scenarioToScore} = props;
 
@@ -37,7 +37,7 @@ const ScenarioPage = trans()((props, {trans}) => {
         <h2 className="page-header">
 
           {trans('general.configuration')} &raquo; &nbsp;
-          <small>{scenario.name}</small>
+          <small>{dynamicTrans(scenario.name)}</small>
         </h2>
         { scenario.description && scenario.description() }
 
@@ -46,9 +46,10 @@ const ScenarioPage = trans()((props, {trans}) => {
       {
         sessions.length > 0 && <div>
           <p style={{textAlign: 'center', fontSize: '1.5em'}}>
-            {question}
+            {dynamicTrans(question)}
           </p>
-          <Slider style={{minHeight: 140}} width={400} height={80} ticks={answers} value={score}
+          <Slider style={{minHeight: 140}} width={400} height={80}
+                  ticks={answers.map(a => ({...a, label: dynamicTrans(a.label)}))} value={score}
                   onChange={(newScore) => props.actions.scoreSession(scenario.id, session.id, false, Number(newScore))}
           />
           <div className="text-center">
@@ -89,8 +90,8 @@ const ScenarioPage = trans()((props, {trans}) => {
           <div className="text-center">
             {scenarioToScore && scenarioToScore.id !== scenario.id ? (
               <div className="alert alert-danger text-center" role="alert" style={{display: 'inline-block'}}>
-                <strong>Oh snap! </strong>
-                You should look at <em>{scenarioToScore.name}</em> configuration first.
+                <strong>{trans('session.wrongOrderWarningHeader')}</strong>
+                {trans('session.wrongOrderWarning', dynamicTrans(scenarioToScore.name))}
               </div>
             ) :
               (<p>Click button below to experience visual exploration of large dataset with this configuration, then

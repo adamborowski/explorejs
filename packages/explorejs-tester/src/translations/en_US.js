@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default {
   languages: {
     pl_PL: 'Polish',
@@ -10,12 +12,14 @@ export default {
   },
   menu: {
     survey: 'Survey',
-    home:'Home'
+    home: 'Home'
   },
   session: {
     finish: 'Finish and score',
     simulate: 'Simulate slow network',
-    speed: 'Network speed'
+    speed: 'Network speed',
+    wrongOrderWarningHeader: 'Oh Snap!',
+    wrongOrderWarning: conf => <div>You should look at <em>{conf}</em> configuration first.</div>
   },
   scenario: {
     back: 'Back',

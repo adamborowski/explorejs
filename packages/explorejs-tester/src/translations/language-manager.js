@@ -34,25 +34,7 @@ export const createReducer = () => {
 
 export const syncLanguageWithStore = store => stores.push(store);
 
-/**
- * Get a translated value which can be a final string or translating function
- * @param path if object - it is a dynamic translation with keys as supported languages, it returns a proper value of object
- * if string - it tries to get value from current locale otherwise it tries to get from fallback locale, if still not found - returns the path itself
- * @returns {*}
- */
-export const getTranslatable = (path) => {
-  if (typeof path === 'object') {
-    const translatable = path[language];
-    if (translatable === undefined) {
-      const fallbackTranslatable = path[fallbackLanguage];
-      if (fallbackTranslatable === undefined) {
-        console.warn(`dynamic translation does not support current and fallback languages`);
-        return path[Object.keys(path)[0]]; // returning first available translation
-      }
-      return fallbackTranslatable;
-    }
-    return translatable;
-  }
+const getTranslatable = (path) => {
   const translatable = deep.getDeep(supportedLanguages[language], path);
   if (translatable === undefined) {
     const fallbackTranslatable = deep.getDeep(supportedLanguages[fallbackLanguage], path);
@@ -65,15 +47,36 @@ export const getTranslatable = (path) => {
   return translatable;
 };
 
-const translate = (path, params) => {
-  const translatable = getTranslatable(path);
+const getDynamicTranslatable = (source) => {
+
+  if (typeof source === 'string') {
+    return source; // data object not configured for translation, just return as is
+  }
+
+  const translatable = source[language];
+  if (translatable === undefined) {
+    const fallbackTranslatable = source[fallbackLanguage];
+    if (fallbackTranslatable === undefined) {
+      console.warn(`dynamic translation does not support current and fallback languages`);
+      return source[Object.keys(source)[0]]; // returning first available translation
+    }
+    return fallbackTranslatable;
+  }
+  return translatable;
+};
+
+const evaluateTranslatable = (translatable, params) => {
   if (typeof translatable === 'string') {
     return translatable;
   }
   else return translatable(params);
 };
 
+
+const translate = (path, params) => evaluateTranslatable(getTranslatable(path), params);
 export default translate;
+
+export const translateDynamic = (source, params) => evaluateTranslatable(getDynamicTranslatable(source), params);
 
 export const getLanguage = () => language;
 
