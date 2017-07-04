@@ -1,8 +1,12 @@
 export default {
+  languages: {
+    pl_PL: 'Polski',
+    en_US: 'Angielski'
+  },
   general: {
     configuration: 'Konfiguracja',
     testConfigurations: 'Konfiguracje testowe',
-    interactiveSurvey: 'ExploreJS interaktywna ankieta'
+    title: 'ExploreJS interaktywna ankieta'
   },
   session: {
     finish: 'Zakończ i oceń',
