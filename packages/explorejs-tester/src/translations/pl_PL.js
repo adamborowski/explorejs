@@ -8,6 +8,9 @@ export default {
     testConfigurations: 'Konfiguracje testowe',
     title: 'ExploreJS interaktywna ankieta'
   },
+  menu: {
+    survey: 'Ankieta'
+  },
   session: {
     finish: 'Zakończ i oceń',
     simulate: 'Symuluj wolne połączenie',

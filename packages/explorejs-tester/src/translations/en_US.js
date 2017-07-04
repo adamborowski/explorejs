@@ -8,6 +8,10 @@ export default {
     testConfigurations: 'Test configurations',
     title: 'ExploreJS interactive survey'
   },
+  menu: {
+    survey: 'Survey',
+    home:'Home'
+  },
   session: {
     finish: 'Finish and score',
     simulate: 'Simulate slow network',
