@@ -1,3 +1,4 @@
+import React from 'react';
 import browserLocale from 'browser-locale';
 import deep from 'getsetdeep';
 import en_US from './en_US';
@@ -49,7 +50,7 @@ const getTranslatable = (path) => {
 
 const getDynamicTranslatable = (source) => {
 
-  if (typeof source === 'string') {
+  if (typeof source !== 'object' || React.isValidElement(source)) {
     return source; // data object not configured for translation, just return as is
   }
 
@@ -66,10 +67,10 @@ const getDynamicTranslatable = (source) => {
 };
 
 const evaluateTranslatable = (translatable, params) => {
-  if (typeof translatable === 'string') {
-    return translatable;
+  if (typeof translatable === 'function') {
+    return translatable(params);
   }
-  else return translatable(params);
+  else return translatable;
 };
 
 

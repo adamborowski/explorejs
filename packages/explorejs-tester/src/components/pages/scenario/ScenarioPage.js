@@ -39,7 +39,7 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
           {trans('general.configuration')} &raquo; &nbsp;
           <small>{dynamicTrans(scenario.name)}</small>
         </h2>
-        { scenario.description && scenario.description() }
+        { dynamicTrans(scenario.description) }
 
       </div>
 
@@ -93,14 +93,11 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
                 <strong>{trans('session.wrongOrderWarningHeader')}</strong>
                 {trans('session.wrongOrderWarning', dynamicTrans(scenarioToScore.name))}
               </div>
-            ) :
-              (<p>Click button below to experience visual exploration of large dataset with this configuration, then
-                score
-                it.</p>)
+            ) : <p>{trans('scenario.clickButton')}</p>
             }
             <br/>
             <a onClick={() => props.actions.createSession(scenario.id)} className="btn btn-success btn-lg"
-               type="submit">Start!</a>
+               type="submit">{trans('scenario.start')}</a>
           </div>
         ) : null
 

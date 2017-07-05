@@ -24,6 +24,8 @@ export default {
     back: 'Poprzednia',
     again: 'Jeszcze raz',
     next: 'Następna',
-    pleasePutScore: 'Proszę ocenić tę konfigurację'
+    pleasePutScore: 'Proszę ocenić tę konfigurację',
+    clickButton: 'Naciśnij poniższy przycisk, aby użyć tej konfiguracji do eksploracji wielkich wielkiego zbioru danych, następnie oceń ją.',
+    start: 'Rozpocznij'
   }
 };

@@ -25,6 +25,8 @@ export default {
     back: 'Back',
     again: 'Test it again!',
     next: 'Next',
-    pleasePutScore: 'Please, put a score for this configuration'
+    pleasePutScore: 'Please, put a score for this configuration',
+    clickButton: 'Click button below to experience visual exploration of large dataset with this configuration, then score it.',
+    start: 'Start!'
   }
 };
