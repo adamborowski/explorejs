@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default () => <div>
-  <h1 className="display-3">Hello!</h1>
+  <h2 className="display-3">Hello!</h2>
   <p className="lead">
     This application is the part of my <strong>thesis research</strong> whose title is <em><q>
     Adaptation of web-based user interfaces to explore measurement data at scale for interactive visual

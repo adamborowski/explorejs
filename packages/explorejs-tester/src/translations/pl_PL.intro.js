@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default () => <div>
-  <h1 className="display-3">Witaj!</h1>
+  <h2 className="display-3">Witaj!</h2>
   <p className="lead">
     Zapraszam do udziału w nietypowej ankiecie.
     This application is the part of my <strong>thesis research</strong> whose title is <em><q>
