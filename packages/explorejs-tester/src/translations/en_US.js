@@ -1,5 +1,7 @@
 import React from 'react';
 
+import intro from './en_US.intro';
+
 export default {
   languages: {
     pl_PL: 'Polish',
@@ -8,7 +10,9 @@ export default {
   general: {
     configuration: 'Configuration',
     testConfigurations: 'Test configurations',
-    title: 'ExploreJS interactive survey'
+    title: 'ExploreJS interactive survey',
+    beginSurvey: 'Begin survey',
+    intro
   },
   menu: {
     survey: 'Survey',

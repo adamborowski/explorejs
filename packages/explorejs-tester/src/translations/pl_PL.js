@@ -1,4 +1,5 @@
 import React from 'react';
+import intro from './pl_PL.intro';
 
 export default {
   languages: {
@@ -8,7 +9,9 @@ export default {
   general: {
     configuration: 'Konfiguracja',
     testConfigurations: 'Konfiguracje testowe',
-    title: 'ExploreJS interaktywna ankieta'
+    title: 'ExploreJS interaktywna ankieta',
+    beginSurvey: 'Przejdź do ankiety',
+    intro
   },
   menu: {
     survey: 'Ankieta'
