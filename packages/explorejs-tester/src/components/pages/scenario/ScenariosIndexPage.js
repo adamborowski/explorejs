@@ -6,18 +6,18 @@ import {push} from 'react-router-redux';
 
 export const ScenarioListPage = trans()((props, {trans, dynamicTrans}) => {
   return (
-    <div>
-      <h1 className="page-header">{trans('general.testConfigurations')}</h1>
+    <div className="jumbotron">
+      <h2>{trans('general.testConfigurations')}</h2>
       <p>
         {trans('general.scenarioIntro', props.scenarios.length)}
       </p>
-      <div>
-        <a onClick={() => props.navigate('/scenario/0')} className="btn btn-primary"
+      <p>
+        <a onClick={() => props.navigate('/scenario/0')} className="btn btn-primary btn-lg"
            type="submit">
           {trans('general.goToBase')}
         </a>
 
-      </div>
+      </p>
 
     </div>
   );

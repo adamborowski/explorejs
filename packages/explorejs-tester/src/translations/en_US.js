@@ -13,7 +13,8 @@ export default {
     title: 'ExploreJS interactive survey',
     beginSurvey: 'Begin survey',
     goToBase:'go to base version',
-    scenarioIntro: (numScenarios) => `Now you have ${numScenarios} scenarios, you can pick them from the menu on the left or by using contextual buttons below`,
+    scenarioIntro: (numScenarios) => `Now you have ${numScenarios} scenarios, you can pick them from the menu on the 
+    left or by using contextual buttons that will appear below`,
     intro
   },
   menu: {
@@ -25,7 +26,7 @@ export default {
     simulate: 'Simulate slow network',
     speed: 'Network speed',
     wrongOrderWarningHeader: 'Oh Snap!',
-    wrongOrderWarning: conf => <div>You should look at <em>{conf}</em> configuration first.</div>
+    wrongOrderWarning: conf => <div>You should look at <em>{conf}</em> configuration and score it first.</div>
   },
   scenario: {
     back: 'Back',

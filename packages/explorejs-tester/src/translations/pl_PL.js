@@ -11,6 +11,9 @@ export default {
     testConfigurations: 'Konfiguracje testowe',
     title: 'ExploreJS interaktywna ankieta',
     beginSurvey: 'Przejdź do ankiety',
+    goToBase: 'Przejdź do wersji podstawowej',
+    scenarioIntro: (numScenarios) => `Zostanie przedstawionych ${numScenarios} różnych wersji komponentu, każda z 
+    nich dostępna jest z menu po lewej stronie. Można też używać przycisków nawigacji, które pojawią się w dolnej części strony.`,
     intro
   },
   menu: {
@@ -21,7 +24,7 @@ export default {
     simulate: 'Symuluj wolne połączenie',
     speed: 'Prędkość połączenia',
     wrongOrderWarningHeader: 'Uwaga!',
-    wrongOrderWarning: conf => <div>Proszę najpierw uruchomić konfigurację <em>{conf}</em>.</div>
+    wrongOrderWarning: conf => <div>Proszę najpierw ocenić konfigurację <em>{conf}</em>.</div>
   },
   scenario: {
     back: 'Poprzednia',
