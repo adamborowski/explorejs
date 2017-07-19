@@ -40,13 +40,15 @@ export default class LocalBinding extends Component {
             const conf = await this.state.configPromise;
 
             conf.setThrottle(newProps.throttleNetwork);
-            // todo handle 404
-            // todo handle multisupprs
         }
     }
 
     componentWillUnmount() {
-        this.state.configPromise.then(s => s.destroy());
+        this.state.configPromise.then(s => {
+            s.destroy();
+
+            this.props.onStats(s.getStats());
+        });
     }
 
     getChildContext() {
@@ -63,7 +65,8 @@ export default class LocalBinding extends Component {
         manifest: PropTypes.string,
         batch: PropTypes.string,
         series: PropTypes.arrayOf(PropTypes.string),
-        preset: PropTypes.object
+        preset: PropTypes.object,
+        onStats: PropTypes.func
     };
 
     static childContextTypes = {

@@ -6,6 +6,7 @@ import RequestManager from '../../modules/RequestManager';
 import BasicViewportModel from '../../prediction/BasicViewportModel';
 import MockDataSource from './no--cache/MockDataSource';
 import DataRequest from '../../data/DataRequest';
+import StatsCollection from '../../stats/StatsCollection';
 
 /**
  *
@@ -17,6 +18,8 @@ export default async (props, preset) => {
     const {manifest, batch} = props;
 
     const requestManager = new RequestManager(manifest, batch, 0, false);
+
+    requestManager.stats = StatsCollection();
 
     const __performBatchRequest = requestManager._performBatchRequest.bind(requestManager);
     let lastXhr = null;
@@ -79,10 +82,12 @@ export default async (props, preset) => {
         },
         destroy() {
             requestManager.destroy();
-            //todo investigate exceptions
         },
         setThrottle(kbps) {
             requestManager.setThrottle(kbps);
+        },
+        getStats() {
+            return {requestManager: requestManager.stats.getEntries()};
         }
     };
 };

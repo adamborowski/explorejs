@@ -15,7 +15,7 @@ export const createTask = (size, initialSpeed, callback, timeOffset = 0) => {
     const calculateTimeout = () => (size - loadedSize) / currentSpeed * 1000 - timeOffset; // speed per sec
     const updateTimeout = () => {
         if (currentSpeed === null) {
-            callback();
+            callback(new Date());
         } else if (currentSpeed > 0) {
             console.log('wait for data', calculateTimeout());
             timeout = setTimeout(callback, calculateTimeout());
@@ -58,12 +58,12 @@ export default (initialSpeed = null) => {
         },
         addTask(size, callback, timeOffset = 0) {
             if (speed === null) {
-                callback();
+                callback(new Date());
             } else {
 
                 const newTask = createTask(size, speed, () => {
                     tasks = tasks.filter(t => t !== newTask);
-                    callback();
+                    callback(new Date());
                 }, timeOffset);
 
                 tasks.push(newTask);

@@ -6,6 +6,7 @@ export default class SessionModel extends Model {
     start: attr(),
     end: attr(),
     score: attr(),
+    stats: attr(),
     scenario: fk('Scenario', 'sessions')
   };
   static modelName = 'Session';

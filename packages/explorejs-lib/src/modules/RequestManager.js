@@ -87,23 +87,33 @@ export default class RequestManager {
         xhr.open('POST', this.apiBatchUrl, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = () => {
+            const response = xhr.responseText;
+            const loadTime = new Date().getTime();
 
-            const handleResponse = () => {
+            const handleResponse = (finishTime) => {
+                let respData = null;
                 if (xhr.status === 200) {
                     const resp = JSON.parse(xhr.responseText);
 
-                    this._processBatchResponse(resp);
+                    respData = this._processBatchResponse(resp);
                 } else {
                     console.error('error', xhr);
                 }
                 this.batch.requestsLoaded(requests);
+                if (this.stats && respData) {
+                    this.stats.addEntry({
+                        requests,
+                        startTime,
+                        loadTime: loadTime,
+                        finishTime: finishTime.getTime(),
+                        size: response.length,
+                        length: respData.reduce((count, request) => request.data.length + count, 0)
+                    });
+                }
             };
 
 
-            const response = xhr.responseText;
-            const loadTime = new Date().getTime() - startTime;
-
-            this.scheduler.addTask(response.length, handleResponse,loadTime);
+            this.scheduler.addTask(response.length, handleResponse, loadTime - startTime);
 
         };
         xhr.send(JSON.stringify(data));
@@ -138,6 +148,7 @@ export default class RequestManager {
         console.debug(`RequestManager._processBatchResponse() -> got ${numPoints} points.`);
 
         this.CacheManager.putData(data);
+        return data;
     }
 
     getManifestForSerie(serieId) {

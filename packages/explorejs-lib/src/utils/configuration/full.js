@@ -8,6 +8,7 @@ import DataSource from '../../modules/DataSource';
 import predictionModelFactory from '../prediction-model-factory.js';
 import BasicViewportModel from '../../prediction/BasicViewportModel';
 import WiderContextModel from '../../prediction/WiderContextModel';
+import StatsCollection from '../../stats/StatsCollection';
 
 /**
  *
@@ -21,6 +22,8 @@ export default async (props, preset) => {
 
     const requestManager = new RequestManager(manifest, batch, 0, useMergingBatch);
     const cacheManager = new CacheManager();
+
+    requestManager.stats = StatsCollection();
 
     requestManager.CacheManager = cacheManager;
     cacheManager.RequestManager = requestManager;
@@ -55,6 +58,9 @@ export default async (props, preset) => {
         },
         setThrottle(kbps) {
             requestManager.setThrottle(kbps);
+        },
+        getStats() {
+            return {requestManager: requestManager.stats.getEntries()};
         }
     };
 };
