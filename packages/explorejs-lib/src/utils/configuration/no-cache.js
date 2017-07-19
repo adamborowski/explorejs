@@ -35,6 +35,8 @@ export default async (props, preset) => {
 
     const dataSourcesForSeries = {};
 
+    let lastDataSource;
+
     // make no-cache and cut-off for higher levels (as in rasters)
 
 
@@ -67,7 +69,9 @@ export default async (props, preset) => {
 
     return {
         createDataSource(serieId) {
-            const dataSource = new MockDataSource(requestManager.CacheManager.getSerieCache(serieId));
+            const dataSource = lastDataSource = new MockDataSource(requestManager.CacheManager.getSerieCache(serieId));
+
+            dataSource._viewState.stats = StatsCollection();
 
             dataSourcesForSeries[serieId].push(dataSource);
 
@@ -87,7 +91,11 @@ export default async (props, preset) => {
             requestManager.setThrottle(kbps);
         },
         getStats() {
-            return {requestManager: requestManager.stats.getEntries()};
+            // todo include stats from every dataSource.viewState (effectively only one)
+            return {
+                requestManager: requestManager.stats.getEntries(),
+                viewState: lastDataSource._viewState.stats.getEntries()
+            };
         }
     };
 };

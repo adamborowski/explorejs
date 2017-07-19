@@ -57,6 +57,12 @@ export default class ViewState {
 
         if (!_.isEqual(newState, this._lastState)) {
             this._event.fireEvent(EVENT_NAME, this);
+            if (this.stats) {
+                this.stats.addEntry({
+                    time: new Date().getTime(),
+                    state: newState
+                });
+            }
         }
         this._lastState = newState;
     }

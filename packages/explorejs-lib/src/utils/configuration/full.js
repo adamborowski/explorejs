@@ -30,9 +30,13 @@ export default async (props, preset) => {
 
     await requestManager.ready();
 
+    let lastDataSource;
+
     return {
         createDataSource(serieId) {
-            const dataSource = new DataSource(cacheManager.getSerieCache(serieId));
+            const dataSource = lastDataSource = new DataSource(cacheManager.getSerieCache(serieId));
+
+            dataSource._viewState.stats = StatsCollection();
 
             if (!useFallback) {
                 const __onProjectionChange = dataSource._onProjectionChange.bind(dataSource);
@@ -60,7 +64,10 @@ export default async (props, preset) => {
             requestManager.setThrottle(kbps);
         },
         getStats() {
-            return {requestManager: requestManager.stats.getEntries()};
+            return {
+                requestManager: requestManager.stats.getEntries(),
+                viewState: lastDataSource._viewState.stats.getEntries()
+            };
         }
     };
 };
