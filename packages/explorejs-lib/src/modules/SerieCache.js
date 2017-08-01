@@ -121,4 +121,13 @@ export default class SerieCache {
             p.projection = [];
         });
     }
+
+    getStats() {
+        const stats = {};
+
+        this._levelCacheSet.each((key,levelCache) => {
+            stats[key] = levelCache._segmentArray._data.length;
+        });
+        return stats;
+    }
 }

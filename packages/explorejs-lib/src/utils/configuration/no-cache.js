@@ -94,7 +94,8 @@ export default async (props, preset) => {
             // todo include stats from every dataSource.viewState (effectively only one)
             return {
                 requestManager: requestManager.stats.getEntries(),
-                viewState: lastDataSource._viewState.stats.getEntries()
+                viewState: lastDataSource._viewState.stats.getEntries(),
+                cache: {} // no cache - no levels, no number of data inside
             };
         }
     };

@@ -66,7 +66,8 @@ export default async (props, preset) => {
         getStats() {
             return {
                 requestManager: requestManager.stats.getEntries(),
-                viewState: lastDataSource._viewState.stats.getEntries()
+                viewState: lastDataSource._viewState.stats.getEntries(),
+                cache: lastDataSource.serieCache.getStats()
             };
         }
     };
