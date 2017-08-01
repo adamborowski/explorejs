@@ -1,7 +1,7 @@
 import {availableScoreSelector, createSession, sessionByIdSelector} from '../selectors/testingSelectors';
 import {pushNotification} from '../actions/notificationActions';
 import {operations} from '../redux/dialog/index';
-import {SESSION_SCORE, SESSION_CREATE} from "../constants/actionTypes";
+import {SESSION_SCORE, SESSION_CREATE, SEND_SURVEY} from '../constants/actionTypes';
 import {push, LOCATION_CHANGE} from 'react-router-redux';
 
 export default  store => next => action => {
@@ -31,9 +31,27 @@ export default  store => next => action => {
           store.dispatch(push(matches[1]));
           return;
         }
-
-        break;
       }
+      break;
+    case SEND_SURVEY: {
+      const answers = state.finalAnswers;
+      const session = createSession(state);
+      const sessions = session.Session.all().toRefArray();
+
+      var _navigator = {};
+      for (var i in navigator) _navigator[i] = navigator[i];
+
+
+      const payload = {
+        time: new Date().getTime(),
+        answers,
+        sessions,
+        navigator: _navigator
+      };
+
+      console.warn('TODO send survey response', payload);
+
+    }
   }
   // switch (newAction.type) {
   //   case SESSION_SCORE: {
