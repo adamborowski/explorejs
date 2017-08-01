@@ -25,8 +25,25 @@ export default {
       {color: '#4fcc21', key: 1},
       {color: '#00a13b', key: 2},
     ],
-    availableNetworkSpeed: [0, 1, 20, 50, 200, 1000]
+    availableNetworkSpeed: [0, 1, 20, 50, 200, 1000],
+    finalForm: {
+      questions: [
+        {type: 'range'},
+        {type: 'text'},
+        {type: 'text'},
+        {type: 'range'},
+        {type: 'text'},
+        {type: 'range'},
+        {type: 'range'},
+        {type: 'range'},
+        {type: 'range'},
+        {type: 'text'},
+        {type: 'text'},
+        {type: 'text'}
+      ]
+    }
   },
+  finalAnswers:{},
   notifications: [],
   throttleNetwork: true,
   networkSpeed: 50,

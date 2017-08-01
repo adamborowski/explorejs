@@ -33,5 +33,50 @@ export default {
     pleasePutScore: 'Proszę ocenić tę konfigurację',
     clickButton: 'Naciśnij poniższy przycisk, aby użyć tej konfiguracji do eksploracji wielkich wielkiego zbioru danych, następnie oceń ją.',
     start: 'Rozpocznij'
+  },
+  finalForm: {
+    header: 'Podsumowanie',
+    placeholder: 'Wpisz odpowiedź',
+    summarize: 'Do podsumowania',
+    intro: 'Proszę odpowiedzieć na kilka pytań, które pomogą w analizowaniu wyników.',
+    send: 'Zakończ i wyślij',
+    questions: [
+      {
+        question: 'Jak podoba Ci sie ankieta?',
+        answers: ['Znudziłem się', 'Jest męcząca', 'Ciężko stwierdzić', 'Nieźle', 'Zaciekawiła mnie']
+      },
+      {question: 'Możesz krótko opisać, jakie zagadnie zostało tutaj poruszone?'},
+      {question: 'Możesz krótko opisać, co jaki problem jest tu adresowany?'},
+      {
+        question: 'Czy uważasz, że problem w ogóle istnieje?',
+        answers: [
+          'Problem jest zmyślony',
+          'Problem istnieje, ale nie ma potrzeby go rozwiązywać',
+          'Ciężko stwierdzić',
+          'Problem istenieje, ale można z tym żyć',
+          'Poważny problem wymagający rozwiązania'
+        ]
+      },
+      {question: 'Czy znasz inne rozwiązania tego problemu?'},
+      {
+        question: 'Jak bardzo ten problem podobny jest do tego w występującego w systemach typu Google Maps?',
+        answers: ['Nie ma związku', 'Prawie bez związku','Ciężko stwierdzić', 'Lekko inny','To ten sam problem']
+      },
+      {
+        question: 'Czy spotkałeś się z tym problem już wcześniej',
+        answers: ['W ogóle nie', 'Chyba nie', 'Ciężko stwierdzić', 'Tak jakby', 'Tak, owszem']
+      },
+      {
+        question: 'Czy spodziewasz się spotkać z tym problemem w niedalekiej przyszłości (2 lata)?',
+        answers: ['Nie', 'Raczej nie', 'ciężko stwierdzić', 'może tak', 'Tak, owszem']
+      },
+      {
+        question: 'Jeśli spotkasz ten problem w swojej pracy, czy chciałbyś użyć ExploreJS?',
+        answers: ['Nie, w życiu', 'Nie będzie mi wolno', 'Ciężko stwiedzić', 'Tak, o ile będzie mi wolno', 'Zrobię wszystko, by skorzystać']
+      },
+      {question: 'Co jest potrzebne, by zachęcić Ciebie do używania ExploreJS w swojej pracy jeżeli zajdzie taka potrzeba?'},
+      {question: 'Dodatkowe przemyślenia o ExploreJS?'},
+      {question: 'Twoje imię/nick/nazwisko (jeżeli się znamy)'},
+    ]
   }
 };

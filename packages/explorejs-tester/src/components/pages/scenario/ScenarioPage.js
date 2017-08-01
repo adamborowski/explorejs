@@ -11,6 +11,7 @@ import Slider from '../../common/Slider';
 import './ScenarioPage.scss';
 import nextPrevHelper from '../../../utils/next-prev-helper.js';
 import trans from '../../../translations/trans';
+import NavLink from '../../common/NavLink';
 
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
@@ -103,6 +104,11 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
 
       }
 
+      <div className="text-center" style={{marginTop: 40}}>
+        {props.allScored ? <Link to="/summary"
+                                 className="btn btn-lg btn-default btn-success center">{trans('finalForm.summarize')}</Link> : null}
+      </div>
+
       <div className="list-group">
         {
           props.adminMode && scenario.sessions.toRefArray().map((session) =>
@@ -133,7 +139,8 @@ const mapStateToProps = (state, ownProps) => ({
   scenario: ownProps.params.scenarioId == null ? null : scenarioByIdSelector(state, ownProps.params.scenarioId),
   scenarios: scenarioSelector(state),
   adminMode: state.testing.adminMode,
-  scenarioToScore: getFirstWhichHasToBeScored(state)
+  scenarioToScore: getFirstWhichHasToBeScored(state),
+  allScored: getFirstWhichHasToBeScored(state) == null
 });
 
 const mapActionsToProps = (dispatch) => ({

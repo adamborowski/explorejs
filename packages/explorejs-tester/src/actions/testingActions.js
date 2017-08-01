@@ -55,3 +55,9 @@ export const changeAdapter = adapterType => ({type: types.CHANGE_ADAPTER, adapte
 export const changeThrottleNetwork = throttleNetwork => ({type: types.CHANGE_THROTTLE_NETWORK, throttleNetwork});
 export const changeNetworkSpeed = speed => ({type: types.CHANGE_NETWORK_SPEED, speed});
 export const addStats = (sessionId, stats) => ({type: types.ADD_STATS, stats, sessionId});
+export const answerSummaryQuestion = (questionId, value) => ({
+  type: types.SUMMARY_QUESTION_ANSWERED,
+  questionId,
+  value
+});
+export const sendSurvey = () => ({type: types.SEND_SURVEY});

@@ -11,6 +11,7 @@ import ScenarioSidebar from './components/pages/scenario/ScenarioSidebar';
 import ScenariosIndexPage from './components/pages/scenario/ScenariosIndexPage';
 import ConnectedHeader from './components/pages/scenario/Header';
 import SessionPage from './components/pages/scenario/SessionPage';
+import SummaryPage from './components/pages/SummaryPage';
 
 const typicalAppPage = children => ({children, pageHeader: ConnectedHeader, sidebar: ScenarioSidebar});
 
@@ -34,6 +35,7 @@ export default (
         </Route>
       </Route>
     </Route>
+    <Route path="summary" component={typicalAppPage(SummaryPage)}/>
     <Route path="*" component={NotFoundPage} onEnter={() => console.log('* enter')} onLeave={()=>console.log('* exit')}/>
   </Route>
 );

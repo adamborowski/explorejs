@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {scenarioSelector} from '../../../selectors/testingSelectors';
+import {getFirstWhichHasToBeScored, scenarioSelector} from '../../../selectors/testingSelectors';
 import Menu from '../../common/Menu';
 import Sidebar from '../../layout/Sidebar';
 import trans from '../../../translations/trans';
@@ -17,7 +17,8 @@ const stars = (scenario) => {
 const mapStateToProps = (state) => ({
   items: scenarioSelector(state).map(a => ({name: a.name, link: a.id, stars: stars(a)})),
   basePath: '/scenario/',
-  answers: state.testing.answers
+  answers: state.testing.answers,
+  allScored: getFirstWhichHasToBeScored(state) == null
 });
 export default connect(mapStateToProps)(sidebar);
 

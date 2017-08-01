@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import fuelSavings from './fuelSavingsReducer';
-import testing from './testingReducer';
+import testing, {finalAnswersReducer as finalAnswers} from './testingReducer';
 import notifications from './notificationReducer';
 import adapter from './adapterReducer';
 import throttleNetwork from './throttleNetworkReducer';
@@ -18,7 +18,8 @@ const rootReducer = combineReducers({
   testing,
   adapter,
   throttleNetwork,
-  networkSpeed
+  networkSpeed,
+  finalAnswers
 });
 
 export default rootReducer;
