@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () => <div>
+export default (slide) => [<div>
   <h2 className="display-3">Witaj!</h2>
   <p className="lead">
     Zapraszam do udziału w nietypowej ankiecie.
@@ -28,4 +28,4 @@ export default () => <div>
     giving one
     point on every configration if you think they don't differ so much.
   </p>
-</div>
+</div>][slide]

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () => <div>
+export default (slide) => [<div>
   <h2 className="display-3">Hello!</h2>
   <p className="lead">
     This application is the part of my <strong>thesis research</strong> whose title is <em><q>
@@ -22,9 +22,11 @@ export default () => <div>
   </p>
   <p>
     You can score each configuration using <strong>0-10 scale</strong>.
-    You have only <strong>10 points</strong> to distribute across all configurations so that way you can tell us how much
+    You have only <strong>10 points</strong> to distribute across all configurations so that way you can tell us how
+    much
     one is better than others for example by putting all <strong>10 points</strong> on the best configuration or
     giving one
     point on every configration if you think they don't differ so much.
   </p>
 </div>
+][slide]

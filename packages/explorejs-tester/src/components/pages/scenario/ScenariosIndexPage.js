@@ -6,9 +6,9 @@ import {push} from 'react-router-redux';
 
 export const ScenarioListPage = trans()((props, {trans, dynamicTrans}) => {
   return (
-    <div className="jumbotron">
+    <div>
       <h2>{trans('general.testConfigurations')}</h2>
-      <p>
+      <p className="well">
         {trans('general.scenarioIntro', props.scenarios.length)}
       </p>
       <p>

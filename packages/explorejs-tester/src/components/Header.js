@@ -17,7 +17,6 @@ export default trans()(function (props, {trans, language}) {
           <ul className="nav navbar-nav navbar-right">
             <NavLink onlyActiveOnIndex={true} to="/" activeClassName="active">{trans('menu.home')}</NavLink>
             <NavLink to="/scenario" activeClassName="active">{trans('menu.survey')}</NavLink>
-            <NavLink to="/about" activeClassName="active">About</NavLink>
             <NavDropdown style={{width: 90}} eventKey={3} title={tr(`languages.${language}`)}
                          id="basic-nav-dropdown"
                          onSelect={setLanguage}
