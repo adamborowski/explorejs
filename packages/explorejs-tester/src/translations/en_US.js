@@ -15,7 +15,9 @@ export default {
     goToBase:'go to base version',
     scenarioIntro: (numScenarios) => `Now you have ${numScenarios} scenarios, you can pick them from the menu on the 
     left or by using contextual buttons that will appear below`,
-    intro
+    intro,
+    nextPage:'Next page',
+    prevPage:'Previous page'
   },
   menu: {
     survey: 'Survey',

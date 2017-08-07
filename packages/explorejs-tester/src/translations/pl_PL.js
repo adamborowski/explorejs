@@ -14,7 +14,9 @@ export default {
     goToBase: 'Przejdź do wersji podstawowej',
     scenarioIntro: (numScenarios) => `Zostanie przedstawionych ${numScenarios} różnych wersji komponentu, każda z 
     nich dostępna jest z menu po lewej stronie. Można też używać przycisków nawigacji, które pojawią się w dolnej części strony.`,
-    intro
+    intro,
+    nextPage:'Dalej',
+    prevPage:'Wstecz'
   },
   menu: {
     survey: 'Ankieta'

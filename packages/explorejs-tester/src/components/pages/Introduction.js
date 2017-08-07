@@ -12,8 +12,8 @@ export default class Introduction extends React.Component {
   constructor() {
     super();
     this.state = {
-      currentSlide: 0,
-      numSlides: 5
+      currentSlide: 4,
+      numSlides: 6
     };
   }
 
@@ -46,8 +46,8 @@ export default class Introduction extends React.Component {
     return <div>
       {trans('general.intro', currentSlide)}
       <Pager>
-        {this.canPrev() && <Pager.Item previous onClick={::this.handlePrev}>&larr; Previous Page</Pager.Item>}
-        {this.canNext() && <Pager.Item next onClick={::this.handleNext}>Next Page &rarr;</Pager.Item>}
+        {this.canPrev() && <Pager.Item previous onClick={::this.handlePrev}>&larr; {trans('general.prevPage')}</Pager.Item>}
+        {this.canNext() && <Pager.Item next onClick={::this.handleNext}>{trans('general.nextPage')} &rarr;</Pager.Item>}
       </Pager>
       {this.canNext() === false &&
       <p className="text-center">
