@@ -25,6 +25,7 @@ export default {
     finish: 'Zakończ i oceń',
     simulate: 'Symuluj wolne połączenie',
     speed: 'Prędkość połączenia',
+    noThrottleWarning: 'Uwaga! Bez symulacji wolnego łącza możesz nie dostrzeć różnicy.',
     wrongOrderWarningHeader: 'Uwaga!',
     wrongOrderWarning: conf => <div>Proszę najpierw ocenić konfigurację <em>{conf}</em>.</div>
   },

@@ -69,6 +69,11 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
           className="custom-classname"
           onChange={v => props.actions.changeThrottleNetwork(v.target.checked)}/>
       </label>
+      <Fade in={!props.throttleNetwork}>
+        <div style={{marginTop: 5}}>
+          {trans('session.noThrottleWarning')}
+        </div>
+      </Fade>
       <Fade in={props.throttleNetwork}>
         <div style={{marginTop: 5}}>
           <label>
