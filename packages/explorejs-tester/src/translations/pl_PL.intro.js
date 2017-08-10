@@ -16,7 +16,7 @@ export default (slide) => [
     </blockquote>
     <p>
       Zalecam uważne zapoznanie się z materiałem wprowadzającym do zagadnienia oraz opisami poszczególnych wersji
-      rozwiązania.
+      rozwiązania. Ankieta powinna zająć nie dłużej, niż 15 minut.
     </p>
   </div>,
   <div className="text-justify">
@@ -71,7 +71,7 @@ export default (slide) => [
       zmiennoprzecinkowym).
     </p>
     <p>
-      Biorąc pod uwagę liczbę punktów pomiarowych oraz rozmiar danych pojedycznego punktu,
+      Biorąc pod uwagę liczbę punktów pomiarowych oraz rozmiar danych pojedynczego punktu,
       do przetworzenia jest aż <strong>9.5 GB danych</strong>
     </p>
     <p>
@@ -121,7 +121,7 @@ export default (slide) => [
 
     </p>
     <p>
-      Dla przykładu, jeżeli na typowym monitorze chcemy obejrzeć nasze dane zakresie jednego roku, to liczba puntów
+      Dla przykładu, jeżeli na typowym monitorze chcemy obejrzeć nasze dane w zakresie jednego roku, to liczba puntów
       pomiarowych (około 3 miliony) znacznie przekracza liczbę pikseli w poziomie (około 2 tysiące).
       Zagęszczenie punktów na jednym rzędzie pikseli wyniesie kilka tysięcy.
       Takie zagęszczenie danych na ekranie jest zupełnie niepotrzebne, ze względu na wspomniane właśnie ograniczenia

@@ -2,126 +2,121 @@ import React from 'react';
 
 export default (slide) => [
   <div className="text-justify">
-    <h3 className="display-3">Witaj!</h3>
+    <h3 className="display-3">Hello!</h3>
     <p>
-      Zapraszam serdecznie do wzięcia udziału w tej nietypowej, interaktywnej ankiecie, której celem jest
-      zebranie subiektywnych opinii na temat rozwiązania pewnego problemu informatycznego.
+      I invite you to participate in this unusual interactive survey.
+      The purpose of the survey is to gain subjective opinions about some software engineering problem.
     </p>
     <p>
       Ankieta jest nieodłączną częścią mojej <strong>pracy magisterskiej</strong>, zatytułowanej:
     </p>
     <blockquote>
-      Przystosowanie webowych interfejsów użytkownika do wizualnej eksploracji wielkoskalowych danych
-      pomiarowych.
+      Adaptation of web-based user interfaces for visual exploration of measurement data at scale.
     </blockquote>
     <p>
-      Zalecam uważne zapoznanie się z materiałem wprowadzającym do zagadnienia oraz opisami poszczególnych wersji
-      rozwiązania.
+      I highly encourage you to read carefully the introduction to the problem and to familiarize with descriptions of
+      every version of given solution.
+      This survey should take not longer than 15 minutes.
     </p>
   </div>,
   <div className="text-justify">
-    <h3 className="display-3">Wprowadzenie
-      <small> do zagadnienia</small>
+    <h3 className="display-3">Introduction
+      <small> to the issue</small>
     </h3>
     <p>
-      Zagadnienie pochodzi z pogranicza czterech dziedzin: wizualnej eksploracji danych, Big Data, Aplikacji
-      Internetowych oraz tzw. User Experience:
+      The problem touches four different computer engineering fields: visual exploration, Big Data, internet
+      applications and User Experience:
     </p>
     <ul>
-      <li><em>Wizualnej eksploracji danych</em>, bo chodzi o umożliwienie przeglądania wykresów serii
-        czasowych, na przykład pomiaru stężenia dwutlenku siarki na urządzeniu pomiarowym lub parametrów pracy serca
-        chorego pacjenta.
+      <li><em>Visual exploration</em>because it's about browsing interactive time series charts, for example: density of
+        <em>Sulphur dioxide</em> or sick patient heartbeats.
       </li>
-      <li><em>Big Data</em>, ponieważ danych do eksploracji jest napawdę wiele. Na tyle dużo, że ich przetworzenie
-        stanowi wyzwanie technologiczne i analityczne.
+      <li><em>Big Data</em> because the amount of data is so large that it's difficult in technical and analitycal
+        manner.
       </li>
-      <li><em>Aplikacji internetowych</em>, ponieważ wykresy te mają być prezentowane w przeglądarce użytkownika, która
-        łączy się ze zdalnym serwerem poprzez sieć komputerową.
+      <li><em>internet applications</em>, because the charts are presented on user's browser, which downloads data from
+        web server through a computer network.
       </li>
-      <li><em>User Experience</em>, czyli aspektu użyteczności i efektywności korzystania z interfejsu interaktywnego.
+      <li><em>User Experience</em>, the usability aspect and the performance of interactive interface.
       </li>
     </ul>
 
   </div>,
   <div className="text-justify">
-    <h3 className="display-3">Przypadek użycia </h3>
+    <h3 className="display-3">Use case </h3>
     <p>
-      Wyobraź sobie, że pracujesz nad analizą zjawisk pogodowych w ostatnich kilkudzesięciu latach.
-      Chcesz w swojej przeglądarce internetowej przeglądać, w postaci wykresu liniowego, dane pięciu parametrów z
-      urządzenia pomiarowego: wilgotności, tempertatury, prędkości wiatru, stężenia dwutlenku węgla i ozonu.
+      Imagine that you are working on the analysis of weather phenomena in the last few decades.
+      You want to view five parameters from a measuring device: humidity, temperature, wind speed, carbon dioxide and
+      ozone in your web browser, in the form of a line graph.
     </p>
     <p>
-      Załóżmy, że z punktu widzenia badawczego zasadne jest, aby brać pod uwagę ostatnie pięćdziesiąt lat pomiarów
-      wykonywanych z częstotliwością co 10 sekund.
-      Dodatkowo załóżmy, że w analize wartościowe jest zarówno przeglądanie większych zakresów danych by wysnuć
-      generalne wnioski
-      oraz przeglądanie poszczególnych incydentów.
+      Assume that from the research point of view it is reasonable to take into account the last fifty years of
+      measurements performed every 10 seconds.
+      In addition, let's assume that it is valuable to look at larger ranges to get general conclusions and smaller
+      ranges to review individual incidents.
     </p>
     <p>
-      Policzmy, jak dużo danych potrzebnych jest do przetworzenia:
+      Let's count how much data is to be processed:
     </p>
     <pre>
-        5 paramterów &times; 50 lat &times; 1/(10s) = 788.4 milionów punktów pomiarowych
+        5 parameters &times; 50 years &times; 1/(10s) = 788.4 million measurement data points
     </pre>
     <p>
-      Jeśli założyć, że każdy punkt wymaga zapisania daty powstania próbki oraz wartości pomiaru, to na zapisanie
-      pojedynczego punktu potrzeba 12 bajtów (8 bajtów na datę w formacie <strong>long</strong> oraz 4 bajty na wartość
-      w
-      formacie
-      zmiennoprzecinkowym).
+      If we assume that each point needs to record the date of the sample and the measured value, then 12 bytes are
+      required for writing a single point (8 bytes for the date in <strong>long</strong> format and 4 bytes for the
+      floating point value).
     </p>
     <p>
-      Biorąc pod uwagę liczbę punktów pomiarowych oraz rozmiar danych pojedycznego punktu,
-      do przetworzenia jest aż <strong>9.5 GB danych</strong>
+      Given the number of points and the size of single point data, we need to process up to
+      <strong>9.5 GB of data</strong>.
     </p>
     <p>
-      Przy dobrym (100Mbps) łączu załadowanie tych danych do przeglądarki zajmie około <strong>13 minut</strong>.
-      Nawet, jeśli każemy czekać użytkownikowi taki czas na pobranie tych danych z sieci do pamięci podręcznej
-      komputera, to wyrysowanie miliarda punktów na wykresie niewątpliwie doprowadzi do awaryjnego zakończenia działania
-      przeglądarki.
+      With a good (100Mbps) connection, loading this data into your browser will take about <strong>13 minutes</strong>.
+      Even if the user waits for such time to retrieve this data from the network into the computer's cache, drawing one
+      billion points on the graph will undoubtedly crash the browser.
     </p>
   </div>,
   <div>
-    <h3 className="display-3">Identyfikacja problemu</h3>
+    <h3 className="display-3">Identify the problem</h3>
     <p>
-      Być może zastanawiasz się, po co właściwie ładować te wszystkie dane? Przecież mózg ludzki nie jest w stanie
-      przeanalizować każdego z miliarda punktów z osobna.
+      Perhaps you are wondering why we need to load all this data? After all, the human brain is not able to analyze
+      each of the billions of points individually.
     </p>
     <p>
-      Tutaj trzeba przywołać jeden istotny aspekt funkcjonalny zagadnienia.
-      Otóż chcemy dać użytkownikowi swobodę nawigacji po wykresie, żeby mógł oglądać dane w
-      dowolnym interesującym go zakresie i w odpowiednim przybliżeniu.
-      Nawigacja ta powinna odbywać się w sposób <strong>płynny i nieograniczony</strong>, tak jak to ma miejsce w
-      nowoczesnych systemach mapowych.
+      Here we need to recall one important aspect of the problem.
+      We want to give the user the freedom to navigate the graph so that he can see data of any range, at any zoom
+      level.
+      This navigation should be done in a <strong>fluent and unlimited way</strong>, as it does in modern mapping
+      systems.
     </p>
     <p>
-      Faktycznie, ze wspomnianych wcześniej względów nie jest możliwe zbudowanie aplikacji, która pobiera wszystkie dane
-      na początku,
-      i je wszystkie potem wyświetla. Wykreślenie milionów punktów też zajmuje sporą część mocy obliczeniowej komputera
-      użykownika. Takie rozwiązanie po prostu się nie skaluje wraz ze wzrostem zbioru danych do przeglądania.
+      Actually, for the aforementioned reasons it is not possible to build an application that gets all the data in the
+      beginning, and then displays them.
+      Drawing millions of points also takes up a large part of the user computer's computing power.
+      This solution simply does not scale with increasing data size.
     </p>
   </div>,
   <div>
-    <h3 className="display-3">Istniejące rozwiązania</h3>
+    <h3 className="display-3">Existing solutions</h3>
     <p>
-      Popularnym podejściem, które adresuje problem skalowalności, jest pobieranie z serwera tylko takiego zakresu
-      danych, który ma być widoczny w danej chwili na ekranie.
+      The popular approach that addresses the scalability problem is to retrieve only the amount of data from the server
+      that is needed to be displayed on screen.
     </p>
     <p>
-      Nasuwa się pytanie, co w momencie, gdy użytkownik chciałby obejrzeć z grubsza jakiś duży zakres czasu? A może chciałby zobaczyć
-      wszystkie dane "z lotu ptaka"?
-      W tej sytuacji problem pojawia się z powrotem - potrzeba załadować wszystkie dane do przeglądarki.
+      You may be wondering what happens when the user wants to view data over a large time range.
+      Or maybe he would like to see all the data "from the bird's eye view"?
+      In this situation the problem reappears - you have to load all the data into the browser.
     </p>
     <p>
-      Warto zauważyć, że ze względu na pikselową konstrukcję monitorów graficznych, liczba punktów potrzebnych do
-      poprawnego wyrysowania fragmentu danych ograniczona jest w pewnym sensie liczbą pikseli wyświetlacza. Zresztą -
-      rozdzielczść ludzkiego oka też jest ograniczona.
-      W związku z powyższym - użytkownik i tak jest w stanie tylko obejrzeć pewną uproszczoną formę danych, nie do końca
-      nawet zdając sobie z tego sprawę dzięki zdolności abstrackcji i generalizacji.
+      It is worth to mentio that, due to the pixel structure of the graphic monitors, the number of points needed to
+      display the data is limited in some sense by the number of pixels in the display.
+      In fact, the resolution of the human eye is also limited.
+
+      He is not even fully aware of this due to human abstraction and generalization abilities.
 
     </p>
     <p>
-      Dla przykładu, jeżeli na typowym monitorze chcemy obejrzeć nasze dane zakresie jednego roku, to liczba puntów
+      Dla przykładu, jeżeli na typowym monitorze chcemy obejrzeć nasze dane w zakresie jednego roku, to liczba puntów
       pomiarowych (około 3 miliony) znacznie przekracza liczbę pikseli w poziomie (około 2 tysiące).
       Zagęszczenie punktów na jednym rzędzie pikseli wyniesie kilka tysięcy.
       Takie zagęszczenie danych na ekranie jest zupełnie niepotrzebne, ze względu na wspomniane właśnie ograniczenia
