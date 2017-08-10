@@ -32,8 +32,8 @@ export default (slide) => [
         czasowych, na przykład pomiaru stężenia dwutlenku siarki na urządzeniu pomiarowym lub parametrów pracy serca
         chorego pacjenta.
       </li>
-      <li><em>Big Data</em>, ponieważ danych do eksploracji jest napawdę wiele. Zbyt wiele, by można było wyciągnąć z
-        tych danych pożyteczne informacje bez automatycznego ich przetwarzania.
+      <li><em>Big Data</em>, ponieważ danych do eksploracji jest napawdę wiele. Na tyle dużo, że ich przetworzenie
+        stanowi wyzwanie technologiczne i analityczne.
       </li>
       <li><em>Aplikacji internetowych</em>, ponieważ wykresy te mają być prezentowane w przeglądarce użytkownika, która
         łączy się ze zdalnym serwerem poprzez sieć komputerową.
@@ -153,9 +153,11 @@ export default (slide) => [
     </p>
     <p>
       Przykład agregacji:
-      <blockquote>
-        W sierpniu 2017 maksymalna temperatura wyniosła 33&deg;C, minimalna 15&deg;C, a średnia 21.34&deg;.
-      </blockquote>
+    </p>
+    <blockquote>
+      W sierpniu 2017 maksymalna temperatura wyniosła 33&deg;C, minimalna 15&deg;C, a średnia 21.34&deg;.
+    </blockquote>
+    <p>
       Jest to zbiór, który w prosty i zwięzły sposób opisuje najważniejsze ogólne cechy całego zbioru pomiarów
       dokonanych w sierpniu 2017.
     </p>
