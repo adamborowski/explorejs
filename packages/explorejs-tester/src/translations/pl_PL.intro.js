@@ -90,7 +90,7 @@ export default (slide) => [
     <p>
       Tutaj trzeba przywołać jeden istotny aspekt funkcjonalny zagadnienia.
       Otóż chcemy dać użytkownikowi swobodę nawigacji po wykresie, żeby mógł oglądać dane w
-      interesującym go zakresie i w odpowiednim przybliżeniu.
+      dowolnym interesującym go zakresie i w odpowiednim przybliżeniu.
       Nawigacja ta powinna odbywać się w sposób <strong>płynny i nieograniczony</strong>, tak jak to ma miejsce w
       nowoczesnych systemach mapowych.
     </p>
