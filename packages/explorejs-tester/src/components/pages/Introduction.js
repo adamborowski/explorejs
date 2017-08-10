@@ -12,8 +12,8 @@ export default class Introduction extends React.Component {
   constructor() {
     super();
     this.state = {
-      currentSlide: 4,
-      numSlides: 6
+      currentSlide: 0,
+      numSlides: 9
     };
   }
 
