@@ -108,7 +108,7 @@ export default (slide) => [
       danych, który ma być widoczny w danej chwili na ekranie.
     </p>
     <p>
-      Ale co w momencie, gdy użytkownik chciałby obejrzeć z grubsza jakiś duży zakres czasu? A może chciałby zobaczyć
+      Nasuwa się pytanie, co w momencie, gdy użytkownik chciałby obejrzeć z grubsza jakiś duży zakres czasu? A może chciałby zobaczyć
       wszystkie dane "z lotu ptaka"?
       W tej sytuacji problem pojawia się z powrotem - potrzeba załadować wszystkie dane do przeglądarki.
     </p>
