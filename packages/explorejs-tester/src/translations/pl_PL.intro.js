@@ -129,11 +129,11 @@ export default (slide) => [
       monitora i ludzkiego oka.
     </p>
     <p>
-      Te naturalne ograniczenie wykorzystuje się w optymalizacji wspomnianego wcześniej problemu.
-      Otóż zakłada się, że oprócz tego, że z serwera są pobierane tylko potrzebne fragmenty danych, pobiera się je w
+      To naturalne ograniczenie wykorzystuje się w optymalizacji wspomnianego wcześniej problemu.
+      Otóż zakłada się, że oprócz tego, że z serwera są pobierane tylko chwilowo potrzebne fragmenty danych, pobiera się je w
       formie maksymalnie uproszczonej. Nie za prostej, by nie było to zauważone przez ludzkie oko, ale takiej, by
-      zminimalizować wielkość przesyłanych danych. Rozmiar ładowanych danych będzie więc bliski liczbie rzędów pikseli w
-      poziomie &mdash; niezależnie od wielkości zakresu czasu.
+      zminimalizować wielkość przesyłanych danych. Rozmiar ładowanych danych będzie więc związany z liczbą rzędów pikseli w
+      poziomie &mdash; tym samym niezależny od wielkości zakresu czasu.
     </p>
     <p>
       Takie podejście otwiera również nowe wyzwania, pojawiają się niestety też nowe problemy.
