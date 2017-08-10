@@ -254,7 +254,7 @@ export default (slide) => [
     </ul>
     <p>
       W ankiecie zostaniesz poproszony o eksplorację przykładowych danych prezentowanych na interaktywnym wykresie
-      liniowym. Wskazówki dotyczące używania zostaną zaprezentowane obok wykresu.
+      liniowym.
       Zostanie poddane ocenie pięć wersji rozwiązania. Pierwszym będzie tzw. rozwiązanie istniejące, później będą już
       rozwiązania ulepszone o kolejne filary.
       Twoim zadaniem będzie dokonać subiektywnej oceny satysfakcji użytkowania każdej wersji względem poprzedniej.

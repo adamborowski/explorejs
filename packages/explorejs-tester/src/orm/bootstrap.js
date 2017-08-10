@@ -203,12 +203,13 @@ export default function bootstrap(schema) {
       <div>
         <p>
           Rozwiązanie takie samo jak z <strong>cache+fallback</strong>, ale dodatkowo ładowane są dane, które mogą być
-          potrzebne w niedalekiej przyszłości.
+          potrzebne w niedalekiej przyszłości. Jest to niejako wyjście na przeciw opóźnieniom sieci, gdyż w momencie,
+          gdy użytkownik będzie ich potrzebował, dane będą już dostępne lub w trakcie pobierania z serwera.
         </p>
         <ol>
           <li>
-            Ładowane są dodatkowo <em>marginesy</em> na lewo i prawo od wyświetlanego zakresu, co wyraźnie usprawnia
-            przesuwanie zakresu wstecz i wprzód
+            Ładowane są dodatkowo <em>marginesy</em> na lewo i prawo od wyświetlanego zakresu, by wyjść na przeciw
+            nawigacji horyzontalnej (ang. <em>panning</em>).
           </li>
           <li>
             Ładowane są dodatkowo pewne zakresy danych na wyższych poziomach agregacji, co pomaga, gdy podczas oddalania
@@ -219,10 +220,10 @@ export default function bootstrap(schema) {
             czasu załadowania właściwych danych.
 
           </li>
-          <li>
-            Wykrywany jest często występujący wzór interakcji z wykresem polagający na ciągłym przesuwaniu wykresu w
-            jednym kierunku. W tym przypadku zostanie załadowane więcej danych by nie generować wielu małych połączeń.
-          </li>
+          {/*<li>*/}
+          {/*Wykrywany jest często występujący wzór interakcji z wykresem polagający na ciągłym przesuwaniu wykresu w*/}
+          {/*jednym kierunku. W tym przypadku zostanie załadowane więcej danych by nie generować wielu małych połączeń.*/}
+          {/*</li>*/}
         </ol>
 
       </div>
