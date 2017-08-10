@@ -135,9 +135,6 @@ export default (slide) => [
       zminimalizować wielkość przesyłanych danych. Rozmiar ładowanych danych będzie więc związany z liczbą rzędów pikseli w
       poziomie &mdash; tym samym niezależny od wielkości zakresu czasu.
     </p>
-    <p>
-      Takie podejście otwiera również nowe wyzwania, pojawiają się niestety też nowe problemy.
-    </p>
   </div>,
   <div>
     <h3 className="display-3">Istniejące rozwiązania
@@ -163,12 +160,12 @@ export default (slide) => [
     </p>
     <p>
       Tego typu agregacja jest uproszczoną formą danych. Nie oznacza to, że może być wykorzystana w dowolnym momencie.
-      Najlepiej ją wykorzystać dla takieg skali wykresu, gdzie będzie ona mieściła się na jednym pionie pikselów ekranu.
+      Najlepiej ją wykorzystać dla takiej skali wykresu, gdzie będzie ona mieściła się na jednym pionie pikselów ekranu.
       Gdy będzie większa - uproszczenie będzie już zauważalne dla ludzkiego oka.
     </p>
     <p>(obrazek)</p>
     <p>
-      Podsumowując - popularne rozwiązanie minimalizuje komunikację między przeglądarką a serwerem, jadnak nie jest to
+      Podsumowując - popularne rozwiązanie minimalizuje komunikację między przeglądarką a serwerem, jednak nie jest to
       zauważalne na wykresie.
     </p>
   </div>,
