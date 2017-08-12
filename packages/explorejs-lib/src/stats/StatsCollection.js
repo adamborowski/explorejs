@@ -6,7 +6,7 @@ export default () => {
             entries.push(entry);
         },
         getEntries() {
-            return entries;
+            return [...entries];
         }
     };
 };

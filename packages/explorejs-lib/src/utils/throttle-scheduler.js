@@ -11,13 +11,14 @@ export const createTask = (size, initialSpeed, callback, timeOffset = 0) => {
     let loadedSize = 0; // size when speed changed
     let loadedTime = new Date().getTime(); // time when speed changed
     let timeout = null;
+    const maxTimeout = 3000;
 
-    const calculateTimeout = () => (size - loadedSize) / currentSpeed * 1000 - timeOffset; // speed per sec
+    const calculateTimeout = () => Math.min(maxTimeout, (size - loadedSize) / currentSpeed * 1000 - timeOffset); // speed per sec
     const updateTimeout = () => {
         if (currentSpeed === null) {
             callback(new Date());
         } else if (currentSpeed > 0) {
-            console.log('wait for data', calculateTimeout());
+            console.log('wait for data of size ', size, ', loaded: ', loadedSize, ', timeout: ', calculateTimeout());
             timeout = setTimeout(callback, calculateTimeout());
         } else {
             timeout = null;
