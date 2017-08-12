@@ -163,7 +163,7 @@ export default (slide) => [
     <p>
       This sort of aggregation is just a simplified form of data. However, this does not mean that it can be used at any
       time.
-      It is best to use for a scale that it fits one pixel (vertically) of the screen.
+      It is best to use for a scale that it fits one pixel (horizontally) of the screen.
       If it takes more - the simplification will unfortunately be noticeable to the human eye.
     </p>
     <p>(obrazek)</p>
@@ -204,10 +204,10 @@ export default (slide) => [
     <p>
       It is important to collect aggregations of various lengths so that for each possible zoom level (scale) of the
       graph you can
-      request aggregations which length fits close to but not more than one pixel vertical.
+      request aggregations which length fits close to does not exceed one pixel horizontally.
       Otherwise, you would need to request for smaller aggregations, resulting in unnecessarily high density of data to
       be drawn on the screen.
-      If the aggregation exceeds one pixel on the screen horizontally, this will be noticed as a low-resolution presentation of data.
+      On the other hand &mdash; if the aggregation exceeds one pixel on the screen horizontally, this will be perceived as a low-resolution presentation of data.
 
     </p>
     <p>(obrazek - za dużo, za mało, w sam raz)</p>
