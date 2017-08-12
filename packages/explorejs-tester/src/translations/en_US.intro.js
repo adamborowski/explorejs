@@ -39,7 +39,7 @@ export default (slide) => [
       <li><em>internet applications</em>, because the charts are presented on user's browser, which downloads data from
         web server through a computer network.
       </li>
-      <li><em>User Experience</em>, that is, the usability aspect and the effectiveness of using the interactive
+      <li><em>User Experience</em>, that is, the usability aspect and the effectiveness of using interactive
         interface.
       </li>
     </ul>
