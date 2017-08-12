@@ -19,7 +19,8 @@ export default {
     prevPage:'Wstecz'
   },
   menu: {
-    survey: 'Ankieta'
+    survey: 'Ankieta',
+    home:'Wprowadzenie'
   },
   session: {
     finish: 'Zakończ i oceń',
@@ -31,14 +32,14 @@ export default {
     instructions:{
       help:'Pokaż pomoc',
       header:'Instukcja nawigacji',
-      zoom:'przybliżania/oddalanie (zoom) - użyj kółka myszy',
+      zoom:'przybliżanie/oddalanie (zoom) - użyj kółka myszy',
       pan:'przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT',
-      stepsHeader:'Sugerowane kroki',
+      stepsHeader:'Sugerowana nawigacja',
       steps: <ol>
-        <li>idź w prawo i z powrotem w lewo, kilka razy</li>
+        <li>idź w prawo jakiś czas i z powrotem w lewo, kilka razy</li>
         <li>oddal się aby zobaczyć wszystkie dane</li>
         <li>przybliż się kilka razy</li>
-        <li>idź w jednym kierunku kilka razy</li>
+        <li>idź w jednym kierunku jakiś czas</li>
         <li>przybliż się by zobaczyć surowe dane</li>
         <li>oddal się z powrotem by zobaczyć wszystkie dane</li>
       </ol>

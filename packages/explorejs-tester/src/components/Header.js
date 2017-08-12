@@ -3,9 +3,13 @@ import NavLink from './common/NavLink';
 import {MenuItem, NavDropdown} from 'react-bootstrap';
 import tr, {getSupportedLanguages, setLanguage} from '../translations/language-manager';
 import trans from '../translations/trans';
+import {connect} from 'react-redux';
 
+const mapStateToProps = (state) => ({
+  introFinished: state.introFinished
+});
 
-export default trans()(function (props, {trans, language}) {
+export default connect(mapStateToProps)(trans()(function (props, {trans, language}) {
   return (
     <nav className="navbar navbar-inverse navbar-fixed-top">
       <div className="container-fluid">
@@ -16,7 +20,7 @@ export default trans()(function (props, {trans, language}) {
         <div id="navbar" className="navbar-collapse collapse">
           <ul className="nav navbar-nav navbar-right">
             <NavLink onlyActiveOnIndex={true} to="/" activeClassName="active">{trans('menu.home')}</NavLink>
-            <NavLink to="/scenario" activeClassName="active">{trans('menu.survey')}</NavLink>
+            {props.introFinished && <NavLink to="/scenario" activeClassName="active">{trans('menu.survey')}</NavLink>}
             <NavDropdown style={{width: 90}} eventKey={3} title={tr(`languages.${language}`)}
                          id="basic-nav-dropdown"
                          onSelect={setLanguage}
@@ -31,4 +35,4 @@ export default trans()(function (props, {trans, language}) {
       </div>
     </nav>
   );
-});
+}));

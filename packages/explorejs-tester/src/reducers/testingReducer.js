@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import initialState from './initialState';
 
-import {SUMMARY_QUESTION_ANSWERED, SWITCH_INSTRUCTIONS} from '../constants/actionTypes';
+import {FINISH_INTRO, SUMMARY_QUESTION_ANSWERED, SWITCH_INSTRUCTIONS} from '../constants/actionTypes';
 
 export default function testingReducer(state = initialState.testing, action) {
   return state; // todo maybe impement something here
@@ -27,3 +27,13 @@ export const switchInstructionsReducer = (state = true, action) => {
   }
   return state;
 };
+
+export const introFinishedReducer = (state = false, action) => {
+  switch (action.type) {
+    case FINISH_INTRO:
+      return true;
+  }
+  return state;
+};
+
+

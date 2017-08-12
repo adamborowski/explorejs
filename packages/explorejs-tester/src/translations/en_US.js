@@ -21,7 +21,7 @@ export default {
   },
   menu: {
     survey: 'Survey',
-    home: 'Home'
+    home: 'Introduction'
   },
   session: {
     finish: 'Finish and score',

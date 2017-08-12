@@ -9,6 +9,10 @@ export default class Introduction extends React.Component {
     trans: PropTypes.func
   };
 
+  static propTypes = {
+    onFinish: PropTypes.func
+  };
+
   constructor() {
     super();
     this.state = {
@@ -43,6 +47,8 @@ export default class Introduction extends React.Component {
 
     const {currentSlide, numSlides} = this.state;
 
+    const {onFinish} = this.props;
+
     return <div>
       {trans('general.intro', currentSlide)}
       <Pager>
@@ -51,7 +57,11 @@ export default class Introduction extends React.Component {
       </Pager>
       {this.canNext() === false &&
       <p className="text-center">
-        <Link className="btn btn-primary btn-lg" to="/scenario/">{trans('general.beginSurvey')}</Link>
+        <Link className="btn btn-primary btn-lg" to="/scenario/"
+              onClick={e => {
+                // e.preventDefault();
+                onFinish();
+              }}>{trans('general.beginSurvey')}</Link>
       </p> }
     </div>
   }
