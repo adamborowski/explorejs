@@ -3,6 +3,8 @@ import fig1_too_dense from './img/1-too-dense.png';
 import fig2_almost_ok from './img/2-almost-ok.png';
 import fig3_ok from './img/3-ok.png';
 import fig4_too_sparse from './img/4-too-sparse.png';
+import perPixel from './img/per-pixel.png';
+import sparse from './img/sparse.png';
 import './intro.scss';
 
 export default (slide) => [
@@ -168,7 +170,14 @@ export default (slide) => [
       Najlepiej ją wykorzystać dla takiej skali wykresu, gdzie będzie ona mieściła się na jednym pionie pikselów ekranu.
       Gdy będzie większa - uproszczenie będzie już zauważalne dla ludzkiego oka.
     </p>
-    <p>(obrazek)</p>
+    <figure className="my-fig">
+      <img src={sparse}/>
+      <figcaption>przykład agregacji min, max (zacieniowany obszar) oraz średnia (kreska biegnąca wzdłuż obszaru) - uproszczenie zauważalne dla ludzkiego oka</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={perPixel}/>
+      <figcaption>przykład agregacji o dopasowanej długości - nie widać uproszczenia</figcaption>
+    </figure>
     <p>
       Podsumowując - popularne rozwiązanie minimalizuje komunikację między przeglądarką a serwerem, jednak nie jest to
       zauważalne na wykresie.

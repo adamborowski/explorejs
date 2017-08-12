@@ -4,6 +4,8 @@ import fig1_too_dense from './img/1-too-dense.png';
 import fig2_almost_ok from './img/2-almost-ok.png';
 import fig3_ok from './img/3-ok.png';
 import fig4_too_sparse from './img/4-too-sparse.png';
+import perPixel from './img/per-pixel.png';
+import sparse from './img/sparse.png';
 import './intro.scss';
 
 export default (slide) => [
@@ -173,7 +175,14 @@ export default (slide) => [
       It is best to use for a scale that it fits one pixel (horizontally) of the screen.
       If it takes more - the simplification will unfortunately be noticeable to the human eye.
     </p>
-    <p>(obrazek)</p>
+    <figure className="my-fig">
+      <img src={sparse}/>
+      <figcaption>example of min, max (shaded area) and average (a spline inside) aggregations - simplified form is noticeable</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={perPixel}/>
+      <figcaption>example of properly fitted aggregations - simplification is not noticeable</figcaption>
+    </figure>
     <p>
       In conclusion - this is a popular solution that minimizes communication between the browser and the server and
       this is not noticeable by the human eye.
