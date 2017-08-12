@@ -49,6 +49,7 @@ export default  store => next => action => {
         navigator: _navigator
       };
 
+      localStorage.setItem('survey/' + new Date().toISOString(), payload);
       console.warn('TODO send survey response', payload);
 
     }
