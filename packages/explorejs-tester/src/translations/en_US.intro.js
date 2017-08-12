@@ -72,7 +72,7 @@ export default (slide) => [
       floating point value).
     </p>
     <p>
-      Given the number of points and the size of single point data, we need to process up to <strong>9.5 GB of
+      Given the number of points and the size of single point's data, we need to process up to <strong>9.5 GB of
       data</strong>.
     </p>
     <p>
@@ -95,7 +95,7 @@ export default (slide) => [
       systems.
     </p>
     <p>
-      Actually, for the aforementioned reasons it is not possible to build an application that gets all the data in the
+      Actually, for the aforementioned reasons it is not possible to build an application that gets all the data at the
       beginning, and then displays them.
       Drawing millions of points also takes up a large part of the user computer's computing power.
       This solution simply does not scale with increasing data size.
@@ -124,14 +124,14 @@ export default (slide) => [
       As an example, if on a typical monitor we want to view one year range of our data, then the number of measurement
       points (about 3 million) far exceeds the number of pixels horizontally (about 2 thousand).
       The density of points on one pixel will be several thousand.
-      Such density of data on the screen is completely unnecessary due to the just mentioned limitations of screen and
+      Such density of data points on the screen is completely unnecessary due to the just mentioned limitations of screen and
       human eye resolution.
     </p>
     <p>
       This natural limitation is used to optimize the aforementioned problem.
       In addition to the fact that only the pieces of data that are temporarily needed are downloaded from the server,
       they are retrieved in the most simplified form.
-      Not so simple that it could be noticed by the human eye, and as simple as possible to minimize the
+      Not so simple that it could be noticed by the human eye, but as simple as possible to minimize the
       amount of data being sent.
       So the size of data to be loaded will be related to the number of pixels horizontally &mdash; thus independent of
       the actual length of the viewed time range.
@@ -163,7 +163,7 @@ export default (slide) => [
     <p>
       This sort of aggregation is just a simplified form of data. However, this does not mean that it can be used at any
       time.
-      It is best to use for a scale that it will fit in one pixel (vertically) of the screen.
+      It is best to use for a scale that it fits one pixel (vertically) of the screen.
       If it takes more - the simplification will unfortunately be noticeable to the human eye.
     </p>
     <p>(obrazek)</p>
@@ -207,7 +207,8 @@ export default (slide) => [
       request aggregations which length fits close to but not more than one pixel vertical.
       Otherwise, you would need to request for smaller aggregations, resulting in unnecessarily high density of data to
       be drawn on the screen.
-      (or larger but will be noticeable - dodac tez w pl)
+      If the aggregation exceeds one pixel on the screen horizontally, this will be noticed as a low-resolution presentation of data.
+
     </p>
     <p>(obrazek - za dużo, za mało, w sam raz)</p>
   </div>,

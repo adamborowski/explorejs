@@ -204,6 +204,7 @@ export default (slide) => [
       żądać dane o takiej wielkości agregacji, by odpowiadały blisko, lecz nie więcej niż jednemu pionu pikselów.
       Gdyby tak nie było, trzeba by było żądać mniejszych agregacji, co spowoduje niepotrzebnie zbyt dużą gęstość danych
       do wyrysowania na ekranie.
+      Z kolei jeśli agregacja nie zmieściła by się w jednym rzędzie pikseli, będzie to widoczne jako reprezentacja danych niskiej rozdzielczości.
     </p>
     <p>(obrazek - za dużo, za mało, w sam raz)</p>
   </div>,
