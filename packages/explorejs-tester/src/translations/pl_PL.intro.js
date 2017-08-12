@@ -1,4 +1,9 @@
 import React from 'react';
+import fig1_too_dense from './img/1-too-dense.png';
+import fig2_almost_ok from './img/2-almost-ok.png';
+import fig3_ok from './img/3-ok.png';
+import fig4_too_sparse from './img/4-too-sparse.png';
+import './intro.scss';
 
 export default (slide) => [
   <div className="text-justify">
@@ -198,7 +203,6 @@ export default (slide) => [
       <em> 1y</em>
       .
     </p>
-    <p>(obrazek)</p>
     <p>
       Ważne jest, by tak dobrać wielkości agregacji, by dla każdego możliwego przybliżenia (skali) wykresu można było
       żądać dane o takiej wielkości agregacji, by odpowiadały blisko, lecz nie więcej niż jednemu pionu pikselów.
@@ -206,7 +210,25 @@ export default (slide) => [
       do wyrysowania na ekranie.
       Z kolei jeśli agregacja nie zmieściła by się w jednym rzędzie pikseli, będzie to widoczne jako reprezentacja danych niskiej rozdzielczości.
     </p>
-    <p>(obrazek - za dużo, za mało, w sam raz)</p>
+    <figure className="my-fig">
+      <img src={fig1_too_dense} alt="missing"/>
+      <figcaption>zbyt małe agregacje - niepotrzebnie zbyt wiele punktów zostanie wyrysowanych w jednym pikselu
+      </figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={fig2_almost_ok} alt="missing"/>
+      <figcaption>prawie dobrze, ale, wciąż dwa punkty przypadają na jeden piksel</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={fig3_ok} alt="missing"/>
+      <figcaption>te agregacje są odpowiednie, gdyż w każdym pikselu mieści się jeden punkt</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={fig4_too_sparse} alt="missing"/>
+      <figcaption>zbyt obszerne agregacje, nie wszystkie piskele zawierają punkt - niska rozdzielczość zostanie
+        zauważone przez użytkownika
+      </figcaption>
+    </figure>
   </div>,
   <div>
     <h3 className="display-3">Istniejące rozwiązania

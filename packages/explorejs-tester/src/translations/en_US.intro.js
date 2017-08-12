@@ -1,5 +1,11 @@
 import React from 'react';
 
+import fig1_too_dense from './img/1-too-dense.png';
+import fig2_almost_ok from './img/2-almost-ok.png';
+import fig3_ok from './img/3-ok.png';
+import fig4_too_sparse from './img/4-too-sparse.png';
+import './intro.scss';
+
 export default (slide) => [
   <div className="text-justify">
     <h3 className="display-3">Hello!</h3>
@@ -124,7 +130,8 @@ export default (slide) => [
       As an example, if on a typical monitor we want to view one year range of our data, then the number of measurement
       points (about 3 million) far exceeds the number of pixels horizontally (about 2 thousand).
       The density of points on one pixel will be several thousand.
-      Such density of data points on the screen is completely unnecessary due to the just mentioned limitations of screen and
+      Such density of data points on the screen is completely unnecessary due to the just mentioned limitations of
+      screen and
       human eye resolution.
     </p>
     <p>
@@ -200,18 +207,34 @@ export default (slide) => [
       <em> 1y</em>
       .
     </p>
-    <p>(obrazek)</p>
     <p>
       It is important to collect aggregations of various lengths so that for each possible zoom level (scale) of the
       graph you can
       request aggregations which length fits close to does not exceed one pixel horizontally.
       Otherwise, you would need to request for smaller aggregations, resulting in unnecessarily high density of data to
       be drawn on the screen.
-      On the other hand &mdash; if the aggregation exceeds one pixel on the screen horizontally, this will be perceived as a low-resolution presentation of data.
+      On the other hand &mdash; if the aggregation exceeds one pixel on the screen horizontally, this will be perceived
+      as a low-resolution presentation of data.
 
     </p>
-    <p>(obrazek - za dużo, za mało, w sam raz)</p>
-  </div>,
+    <figure className="my-fig">
+      <img src={fig1_too_dense} alt="missing"/>
+      <figcaption>too small aggregations - too many data points per pixel</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={fig2_almost_ok} alt="missing"/>
+      <figcaption>almost ok, but there are still two points per pixel</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={fig3_ok} alt="missing"/>
+      <figcaption>this aggregation is ok, because we have one point in every pixel</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={fig4_too_sparse} alt="missing"/>
+      <figcaption>too sparse aggregations - not every pixel contains data point - the low resolution is noticeable</figcaption>
+    </figure>
+  </div>
+  ,
   <div>
     <h3 className="display-3">Existing solutions
       <small> &raquo; challenges</small>
@@ -235,11 +258,13 @@ export default (slide) => [
       As part of this work I have suggested the solution, which further improved versions are demonstrated in this
       survey for subjective assessment.
     </p>
-  </div>,
+  </div>
+  ,
   <div>
     <h3 className="display-3">Proposed solution</h3>
     <p>
-      The solution's purpose is to allow users to explore visual data without experiencing the negative effects of network
+      The solution's purpose is to allow users to explore visual data without experiencing the negative effects of
+      network
       delays,
       to hide the fact that the data is located on a remote server.
 

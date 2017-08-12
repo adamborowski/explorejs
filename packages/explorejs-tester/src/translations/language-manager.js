@@ -8,7 +8,7 @@ import pl_PL from './pl_PL';
 const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
 const stores = [];
 const callbacks = [];
-const supportedLanguages = {en_US};//, pl_PL};
+const supportedLanguages = {en_US, pl_PL};
 const fallbackLanguage = 'en_US';
 
 const getSupportedLanguage = language => supportedLanguages.hasOwnProperty(language) ? language : fallbackLanguage;

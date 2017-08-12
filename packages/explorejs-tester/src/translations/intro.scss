@@ -1,0 +1,29 @@
+.my-fig {
+  width: 100%;
+  text-align: right;
+  $border: 1px solid #dedede;
+  margin-bottom: 10px;
+
+  img {
+    background: white;
+    padding: 10px;
+    border-radius: 3px 3px 0 3px;
+    border: $border;
+    width: 100%;
+    background-size: contain;
+  }
+  figcaption {
+    text-align: justify;
+    margin-left:30px;
+    background: white;
+    padding: 5px 11px;
+    border-left: $border;
+    transform: translateY(-1px);
+    border-right: $border;
+    border-radius: 0 0 3px 3px;
+    border-bottom: $border;
+    font-style: italic;
+    display: inline-block;
+    font-size: 0.91em;
+  }
+}
