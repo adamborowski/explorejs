@@ -4,7 +4,7 @@ export default (slide) => [
   <div className="text-justify">
     <h3 className="display-3">Hello!</h3>
     <p>
-      I invite you to participate in this unusual interactive survey.
+      I encourage you to participate in this unusual interactive survey.
       The purpose of the survey is to gain subjective opinions about solutions of some software engineering problem.
     </p>
     <p>
