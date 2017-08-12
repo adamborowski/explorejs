@@ -88,7 +88,7 @@ export default function bootstrap(schema) {
     name: '+ Cache',
     description: ml(<p>
       More advanced solution.
-      It gets proper aggregation level and requests the server for only part of displayed range,
+      It calculates proper aggregation level and requests the server for only that part of displayed range,
       which is not already fetched, then it merges it with cached values.
       That way the cache grows as new requests are performed but actual chart is updated with data required to display,
       not all data in cache.
@@ -130,7 +130,7 @@ export default function bootstrap(schema) {
           higher level of aggregation.
           It works like showing low-level resolution fragments on a geo map as a fallback when actual map is being
           loaded.
-          For example, if you look at hours aggregations and you miss some part of data, it will fill the gap using data
+          For example, when you view hour aggregations and you miss some part of data, it will fill the gap using data
           already fetched on higher level of aggregation, ie. day, month.
           This helps mostly when you do panning or you do zooming-in to the range which was partially visited before.
 
@@ -138,7 +138,7 @@ export default function bootstrap(schema) {
         <p>
           Please note that reusing data from lower aggregations can crash the browser.
           For example if you visit a lot of data on low aggregation (so cache has tons of points on that level)
-          and you zoom-out to see all data, the chart would be flooded with tons of points to draw.
+          and you zoom-out to see all data, the chart would be flooded with tons of fallback-points to draw.
           To prevent such situations, it fallbacks only to higher levels.
         </p>
       </div>,
@@ -194,10 +194,10 @@ export default function bootstrap(schema) {
             levels.
             So without this prediction the chart can be empty for a while during zoom-out.
           </li>
-          <li>
-            It recognizes common navigation pattern which is seamless panning to the one direction.
-            In that case it loads more data in that direction (even more that in point 1) in advance.
-          </li>
+          {/*<li>*/}
+            {/*It recognizes common navigation pattern which is seamless panning to the one direction.*/}
+            {/*In that case it loads more data in that direction (even more that in point 1) in advance.*/}
+          {/*</li>*/}
         </ol>
       </div>,
       <div>
@@ -240,7 +240,7 @@ export default function bootstrap(schema) {
         The same as <strong>cache+fallback+predicton</strong> but it optimizes
         queries sent to the server. For example, if a given range is being fetched
         and there is request for range which overlaps with given range, it will request for a subrange which does not
-        overlap with already loading range.
+        overlap with already loading range (occures when the user navigates very fast).
         It can help when a database is slow and we should query as few data as possible.
       </p>,
       <p>
