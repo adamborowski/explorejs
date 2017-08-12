@@ -121,7 +121,7 @@ export default (slide) => [
 
     </p>
     <p>
-      Dla przykładu, jeżeli na typowym monitorze chcemy obejrzeć nasze dane w zakresie jednego roku, to liczba puntów
+      Dla przykładu, jeżeli na typowym monitorze chcemy obejrzeć nasze dane w zakresie jednego roku, to liczba punktów
       pomiarowych (około 3 miliony) znacznie przekracza liczbę pikseli w poziomie (około 2 tysiące).
       Zagęszczenie punktów na jednym rzędzie pikseli wyniesie kilka tysięcy.
       Takie zagęszczenie danych na ekranie jest zupełnie niepotrzebne, ze względu na wspomniane właśnie ograniczenia
@@ -144,18 +144,18 @@ export default (slide) => [
       Aby stworzyć uproszczoną formę danych pomiarowych, wprowadza się pojęcie <strong>agregacji danych</strong>.
     </p>
     <p>
-      W tym przypadku agragacja to pewna struktura danych opisująca generalne cechy grupy danych.
+      W tym przypadku agregacja to pewna struktura danych opisująca generalne cechy grupy danych z pewnego zakresu.
       Do obliczenia agregacji wykorzystuje się <em>agregaty</em> - funkcje matematyczne wyliczjące określoną statystykę.
-      W tego typu systemach popularnymi agragatami są minimum, maksimum oraz wartość średnia.
+      W tego typu systemach popularnymi agregatami są minimum, maksimum oraz wartość średnia.
     </p>
     <p>
       Przykład agregacji:
     </p>
     <blockquote>
-      W sierpniu 2017 maksymalna temperatura wyniosła 33&deg;C, minimalna 15&deg;C, a średnia 21.34&deg;.
+      W sierpniu 2017 maksymalna temperatura wyniosła 33&deg;C, minimalna 15&deg;C, a średnia 21.34&deg;C.
     </blockquote>
     <p>
-      Jest to zbiór, który w prosty i zwięzły sposób opisuje najważniejsze ogólne cechy całego zbioru pomiarów
+      Jest to zbiór, który w prosty i zwięzły sposób opisuje najważniejsze ogólne cechy zakresu pomiarów
       dokonanych w sierpniu 2017.
     </p>
     <p>
@@ -175,7 +175,8 @@ export default (slide) => [
     </h3>
     <p>
       Warunkiem koniecznym tego rozwiązania jest, aby serwer na każde żądanie mógł odpowiedzieć w bardzo krótkim czasie.
-      W tym celu serwer musi obliczyć agregacje (formy uproszczone), zanim zostanie o nie poproszony.
+      W tym celu serwer musi obliczyć agregacje (formy uproszczone), zanim zostanie o nie poproszony, ponieważ
+      obliczenie agregacji dla większych zakresów może trwać zbyt długo.
     </p>
     <p>
       Serwer danych trzyma w bazie specjalnie przygotowanej bazie dane oryginalne (generowane co 10s) (tutaj 9.5GB) oraz
@@ -202,7 +203,7 @@ export default (slide) => [
       Ważne jest, by tak dobrać wielkości agregacji, by dla każdego możliwego przybliżenia (skali) wykresu można było
       żądać dane o takiej wielkości agregacji, by odpowiadały blisko, lecz nie więcej niż jednemu pionu pikselów.
       Gdyby tak nie było, trzeba by było żądać mniejszych agregacji, co spowoduje niepotrzebnie zbyt dużą gęstość danych
-      do wyświetlenia na ekranie.
+      do wyrysowania na ekranie.
     </p>
     <p>(obrazek - za dużo, za mało, w sam raz)</p>
   </div>,
