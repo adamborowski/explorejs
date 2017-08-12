@@ -32,8 +32,7 @@ export default (slide) => [
       <small> to the issue</small>
     </h3>
     <p>
-      The problem touches four different computer engineering fields: visual exploration, Big Data, internet
-      applications and User Experience:
+      The problem touches four different computer engineering fields:
     </p>
     <ul>
       <li><em>Visual exploration</em> because it's about browsing interactive time series charts, for example: density

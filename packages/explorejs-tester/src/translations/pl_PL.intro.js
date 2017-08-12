@@ -31,8 +31,7 @@ export default (slide) => [
       <small> do zagadnienia</small>
     </h3>
     <p>
-      Zagadnienie pochodzi z pogranicza czterech dziedzin: wizualnej eksploracji danych, Big Data, Aplikacji
-      Internetowych oraz tzw. User Experience:
+      Zagadnienie pochodzi z pogranicza czterech dziedzin:
     </p>
     <ul>
       <li><em>Wizualnej eksploracji danych</em>, bo chodzi o umożliwienie przeglądania wykresów serii
@@ -60,7 +59,7 @@ export default (slide) => [
     <p>
       Załóżmy, że z punktu widzenia badawczego zasadne jest, aby brać pod uwagę ostatnie pięćdziesiąt lat pomiarów
       wykonywanych z częstotliwością co 10 sekund.
-      Dodatkowo załóżmy, że w analize wartościowe jest zarówno przeglądanie większych zakresów danych by wysnuć
+      Dodatkowo załóżmy, że w analizie wartościowe jest zarówno przeglądanie większych zakresów danych by wysnuć
       generalne wnioski
       oraz przeglądanie poszczególnych incydentów.
     </p>
