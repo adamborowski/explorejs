@@ -96,6 +96,30 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
            style={{marginTop: 40}}
            type="submit">{trans('session.finish')}</a>
       </div>
+      <div className="text-left">
+        <label style={{display: 'block'}}>
+        <span style={{
+          margin: '7px 15px',
+          display: 'inline-block',
+          verticalAlign: 'bottom'
+        }}>{trans('session.instructions.help')}</span>
+          <Toggle
+            checked={props.showInstructions}
+            className="custom-classname"
+            onChange={v => props.actions.switchInstructions(v.target.checked)}/>
+        </label>
+        {
+          props.showInstructions && <div className="well" style={{display: 'inline-block'}}>
+            <h4>{trans('session.instructions.header')}</h4>
+            <ul>
+              <li>{trans('session.instructions.zoom')}</li>
+              <li>{trans('session.instructions.pan')}</li>
+            </ul>
+            <h5>{trans('session.instructions.stepsHeader')}</h5>
+            {trans('session.instructions.steps')}
+          </div>
+        }
+      </div>
     </div>
   );
 });
@@ -107,6 +131,7 @@ ScenarioSessionPage.propTypes = {
   adapter: PropTypes.oneOf(adapterTypes),
   answers: PropTypes.array,
   throttleNetwork: PropTypes.bool,
+  showInstructions: PropTypes.bool,
   networkSpeed: PropTypes.number,
   availableNetworkSpeed: PropTypes.arrayOf(PropTypes.number)
 };
@@ -120,7 +145,8 @@ const mapStateToProps = (state, ownProps) => ({
   adminMode: state.testing.adminMode,
   throttleNetwork: state.throttleNetwork,
   networkSpeed: state.networkSpeed,
-  availableNetworkSpeed: state.testing.availableNetworkSpeed
+  availableNetworkSpeed: state.testing.availableNetworkSpeed,
+  showInstructions: state.showInstructions
 });
 
 const mapActionsToProps = (dispatch) => ({

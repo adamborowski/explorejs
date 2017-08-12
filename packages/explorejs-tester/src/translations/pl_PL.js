@@ -27,7 +27,22 @@ export default {
     speed: 'Prędkość połączenia',
     noThrottleWarning: 'Uwaga! Bez symulacji wolnego łącza możesz nie dostrzeć różnicy.',
     wrongOrderWarningHeader: 'Uwaga!',
-    wrongOrderWarning: conf => <div>Proszę najpierw ocenić konfigurację <em>{conf}</em>.</div>
+    wrongOrderWarning: conf => <div>Proszę najpierw ocenić konfigurację <em>{conf}</em>.</div>,
+    instructions:{
+      help:'Pokaż pomoc',
+      header:'Instukcja nawigacji',
+      zoom:'przybliżania/oddalanie (zoom) - użyj kółka myszy',
+      pan:'przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT',
+      stepsHeader:'Sugerowane kroki',
+      steps: <ol>
+        <li>idź w prawo i z powrotem w lewo, kilka razy</li>
+        <li>oddal się aby zobaczyć wszystkie dane</li>
+        <li>przybliż się kilka razy</li>
+        <li>idź w jednym kierunku kilka razy</li>
+        <li>przybliż się by zobaczyć surowe dane</li>
+        <li>oddal się z powrotem by zobaczyć wszystkie dane</li>
+      </ol>
+    }
   },
   scenario: {
     back: 'Poprzednia',

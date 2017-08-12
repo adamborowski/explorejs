@@ -29,7 +29,22 @@ export default {
     speed: 'Network speed',
     noThrottleWarning: 'Warning! Without throttling you may not notice the difference.',
     wrongOrderWarningHeader: 'Oh Snap!',
-    wrongOrderWarning: conf => <div>You should look at <em>{conf}</em> configuration and score it first.</div>
+    wrongOrderWarning: conf => <div>You should look at <em>{conf}</em> configuration and score it first.</div>,
+    instructions:{
+      help:'Show help',
+      header:'How to use a chart',
+      zoom:'To zoom the chart in and out - use your mouse wheel',
+      pan:'To pan the chart left and right - hold shift key, then use your mouse wheel',
+      stepsHeader:'Navigation suggestions',
+      steps: <ol>
+        <li>pan right and left few times back and forth several times</li>
+        <li>zoom out to see all the data</li>
+        <li>zoom in few times</li>
+        <li>pan in one direction few times</li>
+        <li>zoom in to see raw data</li>
+        <li>zoom out again to see all data</li>
+      </ol>
+    }
   },
   scenario: {
     back: 'Back',
