@@ -239,7 +239,7 @@ export default (slide) => [
   <div>
     <h3 className="display-3">Proposed solution</h3>
     <p>
-      The solution's purpose is to make the user exploring data without experiencing the negative effects of network
+      The solution's purpose is to make enable users to explore visual data without experiencing the negative effects of network
       delays,
       to hide the fact that the data is located on a remote server.
 
