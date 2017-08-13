@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
 import initialState from './initialState';
 
-import {FINISH_INTRO, SUMMARY_QUESTION_ANSWERED, SWITCH_INSTRUCTIONS} from '../constants/actionTypes';
+import {
+  FINISH_INTRO, SEND_COMPLETE, SEND_ERROR, SEND_STARTED, SUMMARY_QUESTION_ANSWERED,
+  SWITCH_INSTRUCTIONS
+} from '../constants/actionTypes';
 
 export default function testingReducer(state = initialState.testing, action) {
   return state; // todo maybe impement something here
@@ -36,4 +39,14 @@ export const introFinishedReducer = (state = false, action) => {
   return state;
 };
 
-
+export const sendStateReducer = (state = {loading: false, completed: false, error: null}, action) => {
+  switch (action.type) {
+    case SEND_STARTED:
+      return {loading: true, completed: false, error: null};
+    case SEND_COMPLETE:
+      return {loading: false, completed: true, error: null};
+    case SEND_ERROR:
+      return {loading: false, completed: false, error: action.message};
+  }
+  return state;
+};

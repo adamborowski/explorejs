@@ -63,3 +63,8 @@ export const answerSummaryQuestion = (questionId, value) => ({
 export const switchInstructions = () => ({type: types.SWITCH_INSTRUCTIONS});
 export const sendSurvey = () => ({type: types.SEND_SURVEY});
 export const finishIntroduction = () => ({type: types.FINISH_INTRO});
+
+
+export const sendStarted = () => ({type: types.SEND_STARTED});
+export const sendComplete = () => ({type: types.SEND_COMPLETE});
+export const sendError = (message) => ({type: types.SEND_ERROR, message});

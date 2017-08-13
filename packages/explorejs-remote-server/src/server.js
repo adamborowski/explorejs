@@ -47,10 +47,12 @@ module.exports = (port, fetcher, survey) => {
             const data = req.body;
 
 
+
             await survey.addResponse(name, time, data, req.query.isTesting || true);
             res.send({success: true});
         }
         catch (e) {
+            console.error(e);
             res.status(500).send(e.message);
         }
 

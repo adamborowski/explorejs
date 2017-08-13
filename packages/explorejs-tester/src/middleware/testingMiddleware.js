@@ -3,6 +3,7 @@ import {pushNotification} from '../actions/notificationActions';
 import {operations} from '../redux/dialog/index';
 import {SESSION_SCORE, SESSION_CREATE, SEND_SURVEY} from '../constants/actionTypes';
 import {push, LOCATION_CHANGE} from 'react-router-redux';
+import {sendComplete, sendError, sendStarted} from '../actions/testingActions';
 
 export default  store => next => action => {
   const newAction = {...action};
@@ -33,26 +34,6 @@ export default  store => next => action => {
         }
       }
       break;
-    case SEND_SURVEY: {
-      const answers = state.finalAnswers;
-      const session = createSession(state);
-      const sessions = session.Session.all().toRefArray();
-
-      var _navigator = {};
-      for (var i in navigator) _navigator[i] = navigator[i];
-
-
-      const payload = {
-        time: new Date().getTime(),
-        answers,
-        sessions,
-        navigator: _navigator
-      };
-
-      localStorage.setItem('survey/' + new Date().toISOString(), JSON.stringify(payload));
-      console.warn('TODO send survey response', payload);
-
-    }
   }
   // switch (newAction.type) {
   //   case SESSION_SCORE: {
@@ -102,6 +83,56 @@ export default  store => next => action => {
       store.dispatch(action2);
       break;
     }
+    case SEND_SURVEY: {
+      const answers = state.finalAnswers;
+      const session = createSession(state);
+      const sessions = session.Session.all().toRefArray();
+
+      var _navigator = {};
+      for (var i in navigator) _navigator[i] = navigator[i];
+
+
+      const payload = {
+        time: new Date().getTime(),
+        answers,
+        sessions,
+        navigator: _navigator
+      };
+
+      localStorage.setItem('survey/' + new Date().toISOString(), JSON.stringify(payload));
+
+      store.dispatch(sendStarted())
+
+      const isTesting = localStorage.getItem('testing');
+
+      function handleErrors(response) {
+        if (!response.ok) {
+          throw Error(`Server error ${response.status} - ${response.statusText}`);
+        }
+        return response;
+      }
+
+      fetch('/api/susrveys' + (isTesting ? '?isTesting=true' : '?isTesting=false'), {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }).then(handleErrors)
+        .then(res => res.json())
+        .then(res => {
+          store.dispatch(sendComplete())
+          return console.log(res);
+        })
+        .catch(e => {
+          store.dispatch(sendError(e.message));
+        })
+      ;
+
+
+    }
+      break;
   }
 
 };

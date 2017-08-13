@@ -3,7 +3,8 @@ import fuelSavings from './fuelSavingsReducer';
 import testing, {
   finalAnswersReducer as finalAnswers,
   switchInstructionsReducer as showInstructions,
-  introFinishedReducer as introFinished
+  introFinishedReducer as introFinished,
+  sendStateReducer as sendState
 } from './testingReducer';
 import notifications from './notificationReducer';
 import adapter from './adapterReducer';
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   networkSpeed,
   finalAnswers,
   showInstructions,
-  introFinished
+  introFinished,
+  sendState
 });
 
 export default rootReducer;
