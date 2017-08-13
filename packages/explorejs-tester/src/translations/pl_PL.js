@@ -43,7 +43,9 @@ export default {
         <li>przybliż się by zobaczyć surowe dane</li>
         <li>oddal się z powrotem by zobaczyć wszystkie dane</li>
       </ol>
-    }
+    },
+    expandInfo: 'Pokaż opis',
+    collapseInfo: 'Ukryj opis'
   },
   scenario: {
     back: 'Poprzednia',

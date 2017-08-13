@@ -12,6 +12,8 @@ import './ScenarioPage.scss';
 import nextPrevHelper from '../../../utils/next-prev-helper.js';
 import trans from '../../../translations/trans';
 import NavLink from '../../common/NavLink';
+import {Collapse} from 'react-bootstrap';
+import CollapsePanel from '../../common/CollapsePanel';
 
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
@@ -40,7 +42,9 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
           {trans('general.configuration')} &raquo; &nbsp;
           <small>{dynamicTrans(scenario.name)}</small>
         </h2>
-        { dynamicTrans(scenario.description) }
+        <CollapsePanel forceExpand={sessions.length === 0} expandLabel={trans('session.expandInfo')} collapseLabel={trans('session.collapseInfo')}>
+          {dynamicTrans(scenario.description)}
+        </CollapsePanel>
 
       </div>
 

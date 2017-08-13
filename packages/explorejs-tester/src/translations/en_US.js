@@ -45,7 +45,9 @@ export default {
         <li>zoom in to see raw data</li>
         <li>zoom out again to see all data</li>
       </ol>
-    }
+    },
+    expandInfo: 'Show description',
+    collapseInfo: 'Hide description'
   },
   scenario: {
     back: 'Back',
