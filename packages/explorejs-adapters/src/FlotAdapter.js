@@ -112,7 +112,7 @@ export default class FlotAdapter {
         end = new Date(end).getTime();
         const a = this.plot.getOptions().xaxes[0];
 
-        const minRange = 500000;
+        const minRange = 100000;
 
         if (end - start < minRange) {
             start = a.min;
