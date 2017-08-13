@@ -235,7 +235,7 @@ export default (slide) => [
     <figure className="my-fig">
       <img src={fig4_too_sparse} alt="missing"/>
       <figcaption>zbyt obszerne agregacje, nie wszystkie piskele zawierają punkt - niska rozdzielczość zostanie
-        zauważone przez użytkownika
+        zauważona przez użytkownika
       </figcaption>
     </figure>
   </div>,

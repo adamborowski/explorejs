@@ -34,7 +34,7 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
 
   return (
     <div className="scenario-page">
-      <div className="well">
+      <div className="well" style={{fontSize:'1.2em'}}>
         <h2 className="page-header">
 
           {trans('general.configuration')} &raquo; &nbsp;
