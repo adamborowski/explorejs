@@ -7,9 +7,9 @@ export default {
     en_US: 'Angielski'
   },
   general: {
-    configuration: 'Konfiguracja',
-    testConfigurations: 'Konfiguracje testowe',
-    title: 'ExploreJS interaktywna ankieta',
+    configuration: 'Wersja',
+    testConfigurations: 'Oceniane wersje',
+    title: 'interaktywna ankieta ExploreJS',
     beginSurvey: 'Przejdź do ankiety',
     skipSurvey:'Pomiń wstęp i przejdź do ankiety',
     goToBase: 'Przejdź do wersji podstawowej',

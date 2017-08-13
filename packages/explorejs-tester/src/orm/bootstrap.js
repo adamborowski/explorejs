@@ -85,7 +85,7 @@ export default function bootstrap(schema) {
   });
   const scenarioB = Scenario.create({
     id: 1, // optional.
-    name: '+ Cache',
+    name: {en_US: 'with cache', pl_PL: 'z pamięcią podręczną'},
     description: ml(<p>
       More advanced solution.
       It calculates proper aggregation level and requests the server for only that part of displayed range,
@@ -122,7 +122,7 @@ export default function bootstrap(schema) {
   });
   const scenarioC = Scenario.create({
     id: 2, // optional.
-    name: '+ Fallback',
+    name: {en_US: 'with cache projection', pl_PL: 'z projekcją pamięci podręcznej'},
     description: ml(
       <div>
         <p>
@@ -176,7 +176,7 @@ export default function bootstrap(schema) {
   });
   const scenarioD = Scenario.create({
     id: 3, // optional.
-    name: {en_US: '+ Prediction', pl_PL: '+ Predykcja'},
+    name: {en_US: 'with prediction engine', pl_PL: 'z mechanizmem predykcji'},
     description: ml(
       <div>
         <p>
@@ -239,7 +239,7 @@ export default function bootstrap(schema) {
   });
   const scenarioE = Scenario.create({
     id: 4, // optional.
-    name: {en_US: '+ Query Optimization', pl_PL: '+ Optymalizacja zapytań'},
+    name: {en_US: 'with query optimization', pl_PL: 'z optymalizacją'},
     description: ml(
       <p>
         The same as <strong>cache+fallback+predicton</strong> but it optimizes
