@@ -101,5 +101,8 @@ export default {
       {question: 'Any additional comments regarding ExploreJS?'},
       {question: 'Your name (if I know you)'},
     ]
+  },
+  send: {
+    error: message => `Unable to send the response. ${message}`
   }
 };

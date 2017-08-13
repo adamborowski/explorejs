@@ -99,5 +99,8 @@ export default {
       {question: 'Dodatkowe przemyślenia o ExploreJS?'},
       {question: 'Twoje imię/nick/nazwisko (jeżeli się znamy)'},
     ]
+  },
+  send: {
+    error: message => `Nie udało się wysłać odpowiedzi. ${message}`
   }
 };

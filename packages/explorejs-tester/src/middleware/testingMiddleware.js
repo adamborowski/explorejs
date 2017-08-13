@@ -1,9 +1,10 @@
 import {availableScoreSelector, createSession, sessionByIdSelector} from '../selectors/testingSelectors';
 import {pushNotification} from '../actions/notificationActions';
 import {operations} from '../redux/dialog/index';
-import {SESSION_SCORE, SESSION_CREATE, SEND_SURVEY} from '../constants/actionTypes';
+import {SESSION_SCORE, SESSION_CREATE, SEND_SURVEY, SEND_ERROR} from '../constants/actionTypes';
 import {push, LOCATION_CHANGE} from 'react-router-redux';
 import {sendComplete, sendError, sendStarted} from '../actions/testingActions';
+import translate from '../translations/language-manager'
 
 export default  store => next => action => {
   const newAction = {...action};
@@ -33,6 +34,15 @@ export default  store => next => action => {
           return;
         }
       }
+      break;
+    case SEND_ERROR: {
+      store.dispatch(operations.showDialog(translate('send.error', action.message), [{
+        key: 'ok',
+        message: 'OK',
+        action: {type: '__accept_send.error'}
+      }]));
+
+    }
       break;
   }
   // switch (newAction.type) {

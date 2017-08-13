@@ -9,14 +9,9 @@ export const Dialog = (props) => {
   }
   const lastMessage = props.messages[0];
   return (<div>
-    <div key={lastMessage.id} className="modal" tabIndex="-1" role="dialog" style={{display: 'block'}}>
+    <div key={lastMessage.id} className="modal" tabIndex="-1" role="dialog" style={{display: 'block', marginTop:300}}>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
-          <div className="modal-header">
-            <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-            <h4 className="modal-title">Modal title</h4>
-          </div>
           <div className="modal-body">
             <p>{lastMessage.message}</p>
           </div>
