@@ -23,7 +23,7 @@ export default (slide) => [
     </blockquote>
     <p>
       Zalecam uważne zapoznanie się z materiałem wprowadzającym do zagadnienia oraz opisami poszczególnych wersji
-      rozwiązania. Ankieta powinna zająć nie dłużej, niż 15 minut.
+      rozwiązania. Ankieta powinna zająć około 30 minut.
     </p>
   </div>,
   <div className="text-justify">
