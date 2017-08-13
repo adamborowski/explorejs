@@ -9,7 +9,7 @@ const mapStateToProps = (state) => ({
   introFinished: state.introFinished
 });
 
-export default connect(mapStateToProps)(trans()(function (props, {trans, language}) {
+export const ReduxHeader = connect(mapStateToProps)(function ({trans, language, ...props}) {
   return (
     <nav className="navbar navbar-inverse navbar-fixed-top">
       <div className="container-fluid">
@@ -35,4 +35,9 @@ export default connect(mapStateToProps)(trans()(function (props, {trans, languag
       </div>
     </nav>
   );
-}));
+});
+
+export default trans()((props, {trans, language}) => {
+  const newProps = {...props, trans, language};
+  return <ReduxHeader {...newProps}/>;
+});
