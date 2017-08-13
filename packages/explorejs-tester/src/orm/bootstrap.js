@@ -28,7 +28,7 @@ export default function bootstrap(schema) {
     baseQuestion: ml('Did you enjoy this visual exploration?', 'Jak ocenisz rozwiązanie podstawowe?'),
     baseAnswers: [
       {color: '#980400', key: -2, label: ml('It was a crap', 'Totalna porażka')},
-      {color: '#aa891f', key: -1, label: ml('I expected something better', 'Spodziewałem się czegoś lepszego')},
+      {color: '#aa891f', key: -1, label: ml('I don\'t like it', 'Nie podoba mi się')},
       {color: '#6e6d67', key: 0, label: ml('Hard to say', 'Ciężko powiedzieć')},
       {color: '#4fcc21', key: 1, label: ml('I like it', 'Podoba mi się')},
       {color: '#00a13b', key: 2, label: ml('I don\'t need anything else', 'Nie trzeba mi niczego więcej')},
