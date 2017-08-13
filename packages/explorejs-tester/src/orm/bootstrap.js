@@ -152,7 +152,7 @@ export default function bootstrap(schema) {
           Działa na zasadzie wyświetlania niskiej rozdzielczości fragmentu mapy do czasu załadowania się właściwego
           kawałka.
 
-          Dla przykłady, jeśli wyświetlane są agregacje godzinne i brakuje kilku punktów w cache, powstała luka zostanie
+          Dla przykładu, jeśli wyświetlane są agregacje godzinne i brakuje kilku punktów w cache, powstała luka zostanie
           zastąpiona fragmentem wcześniej załadowanych danych z wyższego poziomu, np. dnia czy miesiąca.
 
           To jest najbardziej pomocne podczas przesuwania czy przybliżania zakresu, który był wcześniej częściowo
