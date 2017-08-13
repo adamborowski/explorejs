@@ -32,8 +32,8 @@ export default {
     instructions:{
       help:'Pokaż pomoc',
       header:'Instukcja nawigacji',
-      zoom:'przybliżanie/oddalanie (zoom) - użyj kółka myszy',
-      pan:'przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT',
+      zoom:<span>przybliżanie/oddalanie (zoom) - użyj kółka myszy lub <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
+      pan:<span>przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT lub <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
       stepsHeader:'Sugerowana nawigacja',
       steps: <ol>
         <li>idź w prawo jakiś czas i z powrotem w lewo, kilka razy</li>

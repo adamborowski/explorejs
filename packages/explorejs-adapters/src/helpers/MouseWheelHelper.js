@@ -24,7 +24,29 @@ export default class MouseWheelHelper {
 
     init() {
         this.dom.addEventListener('wheel', this.onWheel);
+        window.addEventListener('keydown', this.onKeyPress);
     }
+
+    onKeyPress = (e) => {
+        e.preventDefault();
+
+        const [left, up, right, down] = [37, 38, 39, 40];
+
+        switch (e.keyCode) {
+            case left:
+                this.pan(-1/4);
+                break;
+            case right:
+                this.pan(1/4);
+                break;
+            case up:
+                this.zoom(1/3);
+                break;
+            case down:
+                this.zoom(3);
+                break;
+        }
+    };
 
     onWheel = (e) => {
 
@@ -70,5 +92,6 @@ export default class MouseWheelHelper {
 
     destroy() {
         this.dom.removeEventListener('wheel', this.onWheel);
+        window.removeEventListener('keypress', this.onKeyPress);
     }
 }

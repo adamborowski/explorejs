@@ -33,8 +33,9 @@ export default {
     instructions:{
       help:'Show help',
       header:'How to use a chart',
-      zoom:'To zoom the chart in and out - use your mouse wheel',
-      pan:'To pan the chart left and right - hold shift key, then use your mouse wheel',
+      zoom: <span>To zoom the chart in and out - use your mouse wheel or <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
+      pan:
+        <span>To pan the chart left and right - hold shift key, then use your mouse wheel or <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
       stepsHeader:'Navigation suggestions',
       steps: <ol>
         <li>pan right and left few times back and forth several times</li>
