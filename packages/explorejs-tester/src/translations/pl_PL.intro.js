@@ -170,12 +170,13 @@ export default (slide) => [
       Gdy będzie większa - uproszczenie będzie już zauważalne dla ludzkiego oka.
     </p>
     <figure className="my-fig">
-      <img src={sparse}/>
-      <figcaption>przykład agregacji min, max (zacieniowany obszar) oraz średnia (kreska biegnąca wzdłuż obszaru) - uproszczenie zauważalne dla ludzkiego oka</figcaption>
-    </figure>
-    <figure className="my-fig">
       <img src={perPixel}/>
       <figcaption>przykład agregacji o dopasowanej długości - nie widać uproszczenia</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={sparse}/>
+      <figcaption>przykład źle dobranych agregacji - uproszczenie zauważalne dla ludzkiego oka
+      </figcaption>
     </figure>
     <p>
       Podsumowując - popularne rozwiązanie minimalizuje komunikację między przeglądarką a serwerem, jednak nie jest to

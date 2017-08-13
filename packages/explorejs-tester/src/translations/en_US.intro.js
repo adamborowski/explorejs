@@ -175,12 +175,12 @@ export default (slide) => [
       If it takes more - the simplification will unfortunately be noticeable to the human eye.
     </p>
     <figure className="my-fig">
-      <img src={sparse}/>
-      <figcaption>example of min, max (shaded area) and average (a spline inside) aggregations - simplified form is noticeable</figcaption>
-    </figure>
-    <figure className="my-fig">
       <img src={perPixel}/>
       <figcaption>example of properly fitted aggregations - simplification is not noticeable</figcaption>
+    </figure>
+    <figure className="my-fig">
+      <img src={sparse}/>
+      <figcaption>example of badly fitted aggregations - simplification is noticeable</figcaption>
     </figure>
     <p>
       In conclusion - this is a popular solution that minimizes communication between the browser and the server and
