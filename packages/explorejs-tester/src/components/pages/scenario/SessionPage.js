@@ -105,7 +105,6 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
         }}>{trans('session.instructions.help')}</span>
           <Toggle
             checked={props.showInstructions}
-            className="custom-classname"
             onChange={v => props.actions.switchInstructions(v.target.checked)}/>
         </label>
         {

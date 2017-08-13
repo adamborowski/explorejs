@@ -11,7 +11,7 @@ export const ScenarioListPage = trans()((props, {trans, dynamicTrans}) => {
       <p className="well">
         {trans('general.scenarioIntro', props.scenarios.length)}
       </p>
-      <p>
+      <p className="text-center">
         <a onClick={() => props.navigate('/scenario/0')} className="btn btn-primary btn-lg"
            type="submit">
           {trans('general.goToBase')}
