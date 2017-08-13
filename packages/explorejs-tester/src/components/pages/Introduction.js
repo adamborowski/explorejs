@@ -23,6 +23,7 @@ export default class Introduction extends React.Component {
 
   handleNext() {
     if (this.canNext()) {
+      window.scrollTo(0,0)
       this.setState({currentSlide: this.state.currentSlide + 1});
     }
   }
@@ -33,6 +34,7 @@ export default class Introduction extends React.Component {
 
   handlePrev() {
     if (this.canPrev()) {
+      window.scrollTo(0,0)
       this.setState({currentSlide: this.state.currentSlide - 1});
     }
   }
