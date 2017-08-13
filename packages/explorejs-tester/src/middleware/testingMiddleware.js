@@ -112,7 +112,7 @@ export default  store => next => action => {
         return response;
       }
 
-      fetch('/api/susrveys' + (isTesting ? '?isTesting=true' : '?isTesting=false'), {
+      fetch('/api/surveys' + (isTesting ? '?isTesting=true' : '?isTesting=false'), {
         method: 'post',
         headers: {
           'Accept': 'application/json, text/plain, */*',

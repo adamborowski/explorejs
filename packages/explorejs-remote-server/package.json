@@ -15,12 +15,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "basic-auth": "^1.1.0",
     "body-parser": "^1.17.2",
     "compression": "^1.6.2",
     "connect-history-api-fallback": "^1.3.0",
     "dateformat": "^2.0.0",
     "explorejs-tester": "0.0.10",
     "express": "^4.15.3",
+    "express-basic-auth": "^1.1.1",
     "lodash": "^4.17.4",
     "pg-promise": "^5.9.3",
     "yargs": "^8.0.2"
