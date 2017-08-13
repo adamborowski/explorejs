@@ -92,6 +92,6 @@ export default class MouseWheelHelper {
 
     destroy() {
         this.dom.removeEventListener('wheel', this.onWheel);
-        window.removeEventListener('keypress', this.onKeyPress);
+        window.removeEventListener('keydown', this.onKeyPress);
     }
 }

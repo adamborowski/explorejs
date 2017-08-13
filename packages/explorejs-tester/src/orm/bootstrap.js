@@ -184,9 +184,9 @@ export default function bootstrap(schema) {
         </p>
         <ol>
           <li>
-            It fetches data for additional <em>padding</em> to the left and right of visible range, so it helps mostly
-            when
-            you do panning
+            It fetches data of required resolution for additional <em>padding</em> to the left and right of visible
+            range, so it helps mostly
+            when you do panning
           </li>
           <li>
             If fetches some data on higher aggregation levels so it helps when you do zoom-out and change the level of
@@ -212,7 +212,7 @@ export default function bootstrap(schema) {
         </p>
         <ol>
           <li>
-            ładowane są dodatkowo kawałki danych o tej właściwej rozdzielczości na lewo i prawo od wyświetlanego
+            ładowane są dodatkowo kawałki danych o docelowej rozdzielczości na lewo i prawo od wyświetlanego
             zakresu, by wyjść na przeciw
             nawigacji horyzontalnej (ang. <em>panning</em>),
           </li>

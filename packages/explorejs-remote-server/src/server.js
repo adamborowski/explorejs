@@ -7,7 +7,7 @@ module.exports = (port, fetcher, survey) => {
     const app = express();
 
     app.use(compression());
-    app.use(bodyParser.json());
+    app.use(bodyParser.json({limit: '50mb', extended: true}));
 
 
     app.get('/api/manifest', async (req, res) => {
