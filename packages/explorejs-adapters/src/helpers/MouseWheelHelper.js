@@ -28,22 +28,25 @@ export default class MouseWheelHelper {
     }
 
     onKeyPress = (e) => {
-        e.preventDefault();
 
         const [left, up, right, down] = [37, 38, 39, 40];
 
         switch (e.keyCode) {
             case left:
                 this.pan(-1/4);
+                e.preventDefault();
                 break;
             case right:
                 this.pan(1/4);
+                e.preventDefault();
                 break;
             case up:
                 this.zoom(1/3);
+                e.preventDefault();
                 break;
             case down:
                 this.zoom(3);
+                e.preventDefault();
                 break;
         }
     };

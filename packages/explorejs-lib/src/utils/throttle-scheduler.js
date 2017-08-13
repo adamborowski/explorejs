@@ -49,16 +49,19 @@ export default (initialSpeed = null) => {
 
     let speed = initialSpeed;
     let tasks = [];
+    let initialMode = true;
+    setTimeout(() => initialMode = false, 1000);
 
     return {
         setSpeed(newSpeed = null) {
             speed = newSpeed;
             for (const task of tasks) {
-                task.setSpeed(speed);
+                task.setSpeed(speed);// for first couple request we do not want to simulate (for survey purpose)
             }
         },
         addTask(size, callback, timeOffset = 0) {
-            if (speed === null) {
+
+            if (initialMode || speed === null) {
                 callback(new Date());
             } else {
 
