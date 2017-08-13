@@ -129,7 +129,9 @@ export default  store => next => action => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
-      }).then(handleErrors)
+      })
+        .then(res => new Promise((fulfill) => setTimeout(() => fulfill(res), 1000)))
+        .then(handleErrors)
         .then(res => res.json())
         .then(res => {
           store.dispatch(sendComplete())
