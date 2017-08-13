@@ -21,12 +21,12 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
 
   return (
     <div className="session-page text-center">
-      { adminMode && <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
-                                 callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
+      {adminMode && <NavButtons collection={scenario.sessions.all().toRefArray()} currentItem={session.ref}
+                                callback={item => props.navigate(`/scenario/${scenario.id}/session/${item.id}`)}/>
       }
 
 
-      { adminMode &&
+      {adminMode &&
       <div className="form-inline pull-right">
         <div className="form-group">
           <label htmlFor="adapter-type" style={{padding: '0 10px '}}>Choose chart library:</label>
@@ -44,9 +44,9 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
         </div>
       </div>
       }
-      <h1>{trans('general.configuration')} &raquo;&nbsp;
+      <h2 style={{marginTop: 0}}>{trans('general.configuration')} &raquo;&nbsp;
         <small>{dynamicTrans(scenario.name)}</small>
-      </h1>
+      </h2>
 
       <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
         <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}
@@ -58,67 +58,75 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
         </LocalBinding>
       </div>
 
-      <label>
+      <div className="row text-left">
+        <div className="col-md-3">
+          <label>
         <span style={{
-          margin: '7px 15px',
+          margin: '7px 15px 7px 0',
           display: 'inline-block',
           verticalAlign: 'bottom'
         }}>{trans('session.simulate')}</span>
-        <Toggle
-          checked={props.throttleNetwork}
-          className="custom-classname"
-          onChange={v => props.actions.changeThrottleNetwork(v.target.checked)}/>
-      </label>
-      <Fade in={!props.throttleNetwork}>
-        <div style={{marginTop: 5}}>
-          {trans('session.noThrottleWarning')}
-        </div>
-      </Fade>
-      <Fade in={props.throttleNetwork}>
-        <div style={{marginTop: 5}}>
-          <label>
+            <Toggle
+              checked={props.throttleNetwork}
+              className="custom-classname"
+              onChange={v => props.actions.changeThrottleNetwork(v.target.checked)}/>
+          </label>
+          <Fade in={!props.throttleNetwork}>
+            <div style={{marginTop: 5}}>
+              {trans('session.noThrottleWarning')}
+            </div>
+          </Fade>
+          <Fade in={props.throttleNetwork}>
+            <div style={{marginTop: 5}}>
+              <label>
             <span style={{
-              margin: '7px 15px',
+              margin: '7px 15px 7px 0',
               display: 'inline-block',
               verticalAlign: 'bottom'
             }}>{trans('session.speed')}</span>
-            <DropdownButton title={props.networkSpeed + ' kB/s'} key={props.networkSpeed}
-                            id={`dropdown-throttle`}
-                            onSelect={(key) => props.actions.changeNetworkSpeed(key)}
-            >
-              {props.availableNetworkSpeed.map(a => <MenuItem key={a} eventKey={a}>{a}kB/s</MenuItem>)}
-            </DropdownButton>
-          </label>
-        </div>
-      </Fade>
-      <div className="text-center">
-        <a onClick={() => props.navigate(`/scenario/${scenario.id}`)} className="btn btn-primary btn-lg"
-           style={{marginTop: 40}}
-           type="submit">{trans('session.finish')}</a>
-      </div>
-      <div className="text-left">
-        <label style={{display: 'block'}}>
-        <span style={{
-          margin: '7px 15px',
-          display: 'inline-block',
-          verticalAlign: 'bottom'
-        }}>{trans('session.instructions.help')}</span>
-          <Toggle
-            checked={props.showInstructions}
-            onChange={v => props.actions.switchInstructions(v.target.checked)}/>
-        </label>
-        {
-          props.showInstructions && <div className="well" style={{display: 'inline-block'}}>
-            <h4>{trans('session.instructions.header')}</h4>
-            <ul>
-              <li>{trans('session.instructions.zoom')}</li>
-              <li>{trans('session.instructions.pan')}</li>
-            </ul>
-            <h5>{trans('session.instructions.stepsHeader')}</h5>
-            {trans('session.instructions.steps')}
+                <DropdownButton title={props.networkSpeed + ' kB/s'} key={props.networkSpeed}
+                                id={`dropdown-throttle`}
+                                onSelect={(key) => props.actions.changeNetworkSpeed(key)}
+                >
+                  {props.availableNetworkSpeed.map(a => <MenuItem key={a} eventKey={a}>{a}kB/s</MenuItem>)}
+                </DropdownButton>
+              </label>
+            </div>
+          </Fade>
+          <div className="text-justify">
+            <a onClick={() => props.navigate(`/scenario/${scenario.id}`)} className="btn btn-success btn-lg"
+               style={{marginTop: 40}}
+               type="submit">{trans('session.finish')}</a>
           </div>
-        }
+        </div>
+        <div className="col-md-9">
+          <div className="text-left">
+            <label style={{display: 'block'}}>
+              <span style={{
+                margin: '7px 15px',
+                display: 'inline-block',
+                verticalAlign: 'bottom'
+              }}>{trans('session.instructions.help')}</span>
+              <Toggle
+                checked={props.showInstructions}
+                onChange={v => props.actions.switchInstructions(v.target.checked)}/>
+            </label>
+            {
+              props.showInstructions && <div className="well" style={{fontSize: '0.95em'}}>
+                <h4>{trans('session.instructions.header')}</h4>
+                <ul>
+                  <li>{trans('session.instructions.zoom')}</li>
+                  <li>{trans('session.instructions.pan')}</li>
+                </ul>
+                <h5>{trans('session.instructions.stepsHeader')}</h5>
+                {trans('session.instructions.steps')}
+              </div>
+            }
+          </div>
+        </div>
       </div>
+
+
     </div>
   );
 });

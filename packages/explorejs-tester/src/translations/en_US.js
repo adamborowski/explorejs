@@ -26,7 +26,7 @@ export default {
   session: {
     finish: 'Finish and score',
     simulate: 'Simulate slow network',
-    speed: 'Network speed',
+    speed: 'Transmission speed',
     noThrottleWarning: 'Warning! Without throttling you may not notice the difference.',
     wrongOrderWarningHeader: 'Oh Snap!',
     wrongOrderWarning: conf => <div>You should look at <em>{conf}</em> configuration and score it first.</div>,
