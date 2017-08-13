@@ -145,12 +145,12 @@ export default function bootstrap(schema) {
       <div>
         <p>
           Rozwiązanie takie samo jak z <strong>cache</strong>, ale dodatkowo dzięki wykorzystywaniu danych z wyższych
-          poziomów
-          agregacji w pamięci podręcznej pozwala na progresywne wyświetlenie ładowanych danych.
+          poziomów agregacji z pamięci podręcznej (dane o mniejszej rozdzielczości) pozwala na progresywne wyświetlenie
+          ładowanych danych.
         </p>
         <p>
-          Działa na zasadzie wyświetlania niskiej rozdzielczości fragmentu mapy do czasu załadowania się właściwego
-          kawałka.
+          Działa w ten sposób, że zanim załadują się właściwe dane, zamiast pokazywać pustą przestrzeń, pokazuje dane o
+          mniejszej rozdzielczości, o ile dane mniejszej rozdzielczości są dostępne w cache.
 
           Dla przykładu, jeśli wyświetlane są agregacje godzinne i brakuje kilku punktów w cache, powstała luka zostanie
           zastąpiona fragmentem wcześniej załadowanych danych z wyższego poziomu, np. dnia czy miesiąca.
@@ -160,12 +160,13 @@ export default function bootstrap(schema) {
 
         </p>
         <p>
-          Proszę zwrócić uwagę, że wykorzystanie danych z mniejszych poziomów agregacji może doprowadzić do awarii
+          Proszę zwrócić uwagę, że wykorzystanie do tego celu danych o większej rozdzielczości może doprowadzić do
+          awarii
           przeglądarki.
           Dla przykładu, jeżeli eksplorowano duży obszar w niskiej agregacji (co za tym idzie, w cache jest mnóstwo
           danych na tym poziomie) a następnie wykona się oddalenie, by zobaczyć cały obszar, wykres mógłby być zasilony
           zbyt wielką ilością danych do rysowania, nawet w ramach jednego piksela.
-          Aby zapobiec tym sytuacjom, wykorzystywane są dane z pamięci podręcznej tylko z wyższych poziomów agregacji.
+          Aby zapobiec tym sytuacjom, wykorzystywane są dane z pamięci podręcznej tylko o mniejszej rozdzielczości.
         </p>
       </div>
     ),
@@ -206,16 +207,20 @@ export default function bootstrap(schema) {
           potrzebne w niedalekiej przyszłości. Jest to niejako wyjście na przeciw opóźnieniom sieci, gdyż w momencie,
           gdy użytkownik będzie ich potrzebował, dane będą już dostępne lub w trakcie pobierania z serwera.
         </p>
+        <p>
+          W wyniku każdej akcji użytkownika na wykresie:
+        </p>
         <ol>
           <li>
-            Ładowane są dodatkowo <em>marginesy</em> na lewo i prawo od wyświetlanego zakresu, by wyjść na przeciw
-            nawigacji horyzontalnej (ang. <em>panning</em>).
+            ładowane są dodatkowo kawałki danych o tej właściwej rozdzielczości na lewo i prawo od wyświetlanego
+            zakresu, by wyjść na przeciw
+            nawigacji horyzontalnej (ang. <em>panning</em>),
           </li>
           <li>
-            Ładowane są dodatkowo pewne zakresy danych na wyższych poziomach agregacji, co pomaga, gdy podczas oddalania
-            wykres przełączy się na wyższy poziom agregacji w pamięci podręcznej.
+            ładowane są dodatkowo pewne zakresy danych niższej rozdzielczości by przy oddalaniu się dane o odpowiednich
+            rozdzielczościach były już dostępne.
 
-            To niejako adresuje problem, że nie można wykorzystywać danych z niższego poziomu agreacji.
+            To niejako adresuje problem, że nie można wykorzystywać danych o większych rozdzielczościach.
             Bez tej predykcji wykres może być pusty podczas oddalania się i przełączenia na wyższy poziom agregacji, do
             czasu załadowania właściwych danych.
 
