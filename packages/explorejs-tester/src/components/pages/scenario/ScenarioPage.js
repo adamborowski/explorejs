@@ -76,11 +76,18 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
                 {trans('scenario.again')}
                 <span className="glyphicon glyphicon-repeat" aria-hidden="true" style={iconStyle}/>
               </a>
-              <a onClick={navHandler.handleNext} disabled={!navHandler.canNext()} className="btn btn-primary"
+              <a onClick={navHandler.handleNext} disabled={!navHandler.canNext()}
+                 className={'btn ' + (props.allScored ? 'btn-default' : 'btn-primary')}
                  type="submit">
                 {trans('scenario.next')}
                 <span className="glyphicon glyphicon-menu-right" aria-hidden="true" style={iconStyle}/>
               </a>
+              {props.allScored &&
+              <a onClick={() => props.navigate('/summary')} className="btn btn-primary btn-success"
+                 type="submit">
+                {trans('finalForm.summarize')}
+                <span className="glyphicon glyphicon-step-forward" aria-hidden="true" style={iconStyle}/>
+              </a>}
             </div>
           </div>
         </div>
@@ -103,11 +110,6 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
         ) : null
 
       }
-
-      <div className="text-center" style={{marginTop: 40}}>
-        {props.allScored ? <Link to="/summary"
-                                 className="btn btn-lg btn-default btn-success center">{trans('finalForm.summarize')}</Link> : null}
-      </div>
 
       <div className="list-group">
         {
