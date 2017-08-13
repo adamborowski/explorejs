@@ -35,15 +35,16 @@ export default {
       header:'Instukcja nawigacji',
       zoom:<span>przybliżanie/oddalanie (zoom) - użyj kółka myszy lub <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
       pan:<span>przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT lub <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
-      stepsHeader:'Sugerowana nawigacja',
-      steps: <ol>
-        <li>idź w prawo jakiś czas i z powrotem w lewo, kilka razy</li>
-        <li>oddal się aby zobaczyć wszystkie dane</li>
-        <li>przybliż się kilka razy</li>
-        <li>idź w jednym kierunku jakiś czas</li>
-        <li>przybliż się by zobaczyć surowe dane</li>
-        <li>oddal się z powrotem by zobaczyć wszystkie dane</li>
-      </ol>
+      stepsHeader:'Zwróć uwagę:',
+      steps: <ul>
+        <li>Czy poruszając się poziomo czekasz na załadowanie danych?</li>
+        <li>Czy wracając do miejsc już odwiedzonych musisz ponownie czekać na załadowanie danych?</li>
+        <li>Czy oddalając się nie znika wykres podczas ładowania?</li>
+        <li>Czy oddalając się nie tracisz kontekstu miejsca, od którego się oddaliłeś?</li>
+        <li>Czy przybliżając się do nieodwiedzonego miejsca nie tracisz kontekstu, w którym się poruszałeś?</li>
+        <li>Czy czekając na załadowanie danych (przybliżając się lub przemieszczając w poziomie) dostrzegasz rozmyte obszary o przybliżonym kształcie &mdash; czy jest to pomocne?</li>
+        <li>Czy, po przybliżeniu w nieodwiedzone miejsce, w czasie ruchu poziomego dostrzegasz łączenie obszarów o różnych rozdzielczościach?</li>
+      </ul>
     },
     expandInfo: 'Pokaż opis',
     collapseInfo: 'Ukryj opis'

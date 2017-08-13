@@ -97,8 +97,8 @@ export default class Chart extends React.Component {
     };
 
     static defaultProps = {
-        initialStart: new Date('2013-05-01 00:00'),
-        initialEnd: new Date('2013-05-01 01:00')
+        initialStart: new Date('1995-04-01 00:00'),
+        initialEnd: new Date('1995-04-22 01:00')
     };
 
     static contextTypes = {
