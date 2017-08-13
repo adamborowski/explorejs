@@ -42,7 +42,9 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
           {trans('general.configuration')} &raquo; &nbsp;
           <small>{dynamicTrans(scenario.name)}</small>
         </h2>
-        <CollapsePanel forceExpand={sessions.length === 0} expandLabel={trans('session.expandInfo')} collapseLabel={trans('session.collapseInfo')}>
+        <CollapsePanel
+          // forceExpand={sessions.length === 0}
+          expandLabel={trans('session.expandInfo')} collapseLabel={trans('session.collapseInfo')}>
           {dynamicTrans(scenario.description)}
         </CollapsePanel>
 

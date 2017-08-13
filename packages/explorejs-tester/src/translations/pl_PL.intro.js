@@ -26,9 +26,35 @@ export default (slide) => [
       rozwiązania. Ankieta powinna zająć około 30 minut.
     </p>
   </div>,
+  <div>
+    <h3 className="display-3">
+      Opis zagadnienia
+    </h3>
+    <p>
+      Problem dotyczy płynnego, swobodnego i nieograniczonego przeglądania ogromnej ilości danych na wykresie liniowym z
+      osią czasu.
+    </p>
+    <p>
+      Ograniczenia i wyzwania można śmiało porównać do systemów mapowych. Dla przykładu, w systemie <em>Google
+      Maps </em>
+      odwiedzić możesz każde miejsce na ziemi. Za pomocą kilku intuicyjnych ruchów możesz oddalić się od pomnika Neptuna
+      w Gdańsku, by zobaczyć całą mapę Świata, następnie przyjżeć się z bliska Liberty Island w Nowym Jorku. Wyzwaniem w
+      takim systemie jest zapewnienie, aby użytkownik w ogóle nie musiał czekać na fragmenty map, które chce oglądać, bo
+      przecież nikt nie ładuje z sieci Internet szczegółowych obrazów satelitarnych całej kuli ziemskiej.
+    </p>
+    <p>
+      W przypadku danych pomiarowych, można powiedzieć, że problem jest nieco prostrzy, ponieważ nie poruszamy się po
+      przestrzeni dwuwymiarowej, ale tylko po wymiarze czasu, który układa się na poziomej osi wykresu.
+      Niemniej jednak zapewnienie wysokiej rozdzielczości obrazu na wykresie stanowi wyzwanie, jeżeli chcemy, by
+      użytkownik jak najrzadziej był zmuszony czekać na doładowanie potrzebnych danych.
+      Według <a href="https://www.nngroup.com/articles/response-times-3-important-limits/" target="blank"> Nielsena</a>,
+      oczekiwanie na odpowiedź systemu trwające powyżej 0.1 sekundy jest zauważalne i gdy się wydłuża &mdash; znacznie
+      obniża się efektywność pracy.
+    </p>
+  </div>,
   <div className="text-justify">
     <h3 className="display-3">Wprowadzenie
-      <small> do zagadnienia</small>
+      <small> merytoryczne</small>
     </h3>
     <p>
       Zagadnienie pochodzi z pogranicza czterech dziedzin:

@@ -17,7 +17,7 @@ export default class Introduction extends React.Component {
     super();
     this.state = {
       currentSlide: 0,
-      numSlides: 9
+      numSlides: 10
     };
   }
 
@@ -57,13 +57,13 @@ export default class Introduction extends React.Component {
         {this.canPrev() && <Pager.Item previous onClick={::this.handlePrev}>&larr; {trans('general.prevPage')}</Pager.Item>}
         {this.canNext() && <Pager.Item next onClick={::this.handleNext}>{trans('general.nextPage')} &rarr;</Pager.Item>}
       </Pager>
-      {this.canNext() === false &&
+      {currentSlide > 1 &&
       <p className="text-center">
         <Link className="btn btn-primary btn-lg" to="/scenario/"
               onClick={e => {
                 // e.preventDefault();
                 onFinish();
-              }}>{trans('general.beginSurvey')}</Link>
+              }}>{trans(this.canNext() ? 'general.skipSurvey' : 'general.beginSurvey')}</Link>
       </p> }
     </div>
   }

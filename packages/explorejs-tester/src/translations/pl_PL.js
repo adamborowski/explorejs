@@ -11,6 +11,7 @@ export default {
     testConfigurations: 'Konfiguracje testowe',
     title: 'ExploreJS interaktywna ankieta',
     beginSurvey: 'Przejdź do ankiety',
+    skipSurvey:'Pomiń wstęp i przejdź do ankiety',
     goToBase: 'Przejdź do wersji podstawowej',
     scenarioIntro: (numScenarios) => `Zostanie przedstawionych ${numScenarios} różnych wersji komponentu, każda z 
     nich dostępna jest z menu po lewej stronie. Można też używać przycisków nawigacji, które pojawią się w dolnej części strony.`,

@@ -12,6 +12,7 @@ export default {
     testConfigurations: 'Test configurations',
     title: 'ExploreJS interactive survey',
     beginSurvey: 'Begin survey',
+    skipSurvey:'Skip introduction and begin survey',
     goToBase:'go to base version',
     scenarioIntro: (numScenarios) => `Now you have ${numScenarios} scenarios, you can pick them from the menu on the 
     left or by using contextual buttons that will appear below`,
