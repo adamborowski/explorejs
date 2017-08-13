@@ -112,6 +112,13 @@ export default class FlotAdapter {
         end = new Date(end).getTime();
         const a = this.plot.getOptions().xaxes[0];
 
+        const number = 500000;
+
+        if (end - start < number) {
+            start = a.min;
+            end = a.min + number;
+        }
+
         a.min = start;
         a.max = end;
         this.plot.setupGrid();
