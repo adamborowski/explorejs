@@ -37,15 +37,16 @@ export default {
       zoom: <span>To zoom the chart in and out - use your mouse wheel or <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
       pan:
         <span>To pan the chart left and right - hold shift key, then use your mouse wheel or <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
-      stepsHeader:'Navigation suggestions',
-      steps: <ol>
-        <li>pan right and left few times back and forth several times</li>
-        <li>zoom out to see all the data</li>
-        <li>zoom in few times</li>
-        <li>pan in one direction few times</li>
-        <li>zoom in to see raw data</li>
-        <li>zoom out again to see all data</li>
-      </ol>
+      stepsHeader:'Pay attention to:',
+      steps: <ul>
+        <li>When moving horizontally, are you waiting for data to load?</li>
+        <li>When going back to visited place, do you need to wait for data to load?</li>
+        <li>When zooming-out, does the chart disappear when loading data?</li>
+        <li>When zooming-out, do you loose context of place from which you moved away?</li>
+        <li>When zooming-in to unvisited place, do you loose context of your movement?</li>
+        <li>While waiting for data (after zooming-in or panning), do you notice low-detail shapes similar to data being loaded &mdash; does it help?</li>
+        <li>After zooming-in to unvisited place, while panning, do you notice merge of data with differet resolution?</li>
+      </ul>
     },
     expandInfo: 'Show description',
     collapseInfo: 'Hide description'
