@@ -1,8 +1,11 @@
 const argv = require('./argv');
-const {connect} = require('./data-fetcher');
+const {connect: connectFetcher} = require('./data-fetcher');
+const {connect: connectSurvey} = require('./survey');
 const Server = require('./server');
 
-const fetcher = connect(argv.url);
+const fetcher = connectFetcher(argv.url);
+const survey = connectSurvey(fetcher.getConnection());
+
 
 (async function start() {
     const manifest = await fetcher.getManifest();
@@ -13,6 +16,6 @@ const fetcher = connect(argv.url);
 
     ]);
 
-    const server = Server(Number(argv.port), fetcher);
+    const server = Server(Number(argv.port), fetcher, survey);
 })();
 
