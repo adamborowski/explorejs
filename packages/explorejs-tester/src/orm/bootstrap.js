@@ -126,7 +126,7 @@ export default function bootstrap(schema) {
     description: ml(
       <div>
         <p>
-          The same as <strong>caching</strong> configuration but enables progressive display as it reuses data from any
+          The same as previous version but enables progressive display as it reuses data from any
           higher level of aggregation.
           It works like showing low-level resolution fragments on a geo map as a fallback when actual map is being
           loaded.
@@ -144,7 +144,7 @@ export default function bootstrap(schema) {
       </div>,
       <div>
         <p>
-          Rozwiązanie takie samo jak z <strong>cache</strong>, ale dodatkowo dzięki wykorzystywaniu danych z wyższych
+          Rozwiązanie takie samo jak z poprzednie, ale dodatkowo dzięki wykorzystywaniu danych z wyższych
           poziomów agregacji z pamięci podręcznej (dane o mniejszej rozdzielczości) pozwala na progresywne wyświetlenie
           ładowanych danych.
         </p>
@@ -180,7 +180,7 @@ export default function bootstrap(schema) {
     description: ml(
       <div>
         <p>
-          Same as <strong>cache+fallback</strong> but it prefetches data which may be needed in close future.
+          Same as previous but it prefetches data which may be needed in close future.
         </p>
         <ol>
           <li>
@@ -191,7 +191,7 @@ export default function bootstrap(schema) {
           <li>
             If fetches some data on higher aggregation levels so it helps when you do zoom-out and change the level of
             aggregation to one of higher ones.
-            This kind of prefetching addresses the problem that <strong>fallback</strong> does not get data from lower
+            This kind of prefetching addresses the problem that <strong>cache projection</strong> does not get data from lower
             levels.
             So without this prediction the chart can be empty for a while during zoom-out.
           </li>
@@ -203,7 +203,7 @@ export default function bootstrap(schema) {
       </div>,
       <div>
         <p>
-          Rozwiązanie takie samo jak z <strong>cache+fallback</strong>, ale dodatkowo ładowane są dane, które mogą być
+          Rozwiązanie takie samo jak poprzednie, ale dodatkowo ładowane są dane, które mogą być
           potrzebne w niedalekiej przyszłości. Jest to niejako wyjście na przeciw opóźnieniom sieci, gdyż w momencie,
           gdy użytkownik będzie ich potrzebował, dane będą już dostępne lub w trakcie pobierania z serwera.
         </p>
@@ -239,17 +239,17 @@ export default function bootstrap(schema) {
   });
   const scenarioE = Scenario.create({
     id: 4, // optional.
-    name: {en_US: 'with query optimization', pl_PL: 'z optymalizacją'},
+    name: {en_US: 'with query optimization', pl_PL: 'z optymalizacją zapytań'},
     description: ml(
       <p>
-        The same as <strong>cache+fallback+predicton</strong> but it optimizes
+        The same as previous one but it optimizes
         queries sent to the server. For example, if a given range is being fetched
         and there is request for range which overlaps with given range, it will request for a subrange which does not
         overlap with already loading range (occures when the user navigates very fast).
         It can help when a database is slow and we should query as few data as possible.
       </p>,
       <p>
-        Rozwiązanie takie samo, jak <strong>cache+fallback+predykcja</strong>, ale dodatkowo optymalizowane są zapytania
+        Rozwiązanie takie samo, jak poprzednie, ale dodatkowo optymalizowane są zapytania
         do serwera.
         Na przykład, jeśli pobierany jest dany zakres z serwera i ma zostać pobrany zakres, który częściowo nakłada się
         z tym zakresem, do serwera zostanie wysłane zapytanie o tylko tę część zakresu, która nie jest aktualnie
