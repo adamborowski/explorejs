@@ -104,7 +104,7 @@ export default (slide) => [
       Faktycznie, ze wspomnianych wcześniej względów nie jest możliwe zbudowanie aplikacji, która pobiera wszystkie dane
       na początku,
       i je wszystkie potem wyświetla. Wykreślenie milionów punktów też zajmuje sporą część mocy obliczeniowej komputera
-      użykownika. Takie rozwiązanie po prostu się nie skaluje wraz ze wzrostem zbioru danych do przeglądania.
+      użykownika. Takie rozwiązanie po prostu się nie nadaje do dużych zbiorów danych (nie skaluje się).
     </p>
   </div>,
   <div>
