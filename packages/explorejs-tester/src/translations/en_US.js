@@ -104,5 +104,9 @@ export default {
   },
   send: {
     error: message => `Unable to send the response. ${message}`
+  },
+  greetings:{
+    header:'Thanks :)',
+    body:'Thanks for your participation. Have a nice day!'
   }
 };

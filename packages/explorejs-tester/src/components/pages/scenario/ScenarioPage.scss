@@ -7,3 +7,11 @@
     text-align: justify;
   }
 }
+
+.summary-form-disabled {
+  transition: all 1s;
+  filter: brightness(70%);
+
+  opacity: 0.4;
+
+}

@@ -102,5 +102,9 @@ export default {
   },
   send: {
     error: message => `Nie udało się wysłać odpowiedzi. ${message}`
+  },
+  greetings:{
+    header:'Dziękuję :)',
+    body:'Dziękuję za udział w ankiecie. Miłego dnia!'
   }
 };

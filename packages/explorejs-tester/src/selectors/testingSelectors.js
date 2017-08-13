@@ -32,7 +32,7 @@ export const getFirstWhichHasToBeScored = (state) => schema.session(ormSelector(
   return sessions[sessions.length - 1].score === null;
 });
 
-export const canSurveyBeSent = ({sendState: {loading, completed, error}}) => loading === false && completed === false && error === null;
+export const canSurveyBeSent = ({sendState: {loading, completed, error}}) => loading === false && completed === false;
 export const isSurveySentInProgress = state => state.sendState.loading;
 export const isSurveySent = state => state.sendState.completed;
 export const isSurveySendFailed = state => state.sendState.error !== null;

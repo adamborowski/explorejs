@@ -7,13 +7,16 @@ import {push} from 'react-router-redux';
 import trans from '../../translations/trans';
 import Slider from '../common/Slider';
 import {Alert, Button} from 'react-bootstrap';
+import {canSurveyBeSent, isSurveySentInProgress} from '../../selectors/testingSelectors';
 
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = trans()((props, {trans}) => {
 
+  const {disableForm, canSend} = props;
 
   return (
-    <div className="scenario-page" style={{margin: 'auto', width: 700}}>
+    <div className={'scenario-page ' + (disableForm ? 'summary-form-disabled' : '')}
+         style={{margin: 'auto', width: 700}}>
       <Alert bsStyle="info">
         <strong>{trans('finalForm.header')}</strong>
         <p> { trans('finalForm.intro') }</p>
@@ -51,7 +54,8 @@ const ScenarioPage = trans()((props, {trans}) => {
                      type="text"
                      value={props.finalAnswers[i] || ''}
                      placeholder={trans('finalForm.placeholder')}
-                     onChange={(a) => props.actions.answerSummaryQuestion(i, a.currentTarget.value)}
+                     disabled={disableForm}
+                     onChange={a => props.actions.answerSummaryQuestion(i, a.currentTarget.value)}
               />
           }
 
@@ -64,8 +68,8 @@ const ScenarioPage = trans()((props, {trans}) => {
         })}
       </div>
 
-      <Button bsStyle="primary" bsSize="large"
-              onClick={() => props.actions.sendSurvey()}>{trans('finalForm.send')}</Button>
+      <Button bsStyle="primary" bsSize="large" disabled={!canSend}
+              onClick={canSend ? () => props.actions.sendSurvey() : undefined}>{trans('finalForm.send')}</Button>
     </      div >
   );
 });
@@ -78,7 +82,9 @@ ScenarioPage.propTypes = {
 const mapStateToProps = (state) => ({
   finalForm: state.testing.finalForm,
   colors: state.testing.answers.map(a => a.color),
-  finalAnswers: state.finalAnswers
+  finalAnswers: state.finalAnswers,
+  disableForm: isSurveySentInProgress(state),
+  canSend: canSurveyBeSent(state)
 });
 
 const mapActionsToProps = (dispatch) => ({

@@ -24,7 +24,7 @@ export default (slide) => [
     <p>
       I highly encourage you to read carefully the introduction to the problem and to familiarize with descriptions of
       every version of given solution.
-      This survey should take not longer than 15 minutes.
+      This survey should take not longer than 30 minutes.
     </p>
   </div>,
   <div className="text-justify">
