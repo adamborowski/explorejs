@@ -68,3 +68,8 @@ export const finishIntroduction = () => ({type: types.FINISH_INTRO});
 export const sendStarted = () => ({type: types.SEND_STARTED});
 export const sendComplete = () => ({type: types.SEND_COMPLETE});
 export const sendError = (message) => ({type: types.SEND_ERROR, message});
+
+export const addAnalyticsEvent = (key, time, parameters) => ({
+  type: types.ADD_ANALYTICS_EVENT,
+  payload: {key, time, parameters}
+});

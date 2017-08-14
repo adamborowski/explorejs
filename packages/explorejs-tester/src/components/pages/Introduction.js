@@ -17,14 +17,23 @@ export default class Introduction extends React.Component {
     super();
     this.state = {
       currentSlide: 0,
-      numSlides: 10
+      numSlides: 10,
+      visitedSlides: {0: true},
+      startTime: new Date()
     };
+  }
+
+  goto(slide) {
+    this.setState({
+      currentSlide: slide,
+      visitedSlides: {...this.state.visitedSlides, [slide]: true}
+    });
   }
 
   handleNext() {
     if (this.canNext()) {
       window.scrollTo(0,0)
-      this.setState({currentSlide: this.state.currentSlide + 1});
+      this.goto(this.state.currentSlide + 1);
     }
   }
 
@@ -35,7 +44,7 @@ export default class Introduction extends React.Component {
   handlePrev() {
     if (this.canPrev()) {
       window.scrollTo(0,0)
-      this.setState({currentSlide: this.state.currentSlide - 1});
+      this.goto(this.state.currentSlide - 1);
     }
   }
 
@@ -47,7 +56,7 @@ export default class Introduction extends React.Component {
 
     const {trans} = this.context;
 
-    const {currentSlide, numSlides} = this.state;
+    const {currentSlide, numSlides, visitedSlides, startTime} = this.state;
 
     const {onFinish} = this.props;
 
@@ -62,7 +71,7 @@ export default class Introduction extends React.Component {
         <Link className="btn btn-primary btn-lg" to="/scenario/"
               onClick={e => {
                 // e.preventDefault();
-                onFinish();
+                onFinish(currentSlide, numSlides, visitedSlides, startTime);
               }}>{trans(this.canNext() ? 'general.skipSurvey' : 'general.beginSurvey')}</Link>
       </p> }
     </div>

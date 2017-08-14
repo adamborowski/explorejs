@@ -2,6 +2,7 @@
 import initialState from './initialState';
 
 import {
+  ADD_ANALYTICS_EVENT,
   FINISH_INTRO, SEND_COMPLETE, SEND_ERROR, SEND_STARTED, SUMMARY_QUESTION_ANSWERED,
   SWITCH_INSTRUCTIONS
 } from '../constants/actionTypes';
@@ -47,6 +48,16 @@ export const sendStateReducer = (state = {loading: false, completed: false, erro
       return {loading: false, completed: true, error: null};
     case SEND_ERROR:
       return {loading: false, completed: false, error: action.message};
+  }
+  return state;
+};
+
+
+export const analyticsReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD_ANALYTICS_EVENT: {
+      return [...state, action.payload];
+    }
   }
   return state;
 };

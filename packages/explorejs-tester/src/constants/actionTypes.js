@@ -20,3 +20,4 @@ export const FINISH_INTRO = 'FINISH_INTRO';
 export const SEND_STARTED = 'SEND_STARTED';
 export const SEND_COMPLETE = 'SEND_COMPLETE';
 export const SEND_ERROR = 'SEND_ERROR';
+export const ADD_ANALYTICS_EVENT = 'ADD_ANALYTICS_EVENT';

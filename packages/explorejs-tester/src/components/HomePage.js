@@ -1,10 +1,14 @@
 import React from 'react';
 import Introduction from './pages/Introduction';
-import {finishIntroduction} from '../actions/testingActions';
+import {addAnalyticsEvent, finishIntroduction} from '../actions/testingActions';
 import {connect} from 'react-redux';
+import {INTRO_FINISH} from '../analytics';
 
 const mapDispatchToProps = dispatch => ({
-  onIntroFinish: () => dispatch(finishIntroduction())
+  onIntroFinish: (currentSlide, numSlides, visitedSlides, startTime) => {
+    dispatch(finishIntroduction());
+    dispatch(addAnalyticsEvent(INTRO_FINISH, new Date(), {currentSlide, numSlides, visitedSlides, startTime}))
+  }
 });
 
 const HomePage = connect(null, mapDispatchToProps)((props) => {

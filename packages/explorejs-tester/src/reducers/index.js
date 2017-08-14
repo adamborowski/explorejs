@@ -4,7 +4,8 @@ import testing, {
   finalAnswersReducer as finalAnswers,
   switchInstructionsReducer as showInstructions,
   introFinishedReducer as introFinished,
-  sendStateReducer as sendState
+  sendStateReducer as sendState,
+  analyticsReducer as analytics
 } from './testingReducer';
 import notifications from './notificationReducer';
 import adapter from './adapterReducer';
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   finalAnswers,
   showInstructions,
   introFinished,
-  sendState
+  sendState,
+  analytics
 });
 
 export default rootReducer;

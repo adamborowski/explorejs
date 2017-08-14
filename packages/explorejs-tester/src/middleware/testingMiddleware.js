@@ -106,7 +106,8 @@ export default  store => next => action => {
         time: new Date().getTime(),
         answers,
         sessions,
-        navigator: _navigator
+        navigator: _navigator,
+        analytics: state.analytics
       };
 
       localStorage.setItem('survey/' + new Date().toISOString(), JSON.stringify(payload));
