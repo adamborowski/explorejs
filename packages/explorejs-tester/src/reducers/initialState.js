@@ -46,7 +46,7 @@ export default {
   finalAnswers:{},
   notifications: [],
   throttleNetwork: true,
-  networkSpeed: 50,
+  networkSpeed: 100,
   adapter: 'flot'
   // testing: {
   //   totalScore: 10,
