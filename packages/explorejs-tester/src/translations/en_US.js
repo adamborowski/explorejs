@@ -14,7 +14,7 @@ export default {
     beginSurvey: 'Begin survey',
     skipSurvey:'Skip introduction and begin survey',
     goToBase:'go to base version',
-    scenarioIntro: (numScenarios) => `Now you have ${numScenarios} scenarios, you can pick them from the menu on the 
+    scenarioIntro: (numScenarios) => `Now you can see ${numScenarios} versions of a interactive chart, you can pick them from the menu on the 
     left or by using contextual buttons that will appear below`,
     intro,
     nextPage:'Next page',
@@ -34,9 +34,9 @@ export default {
     instructions:{
       help:'Show help',
       header:'How to use a chart',
-      zoom: <span>To zoom the chart in and out - use your mouse wheel or <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
+      zoom: <span>To zoom the chart in and out - use your mouse wheel or <kbd>&uarr;</kbd> <kbd>&darr;</kbd> keys</span>,
       pan:
-        <span>To pan the chart left and right - hold shift key, then use your mouse wheel or <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
+        <span>To pan the chart left and right - hold shift key, then use your mouse wheel or <kbd>&larr;</kbd> <kbd>&rarr;</kbd> keys</span>,
       stepsHeader:'Pay attention to:',
       steps: <ul>
         <li>When moving horizontally, are you waiting for data to load?</li>
@@ -45,7 +45,7 @@ export default {
         <li>When zooming-out, do you loose context of place from which you moved away?</li>
         <li>When zooming-in to unvisited place, do you loose context of your movement?</li>
         <li>While waiting for data (after zooming-in or panning), do you notice low-detail shapes similar to data being loaded &mdash; does it help?</li>
-        <li>After zooming-in to unvisited place, while panning, do you notice merge of data with differet resolution?</li>
+        <li>After zooming-in to unvisited place, while panning, do you notice merge of data with different resolution?</li>
       </ul>
     },
     expandInfo: 'Show description',
@@ -85,7 +85,7 @@ export default {
       {question: 'Do you know any existing solution solving the Problem?'},
       {
         question: 'How much the problem is similar to the problem existing in Google Maps example?',
-        answers: ['Different', 'Almost no differences', 'Hard to say', 'Slightly different', 'It\'s the same']
+        answers: ['Different', 'Almost no similarities', 'Hard to say', 'Slightly different', 'It\'s the same']
       },
       {
         question: 'Did you face the Problem in the past?',

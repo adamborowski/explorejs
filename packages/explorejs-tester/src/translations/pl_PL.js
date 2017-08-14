@@ -33,8 +33,8 @@ export default {
     instructions:{
       help:'Pokaż pomoc',
       header:'Instukcja nawigacji',
-      zoom:<span>przybliżanie/oddalanie (zoom) - użyj kółka myszy lub <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
-      pan:<span>przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT lub <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
+      zoom:<span>przybliżanie/oddalanie (zoom) - użyj kółka myszy lub klawiszy <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
+      pan:<span>przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT lub klawiszy <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
       stepsHeader:'Zwróć uwagę:',
       steps: <ul>
         <li>Czy poruszając się poziomo czekasz na załadowanie danych?</li>

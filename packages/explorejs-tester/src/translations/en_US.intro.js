@@ -29,28 +29,30 @@ export default (slide) => [
   </div>,
   <div>
     <h3 className="display-3">
-      Opis zagadnienia
+      Short description
     </h3>
     <p>
-      Problem dotyczy płynnego, swobodnego i nieograniczonego przeglądania ogromnej ilości danych na wykresie liniowym z
-      osią czasu.
+      The problem is about smooth, free and unlimited viewing of huge amounts of data on a timeline graph.
     </p>
     <p>
-      Ograniczenia i wyzwania można śmiało porównać do systemów mapowych. Dla przykładu, w systemie <em>Google
-      Maps </em>
-      odwiedzić możesz każde miejsce na ziemi. Za pomocą kilku intuicyjnych ruchów możesz oddalić się od pomnika Neptuna
-      w Gdańsku, by zobaczyć całą mapę Świata, następnie przyjżeć się z bliska Liberty Island w Nowym Jorku. Wyzwaniem w
-      takim systemie jest zapewnienie, aby użytkownik w ogóle nie musiał czekać na fragmenty map, które chce oglądać, bo
-      przecież nikt nie ładuje z sieci Internet szczegółowych obrazów satelitarnych całej kuli ziemskiej.
+      Limitations and challenges can be easily compared to map systems. For example, on <em>Google Maps</em> you can
+      visit any place on earth.
+      With a few intuitive moves you can zoom out from the Neptune monument in Gdansk to see the entire map of
+      the world, then zoom in to look at Liberty Island in New York.
+
+      The challenge in such a system is to ensure that the user does not have to wait for the parts of the map he wants
+      to see, though no one downloads satellite imagery of the whole globe from the Internet.
     </p>
     <p>
-      W przypadku danych pomiarowych, można powiedzieć, że problem jest nieco prostrzy, ponieważ nie poruszamy się po
-      przestrzeni dwuwymiarowej, ale tylko po wymiarze czasu, który układa się na poziomej osi wykresu.
-      Niemniej jednak zapewnienie wysokiej rozdzielczości obrazu na wykresie stanowi wyzwanie, jeżeli chcemy, by
-      użytkownik jak najrzadziej był zmuszony czekać na doładowanie potrzebnych danych.
-      Według <a href="https://www.nngroup.com/articles/response-times-3-important-limits/" target="blank"> Nielsena</a>,
-      oczekiwanie na odpowiedź systemu trwające powyżej 0.1 sekundy jest zauważalne i gdy się wydłuża &mdash; znacznie
-      obniża się efektywność pracy.
+      In the case of measurement data, we can say that the problem is somewhat simpler because we are not moving in
+      a two-dimensional space, but only along the dimension of time, which is distributred on a horizontal axis of the
+      graph.
+      Nevertheless, providing a high resolution image on a graph is a challenge if you want the user to wait for the
+      data as little as possible.
+      According to
+      <a href="https://www.nngroup.com/articles/response-times-3-important-limits/" target="blank"> Nielsen</a>,
+      waiting for a system response lasting more than 0.1 seconds is noticeable by the user.
+      When this time is extended, it significantly reduces the efficiency of work.
     </p>
   </div>,
   <div className="text-justify">
