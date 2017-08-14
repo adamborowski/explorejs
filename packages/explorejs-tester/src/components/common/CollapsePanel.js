@@ -6,14 +6,21 @@ export default class CollapsePanel extends React.Component {
   static propTypes = {
     forceExpand: PropTypes.bool,
     expandLabel: PropTypes.string,
-    collapseLabel: PropTypes.string
+    collapseLabel: PropTypes.string,
+    onTrigger: PropTypes.func
   };
 
   state = {
     open: false
   };
 
-  handleClick = () => this.setState({open: !this.state.open});
+  handleClick = () => {
+    const open = !this.state.open;
+    this.setState({open});
+    if (this.props.onTrigger) {
+      this.props.onTrigger(open);
+    }
+  };
 
   render() {
 

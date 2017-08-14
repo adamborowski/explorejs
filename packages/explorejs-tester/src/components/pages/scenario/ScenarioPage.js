@@ -14,6 +14,7 @@ import trans from '../../../translations/trans';
 import NavLink from '../../common/NavLink';
 import {Collapse} from 'react-bootstrap';
 import CollapsePanel from '../../common/CollapsePanel';
+import {DESCRIPTION_OPEN} from '../../../analytics';
 
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
@@ -43,6 +44,7 @@ const ScenarioPage = trans()((props, {trans, dynamicTrans}) => {
           <small>{dynamicTrans(scenario.name)}</small>
         </h2>
         <CollapsePanel
+          onTrigger={(open) => open && props.actions.addAnalyticsEvent(DESCRIPTION_OPEN, new Date(), {scenario: scenario.id})}
           // forceExpand={sessions.length === 0}
           expandLabel={trans('session.expandInfo')} collapseLabel={trans('session.collapseInfo')}>
           {dynamicTrans(scenario.description)}
