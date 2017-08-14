@@ -25,7 +25,7 @@ export default {
       {color: '#4fcc21', key: 1},
       {color: '#00a13b', key: 2},
     ],
-    availableNetworkSpeed: [0, 1, 20, 50, 200, 1000],
+    availableNetworkSpeed: [50, 100, 200, 500],
     finalForm: {
       questions: [
         {type: 'range'},
