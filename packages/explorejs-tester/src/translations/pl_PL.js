@@ -32,9 +32,10 @@ export default {
     wrongOrderWarning: conf => <div>Proszę najpierw ocenić konfigurację <em>{conf}</em>.</div>,
     instructions:{
       help:'Pokaż pomoc',
-      header:'Instukcja nawigacji',
+      header:'Instrukcja nawigacji',
       zoom:<span>przybliżanie/oddalanie (zoom) - użyj kółka myszy lub klawiszy <kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>,
       pan:<span>przechodzenie w lewo/prawo (panning) - użyj kółka myszy z wciśniętym przyciskiem SHIFT lub klawiszy <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>,
+      crop:<span>kadrowanie zakresu - zaznacz obszar lewym przyciskiem myszy</span>,
       stepsHeader:'Zwróć uwagę:',
       steps: <ul>
         <li>Czy poruszając się poziomo czekasz na załadowanie danych?</li>

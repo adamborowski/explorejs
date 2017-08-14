@@ -76,7 +76,10 @@ export default class FlotAdapter {
                 panRange: false,
                 autoscaleMargin: 0.1
             },
-            colors: ['#000000', '#000000', '#78a6a7']
+            colors: ['#000000', '#000000', '#78a6a7'],
+            selection: {
+                mode: 'x'
+            }
         });
 
         this.throttledUpdate = throttle(() => {
@@ -84,6 +87,18 @@ export default class FlotAdapter {
         }, 100);
 
         this.$chart.on('plot_setupGrid', this.throttledUpdate);
+
+        this.$chart.on('plotselected', (event, ranges) => {
+
+            this.plot.getXAxes().forEach((axis) => {
+                const opts = axis.options;
+                opts.min = ranges.xaxis.from;
+                opts.max = ranges.xaxis.to;
+            });
+            this.plot.setupGrid();
+            this.plot.draw();
+            this.plot.clearSelection();
+        });
 
         setTimeout(() => this.plot.setupGrid(), 0);
         setTimeout(() => {

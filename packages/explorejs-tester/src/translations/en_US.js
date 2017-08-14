@@ -37,6 +37,7 @@ export default {
       zoom: <span>To zoom the chart in and out - use your mouse wheel or <kbd>&uarr;</kbd> <kbd>&darr;</kbd> keys</span>,
       pan:
         <span>To pan the chart left and right - hold shift key, then use your mouse wheel or <kbd>&larr;</kbd> <kbd>&rarr;</kbd> keys</span>,
+      crop: <span>To crop the range - select it using your mouse</span>,
       stepsHeader:'Pay attention to:',
       steps: <ul>
         <li>When moving horizontally, are you waiting for data to load?</li>

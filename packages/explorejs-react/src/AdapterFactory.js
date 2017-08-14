@@ -20,6 +20,7 @@ const factoryMap = {
         const Flot = require('Flot');
 
         require('Flot/jquery.flot.time');
+        require('Flot/jquery.flot.selection');
         require('Flot/jquery.flot.fillbetween');
 
         return new FlotAdapter(dataSource, dom, Flot, $);

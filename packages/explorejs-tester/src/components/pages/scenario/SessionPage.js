@@ -117,6 +117,7 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
                 <ul>
                   <li>{trans('session.instructions.zoom')}</li>
                   <li>{trans('session.instructions.pan')}</li>
+                  <li>{trans('session.instructions.crop')}</li>
                 </ul>
                 <h5>{trans('session.instructions.stepsHeader')}</h5>
                 {trans('session.instructions.steps')}
