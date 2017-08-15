@@ -187,7 +187,7 @@ export default (slide) => [
     <figure className="my-fig">
       <img src={simplification}/>
       <figcaption>
-        Then there are many points to draw in one pixel column (on the left), a monitor will anyway show them as one
+        When there are many points to draw in one pixel column (on the left), a monitor will anyway show them as one
         pixel "bar", representing the range of included values (on the right).
       </figcaption>
     </figure>
