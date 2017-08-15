@@ -70,7 +70,7 @@ export default {
         answers: ['Znudziłem się', 'Jest męcząca', 'Ciężko stwierdzić', 'Nieźle', 'Zaciekawiła mnie']
       },
       {question: 'Możesz krótko opisać, jakie zagadnienie zostało tutaj poruszone?'},
-      {question: 'Możesz krótko opisać, co jaki problem jest tu adresowany?'},
+      {question: 'Możesz krótko opisać, jaki problem adresuje proponowane rozwiązanie?'},
       {
         question: 'Czy uważasz, że problem w ogóle istnieje?',
         answers: [
