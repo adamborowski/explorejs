@@ -8,13 +8,14 @@ const Question = ({type, question, answers, value, onChange, disabled, colors}) 
   let answer;
 
   if (type === 'range') {
-    answer = <div style={{width: 410}}>
+    answer = <div style={{width: 410, margin: 'auto'}}>
       <Slider width={(answers.length - 1) * 100}
               height={32}
               tickInnerRadius={12}
               tickOuterRadius={15}
               barHeight={8}
               value={value}
+              interactive={onChange !== undefined}
               ticks={answers.map((answer, i) => ({
                 key: i,
                 label: answer,
@@ -50,7 +51,8 @@ Question.propTypes = {
   answers: PropTypes.array,
   value: PropTypes.any,
   onChange: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  colors: PropTypes.array
 };
 
 Question.defaultProps = {

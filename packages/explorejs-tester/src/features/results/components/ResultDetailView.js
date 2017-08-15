@@ -6,6 +6,7 @@ import {formatDate} from '../utils';
 import {scenarioSelector} from '../../../selectors/testingSelectors';
 import {compose} from 'redux';
 import ScoresView from './ScoresView';
+import QuestionsView from './QuestionsView';
 
 
 class ResultDetailView extends React.Component {
@@ -41,6 +42,11 @@ class ResultDetailView extends React.Component {
 
           <h5 className="page-header">Scores</h5>
           <ScoresView scores={scores} possibleAnswers={possibleAnswers}/>
+          <h5 className="page-header">Questions</h5>
+          <QuestionsView
+            questions={result.data.questions}
+            answers={result.data.answers}
+          />
         </div>
       </div>
     );
