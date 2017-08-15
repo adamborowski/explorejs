@@ -43,7 +43,7 @@ export default (slide) => [
       przecież nikt nie ładuje z sieci Internet szczegółowych obrazów satelitarnych całej kuli ziemskiej.
     </p>
     <p>
-      W przypadku danych pomiarowych, można powiedzieć, że problem jest nieco prostrzy, ponieważ nie poruszamy się po
+      W przypadku danych pomiarowych, można powiedzieć, że problem jest nieco prostszy, ponieważ nie poruszamy się po
       przestrzeni dwuwymiarowej, ale tylko po wymiarze czasu, który układa się na poziomej osi wykresu.
       Niemniej jednak zapewnienie wysokiej rozdzielczości obrazu na wykresie stanowi wyzwanie, jeżeli chcemy, by
       użytkownik jak najrzadziej był zmuszony czekać na doładowanie potrzebnych danych.

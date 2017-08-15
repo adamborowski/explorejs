@@ -54,7 +54,7 @@ export default function bootstrap(schema) {
   // on others.
   const scenarioA = Scenario.create({
     id: 0, // optional. If omitted, Redux-ORM uses a number sequence starting from 0.
-    name: {en_US: 'Basic', pl_PL: 'Bazowa'},
+    name: {en_US: 'existing solution', pl_PL: 'rozwiązanie istniejące'},
     description: ml(<p>
         Very simple solution.
         During navigation, it determines proper aggregation level and requests the server for whole displayed range.
