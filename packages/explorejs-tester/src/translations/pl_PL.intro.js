@@ -320,7 +320,7 @@ export default (slide) => [
       sieci, żeby możliwie najlepiej ukryć przed nim fakt, że dane, które przegląda, zlokalizowane są na
       odległym serwerze.
       Dzięki temu użytkownicy dokonujący analizy wizualnej danych będą mogli jeszcze efektywniej wykonywać swoją pracę i
-      ty samym zwiększyć satysfakcję z użytkowania całego systemu.
+      tym samym zwiększyć satysfakcję z użytkowania całego systemu.
     </p>
     <p>
       Rozwiązanie zostało zaprojektowane w postaci uniwersalnego modułu (biblioteki) działającego w przeglądarce
