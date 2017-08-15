@@ -50,6 +50,10 @@ export default class extends Component {
   @keydown('left', 'right')
   onLeftRight(e) {
 
+    if (!this.props.onChange) {
+      return;
+    }
+
     const index = this.props.ticks.findIndex(t => t.key === this.props.value);
     let newIndex = index;
     if (e.key === 'ArrowLeft') {

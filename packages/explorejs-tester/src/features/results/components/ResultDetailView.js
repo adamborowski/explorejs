@@ -5,7 +5,7 @@ import trans from '../../../translations/trans';
 import {formatDate} from '../utils';
 import {scenarioSelector} from '../../../selectors/testingSelectors';
 import {compose} from 'redux';
-import Slider from '../../../components/common/Slider';
+import ScoresView from './ScoresView';
 
 
 class ResultDetailView extends React.Component {
@@ -27,6 +27,8 @@ class ResultDetailView extends React.Component {
       return session ? session.score : null;
     };
 
+    const scores = scenarios.map(s => ({name: dynamicTrans(s.name), score: getScenarioScore(s.id)}));
+
 
     return (
       <div className="results-detail-view">
@@ -36,28 +38,9 @@ class ResultDetailView extends React.Component {
           </h3>
         </div>
         <div>
+
           <h5 className="page-header">Scores</h5>
-          <ul className="list-group">
-            {scenarios.map((s, i) => (
-              <li key={i} className="list-group-item">
-                <Slider
-                  style={{padding: 5, float: 'right'}}
-                  showLabels={false}
-                  interactive={false}
-                  width={120}
-                  height={16}
-                  tickInnerRadius={5}
-                  tickOuterRadius={7}
-                  barHeight={5}
-                  ticks={possibleAnswers}
-                  value={getScenarioScore(s.id)}
-                />
-                <h4 className="list-group-item-heading">
-                  {dynamicTrans(s.name)}
-                </h4>
-              </li>
-            ))}
-          </ul>
+          <ScoresView scores={scores} possibleAnswers={possibleAnswers}/>
         </div>
       </div>
     );
