@@ -60,7 +60,7 @@ class ResultsPage extends React.Component {
           />
         </div>
         <div className="col-md-8">
-          {results[currentResult] && <ResultDetailView result={results[currentResult]}/>}
+          {matchedResults[currentResult] && <ResultDetailView result={matchedResults[currentResult]}/>}
         </div>
       </div>
     }

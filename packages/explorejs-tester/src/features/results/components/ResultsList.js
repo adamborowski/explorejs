@@ -9,7 +9,7 @@ const format = 'YYYY-MM-DD HH:mm';
 const ResultList = ({results, currentResult, onResultClick}) => {
 
 
-  return <div className="list-group">
+  return <div className="list-group results-list">
     {results.map((r, i) => (
       <a key={i}
          href="#"

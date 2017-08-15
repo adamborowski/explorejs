@@ -12,4 +12,11 @@
     color: #898989;
   }
 
+  .results-list {
+    overflow: auto;
+    max-height: calc(100vh - 134px);
+    margin: 0;
+
+  }
+
 }
