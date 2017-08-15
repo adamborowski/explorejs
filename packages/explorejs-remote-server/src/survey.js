@@ -17,7 +17,7 @@ function connect(db) {
 
         async getResponses() {
 
-            const series = await db.any(`select id, name, time, testing from surveys`);
+            const series = await db.any(`select id, name, time, testing, data from surveys`);
 
             return series;
         },
