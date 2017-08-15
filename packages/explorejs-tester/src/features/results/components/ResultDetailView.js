@@ -69,4 +69,4 @@ const mapStateToProps = state => ({
   answers: state.testing.answers
 });
 
-export default compose(connect(mapStateToProps), trans())(ResultDetailView);
+export default compose(connect(mapStateToProps), trans())(ResultDetailView); //fixme update blocking by connect
