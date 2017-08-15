@@ -6,6 +6,7 @@ import {
   FINISH_INTRO, SEND_COMPLETE, SEND_ERROR, SEND_STARTED, SUMMARY_QUESTION_ANSWERED,
   SWITCH_INSTRUCTIONS
 } from '../constants/actionTypes';
+import {addAnalyticsEvent} from '../actions/testingActions';
 
 export default function testingReducer(state = initialState.testing, action) {
   return state; // todo maybe impement something here
@@ -53,7 +54,7 @@ export const sendStateReducer = (state = {loading: false, completed: false, erro
 };
 
 
-export const analyticsReducer = (state = [], action) => {
+export const analyticsReducer = (state = [addAnalyticsEvent('init', new Date()).payload], action) => {
   switch (action.type) {
     case ADD_ANALYTICS_EVENT: {
       return [...state, action.payload];
