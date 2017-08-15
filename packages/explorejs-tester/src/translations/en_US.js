@@ -71,7 +71,7 @@ export default {
         question: 'How satisfied are you with the given survey?',
         answers: ['I am bored', 'I am tired', 'I don\'t know', 'Nod bad', 'I am interested']
       },
-      {question: 'Can you describe shortly, what the Problem is about?'},
+      {question: 'Can you describe shortly, what the problem is about?'},
       {question: 'Can you describe shortly, what does the solution try to solve?'},
       {
         question: 'Do you think that the Problem really exists?',
