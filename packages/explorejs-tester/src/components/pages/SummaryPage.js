@@ -8,6 +8,7 @@ import trans from '../../translations/trans';
 import Slider from '../common/Slider';
 import {Alert, Button} from 'react-bootstrap';
 import {canSurveyBeSent, isSurveySentInProgress} from '../../selectors/testingSelectors';
+import Question from '../common/Question';
 
 // Since this component is simple and static, there's no parent container for it.
 const ScenarioPage = trans()((props, {trans}) => {
@@ -22,50 +23,15 @@ const ScenarioPage = trans()((props, {trans}) => {
         <p> { trans('finalForm.intro') }</p>
       </Alert>
       <div>
-        {props.finalForm.questions.map((q, i) => {
-          const type = q.type;
-          const question = trans(`finalForm.questions.${i}.question`);
-          const header = <p>{question}</p>;
-
-          let answer;
-
-          if (type === 'range') {
-            const answers = trans(`finalForm.questions.${i}.answers`);
-            answer = <div style={{width: 410}}>
-              <Slider width={(answers.length - 1) * 100}
-                      height={32}
-                      tickInnerRadius={12}
-                      tickOuterRadius={15}
-                      barHeight={8}
-                      value={props.finalAnswers[i]}
-                      ticks={answers.map((answer, i) => ({
-                        key: i,
-                        label: answer,
-                        color: props.colors[i]
-                      }))}
-                      style={{overflow:'visible'}}
-                      onChange={e => props.actions.answerSummaryQuestion(i, e)}
-              />
-            </div>
-          }
-          else if (type === 'text') {
-            answer =
-              <input className="form-control"
-                     type="text"
-                     value={props.finalAnswers[i] || ''}
-                     placeholder={trans('finalForm.placeholder')}
-                     disabled={disableForm}
-                     onChange={a => props.actions.answerSummaryQuestion(i, a.currentTarget.value)}
-              />
-          }
-
-          return <div key={i}>
-            {header}
-            <div style={{height: 60}}>
-              {answer}
-            </div>
-          </div>
-        })}
+        {props.finalForm.questions.map((q, i) => <Question type={q.type}
+                                                           key={i}
+                                                           question={trans(`finalForm.questions.${i}.question`)}
+                                                           onChange={value => props.actions.answerSummaryQuestion(i, value)}
+                                                           disabled={disableForm}
+                                                           colors={props.colors}
+                                                           answers={q.type === 'range' ? trans(`finalForm.questions.${i}.answers`) : null}
+                                                           value={props.finalAnswers[i]}/>
+        )}
       </div>
 
       <Button bsStyle="primary" bsSize="large" disabled={!canSend}
