@@ -144,30 +144,23 @@ export default function bootstrap(schema) {
       </div>,
       <div>
         <p>
-          Rozwiązanie takie samo jak z poprzednie, ale dodatkowo dzięki wykorzystywaniu danych z wyższych
-          poziomów agregacji z pamięci podręcznej (dane o mniejszej rozdzielczości) pozwala na progresywne wyświetlenie
-          ładowanych danych.
+          Rozwiązanie takie samo jak z poprzednie, ale dodatkowo dzięki wykorzystywaniu danych o niższej rozdzielczości,
+          które znajdują się w pamięci podręcznej, pozwala na progresywne wyświetlenie ładowanych danych.
         </p>
         <p>
-          Działa w ten sposób, że zanim załadują się właściwe dane, zamiast pokazywać pustą przestrzeń, pokazuje dane o
-          mniejszej rozdzielczości, o ile dane mniejszej rozdzielczości są dostępne w cache.
-
-          Dla przykładu, jeśli wyświetlane są agregacje godzinne i brakuje kilku punktów w cache, powstała luka zostanie
-          zastąpiona fragmentem wcześniej załadowanych danych z wyższego poziomu, np. dnia czy miesiąca.
-
-          To jest najbardziej pomocne podczas przesuwania czy przybliżania zakresu, który był wcześniej częściowo
-          odwiedzony.
-
+          Działa w ten sposób, że zanim załadują się brakujące dane o właściwej rozdzielczości, w miejscu brakujących
+          danych pokazuje zastępcze dane o mniejszej rozdzielczości, o ile są dostępne w pamięci podręcznej.
+          Dzięki temu użytkownik szybciej dostanie zarys danych, na które czeka.
         </p>
-        <p>
-          Proszę zwrócić uwagę, że wykorzystanie do tego celu danych o większej rozdzielczości może doprowadzić do
-          awarii
-          przeglądarki.
-          Dla przykładu, jeżeli eksplorowano duży obszar w niskiej agregacji (co za tym idzie, w cache jest mnóstwo
-          danych na tym poziomie) a następnie wykona się oddalenie, by zobaczyć cały obszar, wykres mógłby być zasilony
-          zbyt wielką ilością danych do rysowania, nawet w ramach jednego piksela.
-          Aby zapobiec tym sytuacjom, wykorzystywane są dane z pamięci podręcznej tylko o mniejszej rozdzielczości.
-        </p>
+        {/*<p>*/}
+          {/*Proszę zwrócić uwagę, że wykorzystanie do tego celu danych o większej rozdzielczości może doprowadzić do*/}
+          {/*awarii*/}
+          {/*przeglądarki.*/}
+          {/*Dla przykładu, jeżeli eksplorowano duży obszar w niskiej agregacji (co za tym idzie, w cache jest mnóstwo*/}
+          {/*danych na tym poziomie) a następnie wykona się oddalenie, by zobaczyć cały obszar, wykres mógłby być zasilony*/}
+          {/*zbyt wielką ilością danych do rysowania, nawet w ramach jednego piksela.*/}
+          {/*Aby zapobiec tym sytuacjom, wykorzystywane są dane z pamięci podręcznej tylko o mniejszej rozdzielczości.*/}
+        {/*</p>*/}
       </div>
     ),
     preset: preset(true, true),
@@ -220,9 +213,9 @@ export default function bootstrap(schema) {
             ładowane są dodatkowo pewne zakresy danych niższej rozdzielczości by przy oddalaniu się dane o odpowiednich
             rozdzielczościach były już dostępne.
 
-            To niejako adresuje problem, że nie można wykorzystywać danych o większych rozdzielczościach.
-            Bez tej predykcji wykres może być pusty podczas oddalania się i przełączenia na wyższy poziom agregacji, do
-            czasu załadowania właściwych danych.
+            {/*To niejako adresuje problem, że nie można wykorzystywać danych o większych rozdzielczościach.*/}
+            {/*Bez tej predykcji wykres może być pusty podczas oddalania się i przełączenia na wyższy poziom agregacji, do*/}
+            {/*czasu załadowania właściwych danych.*/}
 
           </li>
           {/*<li>*/}
