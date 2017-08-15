@@ -218,7 +218,7 @@ export default (slide) => [
       If it takes more - the simplification will unfortunately be noticeable to the human eye.
     </p>
     <p>
-      Below is a chart of how the data will be simplified and if too much simplification is used.
+      Below you can see the same range of data, when proper unnoticeable simplification is used and when too much simplification is used.
       <strong> Note </strong> - Look at the shaded area of the chart.
     </p>
     <figure className="my-fig">

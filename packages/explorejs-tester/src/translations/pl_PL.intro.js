@@ -217,7 +217,7 @@ export default (slide) => [
       Gdy będzie większa - uproszczenie będzie już zauważalne dla ludzkiego oka.
     </p>
     <p>
-      Poniżej pokazano, jak wygląda wykres, gdy zostaną dobrane odpowiednie uproszczenia danych, oraz gdy zastosuje się
+      Poniżej pokazano ten sam zakres danych, gdy zostały dobrane odpowiednie uproszczenia danych, oraz gdy zastosuje się
       zbyt duże uproszczenia. <strong>Uwaga</strong> - należy patrzeć na cieniowany obszar wykresu.
     </p>
     <figure className="my-fig">
