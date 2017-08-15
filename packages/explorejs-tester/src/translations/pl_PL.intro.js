@@ -139,7 +139,7 @@ export default (slide) => [
     <h3 className="display-3">Istniejące rozwiązania</h3>
     <p>
       Popularnym podejściem, które adresuje problem skalowalności, jest pobieranie z serwera tylko takiego zakresu
-      danych, który ma być widoczny w danej chwili na ekranie.
+      danych, który ma być widoczny w danej chwili na ekranie, żeby uniknąć ładowania wszystkich danych.
     </p>
     <p>
       Nasuwa się pytanie, co w momencie, gdy użytkownik chciałby obejrzeć z grubsza jakiś duży zakres czasu? A może chciałby zobaczyć

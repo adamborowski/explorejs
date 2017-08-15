@@ -141,7 +141,7 @@ export default (slide) => [
     <h3 className="display-3">Existing solutions</h3>
     <p>
       The popular approach that addresses the scalability problem is to retrieve only the amount of data from the server
-      that is needed to be displayed on screen, each time the user navigates a chart.
+      that is needed to be displayed on screen, each time the user navigates a chart. Thanks to that we do not need to load all data in advance.
     </p>
     <p>
       You may be wondering what happens when the user wants to view data over a large time range.
