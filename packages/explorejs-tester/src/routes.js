@@ -12,7 +12,7 @@ import ScenariosIndexPage from './components/pages/scenario/ScenariosIndexPage';
 import ConnectedHeader from './components/pages/scenario/Header';
 import SessionPage from './components/pages/scenario/SessionPage';
 import SummaryPage from './components/pages/SummaryPage';
-import ResultsPage from './components/pages/ResultsPage';
+import ResultsPage from './features/results/components/ResultsPage';
 
 const typicalAppPage = children => ({children, pageHeader: ConnectedHeader, sidebar: ScenarioSidebar});
 

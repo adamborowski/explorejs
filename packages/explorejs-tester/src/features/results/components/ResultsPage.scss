@@ -1,0 +1,16 @@
+.results-page {
+  .react-toggle, .react-toggle + label {
+    vertical-align: middle;
+    margin-bottom: 20px;
+  }
+  .react-toggle + label {
+    margin-left: 14px;
+    font-weight: normal;
+  }
+
+  .result-no-name {
+    color: #898989;
+    font-size: 0.7em;
+  }
+
+}
