@@ -5,6 +5,7 @@ import fig3_ok from './img/3-ok.png';
 import fig4_too_sparse from './img/4-too-sparse.png';
 import perPixel from './img/per-pixel.png';
 import sparse from './img/sparse.png';
+import simplification from './img/simplification.png';
 import './intro.scss';
 
 export default (slide) => [
@@ -167,13 +168,32 @@ export default (slide) => [
       zminimalizować wielkość przesyłanych danych. Rozmiar ładowanych danych będzie więc związany z liczbą rzędów pikseli w
       poziomie &mdash; tym samym niezależny od wielkości zakresu czasu.
     </p>
+    <p>
+      Pozostaje jeszcze zadać sobie pytanie, czym właściwie jest to uproszczenie?
+    </p>
   </div>,
   <div>
     <h3 className="display-3">Istniejące rozwiązania
       <small> &raquo; agregacje</small>
     </h3>
     <p>
-      Aby stworzyć uproszczoną formę danych pomiarowych, wprowadza się pojęcie <strong>agregacji danych</strong>.
+      Uproszczona forma danych w naszym przypadku dotyczy tak na prawdę uproszczenia konkretnego piksela wyświetlanego
+      wykresu.
+      Przy dużym zagęszczeniu danych wiele punktów danych zostaje wyrysowanych na tym samym pionie piskeli, jak pokazano
+      na rysunku poniżej.
+
+    </p>
+    <figure className="my-fig">
+      <img src={simplification}/>
+      <figcaption>
+        Gdy na jeden piksel przypada dużo punktów do wyświetlenia (po lewej), to i tak monitor wyświetli to
+        jako pionowy słupek obejmujący występujące w tym pikselu wartości (po prawej).
+      </figcaption>
+    </figure>
+    <p>
+      W związku z tym, uproszczoną formą danych będzie taka forma, która daje ten sam efekt na ekranie, ale będzie
+      opisywała tylko taki pionowy "słupek" opisujący zakres wartości w danej kolumnie pikseli.
+      W tym celu wprowadza się pojęcie <strong>agregacji danych</strong>.
     </p>
     <p>
       W tym przypadku agregacja to pewna struktura danych opisująca generalne cechy grupy danych z pewnego zakresu.
@@ -195,18 +215,23 @@ export default (slide) => [
       Najlepiej ją wykorzystać dla takiej skali wykresu, gdzie będzie ona mieściła się na jednym pionie pikselów ekranu.
       Gdy będzie większa - uproszczenie będzie już zauważalne dla ludzkiego oka.
     </p>
+    <p>
+      Poniżej pokazano, jak wygląda wykres, gdy zostaną dobrane odpowiednie uproszczenia danych, oraz gdy zastosuje się
+      zbyt duże uproszczenia. <strong>Uwaga</strong> - należy patrzeć na cieniowany obszar wykresu.
+    </p>
     <figure className="my-fig">
       <img src={perPixel}/>
-      <figcaption>przykład agregacji o dopasowanej długości - nie widać uproszczenia</figcaption>
+      <figcaption>przykład agregacji o dopasowanej długości, mniejszej niż piksel - nie widać uproszczenia</figcaption>
     </figure>
     <figure className="my-fig">
       <img src={sparse}/>
-      <figcaption>przykład źle dobranych agregacji - uproszczenie zauważalne dla ludzkiego oka
+      <figcaption>przykład źle dobranej agregacji, większej niż jeden piksel - uproszczenie zauważalne dla ludzkiego oka
       </figcaption>
     </figure>
     <p>
-      Podsumowując - popularne rozwiązanie minimalizuje komunikację między przeglądarką a serwerem, jednak nie jest to
-      zauważalne na wykresie.
+      Podsumowując - popularne podejście umożliwia swobodną i nieograniczoną eksplorację wielkich zbiorów, ponieważ
+      minimalizuje komunikację między przeglądarką a serwerem stosujac takie uproszczenia, by nie zmniejszało
+      dokładności danych wyświetlanych na wykresie.
     </p>
   </div>,
   <div>
@@ -219,7 +244,7 @@ export default (slide) => [
       obliczenie agregacji dla większych zakresów może trwać zbyt długo.
     </p>
     <p>
-      Serwer danych trzyma w bazie specjalnie przygotowanej bazie dane oryginalne (generowane co 10s) (tutaj 9.5GB) oraz
+      Serwer danych trzyma w specjalnie przygotowanej bazie dane oryginalne (generowane co 10s) (tutaj 9.5GB) oraz
       wyliczone agregacje
       o różnych wielkościach, na przykład
       <em> 30s</em>,

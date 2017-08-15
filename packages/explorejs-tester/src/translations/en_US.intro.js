@@ -6,6 +6,7 @@ import fig3_ok from './img/3-ok.png';
 import fig4_too_sparse from './img/4-too-sparse.png';
 import perPixel from './img/per-pixel.png';
 import sparse from './img/sparse.png';
+import simplification from './img/simplification.png';
 import './intro.scss';
 
 export default (slide) => [
@@ -178,7 +179,21 @@ export default (slide) => [
       <small> &raquo; aggregations</small>
     </h3>
     <p>
-      To create a simplified form of measurement data, the concept of <strong>data aggregation </ strong> is introduced.
+      The simplified form of the data in this case refers in fact to simplify a particular pixel displaying the graph.
+      With high data density, many data points are drawn on the same pixel column, as shown in the figure below.
+
+    </p>
+    <figure className="my-fig">
+      <img src={simplification}/>
+      <figcaption>
+        Then there are many points to draw in one pixel column (on the left), a monitor will anyway show them as one
+        pixel "bar", representing the range of included values (on the right).
+      </figcaption>
+    </figure>
+    <p>
+      Therefore, a simplified form of data will be the form that gives the same effect on the screen, but will only
+      describe such vertical "bars" describing the range of values in a given pixel column.
+      For this purpose, the concept of <strong> aggregation of data </strong> is introduced.
     </p>
     <p>
       In this case, aggregation is a certain data structure describing the general characteristics of a range of data.
@@ -202,17 +217,23 @@ export default (slide) => [
       It is best to use for a scale that it fits one pixel (horizontally) of the screen.
       If it takes more - the simplification will unfortunately be noticeable to the human eye.
     </p>
+    <p>
+      Below is a chart of how the data will be simplified and if too much simplification is used.
+      <strong> Note </strong> - Look at the shaded area of the chart.
+    </p>
     <figure className="my-fig">
       <img src={perPixel}/>
-      <figcaption>example of properly fitted aggregations - simplification is not noticeable</figcaption>
+      <figcaption>example of properly fitted aggregations, lesser than one pixel - simplification is not noticeable
+      </figcaption>
     </figure>
     <figure className="my-fig">
       <img src={sparse}/>
-      <figcaption>example of badly fitted aggregations - simplification is noticeable</figcaption>
+      <figcaption>example of badly fitted aggregations, greater than one pixel - simplification is noticeable
+      </figcaption>
     </figure>
     <p>
-      In conclusion - this is a popular solution that minimizes communication between the browser and the server and
-      this is not noticeable by the human eye.
+      In conclusion - this is a popular existing solution for unlimited and free data exploration, which minimizes
+      communication between the browser and the server and this is not noticeable by the human eye.
     </p>
   </div>,
   <div>
