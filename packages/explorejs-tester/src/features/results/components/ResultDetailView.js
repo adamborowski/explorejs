@@ -8,6 +8,7 @@ import {compose} from 'redux';
 import ScoresView from './ScoresView';
 import QuestionsView from './QuestionsView';
 import {Tab, Tabs} from 'react-bootstrap';
+import AnalyticsView from './AnalyticsView';
 
 
 class ResultDetailView extends React.Component {
@@ -48,7 +49,9 @@ class ResultDetailView extends React.Component {
                 answers={result.data.answers}
               />
             </Tab>
-            <Tab eventKey={3} title="Tab 3" disabled>Tab 3 content</Tab>
+            <Tab eventKey={3} title="Analytics" disabled={result.data.analytics === undefined}>
+              <AnalyticsView analytics={result.data.analytics} finishTime={result.time}/>
+            </Tab>
           </Tabs>
         </div>
       </div>
