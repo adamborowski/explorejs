@@ -127,7 +127,8 @@ export default (slide) => [
       Here we need to recall one important aspect of the problem.
       We want to give the user the freedom to navigate the graph so that he can see data of any range, at any zoom
       level.
-      This navigation should be done in a <strong>fluent and unlimited way</strong>, as it does in modern mapping
+      To do so we have to make every data point somehow available to the user.
+      The navigation should be done in a <strong>fluent and unlimited way</strong>, as it does in modern mapping
       systems.
     </p>
     <p>
