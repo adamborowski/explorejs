@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classes from 'classnames';
-import moment from 'moment';
+import {formatDate} from '../utils';
 
 
 const format = 'YYYY-MM-DD HH:mm';
@@ -21,11 +21,11 @@ const ResultList = ({results, currentResult, onResultClick}) => {
             r.name ?
               r.name
               :
-              <span className="result-no-name">[no name]</span>
+              <span className="result-no-name">(no name)</span>
           }
         </h4>
         <p className="list-group-item-text">
-          {moment(r.time).format(format)}
+          {formatDate(r.time)}
         </p>
       </a>
     ))}

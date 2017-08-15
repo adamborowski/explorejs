@@ -4,6 +4,7 @@ import ResultError from './ResultError';
 import ResultList from './ResultsList';
 import Toggle from 'react-toggle';
 import './ResultsPage.scss';
+import ResultDetailView from './ResultDetailView';
 
 class ResultsPage extends React.Component {
 
@@ -58,7 +59,9 @@ class ResultsPage extends React.Component {
                       onResultClick={i => this.setState({currentResult: i})}
           />
         </div>
-        <div className="col-md-8">.col-md-4</div>
+        <div className="col-md-8">
+          {results[currentResult] && <ResultDetailView result={results[currentResult]}/>}
+        </div>
       </div>
     }
     return <ResultError message="No data"/>
