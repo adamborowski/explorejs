@@ -124,7 +124,8 @@ export default (slide) => [
       Tutaj trzeba przywołać jeden istotny aspekt funkcjonalny zagadnienia.
       Otóż chcemy dać użytkownikowi swobodę nawigacji po wykresie, żeby mógł oglądać dane w
       dowolnym interesującym go zakresie i w odpowiednim przybliżeniu.
-      Nawigacja ta powinna odbywać się w sposób <strong>płynny i nieograniczony</strong>, tak jak to ma miejsce w
+      To znaczy, że użytkownik powinien mieć dostęp do wszystkich danych.
+      Nawigacja powinna odbywać się w sposób <strong>płynny i nieograniczony</strong>, tak jak to ma miejsce w
       nowoczesnych systemach mapowych.
     </p>
     <p>
