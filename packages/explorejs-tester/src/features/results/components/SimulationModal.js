@@ -4,6 +4,7 @@ import {Button, Modal} from 'react-bootstrap';
 import playbackService from '../services/playback-service'
 import {LocalBinding, Chart} from 'explorejs-react';
 import compose from 'compose-function';
+import ChartTestCase from '../../../components/common/ChartTestCase';
 
 export default class SimulationModal extends React.Component {
 
@@ -59,16 +60,13 @@ export default class SimulationModal extends React.Component {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
-            <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}
-                          throttleNetwork={currentSpeed}
-                          onStats={stats => console.log('added stats', stats)}
-            >
-              <Chart serieId="0" adapter={'flot'}
-                     controlledViewState={currentViewState && currentViewState.state}
-                     prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
-            </LocalBinding>
-          </div>
+          <ChartTestCase
+            preset={scenario.preset}
+            throttleNetwork={currentSpeed}
+            onStats={stats => console.log('added stats', stats)}
+            adapter="flot"
+            controlledViewState={currentViewState && currentViewState.state}
+          />
         </Modal.Body>
         <Modal.Footer>
           <pre>

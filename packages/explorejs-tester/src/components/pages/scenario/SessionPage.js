@@ -12,6 +12,7 @@ import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
 import {DropdownButton, MenuItem, Fade} from 'react-bootstrap';
 import trans from '../../../translations/trans';
+import ChartTestCase from '../../common/ChartTestCase';
 
 const DATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
@@ -48,15 +49,12 @@ export const ScenarioSessionPage = trans()((props, {trans, dynamicTrans}) => {
         <small>{dynamicTrans(scenario.name)}</small>
       </h2>
 
-      <div style={{minHeight: 310, maxWidth: 1000, margin: 'auto'}}>
-        <LocalBinding batch="/api/batch" manifest="/api/manifest" series={['0']} preset={scenario.preset}
-                      throttleNetwork={props.throttleNetwork ? props.networkSpeed * 1024 : null}
-                      onStats={stats => props.actions.addStats(session.id, stats)}
-        >
-          <Chart serieId="0" adapter={props.adapter}
-                 prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
-        </LocalBinding>
-      </div>
+      <ChartTestCase
+        onStats={stats => props.actions.addStats(session.id, stats)}
+        throttleNetwork={props.throttleNetwork ? props.networkSpeed * 1024 : null}
+        adapter={props.adapter}
+        preset={scenario.preset}
+      />
 
       <div className="row text-left">
         <div className="col-md-3">
