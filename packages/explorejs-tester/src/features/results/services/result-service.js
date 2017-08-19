@@ -1,10 +1,14 @@
 import {Range} from 'explorejs-common';
+import {groupBy} from 'lodash';
 
-export const loadResults = async()=>{
+export const loadResults = async () => {
 
   const result = await fetch('/api/surveys');
+  const json = await result.json();
 
-  return fixResults(await result.json());
+  json.sort((a, b) => -(a.time || '').localeCompare(b.time || ''));
+
+  return fixResults(json);
 
 };
 
@@ -87,10 +91,29 @@ class RequestQuery {
 
 }
 
+const getTimeBin = time => {
+  if (time === 0) {
+    return '0s';
+  }
+  if (time <= 100) {
+    return '<=0.1s'
+  }
+  if (time <= 1000) {
+    return '<=1s';
+  }
+  if (time <= 2000) {
+    return '<=2s';
+  }
+  if (time <= 10000) {
+    return '<=10s';
+  }
+  return '>10s';
+};
+
 
 export const calculateSessionStats = (stats) => {
 
-  const viewStateMachine = new TimeMachine(stats.viewState);
+  const viewStateMachine = new TimeMachine(stats.viewState.slice(1)); // we ignore fist!
 
 
   const allRequests = new RequestQuery(stats.requestManager);
@@ -98,6 +121,26 @@ export const calculateSessionStats = (stats) => {
   const requestsCausedByViewState = stats.viewState.map(vs => ({
     viewState: vs,
     requests: allRequests.during(vs.time, vs.time + 2000).containingRange(vs.state.currentLevelId, vs.state.range.start, vs.state.range.end).items
-  }));
+  }))
+    .map(state => ({
+      ...state,
+      sumSize: state.requests.reduce((sum, req) => sum + req.size, 0),
+      waitTime: state.requests.map(r => r.finishTime - r.startTime).reduce((max, time) => Math.max(max, time), 0)
+    }));
+
+  const histogram = groupBy(requestsCausedByViewState, r => getTimeBin(r.waitTime));
+
+  const sumOfWaiting = requestsCausedByViewState.reduce((waitTime, state) => waitTime + state.waitTime, 0)
+  const numRequests = allRequests.items.length;
+  const numStates = stats.viewState.length;
+  const waitPerState = sumOfWaiting / numStates;
+  return {
+    mock: requestsCausedByViewState,
+    numRequests,
+    sumOfWaiting,
+    numStates,
+    waitPerState,
+    histogram
+  };
 
 };

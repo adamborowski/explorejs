@@ -23,4 +23,16 @@
     margin-top: 30px;
   }
 
+  .histogram-bar {
+    display: inline-block;
+    height: 1em;
+    margin-left: 20px;
+    background: #f0ad4e;
+  }
+  .stats-table {
+    th {
+      width: 100px;
+    }
+  }
+
 }

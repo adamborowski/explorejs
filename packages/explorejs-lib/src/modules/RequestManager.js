@@ -90,7 +90,7 @@ export default class RequestManager {
             const response = xhr.responseText;
             const loadTime = new Date().getTime();
 
-            const handleResponse = (finishTime) => {
+            const handleResponse = (finishTime, speedOfTask) => {
                 let respData = null;
                 if (xhr.status === 200) {
                     const resp = JSON.parse(xhr.responseText);
@@ -104,6 +104,7 @@ export default class RequestManager {
                     this.stats.addEntry({
                         requests,
                         startTime,
+                        speedOfTask,
                         loadTime: loadTime,
                         finishTime: finishTime.getTime(),
                         size: response.length,

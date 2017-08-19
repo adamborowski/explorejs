@@ -10,6 +10,8 @@ import QuestionsView from './QuestionsView';
 import {Tab, Tabs} from 'react-bootstrap';
 import AnalyticsView from './AnalyticsView';
 import {calculateSessionStats, calculateStats} from '../services/result-service';
+import {chain} from 'lodash';
+import StatsView from './StatsView';
 
 
 class ResultDetailView extends React.Component {
@@ -27,7 +29,10 @@ class ResultDetailView extends React.Component {
   createState(result) {
     const ignored = result.data.sessions.filter(session => session.stats === undefined);
     return {
-      sessions: result.data.sessions.filter(session => session.stats !== undefined).map(s => calculateSessionStats(s.stats)),
+      sessions: result.data.sessions.filter(session => session.stats !== undefined).map(session => ({
+        session,
+        stats: calculateSessionStats(session.stats)
+      })),
       ignored
     }
   }
@@ -42,6 +47,7 @@ class ResultDetailView extends React.Component {
 
     const {trans, dynamicTrans} = this.context;
     const {scenarios, answers: possibleAnswers, result} = this.props;
+    const {ignored, sessions} = this.state;
 
     const getScoredSession = scenarioId => result.data.sessions.find(s => s.scenario === scenarioId && s.score !== null)
 
@@ -51,7 +57,10 @@ class ResultDetailView extends React.Component {
     };
 
     const scores = scenarios.map(s => ({name: dynamicTrans(s.name), score: getScenarioScore(s.id)}));
-
+    const scenariosById = chain(scenarios).keyBy('id').mapValues(s => ({
+      ...s,
+      name: dynamicTrans(s.name)
+    })).value();
 
     return (
       <div className="results-detail-view">
@@ -71,6 +80,9 @@ class ResultDetailView extends React.Component {
             </Tab>
             <Tab eventKey={3} title="Analytics" disabled={result.data.analytics === undefined}>
               <AnalyticsView analytics={result.data.analytics} finishTime={result.time}/>
+            </Tab>
+            <Tab eventKey={4} title="Stats">
+              <StatsView sessions={sessions} ignored={ignored} scenariosById={scenariosById}/>
             </Tab>
           </Tabs>
         </div>
