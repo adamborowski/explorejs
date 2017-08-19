@@ -16,7 +16,7 @@ const ChartTestCase = ({throttleNetwork, onStats, adapter, preset, controlledVie
 };
 
 ChartTestCase.propTypes = {
-  throttleNetwork: PropTypes.oneOf(null, PropTypes.number),
+  throttleNetwork: PropTypes.oneOf([null, PropTypes.number]),
   onStats: PropTypes.func,
   adapter: PropTypes.string,
   preset: PropTypes.object,
