@@ -13,6 +13,9 @@ export const loadResults = async () => {
 };
 
 const fixResults = async (json) => json.map(j => {
+  if (j.data.sessions.length < 2) {
+    return j; // no second session - nothing to fix
+  }
 
   const [sess1, sess2, ...restSessions] = j.data.sessions;
   if (sess2 && sess2.stats === undefined) {
