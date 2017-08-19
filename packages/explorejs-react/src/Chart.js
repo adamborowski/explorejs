@@ -2,11 +2,19 @@
  * A component which renders dom element for chart and instantiates adapter based on given type
  * We can set different type and serie cache at any time - it should reinitialize whole chart and adapter
  */
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import adapterFactory, {types as chartTypes} from './AdapterFactory';
 import {predictionModelTypes} from 'explorejs-lib';
 
 export default class Chart extends React.Component {
+    static propTypes = {
+        controlledViewState: PropTypes.object
+    };
+
+    static defaultProps = {
+        controlledViewState: undefined
+    };
 
     constructor() {
         super();
@@ -33,7 +41,15 @@ export default class Chart extends React.Component {
         }
 
         this._createAdapter(this.props);
+        if (this.props.controlledViewState) {
+            this.setRange(this.props.controlledViewState.range);
+        }
     }
+
+    setRange(range) {
+        this.state.adapter && this.state.adapter.setDisplayedRange(range.start, range.end);
+    }
+
 
     /**
      * If adapterType or serieCache will change - destroy previous adapter and create new
@@ -42,6 +58,11 @@ export default class Chart extends React.Component {
         if (this.props.adapter !== nextProps.adapter || this.props.serieId !== nextProps.serieId) {
 
             this._createAdapter(nextProps);
+        }
+        if (this.props.controlledViewState !== nextProps.controlledViewState) {
+            if (nextProps.controlledViewState) {
+                this.setRange(nextProps.controlledViewState.range);
+            }
         }
     }
 

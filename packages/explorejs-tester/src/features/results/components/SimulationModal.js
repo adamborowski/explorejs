@@ -65,6 +65,7 @@ export default class SimulationModal extends React.Component {
                           onStats={stats => console.log('added stats', stats)}
             >
               <Chart serieId="0" adapter={'flot'}
+                     controlledViewState={currentViewState && currentViewState.state}
                      prediction={scenario.preset.usePrediction ? ['basic', 'wider-context'] : ['basic']}/>
             </LocalBinding>
           </div>
