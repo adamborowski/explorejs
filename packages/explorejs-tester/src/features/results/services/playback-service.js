@@ -5,6 +5,8 @@ export default (states, defaultSpeed = 100 * 1024, tickCallback, finishCallback)
 
   const handleTick = () => {
     tickCallback(states[current]);
+
+
     const timeOfThisState = states[current].time;
 
     current += 1;
@@ -14,15 +16,21 @@ export default (states, defaultSpeed = 100 * 1024, tickCallback, finishCallback)
       const delayBetween = timeOfNextState - timeOfThisState;
       timeout = setTimeout(handleTick, delayBetween);
     }
+    else {
+      console.info('playback finished');
+      finishCallback && finishCallback();
+    }
   };
 
   return {
     play() {
+      console.info('playback started');
       clearTimeout(timeout); //if muptiple plays...
       handleTick();
     },
     stop() {
       clearTimeout(timeout);
+      console.info('playback stopped');
     }
 
   }

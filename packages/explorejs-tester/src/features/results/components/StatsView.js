@@ -18,7 +18,7 @@ export default class Stats extends React.Component {
   }
 
   onHide = () => this.setState({simulationOpen: false});
-  onShow = () => this.setState({simulationOpen: true});
+  onShow = (index) => this.setState({simulationOpen: index});
 
   render() {
     const {sessions, ignored, scenariosById} = this.props;
@@ -28,20 +28,23 @@ export default class Stats extends React.Component {
 
 
           <div className="pull-right" style={{marginLeft: 20, position: 'relative', top: -70}}>
-            <Button bsStyle="success" onClick={this.onShow} title="open simulation window">
+            <Button bsStyle="success" onClick={() => this.onShow(i)} title="open simulation window">
               <Glyphicon glyph="play"/>
             </Button>
           </div>
           <h4 className='list-group-item-heading'>#{session.session.id}
             <small className="pull-right"> {scenariosById[session.session.scenario].name}</small>
           </h4>
-          <SimulationModal show={this.state.simulationOpen}
-                           onHide={this.onHide}
-                           sessionObject={session.session}
-                           sessionStats={session.stats}
-                           title={
-                             <span>Session of sccenario <em>{scenariosById[session.session.scenario].name}</em>.</span>}
+          {this.state.simulationOpen === i && <SimulationModal show={true}
+                                                               onHide={this.onHide}
+                                                               sessionObject={session.session}
+                                                               sessionStats={session.stats}
+                                                               title={
+                                                                 <span>Session of sccenario
+                               <em>{scenariosById[session.session.scenario].name}</em>.
+                             </span>}
           />
+          }
           <table className="table stats-table">
             <tbody>
             {map({
