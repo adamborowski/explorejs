@@ -10,7 +10,7 @@ import trans from '../../../translations/trans';
 import {scenarioSelector} from '../../../selectors/testingSelectors';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
-import {Button, Glyphicon} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 
 class PerftestPage extends React.Component {
 
@@ -102,7 +102,7 @@ class PerftestPage extends React.Component {
                 <td>
                   waiting &nbsp;&nbsp;
                   <Button bsStyle="success" bsSize="xsmall" title="perform cross-preset tests on this scenario">
-                    <Glyphicon glyph="signal"/>
+                    <span className="glyphicon glyphicon-signal"/>
                   </Button>
                 </td>
               </tr>)

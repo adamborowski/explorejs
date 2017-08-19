@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Glyphicon, Modal, Tab, Tabs} from 'react-bootstrap';
+import {Button, Modal, Tab, Tabs} from 'react-bootstrap';
 import {map} from 'lodash';
 import SimulationModal from './SimulationModal';
 
@@ -29,7 +29,7 @@ export default class Stats extends React.Component {
 
           <div className="pull-right" style={{marginLeft: 20, position: 'relative', top: -70}}>
             <Button bsStyle="success" onClick={() => this.onShow(i)} title="open simulation window">
-              <Glyphicon glyph="play"/>
+              <span className="glyphicon glyphicon-play"/>
             </Button>
           </div>
           <h4 className='list-group-item-heading'>#{session.session.id}
