@@ -3,7 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import path from 'path';
 
-function isExternal(module) {
+export function isExternal(module) {
   var userRequest = module.userRequest;
 
   if (typeof userRequest !== 'string') {

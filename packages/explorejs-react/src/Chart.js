@@ -50,7 +50,6 @@ export default class Chart extends React.Component {
         this.state.adapter && this.state.adapter.setDisplayedRange(range.start, range.end);
     }
 
-
     /**
      * If adapterType or serieCache will change - destroy previous adapter and create new
      */
@@ -114,7 +113,6 @@ export default class Chart extends React.Component {
         prediction: PropTypes.arrayOf(PropTypes.oneOf(predictionModelTypes)),
         initialStart: PropTypes.instanceOf(Date),
         initialEnd: PropTypes.instanceOf(Date)
-
     };
 
     static defaultProps = {

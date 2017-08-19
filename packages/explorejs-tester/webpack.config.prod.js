@@ -6,6 +6,7 @@ import WebpackMd5Hash from 'webpack-md5-hash';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import path from 'path';
+import {isExternal} from './webpack.config.dev';
 
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production'),
@@ -40,7 +41,21 @@ export default {
       $: 'jquery',
       jQuery: 'jquery'
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "commons",
+      // (the commons chunk name)
+      minChunks: function(module) {
+        return isExternal(module);
+      },
+      filename: "commons.js",
+      // (the filename of the commons chunk)
 
+      // minChunks: 3,
+      // (Modules must be shared between 3 entries)
+
+      // chunks: ["pageA", "pageB"],
+      // (Only use these entries)
+    }),
     // Generate an external css file with a hash in the filename
     new ExtractTextPlugin('[name].[contenthash].css'),
 
