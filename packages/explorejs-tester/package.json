@@ -70,6 +70,7 @@
     "eslint-watch": "2.1.14",
     "explorejs-adapters": "^0.0.0",
     "explorejs-react": "^0.0.0",
+    "explorejs-common": "^0.0.0",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
     "getsetdeep": "2.1.0",

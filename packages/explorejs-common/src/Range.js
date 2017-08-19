@@ -15,22 +15,50 @@ class Range {
         this.rightClosed = rightClosed;
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     * @returns {Range}
+     */
     static opened(left, right) {
         return new Range(left, right, false, false);
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     * @returns {Range}
+     */
     static closed(left, right) {
         return new Range(left, right, true, true);
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     * @returns {Range}
+     */
     static leftClosed(left, right) {
         return new Range(left, right, true, false);
     }
 
+    /**
+     *
+     * @param left
+     * @param right
+     * @returns {Range}
+     */
     static rightClosed(left, right) {
         return new Range(left, right, false, true);
     }
 
+    /**
+     *
+     * @returns {Range}
+     */
     static unbounded() {
         return new Range(-Infinity, Infinity, false, false);
     }

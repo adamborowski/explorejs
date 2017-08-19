@@ -49,6 +49,9 @@ class ResultList extends React.Component {
         >
           <h4 className="list-group-item-heading">
             {
+              r.data.analytics && <span className="glyphicon glyphicon-flash pull-right" title="contains analytics"/>
+            }
+            {
               r.name ?
                 r.name
                 :

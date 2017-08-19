@@ -9,6 +9,7 @@ import ScoresView from './ScoresView';
 import QuestionsView from './QuestionsView';
 import {Tab, Tabs} from 'react-bootstrap';
 import AnalyticsView from './AnalyticsView';
+import {calculateSessionStats, calculateStats} from '../services/result-service';
 
 
 class ResultDetailView extends React.Component {
@@ -17,6 +18,25 @@ class ResultDetailView extends React.Component {
     scenarios: PropTypes.array,
     result: PropTypes.object
   };
+
+  constructor(props) {
+    super(props);
+    this.state = this.createState(props.result);
+  }
+
+  createState(result) {
+    const ignored = result.data.sessions.filter(session => session.stats === undefined);
+    return {
+      sessions: result.data.sessions.filter(session => session.stats !== undefined).map(s => calculateSessionStats(s.stats)),
+      ignored
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if (this.props.result !== props.result) {
+      this.setState(this.createState(props.result));
+    }
+  }
 
   render() {
 
