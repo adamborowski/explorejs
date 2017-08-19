@@ -41,21 +41,6 @@ export default {
       $: 'jquery',
       jQuery: 'jquery'
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: "commons",
-      // (the commons chunk name)
-      minChunks: function(module) {
-        return isExternal(module);
-      },
-      filename: "commons.js",
-      // (the filename of the commons chunk)
-
-      // minChunks: 3,
-      // (Modules must be shared between 3 entries)
-
-      // chunks: ["pageA", "pageB"],
-      // (Only use these entries)
-    }),
     // Generate an external css file with a hash in the filename
     new ExtractTextPlugin('[name].[contenthash].css'),
 
@@ -84,7 +69,7 @@ export default {
     new webpack.optimize.DedupePlugin(),
 
     // Minify JS
-    new webpack.optimize.UglifyJsPlugin()
+    // new webpack.optimize.UglifyJsPlugin()
   ],
   module: {
     loaders: [
