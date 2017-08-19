@@ -85,9 +85,10 @@ export default  store => next => action => {
 
   switch (newAction.type) {
     case SESSION_CREATE: {
-      const newItem = (state.orm.Session.meta.maxId || -1) + 1;
-      // eslint-disable-next-line
-      const session = createSession(state);
+      const maxId = state.orm.Session.meta.maxId;
+      const newItem = maxId === undefined ? 0 : maxId + 1;
+
+      createSession(state);
 
       let action2 = push(`/scenario/${newAction.payload.scenario}/session/${newItem}`);
       store.dispatch(action2);
