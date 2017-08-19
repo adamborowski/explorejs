@@ -39,6 +39,7 @@ export default class Stats extends React.Component {
                                                                onHide={this.onHide}
                                                                sessionObject={session.session}
                                                                sessionStats={session.stats}
+                                                               scenario={scenariosById[session.session.scenario]}
                                                                title={
                                                                  <span>Session of sccenario
                                <em>{scenariosById[session.session.scenario].name}</em>.
