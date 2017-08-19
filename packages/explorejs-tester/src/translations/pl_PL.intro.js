@@ -26,6 +26,14 @@ export default (slide) => [
       Zalecam uważne zapoznanie się z materiałem wprowadzającym do zagadnienia oraz opisami poszczególnych wersji
       rozwiązania. Ankieta powinna zająć około 30 minut.
     </p>
+    <p>
+      <strong>Uwaga! Ta ankieta zbiera wszelkie informacje na temat Twojej aktywności na tej stronie w celach badawczych.
+        Kontynuując, wyrażasz na to zgodę.
+        </strong>
+    </p>
+    <p>
+      W dodatku, proszę do tej ankiety użyć tylko przeglądarkę <strong>Chrome</strong>, ponieważ na pozostałych może działać niepoprawnie.
+    </p>
   </div>,
   <div>
     <h3 className="display-3">

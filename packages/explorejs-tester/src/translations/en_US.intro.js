@@ -27,6 +27,12 @@ export default (slide) => [
       every version of given solution.
       This survey should take not longer than 30 minutes.
     </p>
+    <p>
+      <strong>Notice! This survey will intensively record your activity on this page for research purposes. By
+        proceeding you agree on that.</strong>
+    </p>
+    <p>Also, please open this page only on <strong>Chrome</strong> browser, on other browsers it can work inproperly.
+    </p>
   </div>,
   <div>
     <h3 className="display-3">
