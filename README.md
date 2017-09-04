@@ -1,5 +1,7 @@
 # Explore.js
 
+This is caching and prefetching middleware for large-scale time series visualization, written completely in JavaScript.
+
 Full-featured aggregated time series data connector for JavaScript charting libraries.
 
 This library makes every charting library able to visualize any amount of data.
