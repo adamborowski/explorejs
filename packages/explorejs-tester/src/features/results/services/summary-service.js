@@ -28,7 +28,7 @@ export const getScoresHistogram = results => {
  * @param modifier
  * @returns {Array} scenario=>sorted list of absolute scores
  */
-export const getAbsoluteScores = (results, factors = [1 / 4, 1 / 2, 1, 2, 4], modifier = (s, f) => s * f, scoreMap = s => Math.log(s)) => {
+export const getAbsoluteScores = (results, factors = [1 / 8, 1 / 2, 1, 2, 8], modifier = (s, f) => s * f, scoreMap = s => Math.log(s)) => {
 
   const getFactor = relativeScore => factors[relativeScore + 2];
 
@@ -47,7 +47,7 @@ export const getAbsoluteScores = (results, factors = [1 / 4, 1 / 2, 1, 2, 4], mo
   return [0, 1, 2, 3, 4].map(scenario => absoluteScores.map(as => as[scenario]));
 };
 
-const defaultPercentiles = [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1];
+const defaultPercentiles = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 // const defaultPercentiles = [.1, .5, .9];
 /**
  * for each scenario returns list of specified percentiles of absolute scores from responses
