@@ -4,6 +4,7 @@ import {Button, Modal} from 'react-bootstrap';
 import {Chart, LocalBinding} from 'explorejs-react';
 import {preset} from '../../../../orm/bootstrap';
 import ChartTestCase from '../../../../components/common/ChartTestCase';
+import ChartPlayback from '../ChartPlayback';
 
 const chartTypes = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];
 const presetNames = ['basic', '+cache', '+projection', '+predition', '+optimization']
@@ -44,7 +45,7 @@ export default class PerfTestDialog extends React.Component {
 
 
   render() {
-    const {sessionStats, sessionObject, title, scenario} = this.props;
+    const {sessionObject, title, scenario} = this.props;
     const {currentTestCase, testStats} = this.state;
 
 
@@ -98,15 +99,14 @@ export default class PerfTestDialog extends React.Component {
               {
                 currentTestCase != null && <div>
                   <h3>Running your test</h3>
-                  <ChartTestCase adapter={testCases[currentTestCase].chartType} throttleNetwork={null}
-                                 key={currentTestCase}
-                                 onStats={stats => this.setState({
-                                   testStats: {
-                                     ...this.state.testStats,
-                                     [currentTestCase]: stats
-                                   }
-                                 })}
-                                 preset={testCases[currentTestCase].preset}/>{/*todo tests for each adapter*/}/*todo add playback for test*/
+                  <ChartPlayback
+                    key={currentTestCase}
+                    adapter={testCases[currentTestCase].chartType}
+                    onStats={stats => this.setState({testStats: {...this.state.testStats, [currentTestCase]: stats}})}
+                    preset={testCases[currentTestCase].preset}
+                    viewStateStats={sessionObject.stats.viewState.slice(0, 20)}
+                  />
+
                 </div>
               }
             </div>
