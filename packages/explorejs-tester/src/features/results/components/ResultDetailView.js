@@ -31,7 +31,7 @@ class ResultDetailView extends React.Component {
     return {
       sessions: result.data.sessions.filter(session => session.stats !== undefined).map(session => ({
         session,
-        stats: calculateSessionStats(session.stats)
+        stats: calculateSessionStats(session.stats, session.scenario === 0)
       })),
       ignored
     }

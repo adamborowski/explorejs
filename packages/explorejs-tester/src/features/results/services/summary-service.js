@@ -89,7 +89,7 @@ export const getNormalizedHistogramForScenario = (results, scenarioId) => {
     })
     .filter(s => s !== undefined);
 
-  const denormalizedHistograms = sessions.map(session => calculateSessionStats(session.stats).histogram);
+  const denormalizedHistograms = sessions.map(session => calculateSessionStats(session.stats, session.scenario === 0).histogram);
 
 
   const normalizedHistograms = denormalizedHistograms.map(histogram => {

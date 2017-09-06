@@ -116,7 +116,7 @@ const getTimeBin = time => {
 };
 
 
-export const calculateSessionStats = (stats) => {
+export const calculateSessionStats = (stats, treatNoRequestsAsImpossible = false) => {
 
   const viewStateMachine = new TimeMachine(stats.viewState.slice(1)); // we ignore fist!
 
@@ -127,19 +127,23 @@ export const calculateSessionStats = (stats) => {
   const fixedEnd = new Date('2017-06-08 05:55:50').getTime();
 
   const requestsCausedByViewState = stats.viewState
+    .map((vs, i) => ({...vs, timeEnd: stats.viewState[i + 1] ? stats.viewState[i + 1].time : vs.time + 1000}))
     .filter(vs => vs.state.currentLevelId !== 'raw') // truncate playing with too little data or when zoomed out too much
     .filter(vs => vs.state.currentLevelId !== '1y')
     .filter(vs => vs.state.scale < 904067979)
     .filter(vs => vs.state.range.end > fixedStart && vs.state.range.start < fixedEnd)
     .map(vs => ({
-    viewState: vs,
-    requests: allRequests.during(vs.time, vs.time + 2000).containingRange(vs.state.currentLevelId, vs.state.range.start, vs.state.range.end).items
-  }))
+      viewState: vs,
+      requests: allRequests.during(vs.time, Math.max(vs.timeEnd, vs.time + 300)).containingRange(vs.state.currentLevelId, vs.state.range.start, vs.state.range.end).items
+    }))
     .map(state => ({
       ...state,
       sumSize: state.requests.reduce((sum, req) => sum + req.size, 0),
       waitTime: state.requests.map(r => r.finishTime - r.startTime).reduce((max, time) => Math.max(max, time), 0)
-    }));
+    }))
+    .filter(s => !treatNoRequestsAsImpossible || s.waitTime > 0)
+
+  ;
 
   const histogram = groupBy(requestsCausedByViewState, r => getTimeBin(r.waitTime));
 
