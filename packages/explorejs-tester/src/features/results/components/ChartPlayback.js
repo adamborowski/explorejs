@@ -10,7 +10,8 @@ export default class ChartPlayback extends React.Component {
     preset: PropTypes.object,
     adapter: PropTypes.string,
     onStats: PropTypes.func,
-    viewStateStats: PropTypes.array
+    viewStateStats: PropTypes.array,
+    onFinish: PropTypes.func
   };
 
   state = {};
@@ -32,6 +33,7 @@ export default class ChartPlayback extends React.Component {
 
   onFinish = () => {
     this.setState({finished: true})
+    setTimeout(() => this.props.onFinish && this.props.onFinish(), 2000);
   };
 
   render() {
@@ -40,7 +42,7 @@ export default class ChartPlayback extends React.Component {
     const {currentViewState} = this.state;
 
     const startTime = this.props.viewStateStats[0].time;
-    const endTime = _.last(this.props.viewStateStats).time + 1000;
+    const endTime = _.last(this.props.viewStateStats).time;
     const duration = endTime - startTime;
     const currentProgress = currentViewState == null ? 0 : (currentViewState.time - startTime) / duration * 100;
 

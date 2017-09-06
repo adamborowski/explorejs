@@ -39,14 +39,15 @@ export default class PerfTestDialog extends React.Component {
     super(props);
     this.state = {
       testStats: {},
-      currentTestCase: null
+      currentTestCase: null,
+      isCurrentTestCaseRecording: false
     }
   }
 
 
   render() {
     const {sessionObject, title, scenario} = this.props;
-    const {currentTestCase, testStats} = this.state;
+    const {currentTestCase, testStats, isCurrentTestCaseRecording} = this.state;
 
 
     return (
@@ -67,25 +68,37 @@ export default class PerfTestDialog extends React.Component {
                 </thead>
                 <tbody>
                 {
-                  testCases.map((testCase, presetIndex) => {
-                    const isCurrent = currentTestCase === presetIndex;
-                    return <tr key={presetIndex}
-                               style={{backgroundColor: isCurrent ? '#dedede' : undefined}}>
+                  testCases.map((testCase, testCaseIndex) => {
+                    const isCurrent = currentTestCase === testCaseIndex;
+                    return <tr key={testCaseIndex}
+                               style={{backgroundColor: isCurrent ? '#dedede' : undefined}}
+                               onClick={() => this.setState({
+                                 isCurrentTestCaseRecording: false,
+                                 currentTestCase: testCaseIndex
+                               })}
+                    >
                       <th>{testCase.name} / {testCase.chartType}</th>
-                      <td>{(isCurrent ? 'running' : testStats[presetIndex] === undefined ? 'pending' : 'executed')}</td>
+                      <td>{(isCurrent && isCurrentTestCaseRecording ? 'running' : testStats[testCaseIndex] === undefined ? 'pending' : 'executed')}</td>
                       <td>
                         {
-                          isCurrent ?
+                          isCurrent && isCurrentTestCaseRecording ?
                             <Button bsStyle="danger" bsSize="xsmall" title="stop test"
-                                    onClick={() => this.setState({currentTestCase: null})}
+                                    onClick={() => this.setState({isCurrentTestCaseRecording: false})}
                             >
                               <span className="glyphicon glyphicon-stop"/>
                             </Button>
                             :
                             <Button bsStyle="success" bsSize="xsmall" title="perform cross-preset tests on this session"
-                                    onClick={() => this.setState({currentTestCase: presetIndex})}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      return this.setState({
+                                        currentTestCase: testCaseIndex,
+                                        isCurrentTestCaseRecording: true
+                                      });
+                                    }}
                             >
-                              <span className="glyphicon glyphicon-play"/>
+                              <span
+                                className={`glyphicon glyphicon-${testStats[testCaseIndex] === undefined ? 'play' : 'refresh'}`}/>
                             </Button>
                         }
                       </td>
@@ -97,16 +110,22 @@ export default class PerfTestDialog extends React.Component {
             </div>
             <div className="col-md-9">
               {
-                currentTestCase != null && <div>
+                currentTestCase != null && isCurrentTestCaseRecording && <div>
                   <h3>Running your test</h3>
                   <ChartPlayback
                     key={currentTestCase}
                     adapter={testCases[currentTestCase].chartType}
                     onStats={stats => this.setState({testStats: {...this.state.testStats, [currentTestCase]: stats}})}
                     preset={testCases[currentTestCase].preset}
-                    viewStateStats={sessionObject.stats.viewState.slice(0, 20)}
+                    onFinish={() => this.setState({isCurrentTestCaseRecording: false})}
+                    viewStateStats={sessionObject.stats.viewState.slice(0, 20)}/*temporary cut*/
                   />
 
+                </div>
+              }
+              {
+                currentTestCase != null && !isCurrentTestCaseRecording && <div>
+                  info about recorded stats
                 </div>
               }
             </div>
