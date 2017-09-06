@@ -1,5 +1,12 @@
 import React from 'react';
 
+export const preset = (useCache = false, useFallback = false, usePrediction = false, useMergingBatch = false) => ({
+  useCache,
+  useFallback,
+  usePrediction,
+  useMergingBatch
+});
+
 // bootstrap.js
 export default function bootstrap(schema) {
   // Get the empty state according to our schema.
@@ -43,12 +50,6 @@ export default function bootstrap(schema) {
     ]
   };
 
-  const preset = (useCache = false, useFallback = false, usePrediction = false, useMergingBatch = false) => ({
-    useCache,
-    useFallback,
-    usePrediction,
-    useMergingBatch
-  });
 
   // Start by creating entities whose props are not dependent
   // on others.

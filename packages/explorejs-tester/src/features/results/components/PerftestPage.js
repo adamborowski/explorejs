@@ -11,10 +11,11 @@ import {scenarioSelector} from '../../../selectors/testingSelectors';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {Button} from 'react-bootstrap';
+import PerfTestDialog from './perf/PerfTestDialog';
 
 class PerftestPage extends React.Component {
 
-  state = {results: null, error: null, loading: false, currentResult: 0, showTesting: true};
+  state = {results: null, error: null, loading: false, currentSession: null, showTesting: true};
 
   componentDidMount() {
     this.refresh();
@@ -38,7 +39,7 @@ class PerftestPage extends React.Component {
 
   render() {
 
-    const {results, error, loading, currentResult, showTesting} = this.state;
+    const {results, error, loading, currentSession, showTesting} = this.state;
     const {trans, dynamicTrans} = this.context;
     const {scenarios} = this.props;
 
@@ -101,7 +102,9 @@ class PerftestPage extends React.Component {
                 <td>{dynamicTrans(scenarios.find(s => s.id === session.scenario).name)}</td>
                 <td>
                   waiting &nbsp;&nbsp;
-                  <Button bsStyle="success" bsSize="xsmall" title="perform cross-preset tests on this scenario">
+                  <Button bsStyle="success" bsSize="xsmall" title="perform cross-preset tests on this session"
+                          onClick={() => this.setState({currentSession: session})}
+                  >
                     <span className="glyphicon glyphicon-signal"/>
                   </Button>
                 </td>
@@ -111,6 +114,10 @@ class PerftestPage extends React.Component {
             </tbody>
           </table>
         </div>
+        {currentSession != null &&
+        <PerfTestDialog sessionObject={currentSession} onHide={() => this.setState({currentSession: null})}
+                        title={`Performance tests of ${dynamicTrans(scenarios.find(s => s.id === currentSession.scenario).name)}`}
+        />}
       </div>
     }
     return <ResultError message="No data"/>
