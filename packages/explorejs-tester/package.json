@@ -118,7 +118,12 @@
   "dependencies": {
     "classnames": "latest",
     "compose-function": "3.0.3",
+    "d3": "4.10.2",
     "lodash": "4.17.4",
-    "react-toggle": "4.0.1"
+    "react-toggle": "4.0.1",
+    "recharts": "1.0.0-alpha.4",
+    "stats-lite": "2.1.0",
+    "d3-scale": "latest",
+    "d3-color": "latest"
   }
 }

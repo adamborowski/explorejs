@@ -1,0 +1,75 @@
+import {accumulateMap, arrayToObject} from '../utils';
+import _ from 'lodash';
+import {percentile} from 'stats-lite';
+
+function getScores(results) {
+  return results.map(response => arrayToObject(response.data.sessions.filter(s => s.score != null), s => s.scenario, s => s.score));
+}
+
+function getScoresByScenario(results) {
+  const scores = getScores(results);
+  return [0, 1, 2, 3, 4].map(i => scores.map(s => s[i]));
+}
+
+export const getScoresHistogram = results => {
+
+
+  const scoresByScenario = getScoresByScenario(results);
+
+  return scoresByScenario.map(scenarioScores => [-2, -1, 0, 1, 2].map(value => ({
+    value,
+    count: scenarioScores.filter(s => s === value).length
+  })));
+};
+/**
+ * returns sorted absolute scores from every response for every scenario
+ * @param results
+ * @param factors
+ * @param modifier
+ * @returns {Array} scenario=>sorted list of absolute scores
+ */
+export const getAbsoluteScores = (results, factors = [1 / 4, 1 / 2, 1, 2, 4], modifier = (s, f) => s * f, scoreMap = s => Math.log(s)) => {
+
+  const getFactor = relativeScore => factors[relativeScore + 2];
+
+  const relativeScores = getScores(results);
+  const absoluteScores = relativeScores.map(scores => {
+    let currentScore = 1;
+
+    const absScores = [0, 1, 2, 3, 4].map(scenarioIndex => {
+      currentScore = modifier(currentScore, getFactor(scores[scenarioIndex]));
+      return currentScore;
+    });
+
+    return absScores.map(scoreMap);
+  });
+
+  return [0, 1, 2, 3, 4].map(scenario => absoluteScores.map(as => as[scenario]));
+};
+
+const defaultPercentiles = [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1];
+// const defaultPercentiles = [.1, .5, .9];
+/**
+ * for each scenario returns list of specified percentiles of absolute scores from responses
+ * @param {Array} scenario=> percentiles array
+ */
+export const getDataForPercentileChart = (results, percentiles = defaultPercentiles, factors, modifier, scoreMap) => {
+
+  const absoluteScores = getAbsoluteScores(results, factors, modifier, scoreMap);
+
+  const labels = ['basic', '+cache', '+projection', '+prediction', '+optimization'];
+
+  const map = absoluteScores.map((as, i) => {
+
+    const absolutePercentiles = percentiles.map(ptile => percentile(as, ptile));
+    const stackedPercentiles = accumulateMap(absolutePercentiles, (item, i, acc) => item - acc, (item, i, acc) => item, 0);
+
+    return {
+      ...arrayToObject(absolutePercentiles, (v, i) => 'a' + i),
+      ...arrayToObject(stackedPercentiles, (v, i) => 's' + i),
+      label: labels[i],
+      percentiles
+    };
+  });
+  return map;
+};

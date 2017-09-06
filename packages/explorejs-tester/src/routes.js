@@ -14,6 +14,7 @@ import SessionPage from './components/pages/scenario/SessionPage';
 import SummaryPage from './components/pages/SummaryPage';
 import ResultsPage from './features/results/components/ResultsPage';
 import PerftestPage from './features/results/components/PerftestPage';
+import ResultsSummaryPage from './features/results/components/ResultsSummaryPage';
 
 const typicalAppPage = children => ({children, pageHeader: ConnectedHeader, sidebar: ScenarioSidebar});
 
@@ -39,6 +40,7 @@ export default (
     </Route>
     <Route path="summary" component={typicalAppPage(SummaryPage)}/>
     <Route path="responses" component={{children: ResultsPage, pageHeader: ConnectedHeader}}/>
+    <Route path="responses/summary" component={{children: ResultsSummaryPage, pageHeader: ConnectedHeader}}/>
     <Route path="perftests" component={{children: PerftestPage, pageHeader: ConnectedHeader}}/>
     <Route path="*" component={NotFoundPage} onEnter={() => console.log('* enter')} onLeave={()=>console.log('* exit')}/>
   </Route>
