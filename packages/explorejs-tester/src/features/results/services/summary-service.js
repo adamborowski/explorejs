@@ -1,6 +1,7 @@
 import {accumulateMap, arrayToObject} from '../utils';
 import _ from 'lodash';
 import {percentile} from 'stats-lite';
+import {bins, calculateSessionStats} from './result-service';
 
 function getScores(results) {
   return results.map(response => arrayToObject(response.data.sessions.filter(s => s.score != null), s => s.scenario, s => s.score));
@@ -73,3 +74,72 @@ export const getDataForPercentileChart = (results, percentiles = defaultPercenti
   });
   return map;
 };
+
+export const getNormalizedHistogramForScenario = (results, scenarioId) => {
+
+  // for every response get right session
+  const sessions = results
+    .map(r => {
+      const scenarioSessions = r.data.sessions.filter(s => s.scenario === scenarioId);
+
+      const havingScoreAndStats = _.last(scenarioSessions.filter(s => s.stats != null && s.score != null));
+      const havingStats = _.last(scenarioSessions.filter(s => s.stats != null));
+
+      return havingScoreAndStats || havingStats;
+    })
+    .filter(s => s !== undefined);
+
+  const denormalizedHistograms = sessions.map(session => calculateSessionStats(session.stats).histogram);
+
+
+  const normalizedHistograms = denormalizedHistograms.map(histogram => {
+    const countHistogram = [];
+    let sum = 0;
+    bins.forEach(bin => {
+      countHistogram[bin] = histogram.hasOwnProperty(bin) ? histogram[bin].length : 0;
+      sum += countHistogram[bin];
+    });
+    bins.forEach(bin => {
+      countHistogram[bin] /= sum;
+    })
+    return countHistogram;
+  });
+
+  return normalizedHistograms;
+};
+
+export const accumulateHistograms = histograms => {
+
+  const accHistogram = {};
+  let sum = 0;
+
+  histograms.forEach(histogram => {
+    Object.keys(histogram).forEach(binName => {
+      if (!accHistogram.hasOwnProperty(binName)) {
+        accHistogram[binName] = 0;
+      }
+      accHistogram[binName] += histogram[binName];
+    })
+  });
+
+  Object.keys(accHistogram).forEach(bin => sum += accHistogram[bin]);
+
+  const normalized = _.mapValues(accHistogram, value => value / sum);
+
+  return normalized;
+};
+
+export const getTimingHistogramForScenarios = (results) => {
+  const histograms = [0, 1, 2, 3, 4].map(scenario => getNormalizedHistogramForScenario(results, scenario));
+
+  const acc = histograms
+    .map(responsesHistograms => accumulateHistograms(responsesHistograms))
+    .map(histogram => _.map(histogram, (value, key) => {
+      return {
+        value: key,
+        count: value
+      }
+    }));
+
+  return acc;
+}

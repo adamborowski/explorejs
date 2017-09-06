@@ -94,23 +94,25 @@ class RequestQuery {
 
 }
 
+export const bins = ['0s', '<=0.1s', '<=1s', '<=2s', '<=10s', '>10s']
+
 const getTimeBin = time => {
   if (time === 0) {
-    return '0s';
+    return bins[0];
   }
   if (time <= 100) {
-    return '<=0.1s'
+    return bins[1]
   }
   if (time <= 1000) {
-    return '<=1s';
+    return bins[2];
   }
   if (time <= 2000) {
-    return '<=2s';
+    return bins[3];
   }
   if (time <= 10000) {
-    return '<=10s';
+    return bins[4];
   }
-  return '>10s';
+  return bins[5];
 };
 
 
@@ -121,7 +123,15 @@ export const calculateSessionStats = (stats) => {
 
   const allRequests = new RequestQuery(stats.requestManager);
 
-  const requestsCausedByViewState = stats.viewState.map(vs => ({
+  const fixedStart = new Date('1969-12-31 22:00').getTime();
+  const fixedEnd = new Date('2017-06-08 05:55:50').getTime();
+
+  const requestsCausedByViewState = stats.viewState
+    .filter(vs => vs.state.currentLevelId !== 'raw') // truncate playing with too little data or when zoomed out too much
+    .filter(vs => vs.state.currentLevelId !== '1y')
+    .filter(vs => vs.state.scale < 904067979)
+    .filter(vs => vs.state.range.end > fixedStart && vs.state.range.start < fixedEnd)
+    .map(vs => ({
     viewState: vs,
     requests: allRequests.during(vs.time, vs.time + 2000).containingRange(vs.state.currentLevelId, vs.state.range.start, vs.state.range.end).items
   }))

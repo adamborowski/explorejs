@@ -2,7 +2,10 @@ import React from 'react';
 import {loadResults} from '../services/result-service';
 import ResultError from './ResultError';
 import './ResultsPage.scss';
-import {getAbsoluteScores, getDataForPercentileChart, getScoresHistogram} from '../services/summary-service';
+import {
+  getAbsoluteScores, getDataForPercentileChart, getNormalizedHistogramForScenario,
+  getScoresHistogram, getTimingHistogramForScenarios
+} from '../services/summary-service';
 import ScoreHistogram from './summary/ScoreHistogram';
 import PercentileChart from './summary/PercentileChart';
 
@@ -20,7 +23,8 @@ class ResultsPage extends React.Component {
     histogram: null,
     absoluteScores: null,
     dataForPercentileChart: null,
-    dataForPercentileChart2: null
+    dataForPercentileChart2: null,
+    timingHistograms: null
   };
 
   componentDidMount() {
@@ -36,18 +40,27 @@ class ResultsPage extends React.Component {
       const absoluteScores = getAbsoluteScores(results);
       const dataForPercentileChart = getDataForPercentileChart(results);
       const dataForPercentileChart2 = getDataForPercentileChart(results, undefined, [-5, -2, 0, 2, 5], (score, factor) => score + factor, s => s);
+      const timingHistograms = getTimingHistogramForScenarios(results);
 
-      this.setState({results, histogram, absoluteScores, dataForPercentileChart, dataForPercentileChart2});
+      this.setState({
+        results,
+        histogram,
+        absoluteScores,
+        dataForPercentileChart,
+        dataForPercentileChart2,
+        timingHistograms
+      });
     }
     catch (e) {
       this.setState({results: [], error: `Cannot get responses: ${e.message}`});
+      console.error(e);
     }
     this.setState({loading: false});
   }
 
 
   render() {
-    const {results, error, loading, histogram, absoluteScores, dataForPercentileChart, dataForPercentileChart2} = this.state;
+    const {results, error, loading, histogram, absoluteScores, dataForPercentileChart, dataForPercentileChart2, timingHistograms} = this.state;
 
 
     if (error) {
@@ -61,10 +74,10 @@ class ResultsPage extends React.Component {
 
       return <div className="row results-page">
         <h4>Results based on {results.length} responses</h4>
-        <div className="col-md-4">
-          <ScoreHistogram histograms={histogram}/>
+        <div className="col-md-5">
+          <ScoreHistogram histograms={histogram} timingHistograms={timingHistograms}/>
         </div>
-        <div className="col-md-8">
+        <div className="col-md-7">
           <PercentileChart data={dataForPercentileChart} width={600} height={350}/>
           <PercentileChart data={dataForPercentileChart2} width={600} height={350} color="#ed3333"/>
         </div>

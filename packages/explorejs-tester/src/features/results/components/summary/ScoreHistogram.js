@@ -4,12 +4,13 @@ import Histogram from './Historgram';
 
 const types = ['Basic', '+Cache', '+Projection', '+Predition', '+Optimization'];
 
-export default ({histograms}) => <div>
+export default ({histograms, timingHistograms}) => <div>
   <table className="table">
     <thead>
     <tr>
       <th>version</th>
       <th>scores relative to previous</th>
+      <th>timing histogram</th>
     </tr>
     </thead>
     <tbody>
@@ -17,6 +18,9 @@ export default ({histograms}) => <div>
       <th>{types[i]}</th>
       <td>
         <Histogram data={h}/>
+      </td>
+      <td>
+        <Histogram data={timingHistograms[i]}/>
       </td>
     </tr>)}
     </tbody>

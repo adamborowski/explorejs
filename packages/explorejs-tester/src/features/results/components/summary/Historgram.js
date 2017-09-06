@@ -9,21 +9,21 @@ const Histogram = (props) => {
   const maxCount = data.reduce((tmp, {count}) => Math.max(count, tmp), 0);
 
 
-  return <svg width={300} height={vSpace + marginTop}>
+  return <svg width={data.length * (barWidth + barSpace) + barSpace} height={vSpace + marginTop}>
     {
       data.map(({value, count}, i) => {
         const height = Math.max(1, count * vSpace / maxCount);
-        return <g key={value} transform={`translate(${i * (barWidth + barSpace)},0)`}>
+        return <g key={value} transform={`translate(${i * (barWidth + barSpace) + barSpace},0)`}>
           <text x={barWidth / 2} y={vSpace + marginTop} fontFamily="Verdana" fontSize="12" width={barWidth}
                 textAnchor="middle">
             {/*histogram label*/}
             {value}
           </text>
           <text x={barWidth / 2} y={vSpace - 12 - height + marginTop} fontFamily="Verdana" fontSize="12"
-                width={barWidth}
+                width={barWidth + vSpace}
                 textAnchor="middle">
             {/*value over bar*/}
-            {count}
+            {Math.floor(count * 100) / 100}
           </text>
           <rect fill="#ffcc33" x="0" y={vSpace - 10 - height + marginTop} height={height} width={barWidth}/>
 
