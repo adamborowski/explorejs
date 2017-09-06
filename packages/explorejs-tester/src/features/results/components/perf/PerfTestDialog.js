@@ -5,7 +5,11 @@ import {Chart, LocalBinding} from 'explorejs-react';
 import {preset} from '../../../../orm/bootstrap';
 import ChartTestCase from '../../../../components/common/ChartTestCase';
 import ChartPlayback from '../ChartPlayback';
+import {clearItems, readItems, saveItem} from '../../services/storage-service';
+import _ from 'lodash';
+import RecordingInfo from './RecordingInfo';
 
+const PERF_TEST = 'perf-test';
 const chartTypes = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];
 const presetNames = ['basic', '+cache', '+projection', '+predition', '+optimization']
 const presetConfig = [preset(), preset(true), preset(true, true), preset(true, true, true), preset(true, true, true, true)]
@@ -37,13 +41,24 @@ export default class PerfTestDialog extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const sessionCases = _.mapKeys(_.omitBy(readItems(PERF_TEST), function (value, key) {
+      const split = key.split('@');
+      return !split[0] === props.sessionObject.start && split[1].length > 0;
+    }), (value, key) => key.split('@')[1]);
+
+
     this.state = {
-      testStats: {},
+      testStats: sessionCases || {},
       currentTestCase: null,
       isCurrentTestCaseRecording: false
     }
   }
 
+  saveStats(stats, testCaseIndex) {
+    saveItem(PERF_TEST, this.props.sessionObject.start + '@' + testCaseIndex, stats);
+    this.setState({testStats: {...this.state.testStats, [testCaseIndex]: stats}})
+  }
 
   render() {
     const {sessionObject, title, scenario} = this.props;
@@ -58,6 +73,15 @@ export default class PerfTestDialog extends React.Component {
         <Modal.Body>
           <div className="row">
             <div className="col-md-3" style={{height: 'calc(100vh - 229px)', overflow: 'auto'}}>
+              <Button bsStyle="danger" bsSize="xsmall" title="clear local storage"
+                      onClick={() => {
+                        clearItems(PERF_TEST);
+                        this.setState({testStats: {}});
+                      }}
+              >
+                              <span
+                                className={`glyphicon glyphicon-remove`}/>
+              </Button>
               <table className="table">
                 <thead>
                 <tr>
@@ -115,7 +139,7 @@ export default class PerfTestDialog extends React.Component {
                   <ChartPlayback
                     key={currentTestCase}
                     adapter={testCases[currentTestCase].chartType}
-                    onStats={stats => this.setState({testStats: {...this.state.testStats, [currentTestCase]: stats}})}
+                    onStats={stats => this.saveStats(stats, currentTestCase)}
                     preset={testCases[currentTestCase].preset}
                     onFinish={() => this.setState({isCurrentTestCaseRecording: false})}
                     viewStateStats={sessionObject.stats.viewState.slice(0, 20)}/*temporary cut*/
@@ -124,8 +148,9 @@ export default class PerfTestDialog extends React.Component {
                 </div>
               }
               {
-                currentTestCase != null && !isCurrentTestCaseRecording && <div>
-                  info about recorded stats
+                currentTestCase != null && !isCurrentTestCaseRecording && testStats[currentTestCase] && <div>
+                  <RecordingInfo stats={testStats[currentTestCase]} sessionObject={sessionObject}
+                                 name={testCases[currentTestCase].name + ' on ' + testCases[currentTestCase].chartType}/>
                 </div>
               }
             </div>
