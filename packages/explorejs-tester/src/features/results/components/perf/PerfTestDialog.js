@@ -139,9 +139,11 @@ export default class PerfTestDialog extends React.Component {
                   <ChartPlayback
                     key={currentTestCase}
                     adapter={testCases[currentTestCase].chartType}
-                    onStats={stats => this.saveStats(stats, currentTestCase)}
                     preset={testCases[currentTestCase].preset}
-                    onFinish={() => this.setState({isCurrentTestCaseRecording: false})}
+                    onFinish={(stats) => {
+                      this.saveStats(stats, currentTestCase);
+                      this.setState({isCurrentTestCaseRecording: false});
+                    }}
                     viewStateStats={sessionObject.stats.viewState.slice(0, 20)}/*temporary cut*/
                   />
 
@@ -149,7 +151,9 @@ export default class PerfTestDialog extends React.Component {
               }
               {
                 currentTestCase != null && !isCurrentTestCaseRecording && testStats[currentTestCase] && <div>
-                  <RecordingInfo stats={testStats[currentTestCase]} sessionObject={sessionObject}
+                  <RecordingInfo
+                    key={currentTestCase} /*reinitialize every time */
+                    stats={testStats[currentTestCase]} sessionObject={sessionObject}
                                  name={testCases[currentTestCase].name + ' on ' + testCases[currentTestCase].chartType}/>
                 </div>
               }

@@ -27,6 +27,7 @@ export default class LocalBinding extends Component {
 
     async componentDidMount() {
         const config = await this.state.configPromise;
+        this.props.statsRef && this.props.statsRef(() => config.getStats())
 
         this.props.series.forEach(s => config.createSerieCache(s));
 
@@ -47,7 +48,7 @@ export default class LocalBinding extends Component {
         this.state.configPromise.then(s => {
             s.destroy();
 
-            this.props.onStats(s.getStats());
+            this.props.onStats && this.props.onStats(s.getStats());
         });
     }
 
@@ -66,7 +67,8 @@ export default class LocalBinding extends Component {
         batch: PropTypes.string,
         series: PropTypes.arrayOf(PropTypes.string),
         preset: PropTypes.object,
-        onStats: PropTypes.func
+        onStats: PropTypes.func,
+        statsRef: PropTypes.func
     };
 
     static childContextTypes = {

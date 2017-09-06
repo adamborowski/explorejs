@@ -33,7 +33,7 @@ export default class ChartPlayback extends React.Component {
 
   onFinish = () => {
     this.setState({finished: true})
-    setTimeout(() => this.props.onFinish && this.props.onFinish(), 2000);
+    setTimeout(() => this.props.onFinish && this.props.onFinish(this.getStats()), 2000);
   };
 
   render() {
@@ -50,7 +50,7 @@ export default class ChartPlayback extends React.Component {
       <ChartTestCase
         preset={preset}
         throttleNetwork={null}
-        onStats={onStats}
+        statsRef={getStats => this.getStats = getStats}
         adapter={adapter}
         controlledViewState={currentViewState && currentViewState.state}
       />
