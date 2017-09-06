@@ -4,25 +4,30 @@ import Histogram from './Historgram';
 
 const types = ['Basic', '+Cache', '+Projection', '+Predition', '+Optimization'];
 
-export default ({histograms, timingHistograms}) => <div>
-  <table className="table">
-    <thead>
-    <tr>
-      <th>version</th>
-      <th>scores relative to previous</th>
-      <th>timing histogram</th>
-    </tr>
-    </thead>
-    <tbody>
-    {histograms.map((h, i) => <tr key={i}>
-      <th>{types[i]}</th>
-      <td>
-        <Histogram data={h}/>
-      </td>
-      <td>
-        <Histogram data={timingHistograms[i]}/>
-      </td>
-    </tr>)}
-    </tbody>
-  </table>
-</div>
+export default ({histograms, timingHistograms}) => {
+
+  const maxHistogramValue = timingHistograms.reduce((max, histogram) => Math.max(max, histogram.reduce((max, point) => Math.max(max, point.count), 0)), 0);
+
+  return <div>
+    <table className="table">
+      <thead>
+      <tr>
+        <th>version</th>
+        <th>scores relative to previous</th>
+        <th>timing histogram</th>
+      </tr>
+      </thead>
+      <tbody>
+      {histograms.map((h, i) => <tr key={i}>
+        <th>{types[i]}</th>
+        <td>
+          <Histogram data={h}/>
+        </td>
+        <td>
+          <Histogram data={timingHistograms[i]} maxValue={maxHistogramValue}/>
+        </td>
+      </tr>)}
+      </tbody>
+    </table>
+  </div>;
+}

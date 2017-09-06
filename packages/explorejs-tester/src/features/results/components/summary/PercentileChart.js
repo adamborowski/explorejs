@@ -4,7 +4,7 @@ import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 import {rgb} from 'd3-color';
 import PropTypes from 'prop-types';
 
-const PercentileChart = ({data, color, scale, domain, width, height}) => {
+const PercentileChart = ({data, color, scale, domain, width, height, timingMode}) => {
 
   const percentiles = data[0].percentiles;
   const numPercentiles = percentiles.length;
@@ -21,12 +21,12 @@ const PercentileChart = ({data, color, scale, domain, width, height}) => {
       [...Array(numPercentiles).keys()].map(ptile =>
         <Area key={ptile}
               type="basis"
-              dataKey={'s' + ptile} stackId={0}
-              stroke={rgb(color).brighter(Math.abs(ptile - numPercentiles / 2) / numPercentiles ** colorFactor).toString()}
-              fill={rgb(color).brighter(Math.abs(ptile - numPercentiles / 2) / numPercentiles ** colorFactor).toString()}
-              fillOpacity={ptile === 0 ? 0 : 0.8}
+              dataKey={(timingMode ? 'a' : 's') + ptile} stackId={0}
+              stroke={rgb(color).brighter(Math.abs(ptile - (timingMode ? 0 : numPercentiles / 2)) / numPercentiles ** colorFactor).toString()}
+              fill={rgb(color).brighter(Math.abs(ptile - (timingMode ? 0 : numPercentiles / 2)) / numPercentiles ** colorFactor).toString()}
+              fillOpacity={!timingMode && ptile === 0 ? 0 : 0.8}
 
-              name={Math.floor(percentiles[ptile] * 100) + 'p'}
+              name={timingMode ? percentiles[ptile] : Math.floor(percentiles[ptile] * 100) + 'p'}
               formatter={(value, name, entry, i) => Math.floor(entry.payload['a' + i] * 100) / 100}
               strokeWidth={(ptile === middlePtile ) ? 3 : 1}
         />)
@@ -38,11 +38,13 @@ PercentileChart.propTypes = {
   data: PropTypes.array,
   color: PropTypes.string,
   width: PropTypes.number,
-  height: PropTypes.number
+  height: PropTypes.number,
+  timingMode: PropTypes.bool
 };
 
 PercentileChart.defaultProps = {
   color: '#284b30',
+  timingMode: false
 };
 
 export default PercentileChart;

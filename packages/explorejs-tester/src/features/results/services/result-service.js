@@ -94,7 +94,7 @@ class RequestQuery {
 
 }
 
-export const bins = ['0s', '<=0.1s', '<=1s', '<=2s', '<=10s', '>10s']
+export const bins = ['0s', '<=0.1s', '<=1s', '<=2s', '<=4s', '>4s']
 
 const getTimeBin = time => {
   if (time === 0) {
@@ -109,7 +109,7 @@ const getTimeBin = time => {
   if (time <= 2000) {
     return bins[3];
   }
-  if (time <= 10000) {
+  if (time <= 4000) {
     return bins[4];
   }
   return bins[5];
@@ -134,7 +134,7 @@ export const calculateSessionStats = (stats, treatNoRequestsAsImpossible = false
     .filter(vs => vs.state.range.end > fixedStart && vs.state.range.start < fixedEnd)
     .map(vs => ({
       viewState: vs,
-      requests: allRequests.during(vs.time, Math.max(vs.timeEnd, vs.time + 300)).containingRange(vs.state.currentLevelId, vs.state.range.start, vs.state.range.end).items
+      requests: allRequests.during(vs.time, vs.time + 2000).containingRange(vs.state.currentLevelId, vs.state.range.start, vs.state.range.end).items
     }))
     .map(state => ({
       ...state,

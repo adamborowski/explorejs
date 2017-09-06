@@ -5,8 +5,8 @@ const types = ['Basic', '+Cache', '+Projection', '+Predition', '+Optimization'];
 
 const Histogram = (props) => {
 
-  const {vSpace, marginTop, barSpace, barWidth, data} = props;
-  const maxCount = data.reduce((tmp, {count}) => Math.max(count, tmp), 0);
+  const {vSpace, marginTop, barSpace, barWidth, data, maxValue} = props;
+  const maxCount = maxValue === undefined ? data.reduce((tmp, {count}) => Math.max(count, tmp), 0) : maxValue;
 
 
   return <svg width={data.length * (barWidth + barSpace) + barSpace} height={vSpace + marginTop}>
@@ -41,7 +41,8 @@ Histogram.propTypes = {
   marginTop: PropTypes.number,
   vSpace: PropTypes.number,
   barWidth: PropTypes.number,
-  barSpace: PropTypes.number
+  barSpace: PropTypes.number,
+  maxValue: PropTypes.number
 };
 
 Histogram.defaultProps = {

@@ -49,6 +49,7 @@ export const getAbsoluteScores = (results, factors = [1 / 8, 1 / 2, 1, 2, 8], mo
 };
 
 const defaultPercentiles = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
+const labels = ['basic', '+cache', '+projection', '+prediction', '+optimization'];
 // const defaultPercentiles = [.1, .5, .9];
 /**
  * for each scenario returns list of specified percentiles of absolute scores from responses
@@ -58,7 +59,6 @@ export const getDataForPercentileChart = (results, percentiles = defaultPercenti
 
   const absoluteScores = getAbsoluteScores(results, factors, modifier, scoreMap);
 
-  const labels = ['basic', '+cache', '+projection', '+prediction', '+optimization'];
 
   const map = absoluteScores.map((as, i) => {
 
@@ -143,3 +143,20 @@ export const getTimingHistogramForScenarios = (results) => {
 
   return acc;
 }
+
+export const getDataForTimingChart = (timingHistograms) => {
+
+
+  const map = timingHistograms
+    .map((th, i) => {
+      const absoluteValues = bins.map((bin, serie) => th[serie].count);
+      const stackedPercentiles = accumulateMap(absoluteValues, (item, i, acc) => item - acc, (item, i, acc) => item, 0);
+      return {
+        ...arrayToObject(absoluteValues, (v, i) => 'a' + i),
+        ...arrayToObject(stackedPercentiles, (v, i) => 's' + i),
+        label: labels[i],
+        percentiles: bins,
+      };
+    });
+  return map;
+};

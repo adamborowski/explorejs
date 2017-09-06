@@ -3,7 +3,7 @@ import {loadResults} from '../services/result-service';
 import ResultError from './ResultError';
 import './ResultsPage.scss';
 import {
-  getAbsoluteScores, getDataForPercentileChart, getNormalizedHistogramForScenario,
+  getAbsoluteScores, getDataForPercentileChart, getDataForTimingChart, getNormalizedHistogramForScenario,
   getScoresHistogram, getTimingHistogramForScenarios
 } from '../services/summary-service';
 import ScoreHistogram from './summary/ScoreHistogram';
@@ -24,7 +24,8 @@ class ResultsPage extends React.Component {
     absoluteScores: null,
     dataForPercentileChart: null,
     dataForPercentileChart2: null,
-    timingHistograms: null
+    timingHistograms: null,
+    timingChartData: null
   };
 
   componentDidMount() {
@@ -41,6 +42,7 @@ class ResultsPage extends React.Component {
       const dataForPercentileChart = getDataForPercentileChart(results);
       const dataForPercentileChart2 = getDataForPercentileChart(results, undefined, [-5, -2, 0, 2, 5], (score, factor) => score + factor, s => s);
       const timingHistograms = getTimingHistogramForScenarios(results);
+      const timingChartData = getDataForTimingChart(timingHistograms);
 
       this.setState({
         results,
@@ -48,7 +50,8 @@ class ResultsPage extends React.Component {
         absoluteScores,
         dataForPercentileChart,
         dataForPercentileChart2,
-        timingHistograms
+        timingHistograms,
+        timingChartData
       });
     }
     catch (e) {
@@ -60,7 +63,7 @@ class ResultsPage extends React.Component {
 
 
   render() {
-    const {results, error, loading, histogram, absoluteScores, dataForPercentileChart, dataForPercentileChart2, timingHistograms} = this.state;
+    const {results, error, loading, histogram, absoluteScores, dataForPercentileChart, dataForPercentileChart2, timingHistograms, timingChartData} = this.state;
 
 
     if (error) {
@@ -71,6 +74,8 @@ class ResultsPage extends React.Component {
     }
     if (results) {
 
+      const chartHeight = 230;
+      const chartWidth = 600;
 
       return <div className="row results-page">
         <h4>Results based on {results.length} responses</h4>
@@ -78,8 +83,12 @@ class ResultsPage extends React.Component {
           <ScoreHistogram histograms={histogram} timingHistograms={timingHistograms}/>
         </div>
         <div className="col-md-7">
-          <PercentileChart data={dataForPercentileChart} width={600} height={350}/>
-          <PercentileChart data={dataForPercentileChart2} width={600} height={350} color="#ed3333"/>
+          <h5>Distribution of absolute scores (multiplication)</h5>
+          <PercentileChart data={dataForPercentileChart} width={chartWidth} height={chartHeight}/>
+          <h5>Distribution of absolute scores (addition)</h5>
+          <PercentileChart data={dataForPercentileChart2} width={chartWidth} height={chartHeight} color="#ed3333"/>
+          <h5>Distribution of waiting time spans</h5>
+          <PercentileChart data={timingChartData} width={chartWidth} height={chartHeight} color="#3333ed" timingMode/>
         </div>
       </div>;
     }
