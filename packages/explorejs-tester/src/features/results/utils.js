@@ -15,6 +15,7 @@ export const arrayToObject = (array, getKey = (v, i) => i, getValue = v => v) =>
   return obj;
 };
 
+export const objectToArray = (object, mapFn) => Object.keys(object).map(key => mapFn(object[key], key))
 
 export const accumulateMap = (array, mapFn, accFn, initAcc) => {
   let acc = initAcc;

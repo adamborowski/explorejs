@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {bins, calculateSessionStats} from '../../services/result-service';
 import Histogram from '../summary/Historgram';
-import {createBin} from '../../utils';
+import {createBin, objectToArray} from '../../utils';
+import _ from 'lodash';
 
 export default class RecordingInfo extends React.Component {
 
@@ -14,7 +15,7 @@ export default class RecordingInfo extends React.Component {
 
   constructor(props) {
     super();
-    const calculatedStats = calculateSessionStats(props.stats, props.sessionObject.scenario === 0); //todo można poprawić liczenie statystyk - rejestrować udpate cache (same indeksy), potem to można wykorzystać zamiast requests parując z viewstate
+    const calculatedStats = calculateSessionStats(props.stats, false);
     const histogram = bins.map((bin, i) => ({value: bin, count: (calculatedStats.histogram[bin] || []).length}));
 
 
@@ -52,12 +53,18 @@ export default class RecordingInfo extends React.Component {
           <th>download size:</th>
           <td>{calculatedStats.totalDataSize}</td>
         </tr>
+        <tr>
+          <th>cache size:</th>
+          <td>{_.toArray(calculatedStats.cacheFill).reduce((sum, c) => sum + c, 0)}</td>
+        </tr>
         </tbody>
       </table>
       <h5>User wait time histogram</h5>
       <Histogram data={histogram}/>
       <h5>Chart update time histogram</h5>
       <Histogram data={renderingHistogram} barSpace={20}/>
+      <h5>Cache content histogram</h5>
+      <Histogram data={objectToArray(calculatedStats.cacheFill, (value, key) => ({value: key, count: value}))}/>
     </div>
   }
 

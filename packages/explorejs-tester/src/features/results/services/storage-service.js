@@ -11,7 +11,7 @@ export const readItems = (bucketKey, responseId) => db.stats
   .toArray();
 
 
-export const saveItem = (bucketKey, responseId, planId, session) => db.stats.add({
+export const saveItem = (bucketKey, responseId, planId, session) => db.stats.put({
   bucketKey,
   responseId,
   planId,
