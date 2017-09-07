@@ -157,7 +157,8 @@ export default class PerfTestDialog extends React.Component {
                     adapter={testCases[currentTestCase].chartType}
                     preset={testCases[currentTestCase].preset}
                     onFinish={this.onPlaybackFinish}
-                    viewStateStats={sessionObject.stats.viewState.slice(0, 10)}/*temporary cut*/
+                    throttle={1024 * 350}
+                    viewStateStats={sessionObject.stats.viewState.slice(0, 110)}/*temporary cut*/
                   />
 
                 </div>
@@ -167,6 +168,7 @@ export default class PerfTestDialog extends React.Component {
                   <RecordingInfo
                     key={currentTestCase} /*reinitialize every time */
                     stats={testStats[currentTestCase]} sessionObject={sessionObject}
+                    preset={testCases[currentTestCase].preset}
                     name={testCases[currentTestCase].name + ' on ' + testCases[currentTestCase].chartType}/>
                 </div>
               }

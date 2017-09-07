@@ -27,7 +27,8 @@ export default class LocalBinding extends Component {
 
     async componentDidMount() {
         const config = await this.state.configPromise;
-        this.props.statsRef && this.props.statsRef(() => config.getStats())
+
+        this.props.statsRef && this.props.statsRef(() => config.getStats());
 
         this.props.series.forEach(s => config.createSerieCache(s));
 

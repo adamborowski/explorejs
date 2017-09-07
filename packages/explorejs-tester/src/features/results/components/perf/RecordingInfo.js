@@ -4,18 +4,25 @@ import {bins, calculateSessionStats} from '../../services/result-service';
 import Histogram from '../summary/Historgram';
 import {createBin, objectToArray} from '../../utils';
 import _ from 'lodash';
+import {calculateCacheHit, getHistogramDataForCacheHit} from '../../services/session-stat-service';
 
 export default class RecordingInfo extends React.Component {
 
   static propTypes = {
     sessionObject: PropTypes.object,
     stats: PropTypes.object,
-    name: PropTypes.string
+    cacheHitStats: PropTypes.object,
+    name: PropTypes.string,
+    preset: PropTypes.object
   };
 
   constructor(props) {
     super();
-    const calculatedStats = calculateSessionStats(props.stats, false);
+    const calculatedStats = calculateSessionStats(props.stats, props.preset.useCache === false);
+
+    const cacheHitStats = props.preset.useCache && calculateCacheHit(props.stats.viewState, props.stats.cacheDump);
+    const cacheHitHistogram = props.preset.useCache && getHistogramDataForCacheHit(cacheHitStats);
+
     const histogram = bins.map((bin, i) => ({value: bin, count: (calculatedStats.histogram[bin] || []).length}));
 
 
@@ -24,13 +31,15 @@ export default class RecordingInfo extends React.Component {
     this.state = {
       calculatedStats,
       histogram,
-      renderingHistogram
+      renderingHistogram,
+      cacheHitStats,
+      cacheHitHistogram
     }
   }
 
   render() {
     const {sessionObject, name, stats} = this.props;
-    const {histogram, calculatedStats, renderingHistogram} = this.state;
+    const {histogram, calculatedStats, renderingHistogram, cacheHitStats, cacheHitHistogram} = this.state;
 
     return <div>
       <h4>Recording info: {name}</h4>
@@ -60,7 +69,12 @@ export default class RecordingInfo extends React.Component {
         </tbody>
       </table>
       <h5>User wait time histogram</h5>
-      <Histogram data={histogram}/>
+      {
+        !cacheHitHistogram && <Histogram data={histogram}/>
+      }
+      {
+        cacheHitHistogram && <Histogram data={cacheHitHistogram}/>
+      }
       <h5>Chart update time histogram</h5>
       <Histogram data={renderingHistogram} barSpace={20}/>
       <h5>Cache content histogram</h5>

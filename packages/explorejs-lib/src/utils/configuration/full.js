@@ -63,8 +63,8 @@ export default async (props, preset) => {
         destroy() {
             requestManager.destroy();
         },
-        setThrottle(kbps) {
-            requestManager.setThrottle(kbps);
+        setThrottle(bps) {
+            requestManager.setThrottle(bps);
         },
         getStats() {
             return {

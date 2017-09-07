@@ -1,6 +1,8 @@
 import {IndexedList} from 'explorejs-common';
 import SerieCache from './SerieCache';
+import _ from 'underscore';
 import WrapperIdFactory from './WrapperIdFactory';
+
 /**
  * @property {RequestManager} RequestManager
  */
@@ -49,5 +51,9 @@ export default class CacheManager {
             }
             this.getSerieCache(serieResponse.serieId).putDataAtLevel(serieResponse.level, serieResponse.data);
         }
+        const affectedSeries = _.unique(series.map(serieResponse => serieResponse.serieId))
+
+        affectedSeries.forEach(serieId => this.getSerieCache(serieId).dumpCache());
+
     }
 }

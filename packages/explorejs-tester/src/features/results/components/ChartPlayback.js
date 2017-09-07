@@ -11,7 +11,8 @@ export default class ChartPlayback extends React.Component {
     adapter: PropTypes.string,
     onStats: PropTypes.func,
     viewStateStats: PropTypes.array,
-    onFinish: PropTypes.func
+    onFinish: PropTypes.func,
+    throttle: PropTypes.number
   };
 
   state = {};
@@ -49,7 +50,7 @@ export default class ChartPlayback extends React.Component {
     return <div>
       <ChartTestCase
         preset={preset}
-        throttleNetwork={null}
+        throttleNetwork={this.props.throttle === undefined ? null : this.props.throttle}
         statsRef={getStats => this.getStats = getStats}
         adapter={adapter}
         controlledViewState={currentViewState && currentViewState.state}
