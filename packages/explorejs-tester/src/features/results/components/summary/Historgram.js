@@ -35,7 +35,7 @@ const Histogram = (props) => {
 
 Histogram.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.number,
+    value: PropTypes.any,
     count: PropTypes.number
   })),
   marginTop: PropTypes.number,

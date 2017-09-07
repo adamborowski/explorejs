@@ -46,6 +46,15 @@ export default class SerieCache {
             return;
         }
         this._levelCacheSet.get(levelId).putData(data);
+
+        if (this.stats) {
+            const dump = this._levelCacheSet.values.map(levelCache => ({
+                level: levelCache.level.id,
+                dataIndex: levelCache._dataIndex.toObjects()
+            }));
+            this.stats.addEntry(dump);
+        }
+
         const projectionDiffs = this._disposer.recompile(levelId, [this.getRangeOfData(levelId, data)]);
 
         for (let diff of projectionDiffs) {

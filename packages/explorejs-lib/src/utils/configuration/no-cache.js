@@ -97,7 +97,8 @@ export default async (props, preset) => {
                 requestManager: requestManager.stats.getEntries(),
                 dataSource: lastDataSource.stats.getEntries(),
                 viewState: lastDataSource._viewState.stats.getEntries(),
-                cache: {} // no cache - no levels, no number of data inside
+                cache: {}, // no cache - no levels, no number of data inside
+                cacheDump: []
             };
         }
     };

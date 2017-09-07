@@ -56,7 +56,9 @@ export default async (props, preset) => {
             return dataSource;
         },
         createSerieCache(serieId) {
-            return cacheManager.createSerieCache({serieId});
+            const serieCache = cacheManager.createSerieCache({serieId});
+            serieCache.stats = StatsCollection();
+            return serieCache;
         },
         destroy() {
             requestManager.destroy();
@@ -69,7 +71,8 @@ export default async (props, preset) => {
                 requestManager: requestManager.stats.getEntries(),
                 dataSource:lastDataSource.stats.getEntries(),
                 viewState: lastDataSource._viewState.stats.getEntries(),
-                cache: lastDataSource.serieCache.getStats()
+                cache: lastDataSource.serieCache.getStats(),
+                cacheDump:lastDataSource.serieCache.stats.getEntries()
             };
         }
     };
