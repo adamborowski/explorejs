@@ -139,11 +139,11 @@ export default class SummaryInfo extends React.Component {
             _.map(casesByChart, (chartGroupCase, i) => <div key={i}>
               <h3>{chartGroupCase[0].case.chartType}</h3>
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <h6>basic &mdash; updating time</h6>
                   <Histogram data={chartGroupCase[0].histogram} barSpace={20}/>{/*no maxValue - distribution matters*/}
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <h6>optimized &mdash; updating time</h6>
                   <Histogram data={_.last(chartGroupCase).histogram} barSpace={20}/> {/*no maxValue - distribution matters*/}
                 </div>
@@ -152,20 +152,20 @@ export default class SummaryInfo extends React.Component {
           }
         </Tab>
         <Tab eventKey={2} title="Wait time">
-          <div className="row">
+          <div style={{display: 'flex', flexDirection: 'row'}}>
             {timingByPresetData.map((data, i) => {
               const myHistogram = data.histogram;
-              return <div key={i} className="col-md-2">
+              return <div key={i} style={{flexGrow: 1}}>
                 <h3>{data.name}</h3>
                 <h6>sum of histograms of each chart type</h6>
-                <Histogram data={myHistogram} barSpace={10} maxValue={maxTimingValue}/>
+                <Histogram data={myHistogram} barSpace={10} maxValue={maxTimingValue} vSpace={150}/>
 
               </div>;
             })
             }
 
           </div>
-          <div className="" style={{marginTop:30}}>
+          <div style={{marginTop: 40, marginLeft:50}}>
             <PercentileChart
               data={getDataForTimingChart(_.toArray(casesByPreset).map(presetCases => {
                 return normalizeHistogram(sumBins(presetCases.map(p => p.waitingHistogram)));
@@ -181,7 +181,7 @@ export default class SummaryInfo extends React.Component {
               cacheByPresetData.map((data, i) => <div key={i} className="col-md-6">
                 <h3>{data.case.case.name}</h3>
                 <h6>sum of histograms of each chart type</h6>
-                <Histogram data={data.histogram} barSpace={20} maxValue={maxCacheValue}/>
+                <Histogram data={data.histogram} barSpace={20} maxValue={maxCacheValue} vSpace={150}/>
 
               </div>)
             }
