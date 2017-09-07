@@ -76,7 +76,23 @@ export default class MockDataSource {
     mockNewData(response) {
         this._oldWrappers = this._newWrappers;
         this._newWrappers = this._wrapRange(response.level, response.data);
-        this._callback();
+
+
+        if (this.stats) {
+            var t0 = performance.now();
+            this._callback();
+            var t1 = performance.now();
+            this.stats.addEntry({
+                time: new Date().getTime(),
+                span: t1 - t0,
+                numWrappers: this._newProjectionRanges,
+                reason: 'cache update'
+            });
+        } else {
+
+            this._callback();
+        }
+
     }
 
     getWrappers() {

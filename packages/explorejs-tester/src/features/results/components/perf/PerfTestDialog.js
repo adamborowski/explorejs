@@ -8,6 +8,8 @@ import ChartPlayback from '../ChartPlayback';
 import {clearItems, readItems, saveItem} from '../../services/storage-service';
 import _ from 'lodash';
 import RecordingInfo from './RecordingInfo';
+import Toggle from 'react-toggle';
+import {arrayToObject} from '../../utils';
 
 const PERF_TEST = 'perf-test';
 const chartTypes = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];
@@ -42,27 +44,40 @@ export default class PerfTestDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    const sessionCases = _.mapKeys(_.omitBy(readItems(PERF_TEST), function (value, key) {
-      const split = key.split('@');
-      return !split[0] === props.sessionObject.start && split[1].length > 0;
-    }), (value, key) => key.split('@')[1]);
-
 
     this.state = {
-      testStats: sessionCases || {},
+      testStats: {},
       currentTestCase: null,
-      isCurrentTestCaseRecording: false
+      isCurrentTestCaseRecording: false,
+      autoPlay: false
     }
   }
 
-  saveStats(stats, testCaseIndex) {
-    saveItem(PERF_TEST, this.props.sessionObject.start + '@' + testCaseIndex, stats);
+  async componentDidMount() {
+    const itemsFromDb = await readItems(PERF_TEST, this.props.sessionObject.start);
+    const testStats = arrayToObject(itemsFromDb, s => s.planId, s => s.session);
+
+    this.setState({testStats});
+  }
+
+  async saveStats(stats, testCaseIndex) {
+    await saveItem(PERF_TEST, this.props.sessionObject.start, testCaseIndex, stats);
     this.setState({testStats: {...this.state.testStats, [testCaseIndex]: stats}})
   }
 
+  onPlaybackFinish = (stats) => {
+    const testCaseIndex = this.state.currentTestCase;
+    this.saveStats(stats, testCaseIndex);
+    this.setState({isCurrentTestCaseRecording: false});
+    if (this.state.autoPlay && testCaseIndex + 1 < testCases.length) {
+      this.setState({currentTestCase: testCaseIndex + 1, isCurrentTestCaseRecording: true});
+    }
+
+  };
+
   render() {
     const {sessionObject, title, scenario} = this.props;
-    const {currentTestCase, testStats, isCurrentTestCaseRecording} = this.state;
+    const {currentTestCase, testStats, isCurrentTestCaseRecording, autoPlay} = this.state;
 
 
     return (
@@ -75,13 +90,14 @@ export default class PerfTestDialog extends React.Component {
             <div className="col-md-3" style={{height: 'calc(100vh - 229px)', overflow: 'auto'}}>
               <Button bsStyle="danger" bsSize="xsmall" title="clear local storage"
                       onClick={() => {
-                        clearItems(PERF_TEST);
+                        clearItems(PERF_TEST, sessionObject.start);
                         this.setState({testStats: {}});
                       }}
               >
                               <span
                                 className={`glyphicon glyphicon-remove`}/>
               </Button>
+              <Toggle value={autoPlay} onChange={(e) => this.setState({autoPlay: e.target.checked})}/>
               <table className="table">
                 <thead>
                 <tr>
@@ -140,11 +156,8 @@ export default class PerfTestDialog extends React.Component {
                     key={currentTestCase}
                     adapter={testCases[currentTestCase].chartType}
                     preset={testCases[currentTestCase].preset}
-                    onFinish={(stats) => {
-                      this.saveStats(stats, currentTestCase);
-                      this.setState({isCurrentTestCaseRecording: false});
-                    }}
-                    viewStateStats={sessionObject.stats.viewState.slice(0, 20)}/*temporary cut*/
+                    onFinish={this.onPlaybackFinish}
+                    viewStateStats={sessionObject.stats.viewState.slice(0, 10)}/*temporary cut*/
                   />
 
                 </div>
@@ -154,7 +167,7 @@ export default class PerfTestDialog extends React.Component {
                   <RecordingInfo
                     key={currentTestCase} /*reinitialize every time */
                     stats={testStats[currentTestCase]} sessionObject={sessionObject}
-                                 name={testCases[currentTestCase].name + ' on ' + testCases[currentTestCase].chartType}/>
+                    name={testCases[currentTestCase].name + ' on ' + testCases[currentTestCase].chartType}/>
                 </div>
               }
             </div>

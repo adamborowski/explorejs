@@ -24,3 +24,29 @@ export const accumulateMap = (array, mapFn, accFn, initAcc) => {
     return mapped;
   })
 };
+
+
+export const createBin = (values = [], bins = [0.1, 1, 10], labels = undefined, valueAccessor = v => v) => {
+  if (labels === undefined) {
+    labels = [...bins.map(l => '<=' + l), '>' + bins[bins.length - 1]]
+  }
+  const counters = {};
+  values.forEach(v => {
+    const value = valueAccessor(v);
+    let binIndex = bins.length;
+    for (let i = 0; i < bins.length; i++) {
+      const binEdge = bins[i];
+
+      if (value <= binEdge) {
+        binIndex = i;
+        break;
+      }
+    }
+    if (!counters[binIndex]) {
+      counters[binIndex] = 0
+    }
+    counters[binIndex]++;
+  });
+
+  return labels.map((bin, index) => ({value: labels[index], count: counters[index] || 0}));
+};

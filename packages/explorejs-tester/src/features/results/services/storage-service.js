@@ -1,13 +1,21 @@
-const getKey = bucketKey => `storage-service-${bucketKey}`;
+import Dexie from 'dexie';
 
-const getBucket = (bucketKey) => JSON.parse(localStorage.getItem(getKey(bucketKey)));
+const db = new Dexie('myDb');
+db.version(1).stores({
+  stats: `[bucketKey+responseId+planId], [bucketKey+responseId], bucketKey`
+});
 
-export const saveItem = (bucketKey, id, session) => {
 
-  const newValue = {...getBucket(bucketKey), [id]: session};
-  localStorage.setItem(getKey(bucketKey), JSON.stringify(newValue));
-};
+export const readItems = (bucketKey, responseId) => db.stats
+  .where('[bucketKey+responseId]').equals([bucketKey, responseId])
+  .toArray();
 
-export const readItems = (bucketKey) => getBucket(bucketKey);
 
-export const clearItems = bucketKey => localStorage.removeItem(getKey(bucketKey));
+export const saveItem = (bucketKey, responseId, planId, session) => db.stats.add({
+  bucketKey,
+  responseId,
+  planId,
+  session
+});
+
+export const clearItems = (bucketKey, responseId) => db.stats.where('[bucketKey+responseId]').equals([bucketKey, responseId]).delete();

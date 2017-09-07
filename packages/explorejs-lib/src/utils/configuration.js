@@ -20,14 +20,4 @@ export default (props, preset) => {
         return noCache(props, preset);
     }
     return full(props, preset);
-
-    return {
-        /**
-         *
-         * @param dom
-         */
-        create(dom, adapter) {
-            // create data source, call adapter hook (now data source is created internally by adapters)
-        }
-    };
 };

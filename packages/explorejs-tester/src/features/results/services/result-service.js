@@ -97,7 +97,7 @@ class RequestQuery {
 export const bins = ['0s', '<=0.1s', '<=1s', '<=2s', '<=4s', '>4s']
 
 const getTimeBin = time => {
-  if (time === 0) {
+  if (time <= 0) {
     return bins[0];
   }
   if (time <= 100) {
@@ -151,7 +151,9 @@ export const calculateSessionStats = (stats, treatNoRequestsAsImpossible = false
   const numRequests = allRequests.items.length;
   const numStates = stats.viewState.length;
   const waitPerState = sumOfWaiting / numStates;
+  const totalDataSize = stats.requestManager.reduce((sum, request) => request.size + sum, 0);
   return {
+    totalDataSize,
     mock: requestsCausedByViewState,
     numRequests,
     sumOfWaiting,

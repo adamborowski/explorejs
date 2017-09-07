@@ -72,6 +72,7 @@ export default async (props, preset) => {
             const dataSource = lastDataSource = new MockDataSource(requestManager.CacheManager.getSerieCache(serieId));
 
             dataSource._viewState.stats = StatsCollection();
+            dataSource.stats = StatsCollection();
 
             dataSourcesForSeries[serieId].push(dataSource);
 
@@ -94,6 +95,7 @@ export default async (props, preset) => {
             // todo include stats from every dataSource.viewState (effectively only one)
             return {
                 requestManager: requestManager.stats.getEntries(),
+                dataSource: lastDataSource.stats.getEntries(),
                 viewState: lastDataSource._viewState.stats.getEntries(),
                 cache: {} // no cache - no levels, no number of data inside
             };

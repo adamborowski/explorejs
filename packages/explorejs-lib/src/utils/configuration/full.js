@@ -37,6 +37,7 @@ export default async (props, preset) => {
             const dataSource = lastDataSource = new DataSource(cacheManager.getSerieCache(serieId));
 
             dataSource._viewState.stats = StatsCollection();
+            dataSource.stats = StatsCollection();
 
             if (!useFallback) {
                 const __onProjectionChange = dataSource._onProjectionChange.bind(dataSource);
@@ -66,6 +67,7 @@ export default async (props, preset) => {
         getStats() {
             return {
                 requestManager: requestManager.stats.getEntries(),
+                dataSource:lastDataSource.stats.getEntries(),
                 viewState: lastDataSource._viewState.stats.getEntries(),
                 cache: lastDataSource.serieCache.getStats()
             };

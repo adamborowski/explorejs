@@ -94,8 +94,22 @@ export default class DataSource {
         this._newProjectionRanges = newProjectionRanges;
         this._oldWrappers = this._newWrappers;
         this._newWrappers = this._wrapRanges(newProjectionRanges);
-        console.info(`DataSource -> projection changed, will update charts with ${this._newWrappers.length} points. Reason: ${reason}. Level: ${this.dynamicProjection.currentLevelId}`);
-        this._callback();
+        console.info(`DataSource -> projection changed, will update charts with ${this._newWrappers.length} points.`);
+
+
+        if (this.stats) {
+            var t0 = performance.now();
+            this._callback();
+            var t1 = performance.now();
+            this.stats.addEntry({
+                time: new Date().getTime(),
+                span: t1 - t0,
+                numWrappers: this._newProjectionRanges,
+                reason
+            });
+        } else {
+            this._callback();
+        }
     }
 
     getWrappers() {
