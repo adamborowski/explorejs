@@ -151,7 +151,7 @@ export const getDataForTimingChart = (timingHistograms) => {
 
   const map = timingHistograms
     .map((th, i) => {
-      const absoluteValues = bins.map((bin, serie) => th[serie].count);
+      const absoluteValues = bins.map((bin, serie) => th[serie] && th[serie].count);
       const stackedPercentiles = accumulateMap(absoluteValues, (item, i, acc) => item - acc, (item, i, acc) => item, 0);
       return {
         ...arrayToObject(absoluteValues, (v, i) => 'a' + i),

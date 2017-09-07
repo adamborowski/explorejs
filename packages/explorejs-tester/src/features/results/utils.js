@@ -55,7 +55,14 @@ export const createBin = (values = [], bins = [0.1, 1, 10], labels = undefined, 
 
 export const sumBins = (bins) => {
 
-  const [firstBin, ...rest] = bins;
+
+  const firstBin = bins.find(b => b.length > 0);
+  if (firstBin === undefined) {
+    return []; // empty
+  }
+
+  const rest = bins.filter(b => b !== firstBin);
+
   const histogram = _.cloneDeep(firstBin);
 
   rest.forEach(bin => bin.forEach(point => histogram.find(h => h.value === point.value).count += point.count))

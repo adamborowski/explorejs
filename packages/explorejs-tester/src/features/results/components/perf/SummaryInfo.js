@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {arrayToObject, createBin, sumBins} from '../../utils';
+import {arrayToObject, createBin, objectToArray, sumBins} from '../../utils';
 import {chartTypes} from './PerfTestDialog';
 import Histogram from '../summary/Historgram';
 import {Tabs, Tab} from 'react-bootstrap';
@@ -43,27 +43,46 @@ export default class SummaryInfo extends React.Component {
           getSessionStatsWithoutCache(item.stats)
           : getSessionStatsUsingCache(item.stats)
         ,
+        cacheHistogram: objectToArray(item.stats.cache, (value, key) => ({value: key, count: value})),
         histogram: createBin(item.stats.dataSource, [10, 25, 50, 100, 200, 350, 600, 1000], undefined, r => r.span)
       }));
-
 
     const casesByChart = _.groupBy(casesWithStats, s => s.case.chartType);
 
     const casesByPreset = _.groupBy(casesWithStats, s => s.case.name);
 
 
-    this.state = {casesByChart, casesByPreset}
+    this.state = {casesByChart, casesByPreset, casesWithStats}
 
   }
 
   render() {
 
     const {testCasesStats, testCases} = this.props;
-    const {casesByChart, casesByPreset} = this.state;
+    const {casesByChart, casesByPreset, casesWithStats} = this.state;
 
     const values = _.toArray(casesByChart).map(byChartCase => [byChartCase[0], byChartCase[byChartCase.length - 1]].map(h => h.histogram.map(h => h.count)));
 
     const maxValue = _.max(_.flattenDeep(values));
+
+
+    const cacheByPresetData = _.compact(_.map(casesByPreset, (presetCases, i) => {
+      if (presetCases[0].case.name === 'basic') {
+        return null;
+      }
+      const cacheHistograms = presetCases.map(p => p.cacheHistogram);
+      const sumHistogram = sumBins(cacheHistograms);
+      return {
+        case: presetCases[0],
+        cacheHistograms: cacheHistograms,
+        histogram: sumHistogram,
+        maxValue: _.max(sumHistogram.map(s => s.count))
+      };
+
+    }));
+
+
+    const maxCacheValue = _.max(cacheByPresetData.map(s => s.maxValue));
 
 
     return <div>
@@ -106,8 +125,22 @@ export default class SummaryInfo extends React.Component {
                 return normalizeHistogram(sumBins(presetCases.map(p => p.waitingHistogram)));
               }))}
               width={600}
+              lineType="monotone"
               height={300} color="#3333ed" timingMode/>
           </div>
+        </Tab>
+        <Tab eventKey={3} title="Cache fill">
+          <div className="row">
+            {
+              cacheByPresetData.map((data, i) => <div key={i} className="col-md-6">
+                <h3>{data.case.case.name}</h3>
+                <h6>sum of histograms of each chart type</h6>
+                <Histogram data={data.histogram} barSpace={10} maxValue={maxCacheValue}/>
+
+              </div>)
+            }
+          </div>
+
         </Tab>
       </Tabs>
 

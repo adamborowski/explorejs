@@ -4,7 +4,7 @@ import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 import {rgb} from 'd3-color';
 import PropTypes from 'prop-types';
 
-const PercentileChart = ({data, color, scale, domain, width, height, timingMode}) => {
+const PercentileChart = ({data, color, scale, domain, width, height, timingMode, lineType}) => {
 
   const percentiles = data[0].percentiles;
   const numPercentiles = percentiles.length;
@@ -20,7 +20,7 @@ const PercentileChart = ({data, color, scale, domain, width, height, timingMode}
     {
       [...Array(numPercentiles).keys()].map(ptile =>
         <Area key={ptile}
-              type="basis"
+              type={lineType}
               dataKey={(timingMode ? 'a' : 's') + ptile} stackId={0}
               stroke={rgb(color).brighter(Math.abs(ptile - (timingMode ? 0 : numPercentiles / 2)) / numPercentiles ** colorFactor).toString()}
               fill={rgb(color).brighter(Math.abs(ptile - (timingMode ? 0 : numPercentiles / 2)) / numPercentiles ** colorFactor).toString()}
@@ -39,12 +39,14 @@ PercentileChart.propTypes = {
   color: PropTypes.string,
   width: PropTypes.number,
   height: PropTypes.number,
-  timingMode: PropTypes.bool
+  timingMode: PropTypes.bool,
+  lineType: PropTypes.string
 };
 
 PercentileChart.defaultProps = {
   color: '#284b30',
-  timingMode: false
+  timingMode: false,
+  lineType: 'basis'
 };
 
 export default PercentileChart;

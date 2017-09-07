@@ -88,7 +88,7 @@ class ResultsPage extends React.Component {
           <h5>Distribution of absolute scores (addition)</h5>
           <PercentileChart data={dataForPercentileChart2} width={chartWidth} height={chartHeight} color="#ed3333"/>
           <h5>Distribution of waiting time spans</h5>
-          <PercentileChart data={timingChartData} width={chartWidth} height={chartHeight} color="#3333ed" timingMode/>
+          <PercentileChart data={timingChartData} width={chartWidth} height={chartHeight} color="#3333ed" timingMode lineType="monotone" />
         </div>
       </div>;
     }
