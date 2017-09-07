@@ -166,7 +166,7 @@ export default class PerfTestDialog extends React.Component {
                     preset={testCases[currentTestCase].preset}
                     onFinish={this.onPlaybackFinish}
                     throttle={1024 * 350}
-                    viewStateStats={sessionObject.stats.viewState.slice(0, 110)}/* TODO FIXME temporary cut*/
+                    viewStateStats={sessionObject.stats.viewState}/* TODO FIXME temporary cut*/
                   />
 
                 </div>

@@ -11,11 +11,11 @@ export const readItems = (bucketKey, responseId) => db.stats
   .toArray();
 
 
-export const saveItem = (bucketKey, responseId, planId, session) => db.stats.put({
-  bucketKey,
-  responseId,
-  planId,
-  session
-});
+export const saveItem = (bucketKey, responseId, planId, session) => {throw new Error('safe mode')}//db.stats.put({
+//   bucketKey,
+//   responseId,
+//   planId,
+//   session
+// });
 
-export const clearItems = (bucketKey, responseId) => db.stats.where('[bucketKey+responseId]').equals([bucketKey, responseId]).delete();
+export const clearItems = (bucketKey, responseId) => {throw new Error('safe mode')}//db.stats.where('[bucketKey+responseId]').equals([bucketKey, responseId]).delete();
