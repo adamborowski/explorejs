@@ -130,11 +130,11 @@ export default class SummaryInfo extends React.Component {
               <div className="row">
                 <div className="col-md-6">
                   <h6>basic &mdash; rendering time</h6>
-                  <Histogram data={chartGroupCase[0].histogram} barSpace={20} maxValue={maxValue}/>
+                  <Histogram data={chartGroupCase[0].histogram} barSpace={20}/>{/*no maxValue - distribution matters*/}
                 </div>
                 <div className="col-md-6">
                   <h6>optimized &mdash; rendering time</h6>
-                  <Histogram data={_.last(chartGroupCase).histogram} barSpace={20} maxValue={maxValue}/>
+                  <Histogram data={_.last(chartGroupCase).histogram} barSpace={20}/> {/*no maxValue - distribution matters*/}
                 </div>
               </div>
             </div>)

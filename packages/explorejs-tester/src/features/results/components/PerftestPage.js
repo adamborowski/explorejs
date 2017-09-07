@@ -64,18 +64,6 @@ class PerftestPage extends React.Component {
               show test responses
             </label>
           </div>
-          <div className="well">
-            <h4>TODO</h4>
-            <ul>
-              <li>load and save results to local storage</li>
-              <li>every row can be run separately</li>
-              <li>show some useful statistics for every run</li>
-              <li>show statistics for features - which configuration/which vis library is the best</li>
-              <li>variations of: preset, adapter type, throttle</li>
-            </ul>
-
-          </div>
-
           <table className="table">
             <thead>
             <tr>
