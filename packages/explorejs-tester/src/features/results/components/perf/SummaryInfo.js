@@ -9,6 +9,7 @@ import {bins, calculateSessionStats} from '../../services/result-service';
 import {calculateCacheHit, getHistogramDataForCacheHit, normalizeHistogram} from '../../services/session-stat-service';
 import PercentileChart from '../summary/PercentileChart';
 import {getDataForTimingChart} from '../../services/summary-service';
+import {CartesianGrid, XAxis, YAxis, Tooltip, BarChart, Legend, Bar} from 'recharts';
 
 export default class SummaryInfo extends React.Component {
   static propTypes = {
@@ -74,6 +75,7 @@ export default class SummaryInfo extends React.Component {
       const sumHistogram = sumBins(cacheHistograms);
       return {
         case: presetCases[0],
+        name: presetCases[0].case.name,
         cacheHistograms: cacheHistograms,
         histogram: sumHistogram,
         maxValue: _.max(sumHistogram.map(s => s.count))
@@ -81,14 +83,45 @@ export default class SummaryInfo extends React.Component {
 
     }));
 
+    const basicInfoByPresetData = _.map(casesByPreset, presetCases => {
+      const totalChartUpdates = presetCases.reduce((sum, aCase) => sum + aCase.stats.dataSource.length, 0);
+      const totalRequests = presetCases.reduce((sum, aCase) => sum + aCase.stats.requestManager.length, 0);
+      const sumRequestSize = presetCases.reduce((sum, aCase) => sum + aCase.stats.requestManager.reduce((sum, r) => sum + r.size, 0), 0);
+      return {
+        case: presetCases[0],
+        name: presetCases[0].case.name,
+        totalChartUpdates,
+        totalRequests,
+        sumRequestSize
+      }
+    });
 
     const maxCacheValue = _.max(cacheByPresetData.map(s => s.maxValue));
 
 
     return <div>
 
-      <Tabs defaultActiveKey={1} id="uncontrolled-tab-example"
+      <Tabs defaultActiveKey={0} id="uncontrolled-tab-example"
             style={{height: 'calc(100vh - 179px)', overflowY: 'auto'}}>
+        <Tab eventKey={0} title="Basic info">
+          <BarChart width={600} height={300} data={basicInfoByPresetData} margin={{left:30, top:20}}>
+            <XAxis dataKey="name"/>
+            <YAxis/>
+            <CartesianGrid strokeDasharray="3 3"/>
+            <Tooltip/>
+            <Legend/>
+            <Bar dataKey="totalChartUpdates" fill="#8884d8"/>
+            <Bar dataKey="totalRequests" fill="#82ca9d"/>
+          </BarChart>
+          <BarChart width={600} height={300} data={basicInfoByPresetData} margin={{left:30}}>
+            <XAxis dataKey="name"/>
+            <YAxis/>
+            <CartesianGrid strokeDasharray="3 3"/>
+            <Tooltip/>
+            <Legend/>
+            <Bar dataKey="sumRequestSize" fill="#ca849d"/>
+          </BarChart>
+        </Tab>
         <Tab eventKey={1} title="Chart rendering">
 
           {
@@ -142,6 +175,7 @@ export default class SummaryInfo extends React.Component {
           </div>
 
         </Tab>
+
       </Tabs>
 
     </div>

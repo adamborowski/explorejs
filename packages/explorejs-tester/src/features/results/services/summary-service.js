@@ -162,8 +162,3 @@ export const getDataForTimingChart = (timingHistograms) => {
     });
   return map;
 };
-
-
-export const createRenderHistogram = adapterStats => {
-
-};
