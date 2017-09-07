@@ -95,16 +95,16 @@ export default class PerfTestDialog extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <div className="row">
-            <div className="col-md-3" style={{height: 'calc(100vh - 229px)', overflow: 'auto'}}>
-              <Button bsStyle="danger" bsSize="xsmall" title="clear local storage"
-                      onClick={() => {
-                        clearItems(PERF_TEST, sessionObject.start);
-                        this.setState({testStats: {}});
-                      }}
-              >
-                              <span
-                                className={`glyphicon glyphicon-remove`}/>
-              </Button>
+            <div className="col-md-3" style={{height: 'calc(100vh - 180px)', overflow: 'auto'}}>
+              {/*<Button bsStyle="danger" bsSize="xsmall" title="clear local storage"*/}
+                      {/*onClick={() => {*/}
+                        {/*clearItems(PERF_TEST, sessionObject.start);*/}
+                        {/*this.setState({testStats: {}});*/}
+                      {/*}}*/}
+              {/*>*/}
+                              {/*<span*/}
+                                {/*className={`glyphicon glyphicon-remove`}/>*/}
+              {/*</Button>*/}
               <Toggle value={autoPlay} onChange={(e) => this.setState({autoPlay: e.target.checked})}/>
               <table className="table">
                 <thead>
@@ -188,11 +188,6 @@ export default class PerfTestDialog extends React.Component {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <pre>
-          </pre>
-          <Button onClick={this.props.onHide}>Close</Button>
-        </Modal.Footer>
       </Modal>
     )
   }

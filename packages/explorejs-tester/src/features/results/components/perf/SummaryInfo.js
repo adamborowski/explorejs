@@ -113,7 +113,7 @@ export default class SummaryInfo extends React.Component {
     return <div>
 
       <Tabs defaultActiveKey={0} id="uncontrolled-tab-example"
-            style={{height: 'calc(100vh - 179px)', overflowY: 'auto'}}>
+            style={{height: 'calc(100vh - 179px)', overflowY: 'auto', overflowX:'hidden'}}>
         <Tab eventKey={0} title="Basic info">
           <BarChart width={600} height={300} data={basicInfoByPresetData} margin={{left:30, top:20}}>
             <XAxis dataKey="name"/>
@@ -121,8 +121,8 @@ export default class SummaryInfo extends React.Component {
             <CartesianGrid strokeDasharray="3 3"/>
             <Tooltip/>
             <Legend/>
-            <Bar dataKey="totalChartUpdates" fill="#8884d8"/>
-            <Bar dataKey="totalRequests" fill="#82ca9d"/>
+            <Bar dataKey="totalChartUpdates" fill="#8884d8" name="Total chart update count"/>
+            <Bar dataKey="totalRequests" fill="#82ca9d" name="Total request count"/>
           </BarChart>
           <BarChart width={600} height={300} data={basicInfoByPresetData} margin={{left:30}}>
             <XAxis dataKey="name"/>
@@ -130,7 +130,7 @@ export default class SummaryInfo extends React.Component {
             <CartesianGrid strokeDasharray="3 3"/>
             <Tooltip/>
             <Legend/>
-            <Bar dataKey="sumRequestSize" fill="#ca849d"/>
+            <Bar dataKey="sumRequestSize" fill="#ca849d" name="Total sum of requests size"/>
           </BarChart>
         </Tab>
         <Tab eventKey={1} title="Chart update">
@@ -140,11 +140,11 @@ export default class SummaryInfo extends React.Component {
               <h3>{chartGroupCase[0].case.chartType}</h3>
               <div className="row">
                 <div className="col-md-6">
-                  <h6>basic &mdash; rendering time</h6>
+                  <h6>basic &mdash; updating time</h6>
                   <Histogram data={chartGroupCase[0].histogram} barSpace={20}/>{/*no maxValue - distribution matters*/}
                 </div>
                 <div className="col-md-6">
-                  <h6>optimized &mdash; rendering time</h6>
+                  <h6>optimized &mdash; updating time</h6>
                   <Histogram data={_.last(chartGroupCase).histogram} barSpace={20}/> {/*no maxValue - distribution matters*/}
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default class SummaryInfo extends React.Component {
           <div className="row">
             {timingByPresetData.map((data, i) => {
               const myHistogram = data.histogram;
-              return <div key={i} className="col-md-3">
+              return <div key={i} className="col-md-2">
                 <h3>{data.name}</h3>
                 <h6>sum of histograms of each chart type</h6>
                 <Histogram data={myHistogram} barSpace={10} maxValue={maxTimingValue}/>
@@ -165,7 +165,7 @@ export default class SummaryInfo extends React.Component {
             }
 
           </div>
-          <div className="">
+          <div className="" style={{marginTop:30}}>
             <PercentileChart
               data={getDataForTimingChart(_.toArray(casesByPreset).map(presetCases => {
                 return normalizeHistogram(sumBins(presetCases.map(p => p.waitingHistogram)));
