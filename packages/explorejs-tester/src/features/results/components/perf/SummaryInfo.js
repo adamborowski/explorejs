@@ -181,7 +181,7 @@ export default class SummaryInfo extends React.Component {
               cacheByPresetData.map((data, i) => <div key={i} className="col-md-6">
                 <h3>{data.case.case.name}</h3>
                 <h6>sum of histograms of each chart type</h6>
-                <Histogram data={data.histogram} barSpace={10} maxValue={maxCacheValue}/>
+                <Histogram data={data.histogram} barSpace={20} maxValue={maxCacheValue}/>
 
               </div>)
             }
