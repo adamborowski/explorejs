@@ -114,7 +114,7 @@ export default class PerfTestDialog extends React.Component {
                                style={{backgroundColor: isCurrent ? '#dedede' : undefined}}
                                onClick={() => this.setState({
                                  isCurrentTestCaseRecording: false,
-                                 currentTestCase: testCaseIndex
+                                 currentTestCase: this.state.currentTestCase === testCaseIndex ? null : testCaseIndex
                                })}
                     >
                       <th>{testCase.name} / {testCase.chartType}</th>
