@@ -66,6 +66,15 @@ export default class SummaryInfo extends React.Component {
 
     const maxValue = _.max(_.flattenDeep(values));
 
+    const timingByPresetData = _.map(casesByPreset, (presetCases, i) => {
+      const myHistogram = sumBins(presetCases.map(p => p.waitingHistogram));
+      return {
+        case: presetCases[0],
+        name: presetCases[0].case.name,
+        histogram: myHistogram,
+        maxValue: _.max(myHistogram.map(s => s.count))
+      };
+    })
 
     const cacheByPresetData = _.compact(_.map(casesByPreset, (presetCases, i) => {
       if (presetCases[0].case.name === 'basic') {
@@ -96,6 +105,8 @@ export default class SummaryInfo extends React.Component {
       }
     });
 
+    const maxTimingValue = _.max(timingByPresetData.map(s => s.maxValue));
+
     const maxCacheValue = _.max(cacheByPresetData.map(s => s.maxValue));
 
 
@@ -122,7 +133,7 @@ export default class SummaryInfo extends React.Component {
             <Bar dataKey="sumRequestSize" fill="#ca849d"/>
           </BarChart>
         </Tab>
-        <Tab eventKey={1} title="Chart rendering">
+        <Tab eventKey={1} title="Chart update">
 
           {
             _.map(casesByChart, (chartGroupCase, i) => <div key={i}>
@@ -142,13 +153,15 @@ export default class SummaryInfo extends React.Component {
         </Tab>
         <Tab eventKey={2} title="Wait time">
           <div className="row">
-            {_.map(casesByPreset, (presetCases, i) =>
-              <div key={i} className="col-md-3">
-                <h3>{presetCases[0].case.name}</h3>
+            {timingByPresetData.map((data, i) => {
+              const myHistogram = data.histogram;
+              return <div key={i} className="col-md-3">
+                <h3>{data.name}</h3>
                 <h6>sum of histograms of each chart type</h6>
-                <Histogram data={sumBins(presetCases.map(p => p.waitingHistogram))} barSpace={10}/>
+                <Histogram data={myHistogram} barSpace={10} maxValue={maxTimingValue}/>
 
-              </div>)
+              </div>;
+            })
             }
 
           </div>

@@ -128,10 +128,11 @@ export const calculateSessionStats = (stats, cutRiskyData = false) => {
 
   const map2 = !cutRiskyData ?
     stats.viewState :
-    stats.viewState.filter(vs => vs.state.currentLevelId !== 'raw') // truncate playing with too little data or when zoomed out too much
-      .filter(vs => vs.state.currentLevelId !== '1y')
-      .filter(vs => vs.state.scale < 904067979)
-      .filter(vs => vs.state.range.end > fixedStart && vs.state.range.start < fixedEnd);
+    stats.viewState
+  // .filter(vs => vs.state.currentLevelId !== 'raw') // truncate playing with too little data or when zoomed out too much
+  // .filter(vs => vs.state.currentLevelId !== '1y')
+  // .filter(vs => vs.state.scale < 904067979)
+  // .filter(vs => vs.state.range.end > fixedStart && vs.state.range.start < fixedEnd);
 
   const requestsCausedByViewState = map2
     .map(vs => ({
@@ -143,7 +144,14 @@ export const calculateSessionStats = (stats, cutRiskyData = false) => {
       sumSize: state.requests.reduce((sum, req) => sum + req.size, 0),
       waitTime: state.requests.map(r => r.finishTime - r.startTime).reduce((max, time) => Math.max(max, time), 0)
     }))
-    .filter(s => !cutRiskyData || s.waitTime > 0)
+    .map(s => {
+      if (cutRiskyData) {
+        if (s.waitTime === 0) {
+          s.waitTime = 500; // statistic fix for no-cache mode
+        }
+      }
+      return s;
+    })
 
   ;
 

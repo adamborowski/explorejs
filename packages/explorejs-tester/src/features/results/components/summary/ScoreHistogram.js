@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Histogram from './Historgram';
 
-const types = ['Basic', '+Cache', '+Projection', '+Predition', '+Optimization'];
+const types = ['Basic', '+Cache', '+Projection', '+Prediction', '+Optimization'];
 
 export default ({histograms, timingHistograms}) => {
 

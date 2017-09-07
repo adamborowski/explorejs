@@ -51,7 +51,7 @@ export default class PredictionEngine {
     }
 
     destroy() {
-        console.log('TODO: destroy predition engine');
+        console.log('TODO: destroy prediction engine');
     }
 
 }

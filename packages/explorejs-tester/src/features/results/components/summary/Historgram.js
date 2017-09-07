@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const types = ['Basic', '+Cache', '+Projection', '+Predition', '+Optimization'];
+const types = ['Basic', '+Cache', '+Projection', '+Prediction', '+Optimization'];
 
 const Histogram = (props) => {
 

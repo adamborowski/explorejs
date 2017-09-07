@@ -14,7 +14,7 @@ import SummaryInfo from './SummaryInfo';
 
 const PERF_TEST = 'perf-test';
 export const chartTypes = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];
-export const presetNames = ['basic', '+cache', '+projection', '+predition', '+optimization']
+export const presetNames = ['basic', '+cache', '+projection', '+prediction', '+optimization']
 export const presetConfig = [preset(), preset(true), preset(true, true), preset(true, true, true), preset(true, true, true, true)]
 export const testCases = presetNames.map((presetName, presetIndex) => chartTypes.map((chartType, i) => ({
   chartType,
