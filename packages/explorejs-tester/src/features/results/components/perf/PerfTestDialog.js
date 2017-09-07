@@ -10,13 +10,15 @@ import _ from 'lodash';
 import RecordingInfo from './RecordingInfo';
 import Toggle from 'react-toggle';
 import {arrayToObject} from '../../utils';
+import SummaryInfo from './SummaryInfo';
 
 const PERF_TEST = 'perf-test';
-const chartTypes = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];
-const presetNames = ['basic', '+cache', '+projection', '+predition', '+optimization']
-const presetConfig = [preset(), preset(true), preset(true, true), preset(true, true, true), preset(true, true, true, true)]
-const testCases = presetNames.map((presetName, presetIndex) => chartTypes.map(chartType => ({
+export const chartTypes = ['dygraphs', 'visjs', 'flot', 'highcharts', 'jqplot', 'plotly'];
+export const presetNames = ['basic', '+cache', '+projection', '+predition', '+optimization']
+export const presetConfig = [preset(), preset(true), preset(true, true), preset(true, true, true), preset(true, true, true, true)]
+export const testCases = presetNames.map((presetName, presetIndex) => chartTypes.map((chartType, i) => ({
   chartType,
+  id: presetIndex * chartTypes.length + i,
   name: presetNames[presetIndex],
   preset: presetConfig[presetIndex]
 }))).reduce((current, inner) => [...current, ...inner], []);
@@ -55,7 +57,13 @@ export default class PerfTestDialog extends React.Component {
 
   async componentDidMount() {
     const itemsFromDb = await readItems(PERF_TEST, this.props.sessionObject.start);
-    const testStats = arrayToObject(itemsFromDb, s => s.planId, s => s.session);
+    const testStats = arrayToObject(itemsFromDb, s => s.planId, s => ({
+      ...s.session,
+      planId: s.planId,
+      responseId: s.responseId,
+      testCase: testCases[s.planId]
+    }));
+
 
     this.setState({testStats});
   }
@@ -81,7 +89,7 @@ export default class PerfTestDialog extends React.Component {
 
 
     return (
-      <Modal show dialogClassName="perftest-dialog">
+      <Modal show dialogClassName="perftest-dialog" onHide={this.props.onHide}>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
@@ -158,7 +166,7 @@ export default class PerfTestDialog extends React.Component {
                     preset={testCases[currentTestCase].preset}
                     onFinish={this.onPlaybackFinish}
                     throttle={1024 * 350}
-                    viewStateStats={sessionObject.stats.viewState.slice(0, 110)}/*temporary cut*/
+                    viewStateStats={sessionObject.stats.viewState.slice(0, 110)}/* TODO FIXME temporary cut*/
                   />
 
                 </div>
@@ -171,6 +179,11 @@ export default class PerfTestDialog extends React.Component {
                     preset={testCases[currentTestCase].preset}
                     name={testCases[currentTestCase].name + ' on ' + testCases[currentTestCase].chartType}/>
                 </div>
+              }
+
+              {
+                currentTestCase == null && Object.keys(testStats).length > 0 &&
+                <SummaryInfo testCases={testCases} testCasesStats={testStats}/>
               }
             </div>
           </div>

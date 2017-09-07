@@ -1,4 +1,5 @@
 import moment from 'moment';
+import _ from 'lodash';
 
 const format = 'YYYY-MM-DD HH:mm';
 
@@ -50,4 +51,13 @@ export const createBin = (values = [], bins = [0.1, 1, 10], labels = undefined, 
   });
 
   return labels.map((bin, index) => ({value: labels[index], count: counters[index] || 0}));
+};
+
+export const sumBins = (bins) => {
+
+  const [firstBin, ...rest] = bins;
+  const histogram = _.cloneDeep(firstBin);
+
+  rest.forEach(bin => bin.forEach(point => histogram.find(h => h.value === point.value).count += point.count))
+  return histogram;
 };

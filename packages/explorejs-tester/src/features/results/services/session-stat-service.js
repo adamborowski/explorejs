@@ -96,3 +96,10 @@ export const getHistogramDataForCacheHit = (calculatedCacheHitStats) => {
 
   return histogram;
 }
+
+export const normalizeHistogram = (histogram) => {
+
+  const sum = histogram.reduce((sum, bin) => sum + bin.count, 0);
+
+  return histogram.map(bin => ({...bin, count: bin.count / sum}));
+};

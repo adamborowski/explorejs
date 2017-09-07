@@ -75,7 +75,7 @@ export default class RecordingInfo extends React.Component {
       {
         cacheHitHistogram && <Histogram data={cacheHitHistogram}/>
       }
-      <h5>Chart update time histogram</h5>
+      <h5 onMouseOver={() => console.log(stats)}>Chart update time histogram</h5>
       <Histogram data={renderingHistogram} barSpace={20}/>
       <h5>Cache content histogram</h5>
       <Histogram data={objectToArray(calculatedStats.cacheFill, (value, key) => ({value: key, count: value}))}/>

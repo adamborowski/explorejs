@@ -129,6 +129,8 @@ export const accumulateHistograms = histograms => {
   return normalized;
 };
 
+
+
 export const getTimingHistogramForScenarios = (results) => {
   const histograms = [0, 1, 2, 3, 4].map(scenario => getNormalizedHistogramForScenario(results, scenario));
 
@@ -159,4 +161,9 @@ export const getDataForTimingChart = (timingHistograms) => {
       };
     });
   return map;
+};
+
+
+export const createRenderHistogram = adapterStats => {
+
 };
