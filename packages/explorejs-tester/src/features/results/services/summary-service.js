@@ -29,7 +29,7 @@ export const getScoresHistogram = results => {
  * @param modifier
  * @returns {Array} scenario=>sorted list of absolute scores
  */
-export const getAbsoluteScores = (results, factors = [1 / 8, 1 / 2, 1, 2, 8], modifier = (s, f) => s * f, scoreMap = s => Math.log(s)) => {
+export const getAbsoluteScores = (results, factors = [1/3,1/1.2,1,1.2,3], modifier = (s, f) => s * f, scoreMap = s => Math.log(s)) => {
 
   const getFactor = relativeScore => factors[relativeScore + 2];
 

@@ -39,8 +39,9 @@ class ResultsPage extends React.Component {
 
       const histogram = getScoresHistogram(results);
       const absoluteScores = getAbsoluteScores(results);
-      const dataForPercentileChart = getDataForPercentileChart(results);
-      const dataForPercentileChart2 = getDataForPercentileChart(results, undefined, [-5, -2, 0, 2, 5], (score, factor) => score + factor, s => s);
+      // const dataForPercentileChart2 = getDataForPercentileChart(results, undefined, [-5, -2, 0, 2, 5], (score, factor) => score + factor, s => s);
+      const dataForPercentileChart = getDataForPercentileChart(results, undefined, undefined, undefined, s => s);
+      const dataForPercentileChart2 = getDataForPercentileChart(results);
       const timingHistograms = getTimingHistogramForScenarios(results);
       const timingChartData = getDataForTimingChart(timingHistograms);
 
@@ -83,9 +84,9 @@ class ResultsPage extends React.Component {
           <ScoreHistogram histograms={histogram} timingHistograms={timingHistograms}/>
         </div>
         <div className="col-md-7">
-          <h5>Distribution of absolute scores (multiplication)</h5>
+          <h5>Distribution of absolute scores (linear scale)</h5>
           <PercentileChart data={dataForPercentileChart} width={chartWidth} height={chartHeight}/>
-          <h5>Distribution of absolute scores (addition)</h5>
+          <h5>Distribution of absolute scores (log scale)</h5>
           <PercentileChart data={dataForPercentileChart2} width={chartWidth} height={chartHeight} color="#ed3333"/>
           <h5>Distribution of waiting time spans</h5>
           <PercentileChart data={timingChartData} width={chartWidth} height={chartHeight} color="#3333ed" timingMode lineType="monotone" />
