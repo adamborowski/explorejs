@@ -45,7 +45,7 @@ export default class RecordingInfo extends React.Component {
     const getSessionDuration = () => {
       const start = stats.viewState[0].time;
       const end = stats.viewState[stats.viewState.length - 1].time;
-      return Math.floor(end - start) / 1000;
+      return Math.floor(end - start / 1000);
     };
 
     return <div>
