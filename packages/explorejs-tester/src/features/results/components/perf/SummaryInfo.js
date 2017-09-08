@@ -116,7 +116,10 @@ export default class SummaryInfo extends React.Component {
       return end - start;
     };
 
-    const totalDuration = Math.floor(_.toArray(testCasesStats).reduce((sum, stat) => sum + getSessionDuration(stat), 0) / 1000);
+    const durations = _.toArray(testCasesStats).map(stat => getSessionDuration(stat));
+    const totalDuration = Math.floor(durations.reduce((sum, duration) => sum + duration, 0) / 1000);
+    const maxDuration = Math.floor(durations.reduce((sum, duration) => Math.max(sum, duration), 0) / 1000);
+    const minDuration = Math.floor(durations.reduce((sum, duration) => Math.min(sum, duration), 0) / 1000);
 
 
     return <div>
@@ -124,7 +127,7 @@ export default class SummaryInfo extends React.Component {
       <Tabs defaultActiveKey={0} id="uncontrolled-tab-example"
             style={{height: 'calc(100vh - 179px)', overflowY: 'auto', overflowX:'hidden'}}>
         <Tab eventKey={0} title="Basic info">
-          <p>Total time: {totalDuration}s</p>
+          <p>Total time: {totalDuration}s, min: {minDuration}s, max: {maxDuration}s</p>
           <BarChart width={600} height={300} data={basicInfoByPresetData} margin={{left:30, top:20}}>
             <XAxis dataKey="name"/>
             <YAxis/>
