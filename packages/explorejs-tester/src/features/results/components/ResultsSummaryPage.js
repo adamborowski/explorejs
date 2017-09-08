@@ -129,9 +129,9 @@ class ResultsPage extends React.Component {
             </div>
             <div className="col-md-7">
               <h5>Distribution of absolute scores (linear scale)</h5>
-              <PercentileChart data={dataForPercentileChart} width={chartWidth} height={chartHeight}/>
+              <PercentileChart  lineType="monotone" data={dataForPercentileChart} width={chartWidth} height={chartHeight}/>
               <h5>Distribution of absolute scores (log scale)</h5>
-              <PercentileChart data={dataForPercentileChart2} width={chartWidth} height={chartHeight} color="#ed3333"/>
+              <PercentileChart lineType="monotone" data={dataForPercentileChart2} width={chartWidth} height={chartHeight} color="#ed3333"/>
               <h5>Distribution of waiting time spans</h5>
               <PercentileChart data={timingChartData} width={chartWidth} height={chartHeight} color="#3333ed" timingMode
                                lineType="monotone"/>
