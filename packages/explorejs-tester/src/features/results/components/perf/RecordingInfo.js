@@ -37,12 +37,19 @@ export default class RecordingInfo extends React.Component {
     }
   }
 
+
   render() {
     const {sessionObject, name, stats} = this.props;
     const {histogram, calculatedStats, renderingHistogram, cacheHitStats, cacheHitHistogram} = this.state;
 
+    const getSessionDuration = () => {
+      const start = stats.viewState[0].time;
+      const end = stats.viewState[stats.viewState.length - 1].time;
+      return Math.floor(end - start) / 1000;
+    };
+
     return <div>
-      <h4>Recording info: {name}</h4>
+      <h4>Recording info: {name} (session took {getSessionDuration()}s)</h4>
 
       <table className="table" style={{width: 'auto'}}>
         <tbody>

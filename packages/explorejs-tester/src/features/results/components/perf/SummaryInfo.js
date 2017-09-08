@@ -110,11 +110,21 @@ export default class SummaryInfo extends React.Component {
     const maxCacheValue = _.max(cacheByPresetData.map(s => s.maxValue));
 
 
+    const getSessionDuration = (stats) => {
+      const start = stats.viewState[0].time;
+      const end = stats.viewState[stats.viewState.length - 1].time;
+      return end - start;
+    };
+
+    const totalDuration = Math.floor(_.toArray(testCasesStats).reduce((sum, stat) => sum + getSessionDuration(stat), 0) / 1000);
+
+
     return <div>
 
       <Tabs defaultActiveKey={0} id="uncontrolled-tab-example"
             style={{height: 'calc(100vh - 179px)', overflowY: 'auto', overflowX:'hidden'}}>
         <Tab eventKey={0} title="Basic info">
+          <p>Total time: {totalDuration}s</p>
           <BarChart width={600} height={300} data={basicInfoByPresetData} margin={{left:30, top:20}}>
             <XAxis dataKey="name"/>
             <YAxis/>
