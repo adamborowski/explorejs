@@ -51,7 +51,7 @@ class ResultsPage extends React.Component {
               checked={showTesting}
               onChange={v => this.handleSwitchTesting(v.target.checked)}/>
             <label>
-              show test responses
+              showing  {showTesting?'testing':'research'} responses ({matchedResults.length})
             </label>
           </div>
           <ResultList results={matchedResults}
