@@ -119,7 +119,7 @@ export default class SummaryInfo extends React.Component {
     const durations = _.toArray(testCasesStats).map(stat => getSessionDuration(stat));
     const totalDuration = Math.floor(durations.reduce((sum, duration) => sum + duration, 0) / 1000);
     const maxDuration = Math.floor(durations.reduce((sum, duration) => Math.max(sum, duration), 0) / 1000);
-    const minDuration = Math.floor(durations.reduce((sum, duration) => Math.min(sum, duration), 0) / 1000);
+    const minDuration = Math.floor(durations.reduce((sum, duration) => Math.min(sum, duration), Infinity) / 1000);
 
 
     return <div>
