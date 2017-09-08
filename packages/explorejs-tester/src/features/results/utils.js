@@ -53,6 +53,20 @@ export const createBin = (values = [], bins = [0.1, 1, 10], labels = undefined, 
   return labels.map((bin, index) => ({value: labels[index], count: counters[index] || 0}));
 };
 
+export const createCategoryBin = (values = [], bins = [], labels = [...bins], valueAccessor = v => v) => {
+  const counters = {};
+  values.forEach(v => {
+    const value = valueAccessor(v);
+
+    if (!counters[value]) {
+      counters[value] = 0
+    }
+    counters[value]++;
+  });
+
+  return labels.map((bin, index) => ({value: labels[index], count: counters[index] || 0}));
+};
+
 export const sumBins = (bins) => {
 
 
