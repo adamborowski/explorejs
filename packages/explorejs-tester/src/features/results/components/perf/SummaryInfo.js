@@ -192,7 +192,7 @@ export default class SummaryInfo extends React.Component {
           <div className="row">
             {
               cacheByPresetData.map((data, i) => <div key={i} className="col-md-6">
-                <h3>{data.case.case.name}</h3>
+                <h3>{data.case.case.name} <small>(sum: {data.histogram.reduce((sum, bin) => sum + bin.count, 0)})</small></h3>
                 <h6>sum of histograms of each chart type</h6>
                 <Histogram data={data.histogram} barSpace={20} maxValue={maxCacheValue} vSpace={150}/>
 
