@@ -10,7 +10,7 @@ export default {
   general: {
     configuration: 'Configuration',
     testConfigurations: 'Test configurations',
-    title: 'ExploreJS interactive survey',
+    title: 'ExploreJS Research Tool',
     beginSurvey: 'Begin survey',
     skipSurvey:'Skip introduction and begin survey',
     goToBase:'go to base version',
