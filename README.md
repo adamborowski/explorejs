@@ -48,6 +48,6 @@ How to use it
 First, look at explorejs-tester React application.
 This library is under active development, so there is no official tutorial yet.
 
-Questions?
+Questions???
 ----------
 Contact me on twitter https://twitter.com/fl_borovsky or fl.borovsky(at)gmail or raise an issue.
