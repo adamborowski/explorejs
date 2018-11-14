@@ -35,7 +35,7 @@ _(use mouse wheel and shift key to zoom/pan)_
 
 _works best in Chrome_
 
-http://explorejs.adamborowski.pl/scenario/4
+http://explorejs.herokuapp.com/scenario/4
 
 Video demonstration (older)
 ---------
